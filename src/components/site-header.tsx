@@ -1,34 +1,65 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, Search, X } from "lucide-react";
+import { ArrowLeft, Menu, Search, X } from "lucide-react";
+import { usePortailActif } from "@/hooks/use-portail";
 
-const liens = [
-  { to: "/", label: "Portails" },
-  { to: "/media", label: "Média" },
-  { to: "/edition", label: "Maison d'édition" },
+type Lien = { to: string; label: string; exact?: boolean };
+
+const liensMedia: Lien[] = [
+  { to: "/media", label: "Actualités", exact: true },
+  { to: "/auteurs", label: "Auteurs" },
+  { to: "/recherche", label: "Recherche" },
+  { to: "/a-propos", label: "À propos" },
+  { to: "/contact", label: "Contact" },
+];
+
+const liensEdition: Lien[] = [
+  { to: "/edition", label: "Catalogue", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/bibliotheque", label: "Bibliothèque" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
-] as const;
+];
 
 export function SiteHeader() {
+  const portail = usePortailActif();
   const [ouvert, setOuvert] = useState(false);
+  const home = portail === "media" ? "/media" : "/edition";
+  const titre = portail === "media" ? "Média" : "Maison d'édition";
+  const liens = portail === "media" ? liensMedia : liensEdition;
+  const accent =
+    portail === "media" ? "border-b-ochre" : "border-b-terracotta";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4">
-        <Link to="/" className="font-display text-xl tracking-tight">
-          Itobe<span className="text-accent">.</span>
+    <header
+      className={`sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
+    >
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+        <Link
+          to="/"
+          aria-label="Retour aux portails Itobe"
+          className="grid size-9 shrink-0 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
         </Link>
 
-        <nav className="hidden flex-1 items-center gap-6 md:flex">
+        <Link to={home} className="shrink-0">
+          <span className="block font-display text-lg leading-none tracking-tight md:text-xl">
+            Itobe<span className="text-accent">.</span>
+          </span>
+          <span className="mt-0.5 block text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground">
+            {titre}
+          </span>
+        </Link>
+
+        <nav className="hidden flex-1 items-center justify-center gap-5 lg:flex">
           {liens.map((l) => (
             <Link
-              key={l.to}
+              key={l.to + l.label}
               to={l.to}
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-foreground font-medium" }}
+              activeOptions={{ exact: Boolean(l.exact) }}
             >
               {l.label}
             </Link>
@@ -39,18 +70,19 @@ export function SiteHeader() {
           <Link
             to="/recherche"
             aria-label="Recherche"
-            className="grid size-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:text-foreground"
+            className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
           >
             <Search className="size-4" />
           </Link>
           <Link
             to="/connexion"
-            className="hidden rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+            className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
           >
             Connexion
           </Link>
           <button
-            className="grid size-9 place-items-center rounded-full border border-border md:hidden"
+            type="button"
+            className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
             aria-label="Menu"
             onClick={() => setOuvert((v) => !v)}
           >
@@ -60,20 +92,32 @@ export function SiteHeader() {
       </div>
 
       {ouvert && (
-        <nav className="border-t border-border bg-card px-4 py-3 md:hidden">
+        <nav className="border-t border-border bg-card px-4 py-3 lg:hidden">
           {liens.map((l) => (
             <Link
-              key={l.to}
+              key={l.to + l.label}
               to={l.to}
               onClick={() => setOuvert(false)}
               className="block py-2 text-sm text-muted-foreground"
               activeProps={{ className: "text-foreground font-medium" }}
+              activeOptions={{ exact: Boolean(l.exact) }}
             >
               {l.label}
             </Link>
           ))}
-          <Link to="/connexion" onClick={() => setOuvert(false)} className="block py-2 text-sm">
+          <Link
+            to="/connexion"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm"
+          >
             Connexion
+          </Link>
+          <Link
+            to={portail === "media" ? "/edition" : "/media"}
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            {portail === "media" ? "Maison d'édition" : "Portail Média"}
           </Link>
         </nav>
       )}

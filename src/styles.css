@@ -186,3 +186,12 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+@keyframes edition-hero-zoom {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
