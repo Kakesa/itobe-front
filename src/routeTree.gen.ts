@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
@@ -35,6 +36,11 @@ const AProposRoute = AProposRouteImport.update({
 const BibliothequeRoute = BibliothequeRouteImport.update({
   id: '/bibliotheque',
   path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RechercheRoute = RechercheRouteImport.update({
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
@@ -116,6 +124,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
     | '/auteurs/$slug'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
     | '/auteurs/$slug'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
     | '/auteurs/$slug'
@@ -175,6 +187,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
   BibliothequeRoute: typeof BibliothequeRoute
+  ContactRoute: typeof ContactRoute
   RechercheRoute: typeof RechercheRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   AuteursSlugRoute: typeof AuteursSlugRoute
@@ -207,6 +220,13 @@ declare module '@tanstack/react-router' {
       path: '/bibliotheque'
       fullPath: '/bibliotheque'
       preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recherche': {
@@ -279,6 +299,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   BibliothequeRoute: BibliothequeRoute,
+  ContactRoute: ContactRoute,
   RechercheRoute: RechercheRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   AuteursSlugRoute: AuteursSlugRoute,
