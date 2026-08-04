@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EditionIndexRouteImport } from './routes/edition.index'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditionIndexRoute = EditionIndexRouteImport.update({
+  id: '/edition/',
+  path: '/edition/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaIndexRoute = MediaIndexRouteImport.update({
@@ -32,30 +38,34 @@ const MediaSlugRoute = MediaSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/media/$slug' | '/media/'
+  fullPaths: '/' | '/media/$slug' | '/edition/' | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/media/$slug' | '/media'
-  id: '__root__' | '/' | '/media/$slug' | '/media/'
+  to: '/' | '/media/$slug' | '/edition' | '/media'
+  id: '__root__' | '/' | '/media/$slug' | '/edition/' | '/media/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MediaSlugRoute: typeof MediaSlugRoute
+  EditionIndexRoute: typeof EditionIndexRoute
   MediaIndexRoute: typeof MediaIndexRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edition/': {
+      id: '/edition/'
+      path: '/edition'
+      fullPath: '/edition/'
+      preLoaderRoute: typeof EditionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media/': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MediaSlugRoute: MediaSlugRoute,
+  EditionIndexRoute: EditionIndexRoute,
   MediaIndexRoute: MediaIndexRoute,
 }
 export const routeTree = rootRouteImport
