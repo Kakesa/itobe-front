@@ -369,8 +369,6 @@ Gestion des rôles et permissions.
 
 Gestion des auteurs.
 
-Gestion des journalistes.
-
 Gestion des articles.
 
 Gestion des livres.
@@ -606,29 +604,16 @@ Stockage
 Cloudinary
 
 
-
-
-
-
-
-
 Vision
 
-Cette plateforme a pour ambition de devenir un écosystème numérique complet, combinant un média en ligne et une maison d'édition digitale. Elle offrira aux journalistes, auteurs, éditeurs et lecteurs un espace unique pour créer, publier, diffuser, vendre et consulter des contenus de qualité. Grâce à son Reader intégré, sa bibliothèque numérique, son système de vente de livres et ses outils de gestion avancés, elle se positionne comme une solution moderne, évolutive et adaptée aux besoins des acteurs de l'édition et des médias.
+Cette plateforme a pour ambition de devenir un écosystème numérique complet, combinant un média en ligne et une maison d'édition digitale. Elle offrira aux auteurs, éditeurs et lecteurs un espace unique pour créer, publier, diffuser, vendre et consulter des contenus de qualité. Grâce à son Reader intégré, sa bibliothèque numérique, son système de vente de livres et ses outils de gestion avancés, elle se positionne comme une solution moderne, évolutive et adaptée aux besoins des acteurs de l'édition et des médias.
 
-This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6251f608-52d4-44a9-ab49-046b42033b5a).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
 git clone <this-repository-url>
