@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
+import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const EditionIndexRoute = EditionIndexRouteImport.update({
   id: '/edition/',
   path: '/edition/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditionSlugRoute = EditionSlugRouteImport.update({
+  id: '/edition/$slug',
+  path: '/edition/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaIndexRoute = MediaIndexRouteImport.update({
@@ -37,12 +43,14 @@ const MediaSlugRoute = MediaSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
@@ -50,20 +58,28 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/media/$slug' | '/edition/' | '/media/'
+  fullPaths: '/' | '/edition/$slug' | '/media/$slug' | '/edition/' | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/media/$slug' | '/edition' | '/media'
-  id: '__root__' | '/' | '/media/$slug' | '/edition/' | '/media/'
+  to: '/' | '/edition/$slug' | '/media/$slug' | '/edition' | '/media'
+  id:
+    | '__root__'
+    | '/'
+    | '/edition/$slug'
+    | '/media/$slug'
+    | '/edition/'
+    | '/media/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditionSlugRoute: typeof EditionSlugRoute
   MediaSlugRoute: typeof MediaSlugRoute
   EditionIndexRoute: typeof EditionIndexRoute
   MediaIndexRoute: typeof MediaIndexRoute
@@ -85,6 +101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditionIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/edition/$slug': {
+      id: '/edition/$slug'
+      path: '/edition/$slug'
+      fullPath: '/edition/$slug'
+      preLoaderRoute: typeof EditionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/media/': {
       id: '/media/'
       path: '/media'
@@ -104,6 +127,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditionSlugRoute: EditionSlugRoute,
   MediaSlugRoute: MediaSlugRoute,
   EditionIndexRoute: EditionIndexRoute,
   MediaIndexRoute: MediaIndexRoute,

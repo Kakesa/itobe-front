@@ -152,7 +152,7 @@ function LivrePage() {
               l'ouvrage.
             </p>
             <ul className="mt-4 space-y-2 text-sm">
-              {livre.chapitres.map((c) => (
+              {livre.chapitres.map((c: { titre: string; gratuit: boolean }) => (
                 <li key={c.titre} className="flex items-center justify-between gap-4">
                   <span className={c.gratuit ? "" : "text-muted-foreground"}>{c.titre}</span>
                   <span
