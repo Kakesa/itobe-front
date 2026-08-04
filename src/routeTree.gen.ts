@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
 import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
@@ -19,6 +20,11 @@ import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuteursIndexRoute = AuteursIndexRouteImport.update({
+  id: '/auteurs/',
+  path: '/auteurs/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditionIndexRoute = EditionIndexRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
 }
@@ -79,6 +88,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/auteurs/'
     | '/edition/'
     | '/media/'
   fileRoutesByTo: FileRoutesByTo
@@ -87,6 +97,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/auteurs'
     | '/edition'
     | '/media'
   id:
@@ -95,6 +106,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/auteurs/'
     | '/edition/'
     | '/media/'
   fileRoutesById: FileRoutesById
@@ -104,6 +116,7 @@ export interface RootRouteChildren {
   EditionSlugRoute: typeof EditionSlugRoute
   MediaSlugRoute: typeof MediaSlugRoute
   ReaderSlugRoute: typeof ReaderSlugRoute
+  AuteursIndexRoute: typeof AuteursIndexRoute
   EditionIndexRoute: typeof EditionIndexRoute
   MediaIndexRoute: typeof MediaIndexRoute
 }
@@ -115,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auteurs/': {
+      id: '/auteurs/'
+      path: '/auteurs'
+      fullPath: '/auteurs/'
+      preLoaderRoute: typeof AuteursIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/edition/': {
@@ -160,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   EditionSlugRoute: EditionSlugRoute,
   MediaSlugRoute: MediaSlugRoute,
   ReaderSlugRoute: ReaderSlugRoute,
+  AuteursIndexRoute: AuteursIndexRoute,
   EditionIndexRoute: EditionIndexRoute,
   MediaIndexRoute: MediaIndexRoute,
 }
