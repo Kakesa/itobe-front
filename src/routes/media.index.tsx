@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { articles, categoriesMedia, formatDate, nomAuteur } from "@/lib/data";
 
-export const Route = createFileRoute("/media")({
+export const Route = createFileRoute("/media/")({
   head: () => ({
     meta: [
       { title: "Média — Actualités, articles et interviews | Itobe" },
