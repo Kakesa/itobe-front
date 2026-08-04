@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
+import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,30 +23,39 @@ const MediaIndexRoute = MediaIndexRouteImport.update({
   path: '/media/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MediaSlugRoute = MediaSlugRouteImport.update({
+  id: '/media/$slug',
+  path: '/media/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/media/$slug': typeof MediaSlugRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/media/$slug': typeof MediaSlugRoute
   '/media': typeof MediaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/media/$slug': typeof MediaSlugRoute
   '/media/': typeof MediaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/media/'
+  fullPaths: '/' | '/media/$slug' | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/media'
-  id: '__root__' | '/' | '/media/'
+  to: '/' | '/media/$slug' | '/media'
+  id: '__root__' | '/' | '/media/$slug' | '/media/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MediaSlugRoute: typeof MediaSlugRoute
   MediaIndexRoute: typeof MediaIndexRoute
 }
 
@@ -65,11 +75,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/media/$slug': {
+      id: '/media/$slug'
+      path: '/media/$slug'
+      fullPath: '/media/$slug'
+      preLoaderRoute: typeof MediaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MediaSlugRoute: MediaSlugRoute,
   MediaIndexRoute: MediaIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -66,13 +66,13 @@ function ArticlePage() {
       <div className="mt-8 aspect-[16/9] rounded-sm" style={{ backgroundImage: article.image }} />
 
       <div className="mt-10 space-y-6 text-[1.05rem] leading-relaxed">
-        {article.corps.map((p, i) => (
+        {article.corps.map((p: string, i: number) => (
           <p key={i}>{p}</p>
         ))}
       </div>
 
       <div className="mt-10 flex flex-wrap gap-2">
-        {article.tags.map((t) => (
+        {article.tags.map((t: string) => (
           <span key={t} className="rounded-full border border-border px-3 py-1 text-xs">
             #{t}
           </span>
