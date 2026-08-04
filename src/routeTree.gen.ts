@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
@@ -27,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const BibliothequeRoute = BibliothequeRouteImport.update({
   id: '/bibliotheque',
   path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TableauDeBordRoute = TableauDeBordRouteImport.update({
+  id: '/tableau-de-bord',
+  path: '/tableau-de-bord',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuteursIndexRoute = AuteursIndexRouteImport.update({
@@ -68,6 +74,7 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -79,6 +86,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/bibliotheque'
+    | '/tableau-de-bord'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/bibliotheque'
+    | '/tableau-de-bord'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -126,6 +137,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/bibliotheque'
+    | '/tableau-de-bord'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -138,6 +150,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibliothequeRoute: typeof BibliothequeRoute
+  TableauDeBordRoute: typeof TableauDeBordRoute
   AuteursSlugRoute: typeof AuteursSlugRoute
   EditionSlugRoute: typeof EditionSlugRoute
   MediaSlugRoute: typeof MediaSlugRoute
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/bibliotheque'
       fullPath: '/bibliotheque'
       preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tableau-de-bord': {
+      id: '/tableau-de-bord'
+      path: '/tableau-de-bord'
+      fullPath: '/tableau-de-bord'
+      preLoaderRoute: typeof TableauDeBordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auteurs/': {
@@ -218,6 +238,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibliothequeRoute: BibliothequeRoute,
+  TableauDeBordRoute: TableauDeBordRoute,
   AuteursSlugRoute: AuteursSlugRoute,
   EditionSlugRoute: EditionSlugRoute,
   MediaSlugRoute: MediaSlugRoute,
