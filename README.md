@@ -614,7 +614,6 @@ Cette plateforme a pour ambition de devenir un écosystème numérique complet, 
 
 ## Development
 
-
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
