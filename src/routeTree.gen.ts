@@ -10,33 +10,206 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as RechercheRouteImport } from './routes/recherche'
+import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
+import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
+import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
+import { Route as EditionIndexRouteImport } from './routes/edition.index'
+import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
+import { Route as MediaIndexRouteImport } from './routes/media.index'
+import { Route as MediaSlugRouteImport } from './routes/media.$slug'
+import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BibliothequeRoute = BibliothequeRouteImport.update({
+  id: '/bibliotheque',
+  path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RechercheRoute = RechercheRouteImport.update({
+  id: '/recherche',
+  path: '/recherche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TableauDeBordRoute = TableauDeBordRouteImport.update({
+  id: '/tableau-de-bord',
+  path: '/tableau-de-bord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuteursIndexRoute = AuteursIndexRouteImport.update({
+  id: '/auteurs/',
+  path: '/auteurs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuteursSlugRoute = AuteursSlugRouteImport.update({
+  id: '/auteurs/$slug',
+  path: '/auteurs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditionIndexRoute = EditionIndexRouteImport.update({
+  id: '/edition/',
+  path: '/edition/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditionSlugRoute = EditionSlugRouteImport.update({
+  id: '/edition/$slug',
+  path: '/edition/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaIndexRoute = MediaIndexRouteImport.update({
+  id: '/media/',
+  path: '/media/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaSlugRoute = MediaSlugRouteImport.update({
+  id: '/media/$slug',
+  path: '/media/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReaderSlugRoute = ReaderSlugRouteImport.update({
+  id: '/reader/$slug',
+  path: '/reader/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/recherche': typeof RechercheRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/auteurs/$slug': typeof AuteursSlugRoute
+  '/edition/$slug': typeof EditionSlugRoute
+  '/media/$slug': typeof MediaSlugRoute
+  '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs/': typeof AuteursIndexRoute
+  '/edition/': typeof EditionIndexRoute
+  '/media/': typeof MediaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/recherche': typeof RechercheRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/auteurs/$slug': typeof AuteursSlugRoute
+  '/edition/$slug': typeof EditionSlugRoute
+  '/media/$slug': typeof MediaSlugRoute
+  '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs': typeof AuteursIndexRoute
+  '/edition': typeof EditionIndexRoute
+  '/media': typeof MediaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
+  '/contact': typeof ContactRoute
+  '/recherche': typeof RechercheRoute
+  '/tableau-de-bord': typeof TableauDeBordRoute
+  '/auteurs/$slug': typeof AuteursSlugRoute
+  '/edition/$slug': typeof EditionSlugRoute
+  '/media/$slug': typeof MediaSlugRoute
+  '/reader/$slug': typeof ReaderSlugRoute
+  '/auteurs/': typeof AuteursIndexRoute
+  '/edition/': typeof EditionIndexRoute
+  '/media/': typeof MediaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/a-propos'
+    | '/bibliotheque'
+    | '/connexion'
+    | '/contact'
+    | '/recherche'
+    | '/tableau-de-bord'
+    | '/auteurs/$slug'
+    | '/edition/$slug'
+    | '/media/$slug'
+    | '/reader/$slug'
+    | '/auteurs/'
+    | '/edition/'
+    | '/media/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/bibliotheque'
+    | '/connexion'
+    | '/contact'
+    | '/recherche'
+    | '/tableau-de-bord'
+    | '/auteurs/$slug'
+    | '/edition/$slug'
+    | '/media/$slug'
+    | '/reader/$slug'
+    | '/auteurs'
+    | '/edition'
+    | '/media'
+  id:
+    | '__root__'
+    | '/'
+    | '/a-propos'
+    | '/bibliotheque'
+    | '/connexion'
+    | '/contact'
+    | '/recherche'
+    | '/tableau-de-bord'
+    | '/auteurs/$slug'
+    | '/edition/$slug'
+    | '/media/$slug'
+    | '/reader/$slug'
+    | '/auteurs/'
+    | '/edition/'
+    | '/media/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
+  BibliothequeRoute: typeof BibliothequeRoute
+  ConnexionRoute: typeof ConnexionRoute
+  ContactRoute: typeof ContactRoute
+  RechercheRoute: typeof RechercheRoute
+  TableauDeBordRoute: typeof TableauDeBordRoute
+  AuteursSlugRoute: typeof AuteursSlugRoute
+  EditionSlugRoute: typeof EditionSlugRoute
+  MediaSlugRoute: typeof MediaSlugRoute
+  ReaderSlugRoute: typeof ReaderSlugRoute
+  AuteursIndexRoute: typeof AuteursIndexRoute
+  EditionIndexRoute: typeof EditionIndexRoute
+  MediaIndexRoute: typeof MediaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +221,116 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bibliotheque': {
+      id: '/bibliotheque'
+      path: '/bibliotheque'
+      fullPath: '/bibliotheque'
+      preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recherche': {
+      id: '/recherche'
+      path: '/recherche'
+      fullPath: '/recherche'
+      preLoaderRoute: typeof RechercheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tableau-de-bord': {
+      id: '/tableau-de-bord'
+      path: '/tableau-de-bord'
+      fullPath: '/tableau-de-bord'
+      preLoaderRoute: typeof TableauDeBordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auteurs/': {
+      id: '/auteurs/'
+      path: '/auteurs'
+      fullPath: '/auteurs/'
+      preLoaderRoute: typeof AuteursIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auteurs/$slug': {
+      id: '/auteurs/$slug'
+      path: '/auteurs/$slug'
+      fullPath: '/auteurs/$slug'
+      preLoaderRoute: typeof AuteursSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edition/': {
+      id: '/edition/'
+      path: '/edition'
+      fullPath: '/edition/'
+      preLoaderRoute: typeof EditionIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/edition/$slug': {
+      id: '/edition/$slug'
+      path: '/edition/$slug'
+      fullPath: '/edition/$slug'
+      preLoaderRoute: typeof EditionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media/': {
+      id: '/media/'
+      path: '/media'
+      fullPath: '/media/'
+      preLoaderRoute: typeof MediaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media/$slug': {
+      id: '/media/$slug'
+      path: '/media/$slug'
+      fullPath: '/media/$slug'
+      preLoaderRoute: typeof MediaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reader/$slug': {
+      id: '/reader/$slug'
+      path: '/reader/$slug'
+      fullPath: '/reader/$slug'
+      preLoaderRoute: typeof ReaderSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
+  BibliothequeRoute: BibliothequeRoute,
+  ConnexionRoute: ConnexionRoute,
+  ContactRoute: ContactRoute,
+  RechercheRoute: RechercheRoute,
+  TableauDeBordRoute: TableauDeBordRoute,
+  AuteursSlugRoute: AuteursSlugRoute,
+  EditionSlugRoute: EditionSlugRoute,
+  MediaSlugRoute: MediaSlugRoute,
+  ReaderSlugRoute: ReaderSlugRoute,
+  AuteursIndexRoute: AuteursIndexRoute,
+  EditionIndexRoute: EditionIndexRoute,
+  MediaIndexRoute: MediaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
