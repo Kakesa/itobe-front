@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Accueil() {
-  const une = articles[0];
+  const une = articles[0]!;
   const secondaires = articles.slice(1, 4);
   const aLaUne = livres.filter((l) => l.aLaUne)[0];
   const nouveautes = livres.slice(0, 4);
