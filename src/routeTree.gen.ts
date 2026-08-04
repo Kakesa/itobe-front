@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
@@ -36,6 +37,11 @@ const AProposRoute = AProposRouteImport.update({
 const BibliothequeRoute = BibliothequeRouteImport.update({
   id: '/bibliotheque',
   path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConnexionRoute = ConnexionRouteImport.update({
+  id: '/connexion',
+  path: '/connexion',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/connexion'
     | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
@@ -156,6 +166,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/connexion'
     | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
@@ -171,6 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/connexion'
     | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
@@ -187,6 +199,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
   BibliothequeRoute: typeof BibliothequeRoute
+  ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
   RechercheRoute: typeof RechercheRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/bibliotheque'
       fullPath: '/bibliotheque'
       preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/connexion': {
+      id: '/connexion'
+      path: '/connexion'
+      fullPath: '/connexion'
+      preLoaderRoute: typeof ConnexionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -299,6 +319,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   BibliothequeRoute: BibliothequeRoute,
+  ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
   RechercheRoute: RechercheRoute,
   TableauDeBordRoute: TableauDeBordRoute,
@@ -313,3 +334,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
