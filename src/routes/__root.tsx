@@ -134,11 +134,16 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const plein = pathname.startsWith("/reader");
+  // Accueil = porte d'entrée ; /media et /edition ont leur propre chrome de portail.
+  const sansChrome =
+    pathname === "/" ||
+    pathname.startsWith("/media") ||
+    pathname.startsWith("/edition") ||
+    pathname.startsWith("/reader");
 
   return (
     <QueryClientProvider client={queryClient}>
-      {plein ? (
+      {sansChrome ? (
         <Outlet />
       ) : (
         <div className="flex min-h-screen flex-col">

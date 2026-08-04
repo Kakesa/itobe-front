@@ -14,6 +14,8 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as EditionRouteImport } from './routes/edition'
+import { Route as MediaRouteImport } from './routes/media'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
@@ -49,6 +51,16 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditionRoute = EditionRouteImport.update({
+  id: '/edition',
+  path: '/edition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaRoute = MediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RechercheRoute = RechercheRouteImport.update({
   id: '/recherche',
   path: '/recherche',
@@ -70,24 +82,24 @@ const AuteursSlugRoute = AuteursSlugRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditionIndexRoute = EditionIndexRouteImport.update({
-  id: '/edition/',
-  path: '/edition/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => EditionRoute,
 } as any)
 const EditionSlugRoute = EditionSlugRouteImport.update({
-  id: '/edition/$slug',
-  path: '/edition/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => EditionRoute,
 } as any)
 const MediaIndexRoute = MediaIndexRouteImport.update({
-  id: '/media/',
-  path: '/media/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => MediaRoute,
 } as any)
 const MediaSlugRoute = MediaSlugRouteImport.update({
-  id: '/media/$slug',
-  path: '/media/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => MediaRoute,
 } as any)
 const ReaderSlugRoute = ReaderSlugRouteImport.update({
   id: '/reader/$slug',
@@ -101,6 +113,8 @@ export interface FileRoutesByFullPath {
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/edition': typeof EditionRouteWithChildren
+  '/media': typeof MediaRouteWithChildren
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
@@ -134,6 +148,8 @@ export interface FileRoutesById {
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/edition': typeof EditionRouteWithChildren
+  '/media': typeof MediaRouteWithChildren
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
@@ -152,6 +168,8 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/connexion'
     | '/contact'
+    | '/edition'
+    | '/media'
     | '/recherche'
     | '/tableau-de-bord'
     | '/auteurs/$slug'
@@ -184,6 +202,8 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/connexion'
     | '/contact'
+    | '/edition'
+    | '/media'
     | '/recherche'
     | '/tableau-de-bord'
     | '/auteurs/$slug'
@@ -201,15 +221,13 @@ export interface RootRouteChildren {
   BibliothequeRoute: typeof BibliothequeRoute
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
+  EditionRoute: typeof EditionRouteWithChildren
+  MediaRoute: typeof MediaRouteWithChildren
   RechercheRoute: typeof RechercheRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   AuteursSlugRoute: typeof AuteursSlugRoute
-  EditionSlugRoute: typeof EditionSlugRoute
-  MediaSlugRoute: typeof MediaSlugRoute
   ReaderSlugRoute: typeof ReaderSlugRoute
   AuteursIndexRoute: typeof AuteursIndexRoute
-  EditionIndexRoute: typeof EditionIndexRoute
-  MediaIndexRoute: typeof MediaIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -249,6 +267,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/edition': {
+      id: '/edition'
+      path: '/edition'
+      fullPath: '/edition'
+      preLoaderRoute: typeof EditionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media': {
+      id: '/media'
+      path: '/media'
+      fullPath: '/media'
+      preLoaderRoute: typeof MediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recherche': {
       id: '/recherche'
       path: '/recherche'
@@ -279,31 +311,31 @@ declare module '@tanstack/react-router' {
     }
     '/edition/': {
       id: '/edition/'
-      path: '/edition'
+      path: '/'
       fullPath: '/edition/'
       preLoaderRoute: typeof EditionIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof EditionRoute
     }
     '/edition/$slug': {
       id: '/edition/$slug'
-      path: '/edition/$slug'
+      path: '/$slug'
       fullPath: '/edition/$slug'
       preLoaderRoute: typeof EditionSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof EditionRoute
     }
     '/media/': {
       id: '/media/'
-      path: '/media'
+      path: '/'
       fullPath: '/media/'
       preLoaderRoute: typeof MediaIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MediaRoute
     }
     '/media/$slug': {
       id: '/media/$slug'
-      path: '/media/$slug'
+      path: '/$slug'
       fullPath: '/media/$slug'
       preLoaderRoute: typeof MediaSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof MediaRoute
     }
     '/reader/$slug': {
       id: '/reader/$slug'
@@ -315,22 +347,55 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface EditionRouteChildren {
+  EditionSlugRoute: typeof EditionSlugRoute
+  EditionIndexRoute: typeof EditionIndexRoute
+}
+
+const EditionRouteChildren: EditionRouteChildren = {
+  EditionSlugRoute: EditionSlugRoute,
+  EditionIndexRoute: EditionIndexRoute,
+}
+
+const EditionRouteWithChildren =
+  EditionRoute._addFileChildren(EditionRouteChildren)
+
+interface MediaRouteChildren {
+  MediaSlugRoute: typeof MediaSlugRoute
+  MediaIndexRoute: typeof MediaIndexRoute
+}
+
+const MediaRouteChildren: MediaRouteChildren = {
+  MediaSlugRoute: MediaSlugRoute,
+  MediaIndexRoute: MediaIndexRoute,
+}
+
+const MediaRouteWithChildren = MediaRoute._addFileChildren(MediaRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   BibliothequeRoute: BibliothequeRoute,
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
+  EditionRoute: EditionRouteWithChildren,
+  MediaRoute: MediaRouteWithChildren,
   RechercheRoute: RechercheRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   AuteursSlugRoute: AuteursSlugRoute,
-  EditionSlugRoute: EditionSlugRoute,
-  MediaSlugRoute: MediaSlugRoute,
   ReaderSlugRoute: ReaderSlugRoute,
   AuteursIndexRoute: AuteursIndexRoute,
-  EditionIndexRoute: EditionIndexRoute,
-  MediaIndexRoute: MediaIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

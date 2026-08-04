@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 
 const liens = [
+  { to: "/", label: "Portails" },
   { to: "/media", label: "Média" },
   { to: "/edition", label: "Maison d'édition" },
   { to: "/auteurs", label: "Auteurs" },
