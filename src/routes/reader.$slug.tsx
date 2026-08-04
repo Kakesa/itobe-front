@@ -34,7 +34,8 @@ export const Route = createFileRoute("/reader/$slug")({
 });
 
 function Reader() {
-  const { livre } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const livre = getLivre(slug)!;
   const cle = `itobe-reader-${livre.slug}`;
 
   const [page, setPage] = useState(1);
