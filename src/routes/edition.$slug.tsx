@@ -116,13 +116,15 @@ function LivrePage() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <button
+            <Link
+              to="/achat/$slug"
+              params={{ slug: livre.slug }}
               onClick={() => setPanier(true)}
               className="inline-flex items-center gap-2 rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground"
             >
               <ShoppingCart className="size-4" />
-              {panier ? "Ajouté au panier" : "Acheter"}
-            </button>
+              Acheter
+            </Link>
             <Link
               to="/reader/$slug"
               params={{ slug: livre.slug }}
