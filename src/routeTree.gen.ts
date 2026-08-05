@@ -20,6 +20,7 @@ import { Route as MediaRouteImport } from './routes/media'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminArticlesRouteImport } from './routes/admin.articles'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
@@ -83,6 +84,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminArticlesRoute = AdminArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuteursIndexRoute = AuteursIndexRouteImport.update({
   id: '/auteurs/',
   path: '/auteurs/',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/media': typeof MediaRouteWithChildren
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/admin/articles': typeof AdminArticlesRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/admin/articles': typeof AdminArticlesRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/media': typeof MediaRouteWithChildren
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/admin/articles': typeof AdminArticlesRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/admin/articles'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/admin/articles'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -227,6 +238,7 @@ export interface FileRouteTypes {
     | '/media'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/admin/articles'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -332,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/articles': {
+      id: '/admin/articles'
+      path: '/articles'
+      fullPath: '/admin/articles'
+      preLoaderRoute: typeof AdminArticlesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/auteurs/': {
       id: '/auteurs/'
       path: '/auteurs'
@@ -385,10 +404,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminArticlesRoute: typeof AdminArticlesRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminArticlesRoute: AdminArticlesRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
