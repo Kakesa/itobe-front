@@ -19,6 +19,7 @@ import { Route as EditionRouteImport } from './routes/edition'
 import { Route as MediaRouteImport } from './routes/media'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
@@ -77,6 +78,11 @@ const TableauDeBordRoute = TableauDeBordRouteImport.update({
   path: '/tableau-de-bord',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuteursIndexRoute = AuteursIndexRouteImport.update({
   id: '/auteurs/',
   path: '/auteurs/',
@@ -116,7 +122,7 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
@@ -135,7 +142,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/admin': typeof AdminRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
@@ -145,6 +151,7 @@ export interface FileRoutesByTo {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
@@ -153,7 +160,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
@@ -165,6 +172,7 @@ export interface FileRoutesById {
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
   '/reader/$slug': typeof ReaderSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
@@ -186,6 +194,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/admin/'
     | '/auteurs/'
     | '/edition/'
     | '/media/'
@@ -193,7 +202,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/a-propos'
-    | '/admin'
     | '/bibliotheque'
     | '/connexion'
     | '/contact'
@@ -203,6 +211,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/admin'
     | '/auteurs'
     | '/edition'
     | '/media'
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/media/$slug'
     | '/reader/$slug'
+    | '/admin/'
     | '/auteurs/'
     | '/edition/'
     | '/media/'
@@ -230,7 +240,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BibliothequeRoute: typeof BibliothequeRoute
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
@@ -315,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TableauDeBordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/auteurs/': {
       id: '/auteurs/'
       path: '/auteurs'
@@ -367,6 +384,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface EditionRouteChildren {
   EditionSlugRoute: typeof EditionSlugRoute
   EditionIndexRoute: typeof EditionIndexRoute
@@ -395,7 +422,7 @@ const MediaRouteWithChildren = MediaRoute._addFileChildren(MediaRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   BibliothequeRoute: BibliothequeRoute,
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
