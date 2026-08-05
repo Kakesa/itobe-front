@@ -17,8 +17,10 @@ import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
 import { Route as MediaRouteImport } from './routes/media'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
+import { Route as AchatSlugRouteImport } from './routes/achat.$slug'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminArticlesRouteImport } from './routes/admin.articles'
 import { Route as AdminAuteursRouteImport } from './routes/admin.auteurs'
@@ -73,6 +75,11 @@ const MediaRoute = MediaRouteImport.update({
   path: '/media',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RechercheRoute = RechercheRouteImport.update({
   id: '/recherche',
   path: '/recherche',
@@ -81,6 +88,11 @@ const RechercheRoute = RechercheRouteImport.update({
 const TableauDeBordRoute = TableauDeBordRouteImport.update({
   id: '/tableau-de-bord',
   path: '/tableau-de-bord',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AchatSlugRoute = AchatSlugRouteImport.update({
+  id: '/achat/$slug',
+  path: '/achat/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -158,8 +170,10 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/achat/$slug': typeof AchatSlugRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -180,8 +194,10 @@ export interface FileRoutesByTo {
   '/bibliotheque': typeof BibliothequeRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/achat/$slug': typeof AchatSlugRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -206,8 +222,10 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
+  '/achat/$slug': typeof AchatSlugRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
@@ -233,8 +251,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/profil'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/achat/$slug'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
@@ -255,8 +275,10 @@ export interface FileRouteTypes {
     | '/bibliotheque'
     | '/connexion'
     | '/contact'
+    | '/profil'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/achat/$slug'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
@@ -280,8 +302,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/profil'
     | '/recherche'
     | '/tableau-de-bord'
+    | '/achat/$slug'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
@@ -306,8 +330,10 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
   MediaRoute: typeof MediaRouteWithChildren
+  ProfilRoute: typeof ProfilRoute
   RechercheRoute: typeof RechercheRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
+  AchatSlugRoute: typeof AchatSlugRoute
   AuteursSlugRoute: typeof AuteursSlugRoute
   ReaderSlugRoute: typeof ReaderSlugRoute
   AuteursIndexRoute: typeof AuteursIndexRoute
@@ -371,6 +397,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recherche': {
       id: '/recherche'
       path: '/recherche'
@@ -383,6 +416,13 @@ declare module '@tanstack/react-router' {
       path: '/tableau-de-bord'
       fullPath: '/tableau-de-bord'
       preLoaderRoute: typeof TableauDeBordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/achat/$slug': {
+      id: '/achat/$slug'
+      path: '/achat/$slug'
+      fullPath: '/achat/$slug'
+      preLoaderRoute: typeof AchatSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -533,8 +573,10 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,
   MediaRoute: MediaRouteWithChildren,
+  ProfilRoute: ProfilRoute,
   RechercheRoute: RechercheRoute,
   TableauDeBordRoute: TableauDeBordRoute,
+  AchatSlugRoute: AchatSlugRoute,
   AuteursSlugRoute: AuteursSlugRoute,
   ReaderSlugRoute: ReaderSlugRoute,
   AuteursIndexRoute: AuteursIndexRoute,
