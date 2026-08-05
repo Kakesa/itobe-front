@@ -155,10 +155,10 @@ function Premium() {
         <p className="kicker mt-8">Historique de facturation</p>
         <ul className="mt-3 divide-y divide-border text-sm">
           {[
-            ["2026-07-05", "Premium mensuel", "6,99 $"],
-            ["2026-06-05", "Premium mensuel", "6,99 $"],
-            ["2026-05-05", "Premium mensuel", "6,99 $"],
-          ].map(([d, l, m]) => (
+            { d: "2026-07-05", l: "Premium mensuel", m: "6,99 $" },
+            { d: "2026-06-05", l: "Premium mensuel", m: "6,99 $" },
+            { d: "2026-05-05", l: "Premium mensuel", m: "6,99 $" },
+          ].map(({ d, l, m }) => (
             <li key={d} className="flex items-center justify-between gap-3 py-2">
               <span className="text-muted-foreground">{formatDate(d)}</span>
               <span className="flex-1 truncate">{l}</span>
