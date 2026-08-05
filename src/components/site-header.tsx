@@ -9,6 +9,7 @@ const liensMedia: Lien[] = [
   { to: "/media", label: "Actualités", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/recherche", label: "Recherche" },
+  { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
@@ -17,6 +18,7 @@ const liensEdition: Lien[] = [
   { to: "/edition", label: "Catalogue", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/bibliotheque", label: "Bibliothèque" },
+  { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
@@ -75,6 +77,12 @@ export function SiteHeader() {
             <Search className="size-4" />
           </Link>
           <Link
+            to="/profil"
+            className="hidden rounded-sm border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
+          >
+            Mon profil
+          </Link>
+          <Link
             to="/connexion"
             className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
           >
@@ -105,6 +113,27 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <Link
+            to="/profil"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            Mon profil
+          </Link>
+          <Link
+            to="/synchronisation"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            Synchronisation
+          </Link>
+          <Link
+            to="/admin"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            Administration
+          </Link>
           <Link
             to="/connexion"
             onClick={() => setOuvert(false)}
