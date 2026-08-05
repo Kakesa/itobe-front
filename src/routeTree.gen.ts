@@ -21,6 +21,10 @@ import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminArticlesRouteImport } from './routes/admin.articles'
+import { Route as AdminAuteursRouteImport } from './routes/admin.auteurs'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminCommandesRouteImport } from './routes/admin.commandes'
+import { Route as AdminLivresRouteImport } from './routes/admin.livres'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
@@ -89,6 +93,26 @@ const AdminArticlesRoute = AdminArticlesRouteImport.update({
   path: '/articles',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuteursRoute = AdminAuteursRouteImport.update({
+  id: '/auteurs',
+  path: '/auteurs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCommandesRoute = AdminCommandesRouteImport.update({
+  id: '/commandes',
+  path: '/commandes',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminLivresRoute = AdminLivresRouteImport.update({
+  id: '/livres',
+  path: '/livres',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AuteursIndexRoute = AuteursIndexRouteImport.update({
   id: '/auteurs/',
   path: '/auteurs/',
@@ -137,6 +161,10 @@ export interface FileRoutesByFullPath {
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/admin/articles': typeof AdminArticlesRoute
+  '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/livres': typeof AdminLivresRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -155,6 +183,10 @@ export interface FileRoutesByTo {
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/admin/articles': typeof AdminArticlesRoute
+  '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/livres': typeof AdminLivresRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -177,6 +209,10 @@ export interface FileRoutesById {
   '/recherche': typeof RechercheRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/admin/articles': typeof AdminArticlesRoute
+  '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/livres': typeof AdminLivresRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -200,6 +236,10 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/tableau-de-bord'
     | '/admin/articles'
+    | '/admin/auteurs'
+    | '/admin/categories'
+    | '/admin/commandes'
+    | '/admin/livres'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -218,6 +258,10 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/tableau-de-bord'
     | '/admin/articles'
+    | '/admin/auteurs'
+    | '/admin/categories'
+    | '/admin/commandes'
+    | '/admin/livres'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -239,6 +283,10 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/tableau-de-bord'
     | '/admin/articles'
+    | '/admin/auteurs'
+    | '/admin/categories'
+    | '/admin/commandes'
+    | '/admin/livres'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -351,6 +399,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminArticlesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/auteurs': {
+      id: '/admin/auteurs'
+      path: '/auteurs'
+      fullPath: '/admin/auteurs'
+      preLoaderRoute: typeof AdminAuteursRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/commandes': {
+      id: '/admin/commandes'
+      path: '/commandes'
+      fullPath: '/admin/commandes'
+      preLoaderRoute: typeof AdminCommandesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/livres': {
+      id: '/admin/livres'
+      path: '/livres'
+      fullPath: '/admin/livres'
+      preLoaderRoute: typeof AdminLivresRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/auteurs/': {
       id: '/auteurs/'
       path: '/auteurs'
@@ -405,11 +481,19 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminArticlesRoute: typeof AdminArticlesRoute
+  AdminAuteursRoute: typeof AdminAuteursRoute
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminCommandesRoute: typeof AdminCommandesRoute
+  AdminLivresRoute: typeof AdminLivresRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminArticlesRoute: AdminArticlesRoute,
+  AdminAuteursRoute: AdminAuteursRoute,
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminCommandesRoute: AdminCommandesRoute,
+  AdminLivresRoute: AdminLivresRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
