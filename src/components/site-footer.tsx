@@ -56,7 +56,7 @@ export function SiteFooter() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/tableau-de-bord" className="hover:text-foreground">
+                  <Link to="/admin" className="hover:text-foreground">
                     Tableau de bord
                   </Link>
                 </li>

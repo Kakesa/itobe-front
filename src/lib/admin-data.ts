@@ -1,28 +1,22 @@
-// Données de démonstration pour l'administration, les commandes,
-// l'abonnement et la synchronisation (front uniquement).
+// Administration : rôles, navigation et données commerciales (front mock).
 
-export type Role = "admin" | "editeur" | "redacteur" | "vendeur";
+export type Role = "admin" | "editeur" | "lecteur";
 
 export const roles: { id: Role; label: string; description: string }[] = [
   {
     id: "admin",
     label: "Administrateur",
-    description: "Accès complet : contenus, catalogue, ventes et utilisateurs.",
+    description: "Accès complet à toute la plateforme Média et Maison d'édition.",
   },
   {
     id: "editeur",
     label: "Éditeur",
-    description: "Gestion du catalogue de livres, des auteurs et des catégories.",
+    description: "Gestion des livres, aperçus, ventes et statistiques de ses ouvrages.",
   },
   {
-    id: "redacteur",
-    label: "Rédacteur",
-    description: "Rédaction et publication des articles du portail Média.",
-  },
-  {
-    id: "vendeur",
-    label: "Ventes",
-    description: "Suivi des commandes, paiements et remboursements.",
+    id: "lecteur",
+    label: "Lecteur",
+    description: "Bibliothèque, lecture, favoris, historique et recommandations.",
   },
 ];
 
@@ -30,16 +24,68 @@ export type SectionAdmin = {
   to: string;
   label: string;
   roles: Role[];
+  groupe?: string;
+  icon?: string;
 };
 
-export const sectionsAdmin: SectionAdmin[] = [
-  { to: "/admin", label: "Vue d'ensemble", roles: ["admin", "editeur", "redacteur", "vendeur"] },
-  { to: "/admin/articles", label: "Articles", roles: ["admin", "redacteur"] },
-  { to: "/admin/livres", label: "Livres", roles: ["admin", "editeur"] },
-  { to: "/admin/categories", label: "Catégories", roles: ["admin", "editeur", "redacteur"] },
-  { to: "/admin/auteurs", label: "Auteurs", roles: ["admin", "editeur"] },
-  { to: "/admin/commandes", label: "Commandes", roles: ["admin", "vendeur"] },
+/** Menu back-office groupé (ADMIN + ÉDITEUR). */
+export const menuAdmin: {
+  groupe: string;
+  items: { to: string; label: string; roles: Role[] }[];
+}[] = [
+  {
+    groupe: "",
+    items: [{ to: "/admin", label: "Dashboard", roles: ["admin", "editeur"] }],
+  },
+  {
+    groupe: "Contenu",
+    items: [
+      { to: "/admin/articles", label: "Articles", roles: ["admin"] },
+      { to: "/admin/actualites", label: "Actualités", roles: ["admin"] },
+      { to: "/admin/livres", label: "Livres", roles: ["admin", "editeur"] },
+      { to: "/admin/auteurs", label: "Auteurs", roles: ["admin", "editeur"] },
+      { to: "/admin/categories", label: "Catégories", roles: ["admin", "editeur"] },
+      { to: "/admin/medias", label: "Médias", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Commercial",
+    items: [
+      { to: "/admin/commandes", label: "Commandes", roles: ["admin"] },
+      { to: "/admin/paiements", label: "Paiements", roles: ["admin"] },
+      { to: "/admin/coupons", label: "Coupons", roles: ["admin"] },
+      { to: "/admin/promotions", label: "Promotions", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Communauté",
+    items: [
+      { to: "/admin/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
+      { to: "/admin/commentaires", label: "Commentaires", roles: ["admin"] },
+      { to: "/admin/newsletter", label: "Newsletter", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Analytiques",
+    items: [
+      { to: "/admin/rapports", label: "Rapports", roles: ["admin", "editeur"] },
+      { to: "/admin/statistiques", label: "Statistiques", roles: ["admin", "editeur"] },
+    ],
+  },
+  {
+    groupe: "Paramètres",
+    items: [
+      { to: "/admin/parametres", label: "Paramètres", roles: ["admin"] },
+      { to: "/admin/seo", label: "SEO", roles: ["admin"] },
+      { to: "/admin/roles", label: "Rôles & Permissions", roles: ["admin"] },
+    ],
+  },
 ];
+
+/** @deprecated Utiliser menuAdmin — conservé pour compatibilité. */
+export const sectionsAdmin: SectionAdmin[] = menuAdmin.flatMap((g) =>
+  g.items.map((i) => ({ ...i, groupe: g.groupe })),
+);
 
 export type Commande = {
   id: string;
@@ -47,7 +93,7 @@ export type Commande = {
   livre: string;
   moyen: "Mobile Money" | "Carte bancaire";
   montant: number;
-  statut: "Payée" | "En attente" | "Remboursée";
+  statut: "Payée" | "En attente" | "Échouée" | "Remboursée";
   date: string;
 };
 
@@ -58,6 +104,8 @@ export const commandes: Commande[] = [
   { id: "#10425", client: "Joël Tshibangu", livre: "Nuit blanche à Matonge", moyen: "Mobile Money", montant: 9, statut: "Payée", date: "2026-07-26" },
   { id: "#10424", client: "Grace Lumbu", livre: "Poèmes du quatrième jour", moyen: "Carte bancaire", montant: 8, statut: "Remboursée", date: "2026-07-25" },
   { id: "#10423", client: "Patrick Nzuzi", livre: "Le Fleuve et la Page", moyen: "Mobile Money", montant: 12, statut: "Payée", date: "2026-07-24" },
+  { id: "#10422", client: "Ruth Kalala", livre: "Le cartable de Kimia", moyen: "Carte bancaire", montant: 7, statut: "Échouée", date: "2026-07-23" },
+  { id: "#10421", client: "David Mukendi", livre: "Grammaire du courage", moyen: "Mobile Money", montant: 12, statut: "Payée", date: "2026-07-22" },
 ];
 
 export type Formule = {

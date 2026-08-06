@@ -41,9 +41,11 @@ export function Statut({ valeur }: { valeur: string }) {
   const ton =
     valeur === "Publié" || valeur === "Payée" || valeur === "En vente"
       ? "bg-accent/15 text-accent"
-      : valeur === "Remboursée" || valeur === "Épuisé"
+      : valeur === "Remboursée" || valeur === "Épuisé" || valeur === "Échouée"
         ? "bg-destructive/10 text-destructive"
-        : "bg-secondary text-muted-foreground";
+        : valeur === "En attente" || valeur === "Programmé"
+          ? "bg-ochre/15 text-ochre-foreground"
+          : "bg-secondary text-muted-foreground";
   return (
     <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs ${ton}`}>{valeur}</span>
   );

@@ -9,8 +9,8 @@ export const Route = createFileRoute("/admin/categories")({
 
 function AdminCategories() {
   const { role } = useRole();
-  if (role === "vendeur") {
-    return <AccesRestreint requis={["admin", "editeur", "redacteur"]} />;
+  if (role !== "admin" && role !== "editeur") {
+    return <AccesRestreint requis={["admin", "editeur"]} />;
   }
 
   return (

@@ -2,17 +2,19 @@ import { useEffect, useState } from "react";
 import type { Role } from "@/lib/admin-data";
 
 const CLE = "itobe.role";
+const ROLES_VALIDES: Role[] = ["admin", "editeur", "lecteur"];
+
+function normaliser(v: string | null): Role {
+  if (v && ROLES_VALIDES.includes(v as Role)) return v as Role;
+  return "admin";
+}
 
 export function useRole() {
   const [role, setRole] = useState<Role>("admin");
 
   useEffect(() => {
-    const enregistre = localStorage.getItem(CLE) as Role | null;
-    if (enregistre) setRole(enregistre);
-    const onChange = () => {
-      const r = localStorage.getItem(CLE) as Role | null;
-      if (r) setRole(r);
-    };
+    setRole(normaliser(localStorage.getItem(CLE)));
+    const onChange = () => setRole(normaliser(localStorage.getItem(CLE)));
     window.addEventListener("itobe-role", onChange);
     return () => window.removeEventListener("itobe-role", onChange);
   }, []);

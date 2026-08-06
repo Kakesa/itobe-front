@@ -18,6 +18,7 @@ const liensEdition: Lien[] = [
   { to: "/edition", label: "Catalogue", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/bibliotheque", label: "Bibliothèque" },
+  { to: "/admin", label: "Dashboard" },
   { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },

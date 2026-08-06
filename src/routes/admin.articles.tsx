@@ -13,8 +13,8 @@ function AdminArticles() {
   const [filtre, setFiltre] = useState("Toutes");
   const [q, setQ] = useState("");
 
-  if (role !== "admin" && role !== "redacteur") {
-    return <AccesRestreint requis={["admin", "redacteur"]} />;
+  if (role !== "admin") {
+    return <AccesRestreint requis={["admin"]} />;
   }
 
   const liste = articles.filter(

@@ -24,11 +24,24 @@ import { Route as SynchronisationRouteImport } from './routes/synchronisation'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AchatSlugRouteImport } from './routes/achat.$slug'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminActualitesRouteImport } from './routes/admin.actualites'
 import { Route as AdminArticlesRouteImport } from './routes/admin.articles'
 import { Route as AdminAuteursRouteImport } from './routes/admin.auteurs'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminCommandesRouteImport } from './routes/admin.commandes'
+import { Route as AdminCommentairesRouteImport } from './routes/admin.commentaires'
+import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminLivresRouteImport } from './routes/admin.livres'
+import { Route as AdminMediasRouteImport } from './routes/admin.medias'
+import { Route as AdminNewsletterRouteImport } from './routes/admin.newsletter'
+import { Route as AdminPaiementsRouteImport } from './routes/admin.paiements'
+import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
+import { Route as AdminPromotionsRouteImport } from './routes/admin.promotions'
+import { Route as AdminRapportsRouteImport } from './routes/admin.rapports'
+import { Route as AdminRolesRouteImport } from './routes/admin.roles'
+import { Route as AdminSeoRouteImport } from './routes/admin.seo'
+import { Route as AdminStatistiquesRouteImport } from './routes/admin.statistiques'
+import { Route as AdminUtilisateursRouteImport } from './routes/admin.utilisateurs'
 import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
@@ -112,6 +125,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminActualitesRoute = AdminActualitesRouteImport.update({
+  id: '/actualites',
+  path: '/actualites',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminArticlesRoute = AdminArticlesRouteImport.update({
   id: '/articles',
   path: '/articles',
@@ -132,9 +150,69 @@ const AdminCommandesRoute = AdminCommandesRouteImport.update({
   path: '/commandes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCommentairesRoute = AdminCommentairesRouteImport.update({
+  id: '/commentaires',
+  path: '/commentaires',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCouponsRoute = AdminCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLivresRoute = AdminLivresRouteImport.update({
   id: '/livres',
   path: '/livres',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediasRoute = AdminMediasRouteImport.update({
+  id: '/medias',
+  path: '/medias',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNewsletterRoute = AdminNewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaiementsRoute = AdminPaiementsRouteImport.update({
+  id: '/paiements',
+  path: '/paiements',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminParametresRoute = AdminParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromotionsRoute = AdminPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRapportsRoute = AdminRapportsRouteImport.update({
+  id: '/rapports',
+  path: '/rapports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSeoRoute = AdminSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStatistiquesRoute = AdminStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUtilisateursRoute = AdminUtilisateursRouteImport.update({
+  id: '/utilisateurs',
+  path: '/utilisateurs',
   getParentRoute: () => AdminRoute,
 } as any)
 const AuteursIndexRoute = AuteursIndexRouteImport.update({
@@ -188,11 +266,24 @@ export interface FileRoutesByFullPath {
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
+  '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/commentaires': typeof AdminCommentairesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/livres': typeof AdminLivresRoute
+  '/admin/medias': typeof AdminMediasRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/paiements': typeof AdminPaiementsRoute
+  '/admin/parametres': typeof AdminParametresRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/rapports': typeof AdminRapportsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -214,11 +305,24 @@ export interface FileRoutesByTo {
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
+  '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/commentaires': typeof AdminCommentairesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/livres': typeof AdminLivresRoute
+  '/admin/medias': typeof AdminMediasRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/paiements': typeof AdminPaiementsRoute
+  '/admin/parametres': typeof AdminParametresRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/rapports': typeof AdminRapportsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -244,11 +348,24 @@ export interface FileRoutesById {
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
+  '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
+  '/admin/commentaires': typeof AdminCommentairesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
   '/admin/livres': typeof AdminLivresRoute
+  '/admin/medias': typeof AdminMediasRoute
+  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/paiements': typeof AdminPaiementsRoute
+  '/admin/parametres': typeof AdminParametresRoute
+  '/admin/promotions': typeof AdminPromotionsRoute
+  '/admin/rapports': typeof AdminRapportsRoute
+  '/admin/roles': typeof AdminRolesRoute
+  '/admin/seo': typeof AdminSeoRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
@@ -275,11 +392,24 @@ export interface FileRouteTypes {
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
+    | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
     | '/admin/commandes'
+    | '/admin/commentaires'
+    | '/admin/coupons'
     | '/admin/livres'
+    | '/admin/medias'
+    | '/admin/newsletter'
+    | '/admin/paiements'
+    | '/admin/parametres'
+    | '/admin/promotions'
+    | '/admin/rapports'
+    | '/admin/roles'
+    | '/admin/seo'
+    | '/admin/statistiques'
+    | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -301,11 +431,24 @@ export interface FileRouteTypes {
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
+    | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
     | '/admin/commandes'
+    | '/admin/commentaires'
+    | '/admin/coupons'
     | '/admin/livres'
+    | '/admin/medias'
+    | '/admin/newsletter'
+    | '/admin/paiements'
+    | '/admin/parametres'
+    | '/admin/promotions'
+    | '/admin/rapports'
+    | '/admin/roles'
+    | '/admin/seo'
+    | '/admin/statistiques'
+    | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -330,11 +473,24 @@ export interface FileRouteTypes {
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
+    | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
     | '/admin/categories'
     | '/admin/commandes'
+    | '/admin/commentaires'
+    | '/admin/coupons'
     | '/admin/livres'
+    | '/admin/medias'
+    | '/admin/newsletter'
+    | '/admin/paiements'
+    | '/admin/parametres'
+    | '/admin/promotions'
+    | '/admin/rapports'
+    | '/admin/roles'
+    | '/admin/seo'
+    | '/admin/statistiques'
+    | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
@@ -472,6 +628,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/actualites': {
+      id: '/admin/actualites'
+      path: '/actualites'
+      fullPath: '/admin/actualites'
+      preLoaderRoute: typeof AdminActualitesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/articles': {
       id: '/admin/articles'
       path: '/articles'
@@ -500,11 +663,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCommandesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/commentaires': {
+      id: '/admin/commentaires'
+      path: '/commentaires'
+      fullPath: '/admin/commentaires'
+      preLoaderRoute: typeof AdminCommentairesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/coupons': {
+      id: '/admin/coupons'
+      path: '/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AdminCouponsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/livres': {
       id: '/admin/livres'
       path: '/livres'
       fullPath: '/admin/livres'
       preLoaderRoute: typeof AdminLivresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/medias': {
+      id: '/admin/medias'
+      path: '/medias'
+      fullPath: '/admin/medias'
+      preLoaderRoute: typeof AdminMediasRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/newsletter': {
+      id: '/admin/newsletter'
+      path: '/newsletter'
+      fullPath: '/admin/newsletter'
+      preLoaderRoute: typeof AdminNewsletterRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/paiements': {
+      id: '/admin/paiements'
+      path: '/paiements'
+      fullPath: '/admin/paiements'
+      preLoaderRoute: typeof AdminPaiementsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/parametres': {
+      id: '/admin/parametres'
+      path: '/parametres'
+      fullPath: '/admin/parametres'
+      preLoaderRoute: typeof AdminParametresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/promotions': {
+      id: '/admin/promotions'
+      path: '/promotions'
+      fullPath: '/admin/promotions'
+      preLoaderRoute: typeof AdminPromotionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/rapports': {
+      id: '/admin/rapports'
+      path: '/rapports'
+      fullPath: '/admin/rapports'
+      preLoaderRoute: typeof AdminRapportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/seo': {
+      id: '/admin/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AdminSeoRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/statistiques': {
+      id: '/admin/statistiques'
+      path: '/statistiques'
+      fullPath: '/admin/statistiques'
+      preLoaderRoute: typeof AdminStatistiquesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/utilisateurs': {
+      id: '/admin/utilisateurs'
+      path: '/utilisateurs'
+      fullPath: '/admin/utilisateurs'
+      preLoaderRoute: typeof AdminUtilisateursRouteImport
       parentRoute: typeof AdminRoute
     }
     '/auteurs/': {
@@ -560,20 +807,46 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminActualitesRoute: typeof AdminActualitesRoute
   AdminArticlesRoute: typeof AdminArticlesRoute
   AdminAuteursRoute: typeof AdminAuteursRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommandesRoute: typeof AdminCommandesRoute
+  AdminCommentairesRoute: typeof AdminCommentairesRoute
+  AdminCouponsRoute: typeof AdminCouponsRoute
   AdminLivresRoute: typeof AdminLivresRoute
+  AdminMediasRoute: typeof AdminMediasRoute
+  AdminNewsletterRoute: typeof AdminNewsletterRoute
+  AdminPaiementsRoute: typeof AdminPaiementsRoute
+  AdminParametresRoute: typeof AdminParametresRoute
+  AdminPromotionsRoute: typeof AdminPromotionsRoute
+  AdminRapportsRoute: typeof AdminRapportsRoute
+  AdminRolesRoute: typeof AdminRolesRoute
+  AdminSeoRoute: typeof AdminSeoRoute
+  AdminStatistiquesRoute: typeof AdminStatistiquesRoute
+  AdminUtilisateursRoute: typeof AdminUtilisateursRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActualitesRoute: AdminActualitesRoute,
   AdminArticlesRoute: AdminArticlesRoute,
   AdminAuteursRoute: AdminAuteursRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommandesRoute: AdminCommandesRoute,
+  AdminCommentairesRoute: AdminCommentairesRoute,
+  AdminCouponsRoute: AdminCouponsRoute,
   AdminLivresRoute: AdminLivresRoute,
+  AdminMediasRoute: AdminMediasRoute,
+  AdminNewsletterRoute: AdminNewsletterRoute,
+  AdminPaiementsRoute: AdminPaiementsRoute,
+  AdminParametresRoute: AdminParametresRoute,
+  AdminPromotionsRoute: AdminPromotionsRoute,
+  AdminRapportsRoute: AdminRapportsRoute,
+  AdminRolesRoute: AdminRolesRoute,
+  AdminSeoRoute: AdminSeoRoute,
+  AdminStatistiquesRoute: AdminStatistiquesRoute,
+  AdminUtilisateursRoute: AdminUtilisateursRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -626,3 +899,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

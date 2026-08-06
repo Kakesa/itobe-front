@@ -15,8 +15,8 @@ function AdminCommandes() {
   const { role } = useRole();
   const [statut, setStatut] = useState<(typeof statuts)[number]>("Toutes");
 
-  if (role !== "admin" && role !== "vendeur") {
-    return <AccesRestreint requis={["admin", "vendeur"]} />;
+  if (role !== "admin") {
+    return <AccesRestreint requis={["admin"]} />;
   }
 
   const liste = commandes.filter((c) => statut === "Toutes" || c.statut === statut);
