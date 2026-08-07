@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
+import { Route as CommandesRouteImport } from './routes/commandes'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
@@ -68,6 +69,11 @@ const AdminRoute = AdminRouteImport.update({
 const BibliothequeRoute = BibliothequeRouteImport.update({
   id: '/bibliotheque',
   path: '/bibliotheque',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommandesRoute = CommandesRouteImport.update({
+  id: '/commandes',
+  path: '/commandes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConnexionRoute = ConnexionRouteImport.update({
@@ -256,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/a-propos': typeof AProposRoute
   '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
+  '/commandes': typeof CommandesRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
@@ -297,6 +304,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
+  '/commandes': typeof CommandesRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/premium': typeof PremiumRoute
@@ -338,6 +346,7 @@ export interface FileRoutesById {
   '/a-propos': typeof AProposRoute
   '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
+  '/commandes': typeof CommandesRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
@@ -382,6 +391,7 @@ export interface FileRouteTypes {
     | '/a-propos'
     | '/admin'
     | '/bibliotheque'
+    | '/commandes'
     | '/connexion'
     | '/contact'
     | '/edition'
@@ -423,6 +433,7 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/bibliotheque'
+    | '/commandes'
     | '/connexion'
     | '/contact'
     | '/premium'
@@ -463,6 +474,7 @@ export interface FileRouteTypes {
     | '/a-propos'
     | '/admin'
     | '/bibliotheque'
+    | '/commandes'
     | '/connexion'
     | '/contact'
     | '/edition'
@@ -506,6 +518,7 @@ export interface RootRouteChildren {
   AProposRoute: typeof AProposRoute
   AdminRoute: typeof AdminRouteWithChildren
   BibliothequeRoute: typeof BibliothequeRoute
+  CommandesRoute: typeof CommandesRoute
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
@@ -549,6 +562,13 @@ declare module '@tanstack/react-router' {
       path: '/bibliotheque'
       fullPath: '/bibliotheque'
       preLoaderRoute: typeof BibliothequeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/commandes': {
+      id: '/commandes'
+      path: '/commandes'
+      fullPath: '/commandes'
+      preLoaderRoute: typeof CommandesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/connexion': {
@@ -882,6 +902,7 @@ const rootRouteChildren: RootRouteChildren = {
   AProposRoute: AProposRoute,
   AdminRoute: AdminRouteWithChildren,
   BibliothequeRoute: BibliothequeRoute,
+  CommandesRoute: CommandesRoute,
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,
