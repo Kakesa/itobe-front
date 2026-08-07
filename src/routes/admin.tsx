@@ -199,19 +199,22 @@ function AdminLayout() {
               aria-label="Fermer"
               onClick={() => setMobileOpen(false)}
             />
-            <aside className="absolute inset-y-0 left-0 flex w-72 flex-col bg-card shadow-xl">
-              <div className="flex items-center justify-between border-b border-border px-4 py-4">
+            <aside
+              className={`absolute inset-y-0 left-0 flex w-72 flex-col shadow-xl ${chromeSidebar}`}
+            >
+              <div className="flex items-center justify-between border-b border-primary-foreground/15 px-4 py-4">
                 <p className="font-display text-xl">
-                  Itobe<span className="text-accent">.</span>
+                  Itobe<span className="text-ochre">.</span>
                 </p>
                 <button
                   type="button"
-                  className="grid size-9 place-items-center rounded-lg border border-border"
+                  className="grid size-9 place-items-center rounded-lg border border-primary-foreground/25"
                   onClick={() => setMobileOpen(false)}
                 >
                   <X className="size-4" />
                 </button>
               </div>
+
               {SidebarNav}
             </aside>
           </div>
