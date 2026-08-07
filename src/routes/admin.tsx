@@ -102,7 +102,7 @@ function AdminLayout() {
       {groupes.map((g) => (
         <div key={g.groupe || "root"}>
           {g.groupe && (
-            <p className="mb-2 px-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="mb-2 px-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-primary-foreground/50">
               {g.groupe}
             </p>
           )}
@@ -115,10 +115,10 @@ function AdminLayout() {
                     to={item.to}
                     activeOptions={{ exact: item.to === "/admin" }}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                     activeProps={{
                       className:
-                        "flex items-center gap-2.5 rounded-lg bg-secondary px-2.5 py-2 text-sm font-medium text-foreground",
+                        "flex items-center gap-2.5 rounded-lg bg-accent px-2.5 py-2 text-sm font-medium text-accent-foreground shadow-soft",
                     }}
                   >
                     <Icon className="size-4 shrink-0" />
@@ -133,23 +133,28 @@ function AdminLayout() {
     </nav>
   );
 
+  const chromeSidebar =
+    "bg-[linear-gradient(180deg,var(--primary),color-mix(in_oklab,var(--terracotta)_38%,var(--primary)))] text-primary-foreground";
+
   return (
     <div className="flex min-h-screen bg-muted/30">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
-        <div className="border-b border-border px-4 py-4">
+      <aside
+        className={`sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-primary/40 md:flex ${chromeSidebar}`}
+      >
+        <div className="border-b border-primary-foreground/15 px-4 py-4">
           <Link to="/" className="font-display text-xl tracking-tight">
-            Itobe<span className="text-accent">.</span>
+            Itobe<span className="text-ochre">.</span>
           </Link>
-          <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/60">
             Back-office
           </p>
         </div>
         {SidebarNav}
-        <div className="border-t border-border p-3 space-y-2">
+        <div className="border-t border-primary-foreground/15 p-3 space-y-2">
           {session && (
-            <div className="px-1 text-xs text-muted-foreground">
-              <p className="font-medium text-foreground">
+            <div className="px-1 text-xs text-primary-foreground/60">
+              <p className="font-medium text-primary-foreground">
                 {session.prenom} {session.nom}
               </p>
               <p className="truncate">{session.email}</p>
@@ -159,11 +164,12 @@ function AdminLayout() {
           <button
             type="button"
             onClick={logout}
-            className="w-full rounded-lg border border-border px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+            className="w-full rounded-lg border border-primary-foreground/25 px-3 py-2 text-xs text-primary-foreground/75 hover:bg-primary-foreground/10 hover:text-primary-foreground"
           >
             Se déconnecter
           </button>
         </div>
+
       </aside>
 
       {/* Mobile */}
@@ -193,19 +199,22 @@ function AdminLayout() {
               aria-label="Fermer"
               onClick={() => setMobileOpen(false)}
             />
-            <aside className="absolute inset-y-0 left-0 flex w-72 flex-col bg-card shadow-xl">
-              <div className="flex items-center justify-between border-b border-border px-4 py-4">
+            <aside
+              className={`absolute inset-y-0 left-0 flex w-72 flex-col shadow-xl ${chromeSidebar}`}
+            >
+              <div className="flex items-center justify-between border-b border-primary-foreground/15 px-4 py-4">
                 <p className="font-display text-xl">
-                  Itobe<span className="text-accent">.</span>
+                  Itobe<span className="text-ochre">.</span>
                 </p>
                 <button
                   type="button"
-                  className="grid size-9 place-items-center rounded-lg border border-border"
+                  className="grid size-9 place-items-center rounded-lg border border-primary-foreground/25"
                   onClick={() => setMobileOpen(false)}
                 >
                   <X className="size-4" />
                 </button>
               </div>
+
               {SidebarNav}
             </aside>
           </div>

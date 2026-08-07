@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ShieldCheck, Trash2, X } from "lucide-react";
 import { bibliotheque, getLivre, nomAuteur } from "@/lib/data";
+import { connexions } from "@/lib/admin-data";
+
 
 export const Route = createFileRoute("/profil")({
   head: () => ({
@@ -68,6 +71,38 @@ function Profil() {
   const [theme, setTheme] = useState<"clair" | "sombre" | "auto">("clair");
   const [taille, setTaille] = useState(18);
   const [enregistre, setEnregistre] = useState(false);
+
+  // Sécurité
+  const [mdpActuel, setMdpActuel] = useState("");
+  const [mdpNouveau, setMdpNouveau] = useState("");
+  const [mdpConfirme, setMdpConfirme] = useState("");
+  const [retourMdp, setRetourMdp] = useState<{ ok: boolean; texte: string } | null>(null);
+  const [deuxFa, setDeuxFa] = useState(false);
+  const [code, setCode] = useState("");
+  const [suppression, setSuppression] = useState(false);
+  const [confirmationTexte, setConfirmationTexte] = useState("");
+  const [compteSupprime, setCompteSupprime] = useState(false);
+
+  const changerMdp = () => {
+    if (!mdpActuel || !mdpNouveau) {
+      setRetourMdp({ ok: false, texte: "Renseignez le mot de passe actuel et le nouveau." });
+      return;
+    }
+    if (mdpNouveau.length < 8) {
+      setRetourMdp({ ok: false, texte: "8 caractères minimum." });
+      return;
+    }
+    if (mdpNouveau !== mdpConfirme) {
+      setRetourMdp({ ok: false, texte: "La confirmation ne correspond pas." });
+      return;
+    }
+    setRetourMdp({ ok: true, texte: "Mot de passe mis à jour." });
+    setMdpActuel("");
+    setMdpNouveau("");
+    setMdpConfirme("");
+  };
+
+
 
   const progression = Object.entries(bibliotheque.progression);
   const moyenne = Math.round(
@@ -170,6 +205,133 @@ function Profil() {
             </p>
           </section>
 
+          <section className="rounded-sm border border-border bg-card p-6">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="size-4 text-accent" />
+              <h2 className="text-xl">Sécurité du compte</h2>
+            </div>
+
+            <p className="kicker mt-6">Mot de passe</p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {["Mot de passe actuel", "Nouveau mot de passe", "Confirmer"].map((l, i) => (
+                <label key={l} className="block text-sm">
+                  <span className="text-xs text-muted-foreground">{l}</span>
+                  <input
+                    type="password"
+                    value={i === 0 ? mdpActuel : i === 1 ? mdpNouveau : mdpConfirme}
+                    onChange={(e) =>
+                      i === 0
+                        ? setMdpActuel(e.target.value)
+                        : i === 1
+                          ? setMdpNouveau(e.target.value)
+                          : setMdpConfirme(e.target.value)
+                    }
+                    className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
+                  />
+                </label>
+              ))}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={changerMdp}
+                className="rounded-sm border border-border px-4 py-2 text-sm hover:bg-secondary"
+              >
+                Mettre à jour le mot de passe
+              </button>
+              {retourMdp && (
+                <span
+                  className={`text-sm ${retourMdp.ok ? "text-accent" : "text-destructive"}`}
+                >
+                  {retourMdp.texte}
+                </span>
+              )}
+            </div>
+
+            <p className="kicker mt-8">Double authentification (2FA)</p>
+            <div className="mt-3">
+              <Interrupteur
+                actif={deuxFa}
+                onChange={(v) => {
+                  setDeuxFa(v);
+                  setCode("");
+                }}
+                label="Vérification en deux étapes"
+                aide="Un code à 6 chiffres est demandé à chaque nouvelle connexion."
+              />
+            </div>
+            {deuxFa && (
+              <div className="mt-4 rounded-sm border border-border bg-background p-4">
+                <p className="text-xs text-muted-foreground">
+                  Scannez le QR dans votre application d'authentification, puis saisissez le code.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <div className="grid size-24 place-items-center rounded-sm border border-dashed border-border text-[0.6rem] text-muted-foreground">
+                    QR code
+                  </div>
+                  <div>
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      inputMode="numeric"
+                      placeholder="000000"
+                      aria-label="Code de vérification"
+                      className="w-32 rounded-sm border border-border bg-card px-3 py-2 text-center text-sm tracking-[0.3em]"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {code.length === 6 ? "Code valide — 2FA active." : "6 chiffres requis."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="kicker mt-8">Historique des connexions</p>
+            <ul className="mt-3 divide-y divide-border text-sm">
+              {connexions.map((c) => (
+                <li key={c.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
+                  <span className="font-medium">{c.appareil}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {c.navigateur} · {c.lieu} · {c.ip}
+                  </span>
+                  <span className="ml-auto text-xs text-muted-foreground">{c.date}</span>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs ${
+                      c.statut === "Réussie"
+                        ? "bg-accent/15 text-accent"
+                        : "bg-destructive/10 text-destructive"
+                    }`}
+                  >
+                    {c.actuelle ? "Session actuelle" : c.statut}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className="mt-3 text-sm text-accent hover:underline"
+            >
+              Déconnecter toutes les autres sessions
+            </button>
+
+            <div className="mt-8 rounded-sm border border-destructive/40 bg-destructive/5 p-4">
+              <div className="flex items-center gap-2">
+                <Trash2 className="size-4 text-destructive" />
+                <p className="text-sm font-medium text-destructive">Supprimer mon compte</p>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Suppression définitive du compte, de la bibliothèque et de l'historique de lecture.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSuppression(true)}
+                className="mt-3 rounded-sm border border-destructive/50 px-4 py-2 text-sm text-destructive"
+              >
+                Supprimer définitivement
+              </button>
+            </div>
+          </section>
+
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -223,8 +385,80 @@ function Profil() {
               Passer à Premium
             </Link>
           </div>
+
+          <div className="rounded-sm border border-border bg-card p-6">
+            <p className="kicker">Mes achats</p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Reçus, téléchargements et suivi des paiements.
+            </p>
+            <Link to="/commandes" className="mt-4 inline-block text-sm text-accent hover:underline">
+              Voir mes commandes →
+            </Link>
+          </div>
         </aside>
       </div>
+
+      {suppression && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Supprimer mon compte"
+            className="w-full max-w-md rounded-sm border border-border bg-card p-6 shadow-book"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="font-display text-xl">Supprimer mon compte</h3>
+              <button
+                type="button"
+                aria-label="Fermer"
+                onClick={() => {
+                  setSuppression(false);
+                  setConfirmationTexte("");
+                }}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            {compteSupprime ? (
+              <p className="mt-4 text-sm">
+                Demande enregistrée. Votre compte sera définitivement supprimé sous 24 heures.
+              </p>
+            ) : (
+              <>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Cette action est irréversible. Saisissez <strong>SUPPRIMER</strong> pour
+                  confirmer.
+                </p>
+                <input
+                  value={confirmationTexte}
+                  onChange={(e) => setConfirmationTexte(e.target.value)}
+                  aria-label="Confirmation de suppression"
+                  className="mt-4 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
+                />
+                <div className="mt-6 flex flex-wrap justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSuppression(false)}
+                    className="rounded-sm border border-border px-4 py-2 text-sm"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="button"
+                    disabled={confirmationTexte !== "SUPPRIMER"}
+                    onClick={() => setCompteSupprime(true)}
+                    className="rounded-sm bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground disabled:opacity-40"
+                  >
+                    Supprimer mon compte
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
