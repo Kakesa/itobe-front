@@ -72,6 +72,38 @@ function Profil() {
   const [taille, setTaille] = useState(18);
   const [enregistre, setEnregistre] = useState(false);
 
+  // Sécurité
+  const [mdpActuel, setMdpActuel] = useState("");
+  const [mdpNouveau, setMdpNouveau] = useState("");
+  const [mdpConfirme, setMdpConfirme] = useState("");
+  const [retourMdp, setRetourMdp] = useState<{ ok: boolean; texte: string } | null>(null);
+  const [deuxFa, setDeuxFa] = useState(false);
+  const [code, setCode] = useState("");
+  const [suppression, setSuppression] = useState(false);
+  const [confirmationTexte, setConfirmationTexte] = useState("");
+  const [compteSupprime, setCompteSupprime] = useState(false);
+
+  const changerMdp = () => {
+    if (!mdpActuel || !mdpNouveau) {
+      setRetourMdp({ ok: false, texte: "Renseignez le mot de passe actuel et le nouveau." });
+      return;
+    }
+    if (mdpNouveau.length < 8) {
+      setRetourMdp({ ok: false, texte: "8 caractères minimum." });
+      return;
+    }
+    if (mdpNouveau !== mdpConfirme) {
+      setRetourMdp({ ok: false, texte: "La confirmation ne correspond pas." });
+      return;
+    }
+    setRetourMdp({ ok: true, texte: "Mot de passe mis à jour." });
+    setMdpActuel("");
+    setMdpNouveau("");
+    setMdpConfirme("");
+  };
+
+
+
   const progression = Object.entries(bibliotheque.progression);
   const moyenne = Math.round(
     progression.reduce((s, [, p]) => s + p, 0) / Math.max(progression.length, 1),
