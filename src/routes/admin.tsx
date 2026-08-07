@@ -151,10 +151,10 @@ function AdminLayout() {
           </p>
         </div>
         {SidebarNav}
-        <div className="border-t border-border p-3 space-y-2">
+        <div className="border-t border-primary-foreground/15 p-3 space-y-2">
           {session && (
-            <div className="px-1 text-xs text-muted-foreground">
-              <p className="font-medium text-foreground">
+            <div className="px-1 text-xs text-primary-foreground/60">
+              <p className="font-medium text-primary-foreground">
                 {session.prenom} {session.nom}
               </p>
               <p className="truncate">{session.email}</p>
@@ -164,11 +164,12 @@ function AdminLayout() {
           <button
             type="button"
             onClick={logout}
-            className="w-full rounded-lg border border-border px-3 py-2 text-xs text-muted-foreground hover:text-foreground"
+            className="w-full rounded-lg border border-primary-foreground/25 px-3 py-2 text-xs text-primary-foreground/75 hover:bg-primary-foreground/10 hover:text-primary-foreground"
           >
             Se déconnecter
           </button>
         </div>
+
       </aside>
 
       {/* Mobile */}
