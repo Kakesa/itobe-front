@@ -16,10 +16,12 @@ const TON: Record<EtatModeration, string> = {
   Rejeté: "bg-destructive/10 text-destructive",
 };
 
-function etatInitial(i: number, populaire: boolean): EtatModeration {
+function etatInitial(i: number, populaire?: boolean): EtatModeration {
   if (populaire) return "Publié";
-  return (["Brouillon", "En revue", "Rejeté", "En revue"] as EtatModeration[])[i % 4];
+  const cycle: EtatModeration[] = ["Brouillon", "En revue", "Rejeté", "En revue"];
+  return cycle[i % 4] as EtatModeration;
 }
+
 
 function AdminArticles() {
   const { role } = useRole();
