@@ -122,6 +122,13 @@ export function SiteHeader() {
             Mon profil
           </Link>
           <Link
+            to="/commandes"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            Mes commandes
+          </Link>
+          <Link
             to="/synchronisation"
             onClick={() => setOuvert(false)}
             className="block py-2 text-sm text-muted-foreground"
