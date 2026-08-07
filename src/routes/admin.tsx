@@ -102,7 +102,7 @@ function AdminLayout() {
       {groupes.map((g) => (
         <div key={g.groupe || "root"}>
           {g.groupe && (
-            <p className="mb-2 px-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            <p className="mb-2 px-2 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-primary-foreground/50">
               {g.groupe}
             </p>
           )}
@@ -115,10 +115,10 @@ function AdminLayout() {
                     to={item.to}
                     activeOptions={{ exact: item.to === "/admin" }}
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                    className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm text-primary-foreground/70 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
                     activeProps={{
                       className:
-                        "flex items-center gap-2.5 rounded-lg bg-secondary px-2.5 py-2 text-sm font-medium text-foreground",
+                        "flex items-center gap-2.5 rounded-lg bg-accent px-2.5 py-2 text-sm font-medium text-accent-foreground shadow-soft",
                     }}
                   >
                     <Icon className="size-4 shrink-0" />
@@ -133,15 +133,20 @@ function AdminLayout() {
     </nav>
   );
 
+  const chromeSidebar =
+    "bg-[linear-gradient(180deg,var(--primary),color-mix(in_oklab,var(--terracotta)_38%,var(--primary)))] text-primary-foreground";
+
   return (
     <div className="flex min-h-screen bg-muted/30">
       {/* Desktop sidebar */}
-      <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-border bg-card md:flex">
-        <div className="border-b border-border px-4 py-4">
+      <aside
+        className={`sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-primary/40 md:flex ${chromeSidebar}`}
+      >
+        <div className="border-b border-primary-foreground/15 px-4 py-4">
           <Link to="/" className="font-display text-xl tracking-tight">
-            Itobe<span className="text-accent">.</span>
+            Itobe<span className="text-ochre">.</span>
           </Link>
-          <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground">
+          <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/60">
             Back-office
           </p>
         </div>
