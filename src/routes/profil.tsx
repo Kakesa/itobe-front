@@ -385,8 +385,80 @@ function Profil() {
               Passer à Premium
             </Link>
           </div>
+
+          <div className="rounded-sm border border-border bg-card p-6">
+            <p className="kicker">Mes achats</p>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Reçus, téléchargements et suivi des paiements.
+            </p>
+            <Link to="/commandes" className="mt-4 inline-block text-sm text-accent hover:underline">
+              Voir mes commandes →
+            </Link>
+          </div>
         </aside>
       </div>
+
+      {suppression && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Supprimer mon compte"
+            className="w-full max-w-md rounded-sm border border-border bg-card p-6 shadow-book"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <h3 className="font-display text-xl">Supprimer mon compte</h3>
+              <button
+                type="button"
+                aria-label="Fermer"
+                onClick={() => {
+                  setSuppression(false);
+                  setConfirmationTexte("");
+                }}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            {compteSupprime ? (
+              <p className="mt-4 text-sm">
+                Demande enregistrée. Votre compte sera définitivement supprimé sous 24 heures.
+              </p>
+            ) : (
+              <>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  Cette action est irréversible. Saisissez <strong>SUPPRIMER</strong> pour
+                  confirmer.
+                </p>
+                <input
+                  value={confirmationTexte}
+                  onChange={(e) => setConfirmationTexte(e.target.value)}
+                  aria-label="Confirmation de suppression"
+                  className="mt-4 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
+                />
+                <div className="mt-6 flex flex-wrap justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSuppression(false)}
+                    className="rounded-sm border border-border px-4 py-2 text-sm"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="button"
+                    disabled={confirmationTexte !== "SUPPRIMER"}
+                    onClick={() => setCompteSupprime(true)}
+                    className="rounded-sm bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground disabled:opacity-40"
+                  >
+                    Supprimer mon compte
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
