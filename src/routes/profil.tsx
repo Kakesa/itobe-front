@@ -170,6 +170,133 @@ function Profil() {
             </p>
           </section>
 
+          <section className="rounded-sm border border-border bg-card p-6">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="size-4 text-accent" />
+              <h2 className="text-xl">Sécurité du compte</h2>
+            </div>
+
+            <p className="kicker mt-6">Mot de passe</p>
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              {["Mot de passe actuel", "Nouveau mot de passe", "Confirmer"].map((l, i) => (
+                <label key={l} className="block text-sm">
+                  <span className="text-xs text-muted-foreground">{l}</span>
+                  <input
+                    type="password"
+                    value={i === 0 ? mdpActuel : i === 1 ? mdpNouveau : mdpConfirme}
+                    onChange={(e) =>
+                      i === 0
+                        ? setMdpActuel(e.target.value)
+                        : i === 1
+                          ? setMdpNouveau(e.target.value)
+                          : setMdpConfirme(e.target.value)
+                    }
+                    className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
+                  />
+                </label>
+              ))}
+            </div>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={changerMdp}
+                className="rounded-sm border border-border px-4 py-2 text-sm hover:bg-secondary"
+              >
+                Mettre à jour le mot de passe
+              </button>
+              {retourMdp && (
+                <span
+                  className={`text-sm ${retourMdp.ok ? "text-accent" : "text-destructive"}`}
+                >
+                  {retourMdp.texte}
+                </span>
+              )}
+            </div>
+
+            <p className="kicker mt-8">Double authentification (2FA)</p>
+            <div className="mt-3">
+              <Interrupteur
+                actif={deuxFa}
+                onChange={(v) => {
+                  setDeuxFa(v);
+                  setCode("");
+                }}
+                label="Vérification en deux étapes"
+                aide="Un code à 6 chiffres est demandé à chaque nouvelle connexion."
+              />
+            </div>
+            {deuxFa && (
+              <div className="mt-4 rounded-sm border border-border bg-background p-4">
+                <p className="text-xs text-muted-foreground">
+                  Scannez le QR dans votre application d'authentification, puis saisissez le code.
+                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <div className="grid size-24 place-items-center rounded-sm border border-dashed border-border text-[0.6rem] text-muted-foreground">
+                    QR code
+                  </div>
+                  <div>
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                      inputMode="numeric"
+                      placeholder="000000"
+                      aria-label="Code de vérification"
+                      className="w-32 rounded-sm border border-border bg-card px-3 py-2 text-center text-sm tracking-[0.3em]"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {code.length === 6 ? "Code valide — 2FA active." : "6 chiffres requis."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <p className="kicker mt-8">Historique des connexions</p>
+            <ul className="mt-3 divide-y divide-border text-sm">
+              {connexions.map((c) => (
+                <li key={c.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
+                  <span className="font-medium">{c.appareil}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {c.navigateur} · {c.lieu} · {c.ip}
+                  </span>
+                  <span className="ml-auto text-xs text-muted-foreground">{c.date}</span>
+                  <span
+                    className={`rounded-full px-2.5 py-0.5 text-xs ${
+                      c.statut === "Réussie"
+                        ? "bg-accent/15 text-accent"
+                        : "bg-destructive/10 text-destructive"
+                    }`}
+                  >
+                    {c.actuelle ? "Session actuelle" : c.statut}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button
+              type="button"
+              className="mt-3 text-sm text-accent hover:underline"
+            >
+              Déconnecter toutes les autres sessions
+            </button>
+
+            <div className="mt-8 rounded-sm border border-destructive/40 bg-destructive/5 p-4">
+              <div className="flex items-center gap-2">
+                <Trash2 className="size-4 text-destructive" />
+                <p className="text-sm font-medium text-destructive">Supprimer mon compte</p>
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Suppression définitive du compte, de la bibliothèque et de l'historique de lecture.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSuppression(true)}
+                className="mt-3 rounded-sm border border-destructive/50 px-4 py-2 text-sm text-destructive"
+              >
+                Supprimer définitivement
+              </button>
+            </div>
+          </section>
+
           <div className="flex items-center gap-4">
             <button
               type="button"
