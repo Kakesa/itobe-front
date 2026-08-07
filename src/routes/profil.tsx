@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ShieldCheck, Trash2, X } from "lucide-react";
 import { bibliotheque, getLivre, nomAuteur } from "@/lib/data";
+import { connexions } from "@/lib/admin-data";
+
 
 export const Route = createFileRoute("/profil")({
   head: () => ({
