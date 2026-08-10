@@ -1,55 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articles, categoriesLivres, categoriesMedia, livres } from "@/lib/data";
-import { AccesRestreint, Actions, BarreOutils, Tableau } from "@/components/admin-ui";
-import { useRole } from "@/hooks/use-role";
+import { CrudModule } from "@/components/admin/crud-module";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
 });
 
-function AdminCategories() {
-  const { role } = useRole();
-  if (role !== "admin" && role !== "editeur") {
-    return <AccesRestreint requis={["admin", "editeur"]} />;
-  }
+const champs = [
+  { nom: "nom", label: "Nom", requis: true },
+  { nom: "visibilite", label: "Visibilité", type: "select" as const, options: ["Publique", "Privée"] },
+];
 
+const colonnes = [
+  { cle: "nom", label: "Nom" },
+  { cle: "visibilite", label: "Visibilité", classe: "text-muted-foreground" },
+];
+
+function AdminCategories() {
   return (
     <div className="space-y-12">
-      <section>
-        <BarreOutils titre="Catégories Média" action="Nouvelle catégorie" />
-        <Tableau entetes={["Nom", "Articles", "Visibilité", ""]}>
-          {categoriesMedia.map((c) => (
-            <tr key={c}>
-              <td className="px-4 py-3">{c}</td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {articles.filter((a) => a.categorie === c).length}
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">Publique</td>
-              <td className="px-4 py-3">
-                <Actions />
-              </td>
-            </tr>
-          ))}
-        </Tableau>
-      </section>
-
-      <section>
-        <BarreOutils titre="Catégories Édition" action="Nouvelle catégorie" />
-        <Tableau entetes={["Nom", "Livres", "Visibilité", ""]}>
-          {categoriesLivres.map((c) => (
-            <tr key={c}>
-              <td className="px-4 py-3">{c}</td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {livres.filter((l) => l.categorie === c).length}
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">Publique</td>
-              <td className="px-4 py-3">
-                <Actions />
-              </td>
-            </tr>
-          ))}
-        </Tableau>
-      </section>
+      <CrudModule
+        titre="Catégories Média"
+        singulier="Catégorie Média"
+        collection="categoriesMedia"
+        requis={["admin", "editeur"]}
+        clesRecherche={["nom"]}
+        colonnes={colonnes}
+        champs={champs}
+      />
+      <CrudModule
+        titre="Catégories Édition"
+        singulier="Catégorie Édition"
+        collection="categoriesLivres"
+        requis={["admin", "editeur"]}
+        clesRecherche={["nom"]}
+        colonnes={colonnes}
+        champs={champs}
+      />
     </div>
   );
 }

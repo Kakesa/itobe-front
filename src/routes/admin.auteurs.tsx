@@ -1,36 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { articles, auteurs, livres } from "@/lib/data";
-import { AccesRestreint, Actions, BarreOutils, Tableau } from "@/components/admin-ui";
-import { useRole } from "@/hooks/use-role";
+import { CrudModule } from "@/components/admin/crud-module";
 
 export const Route = createFileRoute("/admin/auteurs")({
-  component: AdminAuteurs,
+  component: () => (
+    <CrudModule
+      titre="Auteurs"
+      singulier="Auteur"
+      description="Fiches auteurs, biographies et performances de vente."
+      collection="auteurs"
+      requis={["admin", "editeur"]}
+      clesRecherche={["nom", "ville"]}
+      colonnes={[
+        { cle: "nom", label: "Nom" },
+        { cle: "role", label: "Rôle", classe: "text-muted-foreground" },
+        { cle: "ville", label: "Ville", classe: "text-muted-foreground" },
+        {
+          cle: "ventes",
+          label: "Ventes",
+          rendu: (r) => Number(r["ventes"] ?? 0).toLocaleString("fr-FR"),
+        },
+      ]}
+      champs={[
+        { nom: "nom", label: "Nom", requis: true },
+        { nom: "role", label: "Rôle", placeholder: "Romancière" },
+        { nom: "ville", label: "Ville" },
+        { nom: "bio", label: "Biographie", type: "textarea" },
+        { nom: "ventes", label: "Ventes", type: "number" },
+      ]}
+    />
+  ),
 });
-
-function AdminAuteurs() {
-  const { role } = useRole();
-  if (role !== "admin" && role !== "editeur") {
-    return <AccesRestreint requis={["admin", "editeur"]} />;
-  }
-
-  return (
-    <div>
-      <BarreOutils titre="Auteurs" action="Ajouter un auteur" />
-      <Tableau entetes={["Nom", "Rôle", "Ville", "Livres", "Articles", "Ventes", ""]}>
-        {auteurs.map((a) => (
-          <tr key={a.slug}>
-            <td className="px-4 py-3">{a.nom}</td>
-            <td className="px-4 py-3 text-muted-foreground">{a.role}</td>
-            <td className="px-4 py-3 text-muted-foreground">{a.ville}</td>
-            <td className="px-4 py-3">{livres.filter((l) => l.auteur === a.slug).length}</td>
-            <td className="px-4 py-3">{articles.filter((x) => x.auteur === a.slug).length}</td>
-            <td className="px-4 py-3">{a.ventes.toLocaleString("fr-FR")}</td>
-            <td className="px-4 py-3">
-              <Actions />
-            </td>
-          </tr>
-        ))}
-      </Tableau>
-    </div>
-  );
-}
