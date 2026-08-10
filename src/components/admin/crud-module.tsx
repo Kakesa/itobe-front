@@ -229,7 +229,7 @@ function FormulaireDialog({
     Object.fromEntries(
       champs.map((c) => [
         c.nom,
-        valeurincipale(valeursInitiales[c.nom], c),
+        valeurInitiale(valeursInitiales[c.nom], c),
       ]),
     ),
   );
@@ -334,7 +334,7 @@ function FormulaireDialog({
   );
 }
 
-function valeurincipale(valeur: unknown, champ: Champ): unknown {
+function valeurInitiale(valeur: unknown, champ: Champ): unknown {
   if (valeur !== undefined && valeur !== null) return valeur;
   if (champ.type === "switch") return false;
   if (champ.type === "number") return 0;
