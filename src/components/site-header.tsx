@@ -112,6 +112,7 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <div className="my-2 border-t border-border" />
           <Link
             to="/admin/mon-profil"
             onClick={() => setOuvert(false)}
@@ -120,23 +121,9 @@ export function SiteHeader() {
             Paramètres
           </Link>
           <Link
-            to="/commandes"
-            onClick={() => setOuvert(false)}
-            className="block py-2 text-sm text-muted-foreground"
-          >
-            Mes commandes
-          </Link>
-          <Link
-            to="/synchronisation"
-            onClick={() => setOuvert(false)}
-            className="block py-2 text-sm text-muted-foreground"
-          >
-            Synchronisation
-          </Link>
-          <Link
             to="/connexion"
             onClick={() => setOuvert(false)}
-            className="block py-2 text-sm"
+            className="block py-2 text-sm font-medium"
           >
             Connexion
           </Link>

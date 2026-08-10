@@ -49,23 +49,22 @@ function Catalogue() {
   return (
     <div>
       {/* Hero façon maison d'édition institutionnelle */}
-      <section className="relative flex min-h-[78vh] items-end overflow-hidden md:min-h-[85vh]">
+      <section className="relative flex min-h-[78vh] items-center justify-center overflow-hidden md:min-h-[85vh]">
         <img
           src={HERO_IMG}
           alt=""
           className="absolute inset-0 size-full object-cover animate-[edition-hero-zoom_18s_ease-out_forwards]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/50 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
 
-        <div className="relative z-10 w-full px-6 pb-16 pt-28 md:px-12 md:pb-24 lg:px-16">
+        <div className="relative z-10 mx-auto w-full max-w-4xl px-6 py-28 text-center md:px-12">
           <p className="font-display text-2xl tracking-tight text-white md:text-3xl">
             Itobe<span className="text-[var(--edition-orange)]">.</span>
           </p>
-          <h1 className="mt-5 max-w-3xl font-display text-4xl leading-[1.08] text-white md:text-6xl lg:text-7xl">
+          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl leading-[1.08] text-white md:text-6xl lg:text-7xl">
             Un monde de lecture, d&apos;édition et de découverte
           </h1>
-          <p className="mt-5 max-w-xl text-base text-white/75 md:text-lg">
+          <p className="mx-auto mt-5 max-w-xl text-base text-white/75 md:text-lg">
             Faire de l&apos;Afrique le cœur de la narration mondiale — romans, essais et jeunesse.
           </p>
           <a
