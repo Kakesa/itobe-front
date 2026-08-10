@@ -8,12 +8,29 @@ export const Route = createFileRoute("/admin/livres")({
     <CrudModule
       titre="Livres"
       singulier="Livre"
-      description="Catalogue de la maison d'édition : prix, stock et disponibilité."
+      description="Catalogue de la maison d'édition : couverture, prix, stock et disponibilité."
       collection="livres"
       requis={["admin", "editeur"]}
       clesRecherche={["titre"]}
       filtre={{ cle: "categorie", label: "Catégorie", options: categoriesLivres }}
       colonnes={[
+        {
+          cle: "couverture",
+          label: "Couverture",
+          rendu: (r) =>
+            r["couverture"] ? (
+              <img
+                src={String(r["couverture"])}
+                alt=""
+                className="h-14 w-10 rounded object-cover"
+              />
+            ) : (
+              <div
+                className="h-14 w-10 rounded"
+                style={{ backgroundImage: String(r["couleur"] ?? "linear-gradient(160deg,#383030,#211c1c)") }}
+              />
+            ),
+        },
         { cle: "titre", label: "Titre" },
         {
           cle: "auteur",
@@ -40,6 +57,12 @@ export const Route = createFileRoute("/admin/livres")({
       ]}
       champs={[
         { nom: "titre", label: "Titre", requis: true },
+        {
+          nom: "couverture",
+          label: "Image de couverture",
+          type: "image",
+          placeholder: "URL de la couverture",
+        },
         { nom: "auteur", label: "Auteur", type: "select", options: auteurs.map((a) => a.slug) },
         { nom: "categorie", label: "Catégorie", type: "select", options: categoriesLivres },
         { nom: "formats", label: "Formats", placeholder: "PDF, EPUB, Papier" },

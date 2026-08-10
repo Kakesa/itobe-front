@@ -1,4 +1,5 @@
 // Données de démonstration (front uniquement).
+import { faussesCouvertures } from "./fausses-couvertures";
 
 export type Article = {
   slug: string;
@@ -32,6 +33,8 @@ export type Livre = {
   disponible: boolean;
   aLaUne?: boolean;
   couleur: string;
+  /** URL ou data-URL de la couverture (prioritaire sur le dégradé). */
+  couverture?: string;
   apercuPages: number;
   apercuPourcent: number;
   chapitres: { titre: string; pages: number[]; gratuit: boolean }[];
@@ -187,6 +190,7 @@ export const livres: Livre[] = [
     disponible: true,
     aLaUne: true,
     couleur: "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+    couverture: faussesCouvertures["le-fleuve-et-la-page"],
     apercuPages: 24,
     apercuPourcent: 10,
     chapitres: chapitres(7, 248),
@@ -208,6 +212,7 @@ export const livres: Livre[] = [
     stock: 0,
     disponible: true,
     couleur: "linear-gradient(160deg, oklch(0.42 0.1 265), oklch(0.22 0.04 270))",
+    couverture: faussesCouvertures["nuit-blanche-a-matonge"],
     apercuPages: 18,
     apercuPourcent: 6,
     chapitres: chapitres(6, 312),
@@ -228,6 +233,7 @@ export const livres: Livre[] = [
     stock: 120,
     disponible: true,
     couleur: "linear-gradient(160deg, oklch(0.74 0.13 72), oklch(0.42 0.07 60))",
+    couverture: faussesCouvertures["grammaire-du-courage"],
     apercuPages: 20,
     apercuPourcent: 12,
     chapitres: chapitres(5, 180),
@@ -247,6 +253,7 @@ export const livres: Livre[] = [
     stock: 8,
     disponible: true,
     couleur: "linear-gradient(160deg, oklch(0.57 0.15 34), oklch(0.28 0.05 30))",
+    couverture: faussesCouvertures["poemes-du-quatrieme-jour"],
     apercuPages: 10,
     apercuPourcent: 10,
     chapitres: chapitres(4, 96),
@@ -269,6 +276,7 @@ export const livres: Livre[] = [
     stock: 15,
     disponible: true,
     couleur: "linear-gradient(160deg, oklch(0.38 0.06 150), oklch(0.2 0.03 160))",
+    couverture: faussesCouvertures["histoire-des-presses"],
     apercuPages: 30,
     apercuPourcent: 7,
     chapitres: chapitres(7, 420),
@@ -288,6 +296,7 @@ export const livres: Livre[] = [
     stock: 60,
     disponible: true,
     couleur: "linear-gradient(160deg, oklch(0.7 0.14 160), oklch(0.36 0.06 165))",
+    couverture: faussesCouvertures["le-cartable-de-kimia"],
     apercuPages: 8,
     apercuPourcent: 12,
     chapitres: chapitres(4, 64),

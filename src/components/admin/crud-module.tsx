@@ -1,5 +1,5 @@
-import { useMemo, useState, type ReactNode } from "react";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { useMemo, useState, useRef, type ReactNode } from "react";
+import { ImagePlus, Pencil, Plus, Trash2, X } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { useRole } from "@/hooks/use-role";
@@ -18,7 +18,7 @@ export type Colonne = {
 export type Champ = {
   nom: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "switch" | "date";
+  type?: "text" | "textarea" | "number" | "select" | "switch" | "date" | "image";
   options?: string[];
   requis?: boolean;
   placeholder?: string;
@@ -295,6 +295,13 @@ function FormulaireDialog({
                     />
                     {c.placeholder ?? "Activé"}
                   </label>
+                ) : c.type === "image" ? (
+                  <ChampImage
+                    id={id}
+                    valeur={String(valeurs[c.nom] ?? "")}
+                    placeholder={c.placeholder}
+                    onChange={(url) => setValeurs((v) => ({ ...v, [c.nom]: url }))}
+                  />
                 ) : (
                   <input
                     id={id}
@@ -340,4 +347,68 @@ function valeurInitiale(valeur: unknown, champ: Champ): unknown {
   if (champ.type === "number") return 0;
   if (champ.type === "select") return champ.options?.[0] ?? "";
   return "";
+}
+
+function ChampImage({
+  id,
+  valeur,
+  placeholder,
+  onChange,
+}: {
+  id: string;
+  valeur: string;
+  placeholder?: string;
+  onChange: (url: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const urlAffichee = valeur.startsWith("data:") ? "" : valeur;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <input
+          id={id}
+          type="text"
+          value={urlAffichee}
+          placeholder={placeholder ?? "URL de l'image"}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm"
+        />
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (!f) return;
+            const reader = new FileReader();
+            reader.onload = () => onChange(String(reader.result));
+            reader.readAsDataURL(f);
+          }}
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary"
+        >
+          <ImagePlus className="size-4" />
+          Téléverser
+        </button>
+      </div>
+      {valeur && (
+        <div className="relative w-28 overflow-hidden rounded-lg border border-border">
+          <img src={valeur} alt="Aperçu couverture" className="aspect-[2/3] w-full object-cover" />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-ink/70 text-white"
+            aria-label="Retirer la couverture"
+          >
+            <X className="size-3" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }

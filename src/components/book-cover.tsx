@@ -4,9 +4,25 @@ export function BookCover({
   livre,
   className = "",
 }: {
-  livre: Livre;
+  livre: Pick<Livre, "titre" | "sousTitre" | "couleur"> & { couverture?: string };
   className?: string;
 }) {
+  const image = livre.couverture?.trim();
+
+  if (image) {
+    return (
+      <div
+        className={`book-spine relative aspect-[2/3] overflow-hidden rounded-sm no-select ${className}`}
+      >
+        <img
+          src={image}
+          alt={`Couverture — ${livre.titre}`}
+          className="size-full object-cover"
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className={`book-spine relative flex aspect-[2/3] flex-col justify-between overflow-hidden rounded-sm p-4 no-select ${className}`}

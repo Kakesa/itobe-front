@@ -27,6 +27,8 @@ export const seedLivres: Item[] = livres.map((l) => ({
   promo: l.promo ?? 0,
   stock: l.stock,
   disponible: l.disponible,
+  couverture: l.couverture ?? "",
+  couleur: l.couleur,
 }));
 
 export const seedAuteurs: Item[] = auteurs.map((a) => ({

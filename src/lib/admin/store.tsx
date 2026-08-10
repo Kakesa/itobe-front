@@ -26,7 +26,7 @@ import {
   seedUtilisateurs,
 } from "./seeds";
 
-const CLE = "itobe.admin.data.v1";
+const CLE = "itobe.admin.data.v3";
 
 const SEEDS = {
   articles: seedArticles,
