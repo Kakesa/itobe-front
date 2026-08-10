@@ -16,6 +16,8 @@ import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
 import { usePortailActif } from "../hooks/use-portail";
 import { cn } from "../lib/utils";
+import { Toaster } from "../components/ui/sonner";
+import { AdminDataProvider } from "../lib/admin/store";
 
 function NotFoundComponent() {
   return (
