@@ -1,14 +1,18 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-import { useRole } from "@/hooks/use-role";
-import { LecteurDashboard } from "@/components/dashboard/lecteur-dashboard";
+import { z } from "zod";
+
+const searchSchema = z.object({
+  onglet: z.enum(["dashboard", "parametres", "profil"]).optional(),
+});
 
 export const Route = createFileRoute("/tableau-de-bord")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Tableau de bord | Itobe" },
       {
         name: "description",
-        content: "Espace personnel et tableaux de bord Itobe selon votre rôle.",
+        content: "Espace personnel Itobe — redirection vers l'espace connecté.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -17,17 +21,9 @@ export const Route = createFileRoute("/tableau-de-bord")({
 });
 
 function TableauDeBord() {
-  const { role } = useRole();
-
-  // Admin & Éditeur → back-office unifié
-  if (role === "admin" || role === "editeur") {
-    return <Navigate to="/admin" />;
+  const { onglet } = Route.useSearch();
+  if (onglet === "parametres" || onglet === "profil") {
+    return <Navigate to="/admin/mon-profil" />;
   }
-
-  // Lecteur → dashboard personnel (aussi accessible via /admin)
-  return (
-    <div className="min-h-screen bg-background">
-      <LecteurDashboard />
-    </div>
-  );
+  return <Navigate to="/admin" />;
 }

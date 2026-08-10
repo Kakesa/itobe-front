@@ -2,13 +2,19 @@ import { Link, Outlet, createFileRoute, useNavigate } from "@tanstack/react-rout
 import { useState } from "react";
 import {
   BarChart3,
+  BookMarked,
   BookOpen,
+  Bookmark,
   ClipboardList,
+  Clock,
   CreditCard,
+  Download,
   FileText,
   FolderOpen,
+  Heart,
   Image,
   LayoutDashboard,
+  Library,
   Mail,
   Menu,
   MessageSquare,
@@ -17,23 +23,24 @@ import {
   Search,
   Settings,
   Shield,
+  ShoppingBag,
   Tag,
+  UserCircle,
   Users,
   X,
 } from "lucide-react";
 import { menuAdmin, roles } from "@/lib/admin-data";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
-import { LecteurDashboard } from "@/components/dashboard/lecteur-dashboard";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Administration | Itobe" },
+      { title: "Espace Itobe | Administration" },
       {
         name: "description",
         content:
-          "Back-office unique Itobe : dashboard, contenus, commercial, communauté et paramètres.",
+          "Espace connecté Itobe : dashboard, contenus, lecture et paramètres selon votre rôle.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -46,6 +53,12 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   Articles: Newspaper,
   Actualités: FileText,
   Livres: BookOpen,
+  Bibliothèque: Library,
+  Favoris: Heart,
+  Historique: Clock,
+  Téléchargements: Download,
+  "Marque-pages": Bookmark,
+  "Mes achats": ShoppingBag,
   Auteurs: Users,
   Catégories: FolderOpen,
   Médias: Image,
@@ -59,6 +72,8 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   Rapports: FileText,
   Statistiques: BarChart3,
   Paramètres: Settings,
+  Plateforme: Settings,
+  "Mon profil": UserCircle,
   SEO: Search,
   "Rôles & Permissions": Shield,
 };
@@ -74,28 +89,15 @@ function AdminLayout() {
     void navigate({ to: "/connexion" });
   };
 
-  if (role === "lecteur") {
-    return (
-      <div className="min-h-screen bg-background">
-        <div className="border-b border-border bg-card px-4 py-3">
-          <div className="mx-auto flex max-w-5xl items-center justify-between gap-3">
-            <Link to="/" className="font-display text-xl">
-              Itobe<span className="text-accent">.</span>
-            </Link>
-            <RoleSwitcher role={role} onChange={changerRole} />
-          </div>
-        </div>
-        <LecteurDashboard />
-      </div>
-    );
-  }
-
   const groupes = menuAdmin
     .map((g) => ({
       ...g,
       items: g.items.filter((i) => i.roles.includes(role)),
     }))
     .filter((g) => g.items.length > 0);
+
+  const espaceLabel =
+    role === "lecteur" ? "Espace lecteur" : role === "editeur" ? "Espace éditeur" : "Back-office";
 
   const SidebarNav = (
     <nav className="flex flex-1 flex-col gap-6 overflow-y-auto px-3 py-4">
@@ -108,7 +110,7 @@ function AdminLayout() {
           )}
           <ul className="space-y-0.5">
             {g.items.map((item) => {
-              const Icon = ICONS[item.label] ?? LayoutDashboard;
+              const Icon = ICONS[item.label] ?? BookMarked;
               return (
                 <li key={item.to}>
                   <Link
@@ -138,7 +140,6 @@ function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-muted/30">
-      {/* Desktop sidebar */}
       <aside
         className={`sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-primary/40 md:flex ${chromeSidebar}`}
       >
@@ -147,11 +148,11 @@ function AdminLayout() {
             Itobe<span className="text-ochre">.</span>
           </Link>
           <p className="mt-0.5 text-[0.65rem] uppercase tracking-[0.14em] text-primary-foreground/60">
-            Back-office
+            {espaceLabel}
           </p>
         </div>
         {SidebarNav}
-        <div className="border-t border-primary-foreground/15 p-3 space-y-2">
+        <div className="space-y-2 border-t border-primary-foreground/15 p-3">
           {session && (
             <div className="px-1 text-xs text-primary-foreground/60">
               <p className="font-medium text-primary-foreground">
@@ -169,10 +170,8 @@ function AdminLayout() {
             Se déconnecter
           </button>
         </div>
-
       </aside>
 
-      {/* Mobile */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-card/95 px-4 backdrop-blur md:hidden">
           <button
@@ -214,7 +213,6 @@ function AdminLayout() {
                   <X className="size-4" />
                 </button>
               </div>
-
               {SidebarNav}
             </aside>
           </div>

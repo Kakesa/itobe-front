@@ -18,7 +18,6 @@ const liensEdition: Lien[] = [
   { to: "/edition", label: "Catalogue", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/bibliotheque", label: "Bibliothèque" },
-  { to: "/admin", label: "Dashboard" },
   { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
@@ -32,7 +31,6 @@ export function SiteHeader() {
   const liens = portail === "media" ? liensMedia : liensEdition;
   const accent =
     portail === "media" ? "border-b-[#70a2e1]" : "border-b-[#ea5312]";
-
   return (
     <header
       className={`sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
@@ -78,10 +76,10 @@ export function SiteHeader() {
             <Search className="size-4" />
           </Link>
           <Link
-            to="/profil"
+            to="/admin/mon-profil"
             className="hidden rounded-sm border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
           >
-            Mon profil
+            Paramètres
           </Link>
           <Link
             to="/connexion"
@@ -115,11 +113,11 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            to="/profil"
+            to="/admin/mon-profil"
             onClick={() => setOuvert(false)}
             className="block py-2 text-sm text-muted-foreground"
           >
-            Mon profil
+            Paramètres
           </Link>
           <Link
             to="/commandes"
@@ -134,13 +132,6 @@ export function SiteHeader() {
             className="block py-2 text-sm text-muted-foreground"
           >
             Synchronisation
-          </Link>
-          <Link
-            to="/admin"
-            onClick={() => setOuvert(false)}
-            className="block py-2 text-sm text-muted-foreground"
-          >
-            Administration
           </Link>
           <Link
             to="/connexion"

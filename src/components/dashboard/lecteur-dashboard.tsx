@@ -2,14 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Bookmark, Clock, Download, Heart } from "lucide-react";
 import { lecteurDashboardQuery } from "@/lib/dashboard/queries";
+import type { DashboardLecteurPayload } from "@/lib/dashboard/types";
 import { KpiCard, SectionCard, SkeletonBlock } from "@/components/dashboard/ui";
 
+/** Dashboard lecteur — contenu principal de `/admin` pour le rôle lecteur. */
 export function LecteurDashboard() {
   const { data, isLoading } = useQuery(lecteurDashboardQuery());
 
   if (isLoading || !data) {
     return (
-      <div className="mx-auto max-w-5xl space-y-4 px-4 py-10">
+      <div className="space-y-4">
         <SkeletonBlock className="h-12 w-72" />
         <div className="grid gap-3 sm:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
@@ -21,19 +23,26 @@ export function LecteurDashboard() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-4 py-10 md:px-8">
+    <div className="space-y-8">
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           Espace lecteur
         </p>
-        <h1 className="mt-2 font-display text-3xl md:text-5xl">
+        <h1 className="mt-2 font-display text-3xl md:text-4xl">
           Bienvenue, {data.prenom}
         </h1>
         <p className="mt-2 text-muted-foreground">
           Reprenez votre lecture, explorez vos favoris et découvrez les nouveautés.
         </p>
       </div>
+      <DashboardVue data={data} />
+    </div>
+  );
+}
 
+function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
+  return (
+    <div className="space-y-8">
       <div className="grid gap-3 sm:grid-cols-3">
         <KpiCard label="Temps total de lecture" valeur={data.tempsLectureTotal} />
         <KpiCard label="Livres en bibliothèque" valeur={data.bibliotheque.length} />
@@ -50,7 +59,10 @@ export function LecteurDashboard() {
               className="rounded-xl border border-border p-4 transition-colors hover:border-accent"
             >
               <div className="flex gap-3">
-                <div className="h-20 w-14 shrink-0 rounded-md" style={{ backgroundImage: l.couleur }} />
+                <div
+                  className="h-20 w-14 shrink-0 rounded-md"
+                  style={{ backgroundImage: l.couleur }}
+                />
                 <div className="min-w-0 flex-1">
                   <p className="font-display">{l.titre}</p>
                   <p className="mt-1 text-xs text-muted-foreground">{l.progression}% lu</p>
@@ -71,8 +83,8 @@ export function LecteurDashboard() {
         <SectionCard
           titre="Bibliothèque"
           action={
-            <Link to="/bibliotheque" className="text-xs text-accent hover:underline">
-              Ouvrir
+            <Link to="/admin/ma-bibliotheque" className="text-xs text-accent hover:underline">
+              Voir tout
             </Link>
           }
         >
@@ -88,7 +100,14 @@ export function LecteurDashboard() {
           </ul>
         </SectionCard>
 
-        <SectionCard titre="Favoris">
+        <SectionCard
+          titre="Favoris"
+          action={
+            <Link to="/admin/favoris" className="text-xs text-accent hover:underline">
+              Voir tout
+            </Link>
+          }
+        >
           <ul className="space-y-2">
             {data.favoris.map((l) => (
               <li key={l.slug} className="flex items-center gap-3 text-sm">
@@ -103,7 +122,14 @@ export function LecteurDashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard titre="Derniers achats">
+        <SectionCard
+          titre="Derniers achats"
+          action={
+            <Link to="/admin/mes-achats" className="text-xs text-accent hover:underline">
+              Voir tout
+            </Link>
+          }
+        >
           <ul className="divide-y divide-border text-sm">
             {data.derniersAchats.map((a) => (
               <li key={a.slug} className="flex justify-between py-2">
@@ -114,7 +140,14 @@ export function LecteurDashboard() {
           </ul>
         </SectionCard>
 
-        <SectionCard titre="Historique">
+        <SectionCard
+          titre="Historique"
+          action={
+            <Link to="/admin/historique" className="text-xs text-accent hover:underline">
+              Voir tout
+            </Link>
+          }
+        >
           <ul className="divide-y divide-border text-sm">
             {data.historique.map((h) => (
               <li key={h.slug} className="flex items-center gap-2 py-2">
@@ -158,7 +191,14 @@ export function LecteurDashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <SectionCard titre="Derniers téléchargements">
+        <SectionCard
+          titre="Derniers téléchargements"
+          action={
+            <Link to="/admin/telechargements" className="text-xs text-accent hover:underline">
+              Voir tout
+            </Link>
+          }
+        >
           <ul className="space-y-2 text-sm">
             {data.telechargements.map((t) => (
               <li key={t.slug} className="flex items-center gap-2">
@@ -169,7 +209,14 @@ export function LecteurDashboard() {
           </ul>
         </SectionCard>
 
-        <SectionCard titre="Marque-pages">
+        <SectionCard
+          titre="Marque-pages"
+          action={
+            <Link to="/admin/marque-pages" className="text-xs text-accent hover:underline">
+              Voir tout
+            </Link>
+          }
+        >
           <ul className="space-y-2 text-sm">
             {data.marquePages.map((m) => (
               <li key={m.slug + m.page} className="flex items-center gap-2">

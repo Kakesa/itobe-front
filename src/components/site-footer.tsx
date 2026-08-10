@@ -55,11 +55,6 @@ export function SiteFooter() {
                     Ma bibliothèque
                   </Link>
                 </li>
-                <li>
-                  <Link to="/admin" className="hover:text-foreground">
-                    Tableau de bord
-                  </Link>
-                </li>
               </>
             )}
             <li>

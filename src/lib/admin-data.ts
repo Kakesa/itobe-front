@@ -28,14 +28,24 @@ export type SectionAdmin = {
   icon?: string;
 };
 
-/** Menu back-office groupé (ADMIN + ÉDITEUR). */
+/** Menu espace connecté groupé (ADMIN + ÉDITEUR + LECTEUR). */
 export const menuAdmin: {
   groupe: string;
   items: { to: string; label: string; roles: Role[] }[];
 }[] = [
   {
     groupe: "",
-    items: [{ to: "/admin", label: "Dashboard", roles: ["admin", "editeur"] }],
+    items: [{ to: "/admin", label: "Dashboard", roles: ["admin", "editeur", "lecteur"] }],
+  },
+  {
+    groupe: "Ma lecture",
+    items: [
+      { to: "/admin/ma-bibliotheque", label: "Bibliothèque", roles: ["lecteur"] },
+      { to: "/admin/favoris", label: "Favoris", roles: ["lecteur"] },
+      { to: "/admin/historique", label: "Historique", roles: ["lecteur"] },
+      { to: "/admin/telechargements", label: "Téléchargements", roles: ["lecteur"] },
+      { to: "/admin/marque-pages", label: "Marque-pages", roles: ["lecteur"] },
+    ],
   },
   {
     groupe: "Contenu",
@@ -52,6 +62,7 @@ export const menuAdmin: {
     groupe: "Commercial",
     items: [
       { to: "/admin/commandes", label: "Commandes", roles: ["admin"] },
+      { to: "/admin/mes-achats", label: "Mes achats", roles: ["lecteur"] },
       { to: "/admin/paiements", label: "Paiements", roles: ["admin"] },
       { to: "/admin/coupons", label: "Coupons", roles: ["admin"] },
       { to: "/admin/promotions", label: "Promotions", roles: ["admin"] },
@@ -75,7 +86,8 @@ export const menuAdmin: {
   {
     groupe: "Paramètres",
     items: [
-      { to: "/admin/parametres", label: "Paramètres", roles: ["admin"] },
+      { to: "/admin/mon-profil", label: "Mon profil", roles: ["admin", "editeur", "lecteur"] },
+      { to: "/admin/parametres", label: "Plateforme", roles: ["admin"] },
       { to: "/admin/seo", label: "SEO", roles: ["admin"] },
       { to: "/admin/roles", label: "Rôles & Permissions", roles: ["admin"] },
     ],
