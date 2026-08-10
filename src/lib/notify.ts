@@ -1,7 +1,7 @@
 // Système de notification centralisé (toute l'app passe par ici).
 import { toast } from "sonner";
 
-type Options = { description?: string };
+type Options = { description?: string | undefined };
 
 export const notify = {
   succes(message: string, options?: Options) {
