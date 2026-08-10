@@ -60,17 +60,17 @@ function Catalogue() {
 
         <div className="relative z-10 w-full px-6 pb-16 pt-28 md:px-12 md:pb-24 lg:px-16">
           <p className="font-display text-2xl tracking-tight text-white md:text-3xl">
-            Itobe<span className="text-ochre">.</span>
+            Itobe<span className="text-[var(--edition-orange)]">.</span>
           </p>
           <h1 className="mt-5 max-w-3xl font-display text-4xl leading-[1.08] text-white md:text-6xl lg:text-7xl">
             Un monde de lecture, d&apos;édition et de découverte
           </h1>
           <p className="mt-5 max-w-xl text-base text-white/75 md:text-lg">
-            Romans, essais, poésie et jeunesse — publier, lire et partager autrement.
+            Faire de l&apos;Afrique le cœur de la narration mondiale — romans, essais et jeunesse.
           </p>
           <a
             href="#catalogue"
-            className="mt-9 inline-flex items-center rounded-sm bg-white px-6 py-3 text-sm font-medium text-ink transition-colors hover:bg-ochre hover:text-ink"
+            className="mt-9 inline-flex items-center rounded-sm bg-[var(--edition-orange)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#d4480f]"
           >
             Découvrir le catalogue
           </a>

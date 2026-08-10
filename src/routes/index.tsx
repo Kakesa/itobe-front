@@ -76,7 +76,7 @@ function Accueil() {
 
           <Link
             to="/edition"
-            className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-sm border border-[#383030]/15 bg-[#fdfaf4] shadow-soft transition-transform duration-300 hover:-translate-y-1"
           >
             <div className="relative aspect-[16/11] overflow-hidden">
               <img
@@ -84,20 +84,20 @@ function Accueil() {
                 alt="Livres et édition"
                 className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/15 to-transparent" />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-background/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
-                <BookOpen className="size-3.5" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#211c1c]/70 via-[#211c1c]/20 to-transparent" />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-[#fdfaf4]/95 px-2.5 py-1 text-xs font-medium text-[#383030] backdrop-blur-sm">
+                <BookOpen className="size-3.5 text-[#ea5312]" />
                 Portail
               </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
-              <h1 className="font-display text-3xl leading-tight md:text-4xl">
+              <h1 className="font-display text-3xl leading-tight text-[#211c1c] md:text-4xl">
                 Maison d&apos;édition
               </h1>
-              <p className="mt-3 text-sm text-muted-foreground md:text-base">
-                Catalogue, lecture en ligne et bibliothèque — publier et lire autrement.
+              <p className="mt-3 text-sm text-[#383030]/80 md:text-base">
+                Faire de l&apos;Afrique le cœur de la narration mondiale.
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-accent">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#ea5312]">
                 Entrer dans l&apos;édition
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>

@@ -31,7 +31,7 @@ export function SiteHeader() {
   const titre = portail === "media" ? "Média" : "Maison d'édition";
   const liens = portail === "media" ? liensMedia : liensEdition;
   const accent =
-    portail === "media" ? "border-b-ochre" : "border-b-terracotta";
+    portail === "media" ? "border-b-[#70a2e1]" : "border-b-[#ea5312]";
 
   return (
     <header

@@ -14,6 +14,8 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { usePortailActif } from "../hooks/use-portail";
+import { cn } from "../lib/utils";
 
 function NotFoundComponent() {
   return (
@@ -95,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Onest:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -134,6 +136,18 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const portail = usePortailActif();
+  const themeEdition =
+    portail === "edition" ||
+    pathname.startsWith("/edition") ||
+    pathname.startsWith("/bibliotheque") ||
+    pathname.startsWith("/reader");
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("theme-edition", themeEdition);
+    return () => document.documentElement.classList.remove("theme-edition");
+  }, [themeEdition]);
+
   // Accueil / reader / admin = chrome dédié (pas le header public).
   const sansChrome =
     pathname === "/" ||
@@ -143,9 +157,11 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {sansChrome ? (
-        <Outlet />
+        <div className={cn(themeEdition && "theme-edition")}>
+          <Outlet />
+        </div>
       ) : (
-        <div className="flex min-h-screen flex-col">
+        <div className={cn("flex min-h-screen flex-col", themeEdition && "theme-edition")}>
           <SiteHeader />
           <main className="flex-1">
             {/* Required: nested routes render here. */}
