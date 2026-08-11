@@ -42,7 +42,7 @@ export function ArticleEditorForm({
   onAnnuler,
   onEnregistrer,
 }: {
-  initial?: Partial<ArticleFormValues> & { id?: string };
+  initial?: (Partial<ArticleFormValues> & { id?: string }) | undefined;
   onAnnuler: () => void;
   onEnregistrer: (v: ArticleFormValues) => void;
 }) {
@@ -413,21 +413,21 @@ export function ArticleEditorForm({
 
 export function articleVersForm(row: Record<string, unknown>): ArticleFormValues & { id: string } {
   return {
-    id: String(row.id),
-    titre: String(row.titre ?? ""),
-    resume: String(row.resume ?? row.chapo ?? ""),
-    contenu: String(row.contenu ?? ""),
-    auteur: String(row.auteur ?? auteurs[0]?.slug ?? ""),
-    categorie: String(row.categorie ?? "Actualités"),
-    tags: Array.isArray(row.tags) ? row.tags.join(", ") : String(row.tags ?? ""),
-    youtube: String(row.youtube ?? ""),
-    couverture: String(row.couverture ?? row.image ?? ""),
-    galerie: Array.isArray(row.galerie) ? (row.galerie as string[]) : [],
-    statut: (["Brouillon", "Programmé", "Publié"].includes(String(row.statut ?? row.etat))
-      ? String(row.statut ?? row.etat)
+    id: String(row["id"]),
+    titre: String(row["titre"] ?? ""),
+    resume: String(row["resume"] ?? row["chapo"] ?? ""),
+    contenu: String(row["contenu"] ?? ""),
+    auteur: String(row["auteur"] ?? auteurs[0]?.slug ?? ""),
+    categorie: String(row["categorie"] ?? "Actualités"),
+    tags: Array.isArray(row["tags"]) ? row["tags"].join(", ") : String(row["tags"] ?? ""),
+    youtube: String(row["youtube"] ?? ""),
+    couverture: String(row["couverture"] ?? row["image"] ?? ""),
+    galerie: Array.isArray(row["galerie"]) ? (row["galerie"] as string[]) : [],
+    statut: (["Brouillon", "Programmé", "Publié"].includes(String(row["statut"] ?? row["etat"]))
+      ? String(row["statut"] ?? row["etat"])
       : "Brouillon") as ArticleFormValues["statut"],
-    aLaUne: Boolean(row.aLaUne ?? row.populaire),
-    datePublication: String(row.datePublication ?? ""),
+    aLaUne: Boolean(row["aLaUne"] ?? row["populaire"]),
+    datePublication: String(row["datePublication"] ?? ""),
   };
 }
 

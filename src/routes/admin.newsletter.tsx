@@ -1,48 +1,52 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CrudModule } from "@/components/admin/crud-module";
-import { formatDate } from "@/lib/data";
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import { AccesRestreint } from "@/components/admin-ui";
+import { useRole } from "@/hooks/use-role";
 
 export const Route = createFileRoute("/admin/newsletter")({
-  component: () => (
-    <CrudModule
-      titre="Newsletter"
-      singulier="Abonné"
-      description="Liste des inscrits et segments d'envoi."
-      collection="newsletter"
-      requis={["admin"]}
-      clesRecherche={["email"]}
-      filtre={{ cle: "segment", label: "Segment", options: ["Média", "Édition"] }}
-      colonnes={[
-        { cle: "email", label: "E-mail" },
-        { cle: "segment", label: "Segment", classe: "text-muted-foreground" },
-        {
-          cle: "statut",
-          label: "Statut",
-          rendu: (r) => (
-            <span
-              className={`inline-block rounded-full px-2.5 py-0.5 text-xs ${
-                r["statut"] === "Abonné"
-                  ? "bg-accent/15 text-accent"
-                  : "bg-secondary text-muted-foreground"
-              }`}
-            >
-              {String(r["statut"])}
-            </span>
-          ),
-        },
-        {
-          cle: "date",
-          label: "Inscription",
-          classe: "text-muted-foreground",
-          rendu: (r) => formatDate(String(r["date"])),
-        },
-      ]}
-      champs={[
-        { nom: "email", label: "E-mail", requis: true },
-        { nom: "segment", label: "Segment", type: "select", options: ["Média", "Édition"] },
-        { nom: "statut", label: "Statut", type: "select", options: ["Abonné", "Désabonné"] },
-        { nom: "date", label: "Inscription", type: "date" },
-      ]}
-    />
-  ),
+  component: NewsletterLayout,
 });
+
+const ONGLETS = [
+  { to: "/admin/newsletter", label: "Vue d'ensemble", exact: true },
+  { to: "/admin/newsletter/abonnes", label: "Abonnés" },
+  { to: "/admin/newsletter/campagnes", label: "Campagnes" },
+  { to: "/admin/newsletter/templates", label: "Templates" },
+];
+
+function NewsletterLayout() {
+  const { role } = useRole();
+  if (role !== "admin") return <AccesRestreint requis={["admin"]} />;
+
+  return (
+    <div>
+      <header className="mb-5">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Communication
+        </p>
+        <h1 className="mt-1 font-display text-3xl">Newsletters</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Abonnés, campagnes, templates et statistiques d&apos;envoi.
+        </p>
+      </header>
+
+      <nav className="mb-6 flex flex-wrap gap-1 rounded-xl border border-border bg-card p-1">
+        {ONGLETS.map((o) => (
+          <Link
+            key={o.to}
+            to={o.to}
+            activeOptions={{ exact: o.exact ?? false }}
+            className="rounded-lg px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            activeProps={{
+              className:
+                "rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground",
+            }}
+          >
+            {o.label}
+          </Link>
+        ))}
+      </nav>
+
+      <Outlet />
+    </div>
+  );
+}

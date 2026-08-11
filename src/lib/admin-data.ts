@@ -73,7 +73,9 @@ export const menuAdmin: {
     items: [
       { to: "/admin/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
       { to: "/admin/commentaires", label: "Commentaires", roles: ["admin"] },
-      { to: "/admin/newsletter", label: "Newsletter", roles: ["admin"] },
+      { to: "/admin/newsletter", label: "Newsletters", roles: ["admin"] },
+      { to: "/admin/newsletter/abonnes", label: "Abonnés", roles: ["admin"] },
+      { to: "/admin/newsletter/campagnes", label: "Campagnes", roles: ["admin"] },
     ],
   },
   {

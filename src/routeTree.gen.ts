@@ -57,6 +57,11 @@ import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
+import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newsletter.index'
+import { Route as AdminNewsletterAbonnesRouteImport } from './routes/admin.newsletter.abonnes'
+import { Route as AdminNewsletterCampagnesRouteImport } from './routes/admin.newsletter.campagnes'
+import { Route as AdminNewsletterTemplatesRouteImport } from './routes/admin.newsletter.templates'
+import { Route as AdminNewsletterCampagneIdRouteImport } from './routes/admin.newsletter.campagne.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -298,6 +303,34 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
   path: '/reader/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNewsletterIndexRoute = AdminNewsletterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminNewsletterRoute,
+} as any)
+const AdminNewsletterAbonnesRoute = AdminNewsletterAbonnesRouteImport.update({
+  id: '/abonnes',
+  path: '/abonnes',
+  getParentRoute: () => AdminNewsletterRoute,
+} as any)
+const AdminNewsletterCampagnesRoute =
+  AdminNewsletterCampagnesRouteImport.update({
+    id: '/campagnes',
+    path: '/campagnes',
+    getParentRoute: () => AdminNewsletterRoute,
+  } as any)
+const AdminNewsletterTemplatesRoute =
+  AdminNewsletterTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AdminNewsletterRoute,
+  } as any)
+const AdminNewsletterCampagneIdRoute =
+  AdminNewsletterCampagneIdRouteImport.update({
+    id: '/campagne/$id',
+    path: '/campagne/$id',
+    getParentRoute: () => AdminNewsletterRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -330,7 +363,7 @@ export interface FileRoutesByFullPath {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/newsletter': typeof AdminNewsletterRouteWithChildren
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -348,6 +381,11 @@ export interface FileRoutesByFullPath {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
+  '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -377,7 +415,6 @@ export interface FileRoutesByTo {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -395,6 +432,11 @@ export interface FileRoutesByTo {
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
+  '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
+  '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/newsletter': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -428,7 +470,7 @@ export interface FileRoutesById {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/newsletter': typeof AdminNewsletterRouteWithChildren
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -446,6 +488,11 @@ export interface FileRoutesById {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
+  '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -498,6 +545,11 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
+    | '/admin/newsletter/templates'
+    | '/admin/newsletter/'
+    | '/admin/newsletter/campagne/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -527,7 +579,6 @@ export interface FileRouteTypes {
     | '/admin/medias'
     | '/admin/mes-achats'
     | '/admin/mon-profil'
-    | '/admin/newsletter'
     | '/admin/paiements'
     | '/admin/parametres'
     | '/admin/promotions'
@@ -545,6 +596,11 @@ export interface FileRouteTypes {
     | '/auteurs'
     | '/edition'
     | '/media'
+    | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
+    | '/admin/newsletter/templates'
+    | '/admin/newsletter'
+    | '/admin/newsletter/campagne/$id'
   id:
     | '__root__'
     | '/'
@@ -595,6 +651,11 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
+    | '/admin/newsletter/templates'
+    | '/admin/newsletter/'
+    | '/admin/newsletter/campagne/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -956,8 +1017,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReaderSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/newsletter/': {
+      id: '/admin/newsletter/'
+      path: '/'
+      fullPath: '/admin/newsletter/'
+      preLoaderRoute: typeof AdminNewsletterIndexRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
+    '/admin/newsletter/abonnes': {
+      id: '/admin/newsletter/abonnes'
+      path: '/abonnes'
+      fullPath: '/admin/newsletter/abonnes'
+      preLoaderRoute: typeof AdminNewsletterAbonnesRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
+    '/admin/newsletter/campagnes': {
+      id: '/admin/newsletter/campagnes'
+      path: '/campagnes'
+      fullPath: '/admin/newsletter/campagnes'
+      preLoaderRoute: typeof AdminNewsletterCampagnesRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
+    '/admin/newsletter/templates': {
+      id: '/admin/newsletter/templates'
+      path: '/templates'
+      fullPath: '/admin/newsletter/templates'
+      preLoaderRoute: typeof AdminNewsletterTemplatesRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
+    '/admin/newsletter/campagne/$id': {
+      id: '/admin/newsletter/campagne/$id'
+      path: '/campagne/$id'
+      fullPath: '/admin/newsletter/campagne/$id'
+      preLoaderRoute: typeof AdminNewsletterCampagneIdRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
   }
 }
+
+interface AdminNewsletterRouteChildren {
+  AdminNewsletterAbonnesRoute: typeof AdminNewsletterAbonnesRoute
+  AdminNewsletterCampagnesRoute: typeof AdminNewsletterCampagnesRoute
+  AdminNewsletterTemplatesRoute: typeof AdminNewsletterTemplatesRoute
+  AdminNewsletterIndexRoute: typeof AdminNewsletterIndexRoute
+  AdminNewsletterCampagneIdRoute: typeof AdminNewsletterCampagneIdRoute
+}
+
+const AdminNewsletterRouteChildren: AdminNewsletterRouteChildren = {
+  AdminNewsletterAbonnesRoute: AdminNewsletterAbonnesRoute,
+  AdminNewsletterCampagnesRoute: AdminNewsletterCampagnesRoute,
+  AdminNewsletterTemplatesRoute: AdminNewsletterTemplatesRoute,
+  AdminNewsletterIndexRoute: AdminNewsletterIndexRoute,
+  AdminNewsletterCampagneIdRoute: AdminNewsletterCampagneIdRoute,
+}
+
+const AdminNewsletterRouteWithChildren = AdminNewsletterRoute._addFileChildren(
+  AdminNewsletterRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminActualitesRoute: typeof AdminActualitesRoute
@@ -975,7 +1091,7 @@ interface AdminRouteChildren {
   AdminMediasRoute: typeof AdminMediasRoute
   AdminMesAchatsRoute: typeof AdminMesAchatsRoute
   AdminMonProfilRoute: typeof AdminMonProfilRoute
-  AdminNewsletterRoute: typeof AdminNewsletterRoute
+  AdminNewsletterRoute: typeof AdminNewsletterRouteWithChildren
   AdminPaiementsRoute: typeof AdminPaiementsRoute
   AdminParametresRoute: typeof AdminParametresRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
@@ -1004,7 +1120,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediasRoute: AdminMediasRoute,
   AdminMesAchatsRoute: AdminMesAchatsRoute,
   AdminMonProfilRoute: AdminMonProfilRoute,
-  AdminNewsletterRoute: AdminNewsletterRoute,
+  AdminNewsletterRoute: AdminNewsletterRouteWithChildren,
   AdminPaiementsRoute: AdminPaiementsRoute,
   AdminParametresRoute: AdminParametresRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
@@ -1067,13 +1183,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
