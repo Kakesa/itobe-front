@@ -70,9 +70,9 @@ function CampagnesPage() {
   };
 
   const dupliquer = (c: Item) => {
+    const { id: _ignore, ...reste } = c;
     const copie = creer({
-      ...c,
-      id: undefined,
+      ...reste,
       nom: `${String(c["nom"])} (copie)`,
       statut: "DRAFT",
       creee: new Date().toISOString().slice(0, 16),

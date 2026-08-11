@@ -59,6 +59,7 @@ import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newsletter.index'
 import { Route as AdminNewsletterAbonnesRouteImport } from './routes/admin.newsletter.abonnes'
+import { Route as AdminNewsletterCampagnesRouteImport } from './routes/admin.newsletter.campagnes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -310,6 +311,12 @@ const AdminNewsletterAbonnesRoute = AdminNewsletterAbonnesRouteImport.update({
   path: '/abonnes',
   getParentRoute: () => AdminNewsletterRoute,
 } as any)
+const AdminNewsletterCampagnesRoute =
+  AdminNewsletterCampagnesRouteImport.update({
+    id: '/campagnes',
+    path: '/campagnes',
+    getParentRoute: () => AdminNewsletterRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -361,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
 }
 export interface FileRoutesByTo {
@@ -409,6 +417,7 @@ export interface FileRoutesByTo {
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter': typeof AdminNewsletterIndexRoute
 }
 export interface FileRoutesById {
@@ -462,6 +471,7 @@ export interface FileRoutesById {
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
+  '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
 }
 export interface FileRouteTypes {
@@ -516,6 +526,7 @@ export interface FileRouteTypes {
     | '/edition/'
     | '/media/'
     | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
     | '/admin/newsletter/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -564,6 +575,7 @@ export interface FileRouteTypes {
     | '/edition'
     | '/media'
     | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
     | '/admin/newsletter'
   id:
     | '__root__'
@@ -616,6 +628,7 @@ export interface FileRouteTypes {
     | '/edition/'
     | '/media/'
     | '/admin/newsletter/abonnes'
+    | '/admin/newsletter/campagnes'
     | '/admin/newsletter/'
   fileRoutesById: FileRoutesById
 }
@@ -992,16 +1005,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsletterAbonnesRouteImport
       parentRoute: typeof AdminNewsletterRoute
     }
+    '/admin/newsletter/campagnes': {
+      id: '/admin/newsletter/campagnes'
+      path: '/campagnes'
+      fullPath: '/admin/newsletter/campagnes'
+      preLoaderRoute: typeof AdminNewsletterCampagnesRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
   }
 }
 
 interface AdminNewsletterRouteChildren {
   AdminNewsletterAbonnesRoute: typeof AdminNewsletterAbonnesRoute
+  AdminNewsletterCampagnesRoute: typeof AdminNewsletterCampagnesRoute
   AdminNewsletterIndexRoute: typeof AdminNewsletterIndexRoute
 }
 
 const AdminNewsletterRouteChildren: AdminNewsletterRouteChildren = {
   AdminNewsletterAbonnesRoute: AdminNewsletterAbonnesRoute,
+  AdminNewsletterCampagnesRoute: AdminNewsletterCampagnesRoute,
   AdminNewsletterIndexRoute: AdminNewsletterIndexRoute,
 }
 
