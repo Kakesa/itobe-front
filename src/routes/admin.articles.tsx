@@ -62,10 +62,10 @@ function AdminArticles() {
     const payload = formVersItem(valeurs);
     if (edition) {
       modifier(edition.id, payload);
-      notify.modifie("Article", String(payload.titre));
+      notify.modifie("Article", String(payload["titre"]));
     } else {
       creer(payload);
-      notify.cree("Article", String(payload.titre));
+      notify.cree("Article", String(payload["titre"]));
     }
     setMode("liste");
     setEdition(null);
