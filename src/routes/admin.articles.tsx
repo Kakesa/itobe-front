@@ -52,8 +52,8 @@ function AdminArticles() {
 
   const liste = items.filter(
     (a) =>
-      (filtre === "Toutes" || a.categorie === filtre) &&
-      String(a.titre ?? "")
+      (filtre === "Toutes" || a["categorie"] === filtre) &&
+      String(a["titre"] ?? "")
         .toLowerCase()
         .includes(q.toLowerCase()),
   );
@@ -73,7 +73,7 @@ function AdminArticles() {
 
   const appliquer = (row: Item, cible: EtatModeration, note?: string) => {
     modifier(row.id, { etat: cible, statut: cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon" });
-    notify.succes(`« ${String(row.titre)} » → ${cible}`, { description: note });
+    notify.succes(`« ${String(row["titre"])} » → ${cible}`, { description: note });
   };
 
   if (mode === "creer" || mode === "editer") {
@@ -139,18 +139,18 @@ function AdminArticles() {
           </thead>
           <tbody className="divide-y divide-border">
             {liste.map((row) => {
-              const etat = String(row.statut ?? row.etat ?? "Brouillon");
-              const etatMod = (row.etat as EtatModeration) ?? "Brouillon";
+              const etat = String(row["statut"] ?? row["etat"] ?? "Brouillon");
+              const etatMod = (row["etat"] as EtatModeration) ?? "Brouillon";
               const cibles = transitions[role]?.[etatMod] ?? [];
               return (
                 <tr key={row.id}>
-                  <td className="px-4 py-3 font-medium">{String(row.titre)}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{String(row.categorie)}</td>
+                  <td className="px-4 py-3 font-medium">{String(row["titre"])}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{String(row["categorie"])}</td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {nomAuteur(String(row.auteur))}
+                    {nomAuteur(String(row["auteur"]))}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {formatDate(String(row.date ?? new Date().toISOString().slice(0, 10)))}
+                    {formatDate(String(row["date"] ?? new Date().toISOString().slice(0, 10)))}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -212,14 +212,14 @@ function AdminArticles() {
         titre="Supprimer l'article ?"
         message={
           aSupprimer
-            ? `« ${String(aSupprimer.titre)} » sera définitivement retiré.`
+            ? `« ${String(aSupprimer["titre"])} » sera définitivement retiré.`
             : ""
         }
         onAnnuler={() => setASupprimer(null)}
         onConfirmer={() => {
           if (aSupprimer) {
             supprimer(aSupprimer.id);
-            notify.supprime("Article", String(aSupprimer.titre));
+            notify.supprime("Article", String(aSupprimer["titre"]));
           }
           setASupprimer(null);
         }}
@@ -228,7 +228,7 @@ function AdminArticles() {
       {rejet && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4">
           <div className="w-full max-w-md rounded-xl border border-border bg-card p-6 shadow-xl">
-            <h3 className="font-display text-xl">Rejeter « {String(rejet.titre)} »</h3>
+            <h3 className="font-display text-xl">Rejeter « {String(rejet["titre"])} »</h3>
             <textarea
               value={motif}
               onChange={(e) => setMotif(e.target.value)}

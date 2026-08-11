@@ -357,7 +357,7 @@ function ChampImage({
 }: {
   id: string;
   valeur: string;
-  placeholder?: string;
+  placeholder?: string | undefined;
   onChange: (url: string) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
