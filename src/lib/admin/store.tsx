@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { Item } from "./seeds";
+import { seedAbonnes, seedCampagnes, seedTemplates } from "@/lib/newsletter/seeds";
 import {
   seedActualites,
   seedArticles,
@@ -25,8 +26,9 @@ import {
   seedPromotions,
   seedUtilisateurs,
 } from "./seeds";
+import { seedAbonnes, seedCampagnes, seedTemplates } from "@/lib/newsletter/seeds";
 
-const CLE = "itobe.admin.data.v3";
+const CLE = "itobe.admin.data.v4";
 
 const SEEDS = {
   articles: seedArticles,
@@ -43,6 +45,9 @@ const SEEDS = {
   utilisateurs: seedUtilisateurs,
   commentaires: seedCommentaires,
   newsletter: seedNewsletter,
+  abonnes: seedAbonnes,
+  campagnes: seedCampagnes,
+  templates: seedTemplates,
 } satisfies Record<string, Item[]>;
 
 export type NomCollection = keyof typeof SEEDS;
