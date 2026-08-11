@@ -60,6 +60,7 @@ import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newsletter.index'
 import { Route as AdminNewsletterAbonnesRouteImport } from './routes/admin.newsletter.abonnes'
 import { Route as AdminNewsletterCampagnesRouteImport } from './routes/admin.newsletter.campagnes'
+import { Route as AdminNewsletterCampagneIdRouteImport } from './routes/admin.newsletter.campagne.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -317,6 +318,12 @@ const AdminNewsletterCampagnesRoute =
     path: '/campagnes',
     getParentRoute: () => AdminNewsletterRoute,
   } as any)
+const AdminNewsletterCampagneIdRoute =
+  AdminNewsletterCampagneIdRouteImport.update({
+    id: '/campagne/$id',
+    path: '/campagne/$id',
+    getParentRoute: () => AdminNewsletterRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -370,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -419,6 +427,7 @@ export interface FileRoutesByTo {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -473,6 +482,7 @@ export interface FileRoutesById {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -528,6 +538,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/'
+    | '/admin/newsletter/campagne/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -577,6 +588,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter'
+    | '/admin/newsletter/campagne/$id'
   id:
     | '__root__'
     | '/'
@@ -630,6 +642,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/'
+    | '/admin/newsletter/campagne/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1012,6 +1025,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsletterCampagnesRouteImport
       parentRoute: typeof AdminNewsletterRoute
     }
+    '/admin/newsletter/campagne/$id': {
+      id: '/admin/newsletter/campagne/$id'
+      path: '/campagne/$id'
+      fullPath: '/admin/newsletter/campagne/$id'
+      preLoaderRoute: typeof AdminNewsletterCampagneIdRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
   }
 }
 
@@ -1019,12 +1039,14 @@ interface AdminNewsletterRouteChildren {
   AdminNewsletterAbonnesRoute: typeof AdminNewsletterAbonnesRoute
   AdminNewsletterCampagnesRoute: typeof AdminNewsletterCampagnesRoute
   AdminNewsletterIndexRoute: typeof AdminNewsletterIndexRoute
+  AdminNewsletterCampagneIdRoute: typeof AdminNewsletterCampagneIdRoute
 }
 
 const AdminNewsletterRouteChildren: AdminNewsletterRouteChildren = {
   AdminNewsletterAbonnesRoute: AdminNewsletterAbonnesRoute,
   AdminNewsletterCampagnesRoute: AdminNewsletterCampagnesRoute,
   AdminNewsletterIndexRoute: AdminNewsletterIndexRoute,
+  AdminNewsletterCampagneIdRoute: AdminNewsletterCampagneIdRoute,
 }
 
 const AdminNewsletterRouteWithChildren = AdminNewsletterRoute._addFileChildren(
