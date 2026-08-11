@@ -57,6 +57,7 @@ import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
+import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newsletter.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -298,6 +299,11 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
   path: '/reader/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminNewsletterIndexRoute = AdminNewsletterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminNewsletterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -330,7 +336,7 @@ export interface FileRoutesByFullPath {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/newsletter': typeof AdminNewsletterRouteWithChildren
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -348,6 +354,7 @@ export interface FileRoutesByFullPath {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/newsletter/': typeof AdminNewsletterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -377,7 +384,6 @@ export interface FileRoutesByTo {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -395,6 +401,7 @@ export interface FileRoutesByTo {
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
+  '/admin/newsletter': typeof AdminNewsletterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -428,7 +435,7 @@ export interface FileRoutesById {
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
-  '/admin/newsletter': typeof AdminNewsletterRoute
+  '/admin/newsletter': typeof AdminNewsletterRouteWithChildren
   '/admin/paiements': typeof AdminPaiementsRoute
   '/admin/parametres': typeof AdminParametresRoute
   '/admin/promotions': typeof AdminPromotionsRoute
@@ -446,6 +453,7 @@ export interface FileRoutesById {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/newsletter/': typeof AdminNewsletterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -498,6 +506,7 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/newsletter/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -527,7 +536,6 @@ export interface FileRouteTypes {
     | '/admin/medias'
     | '/admin/mes-achats'
     | '/admin/mon-profil'
-    | '/admin/newsletter'
     | '/admin/paiements'
     | '/admin/parametres'
     | '/admin/promotions'
@@ -545,6 +553,7 @@ export interface FileRouteTypes {
     | '/auteurs'
     | '/edition'
     | '/media'
+    | '/admin/newsletter'
   id:
     | '__root__'
     | '/'
@@ -595,6 +604,7 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/newsletter/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -956,8 +966,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReaderSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/newsletter/': {
+      id: '/admin/newsletter/'
+      path: '/'
+      fullPath: '/admin/newsletter/'
+      preLoaderRoute: typeof AdminNewsletterIndexRouteImport
+      parentRoute: typeof AdminNewsletterRoute
+    }
   }
 }
+
+interface AdminNewsletterRouteChildren {
+  AdminNewsletterIndexRoute: typeof AdminNewsletterIndexRoute
+}
+
+const AdminNewsletterRouteChildren: AdminNewsletterRouteChildren = {
+  AdminNewsletterIndexRoute: AdminNewsletterIndexRoute,
+}
+
+const AdminNewsletterRouteWithChildren = AdminNewsletterRoute._addFileChildren(
+  AdminNewsletterRouteChildren,
+)
 
 interface AdminRouteChildren {
   AdminActualitesRoute: typeof AdminActualitesRoute
@@ -975,7 +1004,7 @@ interface AdminRouteChildren {
   AdminMediasRoute: typeof AdminMediasRoute
   AdminMesAchatsRoute: typeof AdminMesAchatsRoute
   AdminMonProfilRoute: typeof AdminMonProfilRoute
-  AdminNewsletterRoute: typeof AdminNewsletterRoute
+  AdminNewsletterRoute: typeof AdminNewsletterRouteWithChildren
   AdminPaiementsRoute: typeof AdminPaiementsRoute
   AdminParametresRoute: typeof AdminParametresRoute
   AdminPromotionsRoute: typeof AdminPromotionsRoute
@@ -1004,7 +1033,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminMediasRoute: AdminMediasRoute,
   AdminMesAchatsRoute: AdminMesAchatsRoute,
   AdminMonProfilRoute: AdminMonProfilRoute,
-  AdminNewsletterRoute: AdminNewsletterRoute,
+  AdminNewsletterRoute: AdminNewsletterRouteWithChildren,
   AdminPaiementsRoute: AdminPaiementsRoute,
   AdminParametresRoute: AdminParametresRoute,
   AdminPromotionsRoute: AdminPromotionsRoute,
