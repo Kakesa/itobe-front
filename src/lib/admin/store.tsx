@@ -9,7 +9,6 @@ import {
   type ReactNode,
 } from "react";
 import type { Item } from "./seeds";
-import { seedAbonnes, seedCampagnes, seedTemplates } from "@/lib/newsletter/seeds";
 import {
   seedActualites,
   seedArticles,
