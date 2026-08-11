@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
+import { Copy, Pencil, Trash2 } from "lucide-react";
 import type { Role } from "@/lib/admin-data";
 import { roles } from "@/lib/admin-data";
+import { RowActionsMenu } from "@/components/admin/row-actions-menu";
 
 export function AccesRestreint({ requis }: { requis: Role[] }) {
   const labels = roles.filter((r) => requis.includes(r.id)).map((r) => r.label);
@@ -78,16 +80,20 @@ export function Tableau({
 
 export function Actions() {
   return (
-    <div className="flex justify-end gap-3 text-xs">
-      <button type="button" className="text-accent hover:underline">
-        Modifier
-      </button>
-      <button type="button" className="text-muted-foreground hover:text-foreground">
-        Dupliquer
-      </button>
-      <button type="button" className="text-destructive hover:underline">
-        Supprimer
-      </button>
+    <div className="flex justify-end">
+      <RowActionsMenu
+        actions={[
+          { label: "Modifier", icon: Pencil, onClick: () => undefined },
+          { label: "Dupliquer", icon: Copy, onClick: () => undefined },
+          {
+            label: "Supprimer",
+            icon: Trash2,
+            destructive: true,
+            separatorBefore: true,
+            onClick: () => undefined,
+          },
+        ]}
+      />
     </div>
   );
 }

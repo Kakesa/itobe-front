@@ -27,7 +27,7 @@ import {
 } from "./seeds";
 import { seedAbonnes, seedCampagnes, seedTemplates } from "@/lib/newsletter/seeds";
 
-const CLE = "itobe.admin.data.v4";
+const CLE = "itobe.admin.data.v5";
 
 const SEEDS = {
   articles: seedArticles,

@@ -1,4 +1,4 @@
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
+import { Link, Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { AccesRestreint } from "@/components/admin-ui";
 import { useRole } from "@/hooks/use-role";
 
@@ -6,16 +6,19 @@ export const Route = createFileRoute("/admin/newsletter")({
   component: NewsletterLayout,
 });
 
-const ONGLETS = [
-  { to: "/admin/newsletter", label: "Vue d'ensemble", exact: true },
-  { to: "/admin/newsletter/abonnes", label: "Abonnés" },
-  { to: "/admin/newsletter/campagnes", label: "Campagnes" },
-  { to: "/admin/newsletter/templates", label: "Templates" },
-];
+const NAV = [
+  { to: "/admin/newsletter", label: "Campagnes", exact: true },
+  { to: "/admin/newsletter/abonnes", label: "Abonnés", exact: false },
+  { to: "/admin/newsletter/templates", label: "Templates", exact: false },
+] as const;
 
 function NewsletterLayout() {
   const { role } = useRole();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   if (role !== "admin") return <AccesRestreint requis={["admin"]} />;
+
+  // Détail d'une campagne : pas de nav (focus édition)
+  const detailCampagne = pathname.includes("/newsletter/campagne/");
 
   return (
     <div>
@@ -23,28 +26,31 @@ function NewsletterLayout() {
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           Communication
         </p>
-        <h1 className="mt-1 font-display text-3xl">Newsletters</h1>
+        <h1 className="mt-1 font-display text-3xl">Newsletter</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Abonnés, campagnes, templates et statistiques d&apos;envoi.
+          Campagnes, notifications et abonnés. La publication d&apos;un article ou d&apos;un livre
+          notifie automatiquement tous les abonnés actifs.
         </p>
       </header>
 
-      <nav className="mb-6 flex flex-wrap gap-1 rounded-xl border border-border bg-card p-1">
-        {ONGLETS.map((o) => (
-          <Link
-            key={o.to}
-            to={o.to}
-            activeOptions={{ exact: o.exact ?? false }}
-            className="rounded-lg px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            activeProps={{
-              className:
-                "rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground",
-            }}
-          >
-            {o.label}
-          </Link>
-        ))}
-      </nav>
+      {!detailCampagne && (
+        <nav className="mb-6 flex flex-wrap gap-1 rounded-xl border border-border bg-card p-1">
+          {NAV.map((o) => (
+            <Link
+              key={o.to}
+              to={o.to}
+              activeOptions={{ exact: o.exact }}
+              className="rounded-lg px-3.5 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{
+                className:
+                  "rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground",
+              }}
+            >
+              {o.label}
+            </Link>
+          ))}
+        </nav>
+      )}
 
       <Outlet />
     </div>

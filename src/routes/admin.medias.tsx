@@ -5,9 +5,9 @@ import { formatDate } from "@/lib/data";
 export const Route = createFileRoute("/admin/medias")({
   component: () => (
     <CrudModule
-      titre="Médias"
-      singulier="Média"
-      description="Bibliothèque de fichiers : images, audio et documents."
+      titre="Médiathèque"
+      singulier="Fichier"
+      description="Bibliothèque de fichiers partagés : images de couverture, audio, PDF et documents réutilisables dans les articles et les livres."
       collection="medias"
       requis={["admin"]}
       clesRecherche={["nom"]}

@@ -2,6 +2,7 @@ import { useMemo, useState, useRef, type ReactNode } from "react";
 import { ImagePlus, Pencil, Plus, Trash2, X } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
@@ -37,6 +38,7 @@ export function CrudModule({
   actionsLigne,
   entetePersonnalisee,
   lectureSeule = false,
+  onApresEnregistrement,
 }: {
   titre: string;
   singulier: string;
@@ -47,9 +49,15 @@ export function CrudModule({
   champs: Champ[];
   clesRecherche?: string[];
   filtre?: { cle: string; label: string; options: string[] };
-  actionsLigne?: (row: Item) => ReactNode;
+  actionsLigne?: (row: Item) => RowAction[];
   entetePersonnalisee?: ReactNode;
   lectureSeule?: boolean;
+  /** Appelé après création ou modification réussie. */
+  onApresEnregistrement?: (ctx: {
+    avant: Item | null;
+    apres: Item;
+    creation: boolean;
+  }) => void;
 }) {
   const { role } = useRole();
   const { items, creer, modifier, supprimer } = useCollection(collection);
@@ -79,10 +87,13 @@ export function CrudModule({
   const enregistrer = (valeurs: Record<string, unknown>) => {
     if (edition?.row) {
       modifier(edition.row.id, valeurs);
+      const apres = { ...edition.row, ...valeurs } as Item;
       notify.modifie(singulier, String(valeurs["titre"] ?? valeurs["nom"] ?? edition.row.id));
+      onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
     } else {
       const item = creer(valeurs);
       notify.cree(singulier, libelle(item));
+      onApresEnregistrement?.({ avant: null, apres: item, creation: true });
     }
     setEdition(null);
   };
@@ -149,22 +160,26 @@ export function CrudModule({
                   </td>
                 ))}
                 <td className="px-4 py-3">
-                  <div className="flex flex-wrap items-center justify-end gap-2 text-xs">
-                    {actionsLigne?.(row)}
-                    <button
-                      type="button"
-                      onClick={() => setEdition({ row })}
-                      className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 hover:bg-secondary"
-                    >
-                      <Pencil className="size-3.5" /> Modifier
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setASupprimer(row)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-destructive/40 px-2.5 py-1 text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="size-3.5" /> Supprimer
-                    </button>
+                  <div className="flex justify-end">
+                    {!lectureSeule && (
+                      <RowActionsMenu
+                        actions={[
+                          ...(actionsLigne?.(row) ?? []),
+                          {
+                            label: "Modifier",
+                            icon: Pencil,
+                            onClick: () => setEdition({ row }),
+                          },
+                          {
+                            label: "Supprimer",
+                            icon: Trash2,
+                            destructive: true,
+                            separatorBefore: true,
+                            onClick: () => setASupprimer(row),
+                          },
+                        ]}
+                      />
+                    )}
                   </div>
                 </td>
               </tr>

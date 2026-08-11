@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
+import { RowActionsMenu } from "@/components/admin/row-actions-menu";
 import {
   ArticleEditorForm,
   articleVersForm,
@@ -15,6 +16,7 @@ import { useRole } from "@/hooks/use-role";
 import { useCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
+import { useNotifierAbonnes } from "@/hooks/use-notifier-abonnes";
 
 export const Route = createFileRoute("/admin/articles")({
   component: AdminArticles,
@@ -38,6 +40,7 @@ const LIBELLE: Record<EtatModeration, string> = {
 function AdminArticles() {
   const { role } = useRole();
   const { items, creer, modifier, supprimer } = useCollection("articles");
+  const { notifierSiPublication } = useNotifierAbonnes();
   const [mode, setMode] = useState<"liste" | "creer" | "editer">("liste");
   const [edition, setEdition] = useState<Item | null>(null);
   const [aSupprimer, setASupprimer] = useState<Item | null>(null);
@@ -63,17 +66,25 @@ function AdminArticles() {
     if (edition) {
       modifier(edition.id, payload);
       notify.modifie("Article", String(payload["titre"]));
+      notifierSiPublication("article", edition, { ...edition, ...payload });
     } else {
-      creer(payload);
+      const item = creer(payload);
       notify.cree("Article", String(payload["titre"]));
+      notifierSiPublication("article", null, item);
     }
     setMode("liste");
     setEdition(null);
   };
 
   const appliquer = (row: Item, cible: EtatModeration, note?: string) => {
-    modifier(row.id, { etat: cible, statut: cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon" });
+    const patch = {
+      etat: cible,
+      statut:
+        cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon",
+    };
+    modifier(row.id, patch);
     notify.succes(`« ${String(row["titre"])} » → ${cible}`, { description: note });
+    notifierSiPublication("article", row, { ...row, ...patch });
   };
 
   if (mode === "creer" || mode === "editer") {
@@ -95,7 +106,8 @@ function AdminArticles() {
         <div>
           <h2 className="text-2xl">Articles</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Créer, programmer et publier les articles du portail Média.
+            Créer, programmer et publier les articles du portail Média. Publier notifie tous les
+            abonnés ACTIVE par e-mail.
           </p>
         </div>
         <input
@@ -160,40 +172,33 @@ function AdminArticles() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex flex-wrap items-center justify-end gap-2 text-xs">
-                      {cibles.map((c) => (
-                        <button
-                          key={c}
-                          type="button"
-                          onClick={() =>
-                            c === "Rejeté" ? (setRejet(row), setMotif("")) : appliquer(row, c)
-                          }
-                          className={`rounded-lg border px-2.5 py-1 ${
-                            c === "Rejeté"
-                              ? "border-destructive/40 text-destructive"
-                              : "border-border hover:bg-secondary"
-                          }`}
-                        >
-                          {LIBELLE[c]}
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEdition(row);
-                          setMode("editer");
-                        }}
-                        className="inline-flex items-center gap-1 rounded-lg border border-border px-2.5 py-1 hover:bg-secondary"
-                      >
-                        <Pencil className="size-3.5" /> Modifier
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setASupprimer(row)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-destructive/40 px-2.5 py-1 text-destructive"
-                      >
-                        <Trash2 className="size-3.5" /> Supprimer
-                      </button>
+                    <div className="flex justify-end">
+                      <RowActionsMenu
+                        actions={[
+                          ...cibles.map((c) => ({
+                            label: LIBELLE[c],
+                            onClick: () =>
+                              c === "Rejeté" ? (setRejet(row), setMotif("")) : appliquer(row, c),
+                            destructive: c === "Rejeté",
+                          })),
+                          {
+                            label: "Modifier",
+                            icon: Pencil,
+                            separatorBefore: cibles.length > 0,
+                            onClick: () => {
+                              setEdition(row);
+                              setMode("editer");
+                            },
+                          },
+                          {
+                            label: "Supprimer",
+                            icon: Trash2,
+                            destructive: true,
+                            separatorBefore: true,
+                            onClick: () => setASupprimer(row),
+                          },
+                        ]}
+                      />
                     </div>
                   </td>
                 </tr>

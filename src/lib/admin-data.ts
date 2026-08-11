@@ -55,7 +55,7 @@ export const menuAdmin: {
       { to: "/admin/livres", label: "Livres", roles: ["admin", "editeur"] },
       { to: "/admin/auteurs", label: "Auteurs", roles: ["admin", "editeur"] },
       { to: "/admin/categories", label: "Catégories", roles: ["admin", "editeur"] },
-      { to: "/admin/medias", label: "Médias", roles: ["admin"] },
+      { to: "/admin/medias", label: "Médiathèque", roles: ["admin"] },
     ],
   },
   {
@@ -73,9 +73,7 @@ export const menuAdmin: {
     items: [
       { to: "/admin/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
       { to: "/admin/commentaires", label: "Commentaires", roles: ["admin"] },
-      { to: "/admin/newsletter", label: "Newsletters", roles: ["admin"] },
-      { to: "/admin/newsletter/abonnes", label: "Abonnés", roles: ["admin"] },
-      { to: "/admin/newsletter/campagnes", label: "Campagnes", roles: ["admin"] },
+      { to: "/admin/newsletter", label: "Newsletter", roles: ["admin"] },
     ],
   },
   {

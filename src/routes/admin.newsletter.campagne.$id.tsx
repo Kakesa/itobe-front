@@ -55,8 +55,8 @@ function CampagneDetail() {
     return (
       <div className="rounded-xl border border-dashed border-border p-8 text-center">
         <p className="font-display text-xl">Campagne introuvable</p>
-        <Link to="/admin/newsletter/campagnes" className="mt-3 inline-block text-sm text-accent">
-          Retour aux campagnes
+        <Link to="/admin/newsletter" className="mt-3 inline-block text-sm text-accent">
+          Retour à la newsletter
         </Link>
       </div>
     );
@@ -94,6 +94,7 @@ function CampagneDetail() {
     const delivres = Math.round(destinataires * 0.97);
     journaliser("Envoi immédiat déclenché", {
       statut: "SENT",
+      type: campagne["type"] ?? "marketing",
       envoyee: maintenant,
       envoiPrevu: maintenant,
       destinataires,
@@ -103,7 +104,9 @@ function CampagneDetail() {
       clics: Math.round(delivres * 0.13),
       desabonnements: Math.max(1, Math.round(delivres * 0.008)),
     });
-    notify.succes("Campagne envoyée", { description: `${destinataires} destinataire(s)` });
+    notify.succes("Campagne envoyée", {
+      description: `${destinataires} abonné(s) notifié(s) par e-mail`,
+    });
     setConfirmEnvoi(false);
     setOnglet("stats");
   };
@@ -137,10 +140,10 @@ function CampagneDetail() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
         <Link
-          to="/admin/newsletter/campagnes"
+          to="/admin/newsletter"
           className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary"
         >
-          <ArrowLeft className="size-4" /> Campagnes
+          <ArrowLeft className="size-4" /> Newsletter
         </Link>
         <div className="min-w-0">
           <h2 className="truncate text-2xl">{String(campagne["nom"])}</h2>
@@ -251,9 +254,15 @@ function CampagneDetail() {
                   const tpl = templates.find((t) => t.id === e.target.value);
                   set({
                     template: e.target.value,
-                    ...(tpl ? { blocs: blocsDe(tpl["blocs"]) } : {}),
+                    ...(tpl
+                      ? {
+                          blocs: blocsDe(tpl["blocs"]),
+                          sujet: String(tpl["sujet"] || campagne["sujet"] || ""),
+                          nom: String(tpl["nom"] || campagne["nom"] || ""),
+                        }
+                      : {}),
                   });
-                  if (tpl) notify.info("Template appliqué", { description: String(tpl["nom"]) });
+                  if (tpl) notify.info("Template appliqué", { description: String(tpl["sujet"] || tpl["nom"]) });
                 }}
                 className={`${champ} disabled:opacity-60`}
               >
@@ -261,9 +270,20 @@ function CampagneDetail() {
                 {templates.map((t) => (
                   <option key={t.id} value={t.id}>
                     {String(t["nom"])}
+                    {t["sujet"] ? ` — ${String(t["sujet"])}` : ""}
                   </option>
                 ))}
               </select>
+              {(() => {
+                const tpl = templates.find((t) => t.id === String(campagne["template"] ?? ""));
+                if (!tpl) return null;
+                return (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    {String(tpl["description"] ?? "")}
+                    {tpl["usage"] ? ` · Usage : ${String(tpl["usage"])}` : ""}
+                  </p>
+                );
+              })()}
             </div>
 
             <div className="border-t border-border pt-4">
@@ -416,10 +436,10 @@ function CampagneDetail() {
 
       <button
         type="button"
-        onClick={() => void navigate({ to: "/admin/newsletter/campagnes" })}
+        onClick={() => void navigate({ to: "/admin/newsletter" })}
         className="text-xs text-muted-foreground hover:text-foreground"
       >
-        ← Retour à l&apos;historique des campagnes
+        ← Retour à la newsletter
       </button>
     </div>
   );

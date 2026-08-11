@@ -15,69 +15,354 @@ export const seedAbonnes: Item[] = [
   { id: "sub-8", nom: "David Mukendi", email: "david@itobe.cd", statut: "BLOCKED", inscription: "2026-04-04", interaction: "2026-04-05", source: "Site web", interet: "Média", achats: 0, premium: false },
 ];
 
+/** Templates prêts à l'emploi : sujet + usage + contenu rédigé. */
 export const seedTemplates: Item[] = [
   {
     id: "tpl-actus",
-    nom: "Actualités",
-    description: "Récapitulatif des derniers articles du portail Média.",
+    nom: "Actualités média",
+    sujet: "À la une cette semaine sur Itobe",
     categorie: "Média",
+    usage: "Annoncer 1 à 3 articles récents du portail Média.",
+    description:
+      "E-mail rédigé pour la rédaction : introduction chaleureuse, mise en avant d'un article à la une, appel à lire sur le site, réseaux et pied de page légal.",
     blocs: blocs(
-      { id: "b1", type: "TEXT", titre: "L'actualité Itobe", sousTitre: "La semaine en trois lectures", texte: "Bonjour, voici la sélection de la rédaction." },
-      { id: "b2", type: "ARTICLE", titre: "À la une", reference: "" },
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "L'actualité Itobe",
+        sousTitre: "La sélection de la rédaction",
+        texte:
+          "Bonjour,\n\nVoici les lectures que nous avons choisies pour vous cette semaine : enquêtes, chroniques et interviews à ne pas manquer sur le portail Média.",
+      },
+      {
+        id: "b2",
+        type: "ARTICLE",
+        titre: "À la une",
+        sousTitre: "Notre article du moment",
+        texte: "Découvrez le dossier qui fait parler cette semaine.",
+        lien: "https://itobe.cd/media",
+      },
       { id: "b3", type: "DIVIDER" },
-      { id: "b4", type: "BUTTON", libelleLien: "Lire sur Itobe", lien: "https://itobe.cd/media" },
-      { id: "b5", type: "SOCIAL_LINKS", texte: "Facebook · X · Instagram · LinkedIn" },
-      { id: "b6", type: "FOOTER", texte: "Itobe Entreprise — Kinshasa, RDC. Se désabonner." },
+      {
+        id: "b4",
+        type: "BUTTON",
+        libelleLien: "Lire sur Itobe Média",
+        lien: "https://itobe.cd/media",
+      },
+      {
+        id: "b5",
+        type: "SOCIAL_LINKS",
+        texte: "Facebook · X · Instagram · LinkedIn",
+      },
+      {
+        id: "b6",
+        type: "FOOTER",
+        texte:
+          "Itobe Entreprise — Kinshasa, RDC. Vous recevez cet e-mail car vous êtes abonné à la newsletter Média. Se désabonner.",
+      },
     ),
   },
   {
     id: "tpl-livres",
     nom: "Nouveautés livres",
-    description: "Mise en avant des parutions de la maison d'édition.",
+    sujet: "Nouvelles parutions à découvrir chez Itobe",
     categorie: "Édition",
+    usage: "Présenter une ou plusieurs nouveautés du catalogue.",
+    description:
+      "Template maison d'édition : accroche sur les parutions, livre mis en avant, bouton catalogue et message d'invitation à l'aperçu gratuit.",
     blocs: blocs(
-      { id: "b1", type: "TEXT", titre: "Nos nouveautés", texte: "Trois titres viennent de rejoindre le catalogue." },
-      { id: "b2", type: "BOOK", titre: "Le livre du mois", reference: "" },
-      { id: "b3", type: "BUTTON", libelleLien: "Voir le catalogue", lien: "https://itobe.cd/edition" },
-      { id: "b4", type: "FOOTER", texte: "Itobe Entreprise — Se désabonner." },
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Nos nouveautés",
+        sousTitre: "Maison d'édition Itobe",
+        texte:
+          "Bonjour,\n\nDe nouveaux titres rejoignent le catalogue : romans, essais et jeunesse. Feuilletez un aperçu gratuit, puis choisissez le format PDF, EPUB ou papier.",
+      },
+      {
+        id: "b2",
+        type: "BOOK",
+        titre: "Le livre du mois",
+        sousTitre: "Coup de cœur de l'équipe",
+        texte: "Une lecture à placer en tête de votre bibliothèque.",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b3",
+        type: "BUTTON",
+        libelleLien: "Voir le catalogue",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b4",
+        type: "FOOTER",
+        texte:
+          "Itobe Édition — Kinshasa, RDC. Vous recevez cet e-mail car vous suivez nos parutions. Se désabonner.",
+      },
     ),
   },
   {
     id: "tpl-promo",
-    nom: "Promotion",
-    description: "Offre commerciale avec code promo et visuel.",
+    nom: "Promotion catalogue",
+    sujet: "Offre limitée : jusqu'à -25 % sur une sélection Itobe",
     categorie: "Commercial",
+    usage: "Lancer une promo, un code ou une quinzaine tarifaire.",
+    description:
+      "E-mail commercial prêt : titre d'offre, période de validité, bénéfice clair et bouton d'action. Idéal pour les campagnes marketing.",
     blocs: blocs(
-      { id: "b1", type: "IMAGE", image: "", texte: "Visuel de campagne" },
-      { id: "b2", type: "TEXT", titre: "-25 % sur les essais", texte: "Pendant la quinzaine de l'essai, profitez de nos titres à prix réduit." },
-      { id: "b3", type: "BUTTON", libelleLien: "J'en profite", lien: "https://itobe.cd/edition" },
-      { id: "b4", type: "FOOTER", texte: "Itobe Entreprise — Se désabonner." },
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Offre de la quinzaine",
+        sousTitre: "Jusqu'au 15 du mois",
+        texte:
+          "Profitez de -25 % sur une sélection d'essais et de romans. L'offre est valable en ligne uniquement, sur les formats numériques et papier indiqués dans le catalogue.",
+      },
+      {
+        id: "b2",
+        type: "BUTTON",
+        libelleLien: "J'en profite maintenant",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b3",
+        type: "TEXT",
+        titre: "",
+        texte:
+          "Astuce : connectez-vous à votre espace lecteur pour retrouver vos achats et téléchargements instantanément après paiement.",
+      },
+      {
+        id: "b4",
+        type: "FOOTER",
+        texte:
+          "Itobe Entreprise — Offre non cumulable. Se désabonner des e-mails commerciaux.",
+      },
     ),
   },
   {
     id: "tpl-hebdo",
     nom: "Newsletter hebdomadaire",
-    description: "Format court envoyé chaque vendredi.",
+    sujet: "Votre vendredi Itobe : 5 minutes de lecture",
     categorie: "Récurrent",
+    usage: "Envoi chaque vendredi (média + édition).",
+    description:
+      "Format court du week-end : un article de la semaine, une lecture conseillée, ton conversationnel. Prêt à programmer chaque vendredi 18 h.",
     blocs: blocs(
-      { id: "b1", type: "TEXT", titre: "Vendredi chez Itobe", texte: "Le résumé de la semaine en cinq minutes." },
-      { id: "b2", type: "ARTICLE", titre: "Article de la semaine", reference: "" },
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Vendredi chez Itobe",
+        sousTitre: "Le résumé de la semaine",
+        texte:
+          "Bonjour,\n\nEn cinq minutes : l'essentiel de la rédaction et une lecture pour le week-end. Installez-vous confortablement.",
+      },
+      {
+        id: "b2",
+        type: "ARTICLE",
+        titre: "Article de la semaine",
+        texte: "Le texte que toute la rédaction a commenté.",
+        lien: "https://itobe.cd/media",
+      },
       { id: "b3", type: "DIVIDER" },
-      { id: "b4", type: "BOOK", titre: "Lecture conseillée", reference: "" },
-      { id: "b5", type: "FOOTER", texte: "Itobe Entreprise — Se désabonner." },
+      {
+        id: "b4",
+        type: "BOOK",
+        titre: "Lecture conseillée",
+        texte: "Pour prolonger la réflexion ce week-end.",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b5",
+        type: "FOOTER",
+        texte: "Itobe Entreprise — Newsletter hebdomadaire. Se désabonner.",
+      },
     ),
   },
   {
     id: "tpl-mensuel",
     nom: "Newsletter mensuelle",
-    description: "Panorama éditorial complet du mois.",
+    sujet: "Le mois chez Itobe : dossier, parutions et communauté",
     categorie: "Récurrent",
+    usage: "Bilan mensuel éditorial et communautaire.",
+    description:
+      "Panorama du mois : dossier média, parution phare, invitation à partager. Plus long que l'hebdo, idéal le 1er du mois.",
     blocs: blocs(
-      { id: "b1", type: "TEXT", titre: "Le mois chez Itobe", sousTitre: "Édition, média et communauté", texte: "Retour sur les temps forts." },
-      { id: "b2", type: "ARTICLE", titre: "Dossier du mois", reference: "" },
-      { id: "b3", type: "BOOK", titre: "Parution du mois", reference: "" },
-      { id: "b4", type: "SOCIAL_LINKS", texte: "Facebook · X · Instagram · LinkedIn" },
-      { id: "b5", type: "FOOTER", texte: "Itobe Entreprise — Se désabonner." },
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Le mois chez Itobe",
+        sousTitre: "Édition, média et communauté",
+        texte:
+          "Bonjour,\n\nRetour sur les temps forts du mois : nos dossiers, nos parutions et les échanges avec la communauté des lecteurs.",
+      },
+      {
+        id: "b2",
+        type: "ARTICLE",
+        titre: "Dossier du mois",
+        texte: "L'enquête ou la chronique qui a marqué la période.",
+        lien: "https://itobe.cd/media",
+      },
+      {
+        id: "b3",
+        type: "BOOK",
+        titre: "Parution du mois",
+        texte: "Le titre que nous mettons en avant ce mois-ci.",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b4",
+        type: "SOCIAL_LINKS",
+        texte: "Facebook · X · Instagram · LinkedIn",
+      },
+      {
+        id: "b5",
+        type: "FOOTER",
+        texte: "Itobe Entreprise — Newsletter mensuelle. Se désabonner.",
+      },
+    ),
+  },
+  {
+    id: "tpl-notif-article",
+    nom: "Notification — nouvel article",
+    sujet: "Nouvel article publié sur Itobe",
+    categorie: "Notification",
+    usage: "Alerte courte quand un article vient d'être publié.",
+    description:
+      "Message d'alerte déjà rédigé : annonce de publication, rappel de lire sur le portail Média, ton direct. Utilisé aussi automatiquement à la publication.",
+    blocs: blocs(
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Nouvel article disponible",
+        sousTitre: "Itobe Média",
+        texte:
+          "Bonjour,\n\nUn nouvel article vient d'être publié sur Itobe. Ouvrez-le dès maintenant pour rester à jour avec la rédaction.",
+      },
+      {
+        id: "b2",
+        type: "ARTICLE",
+        titre: "Lire l'article",
+        texte: "Accédez au contenu complet sur le portail Média.",
+        lien: "https://itobe.cd/media",
+      },
+      {
+        id: "b3",
+        type: "BUTTON",
+        libelleLien: "Ouvrir l'article",
+        lien: "https://itobe.cd/media",
+      },
+      {
+        id: "b4",
+        type: "FOOTER",
+        texte:
+          "Itobe — Notification de publication. Vous pouvez gérer vos alertes dans Paramètres. Se désabonner.",
+      },
+    ),
+  },
+  {
+    id: "tpl-notif-livre",
+    nom: "Notification — nouveau livre",
+    sujet: "Nouveau livre disponible chez Itobe Édition",
+    categorie: "Notification",
+    usage: "Alerte courte quand un livre est mis en vente.",
+    description:
+      "Annonce de parution prête à l'envoi : titre accrocheur, invitation à découvrir le livre et aperçu gratuit, lien catalogue.",
+    blocs: blocs(
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Une nouvelle parution",
+        sousTitre: "Maison d'édition Itobe",
+        texte:
+          "Bonjour,\n\nUn nouveau livre est disponible dans le catalogue Itobe. Découvrez la couverture, lisez un aperçu gratuit, puis achetez au format qui vous convient.",
+      },
+      {
+        id: "b2",
+        type: "BOOK",
+        titre: "Découvrir le livre",
+        texte: "Disponible en PDF, EPUB et papier selon les titres.",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b3",
+        type: "BUTTON",
+        libelleLien: "Voir le livre",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b4",
+        type: "FOOTER",
+        texte:
+          "Itobe Édition — Notification de parution. Se désabonner.",
+      },
+    ),
+  },
+  {
+    id: "tpl-notif-annonce",
+    nom: "Notification — annonce générale",
+    sujet: "Une information importante de la part d'Itobe",
+    categorie: "Notification",
+    usage: "Communiquer une info plateforme (maintenance, événement, nouveauté).",
+    description:
+      "Template neutre déjà écrit pour une annonce institutionnelle : message clair, bouton vers le site, sans contenu commercial agressif.",
+    blocs: blocs(
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Information Itobe",
+        sousTitre: "À l'attention de nos abonnés",
+        texte:
+          "Bonjour,\n\nNous souhaitons vous informer d'une actualité concernant la plateforme Itobe. Merci de prendre connaissance des détails ci-dessous et de vous rendre sur le site pour en savoir plus.",
+      },
+      {
+        id: "b2",
+        type: "BUTTON",
+        libelleLien: "En savoir plus sur Itobe",
+        lien: "https://itobe.cd",
+      },
+      {
+        id: "b3",
+        type: "FOOTER",
+        texte:
+          "Itobe Entreprise — Communication abonnés. Se désabonner.",
+      },
+    ),
+  },
+  {
+    id: "tpl-bienvenue",
+    nom: "Bienvenue nouvel abonné",
+    sujet: "Bienvenue chez Itobe — votre espace lecture commence ici",
+    categorie: "Onboarding",
+    usage: "Premier e-mail après inscription newsletter.",
+    description:
+      "Message de bienvenue complet : présentation des deux portails, invitation à explorer le catalogue et les actualités, ton accueillant.",
+    blocs: blocs(
+      {
+        id: "b1",
+        type: "TEXT",
+        titre: "Bienvenue chez Itobe",
+        sousTitre: "Média & maison d'édition",
+        texte:
+          "Bonjour et merci de nous rejoindre.\n\nItobe réunit un média en ligne et une maison d'édition numérique. Retrouvez des articles, découvrez des livres, et synchronisez votre bibliothèque sur tous vos appareils.",
+      },
+      {
+        id: "b2",
+        type: "BUTTON",
+        libelleLien: "Découvrir le portail Média",
+        lien: "https://itobe.cd/media",
+      },
+      {
+        id: "b3",
+        type: "BUTTON",
+        libelleLien: "Parcourir le catalogue",
+        lien: "https://itobe.cd/edition",
+      },
+      {
+        id: "b4",
+        type: "FOOTER",
+        texte:
+          "Itobe Entreprise — Bienvenue dans la communauté. Se désabonner.",
+      },
     ),
   },
 ];
@@ -86,7 +371,8 @@ export const seedCampagnes: Item[] = [
   {
     id: "cmp-1",
     nom: "Hebdo — semaine 32",
-    sujet: "Trois lectures pour votre week-end",
+    sujet: "Votre vendredi Itobe : 5 minutes de lecture",
+    type: "marketing",
     expediteur: "La rédaction Itobe",
     emailExpediteur: "hello@itobe.cd",
     repondreA: "contact@itobe.cd",
@@ -102,12 +388,13 @@ export const seedCampagnes: Item[] = [
     ouvertures: 640,
     clics: 180,
     desabonnements: 12,
-    blocs: seedTemplates[3]?.["blocs"] ?? [],
+    blocs: seedTemplates.find((t) => t.id === "tpl-hebdo")?.["blocs"] ?? [],
   },
   {
     id: "cmp-2",
     nom: "Nouveautés — rentrée littéraire",
-    sujet: "Cinq parutions à ne pas manquer",
+    sujet: "Nouvelles parutions à découvrir chez Itobe",
+    type: "marketing",
     expediteur: "Itobe Édition",
     emailExpediteur: "edition@itobe.cd",
     repondreA: "edition@itobe.cd",
@@ -123,12 +410,13 @@ export const seedCampagnes: Item[] = [
     ouvertures: 0,
     clics: 0,
     desabonnements: 0,
-    blocs: seedTemplates[1]?.["blocs"] ?? [],
+    blocs: seedTemplates.find((t) => t.id === "tpl-livres")?.["blocs"] ?? [],
   },
   {
     id: "cmp-3",
     nom: "Promo quinzaine de l'essai",
-    sujet: "-25 % sur nos essais jusqu'au 15",
+    sujet: "Offre limitée : jusqu'à -25 % sur une sélection Itobe",
+    type: "marketing",
     expediteur: "Itobe",
     emailExpediteur: "hello@itobe.cd",
     repondreA: "contact@itobe.cd",
@@ -144,12 +432,13 @@ export const seedCampagnes: Item[] = [
     ouvertures: 0,
     clics: 0,
     desabonnements: 0,
-    blocs: seedTemplates[2]?.["blocs"] ?? [],
+    blocs: seedTemplates.find((t) => t.id === "tpl-promo")?.["blocs"] ?? [],
   },
   {
     id: "cmp-4",
     nom: "Mensuelle — juillet",
-    sujet: "Le mois de juillet chez Itobe",
+    sujet: "Le mois chez Itobe : dossier, parutions et communauté",
+    type: "marketing",
     expediteur: "La rédaction Itobe",
     emailExpediteur: "hello@itobe.cd",
     repondreA: "contact@itobe.cd",
@@ -165,12 +454,13 @@ export const seedCampagnes: Item[] = [
     ouvertures: 502,
     clics: 121,
     desabonnements: 9,
-    blocs: seedTemplates[4]?.["blocs"] ?? [],
+    blocs: seedTemplates.find((t) => t.id === "tpl-mensuel")?.["blocs"] ?? [],
   },
   {
     id: "cmp-5",
     nom: "Relance panier — juin",
-    sujet: "Votre livre vous attend",
+    sujet: "Offre limitée : jusqu'à -25 % sur une sélection Itobe",
+    type: "marketing",
     expediteur: "Itobe Édition",
     emailExpediteur: "edition@itobe.cd",
     repondreA: "edition@itobe.cd",
@@ -186,6 +476,6 @@ export const seedCampagnes: Item[] = [
     ouvertures: 18,
     clics: 3,
     desabonnements: 1,
-    blocs: seedTemplates[2]?.["blocs"] ?? [],
+    blocs: seedTemplates.find((t) => t.id === "tpl-promo")?.["blocs"] ?? [],
   },
 ];
