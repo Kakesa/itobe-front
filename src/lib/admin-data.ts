@@ -56,6 +56,7 @@ export const menuAdmin: {
       { to: "/admin/auteurs", label: "Auteurs", roles: ["admin", "editeur"] },
       { to: "/admin/categories", label: "Catégories", roles: ["admin", "editeur"] },
       { to: "/admin/medias", label: "Médiathèque", roles: ["admin"] },
+      { to: "/admin/calendrier", label: "Calendrier éditorial", roles: ["admin", "editeur"] },
     ],
   },
   {
