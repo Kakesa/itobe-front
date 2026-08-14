@@ -19,6 +19,7 @@ export const seedArticles: Item[] = articles.map((a, i) => ({
 
 export const seedLivres: Item[] = livres.map((l) => ({
   id: l.slug,
+  publication: l.publication,
   titre: l.titre,
   auteur: l.auteur,
   categorie: l.categorie,
