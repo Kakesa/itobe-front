@@ -28,10 +28,12 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActualitesRouteImport } from './routes/admin.actualites'
 import { Route as AdminArticlesRouteImport } from './routes/admin.articles'
 import { Route as AdminAuteursRouteImport } from './routes/admin.auteurs'
+import { Route as AdminCalendrierRouteImport } from './routes/admin.calendrier'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminCommandesRouteImport } from './routes/admin.commandes'
 import { Route as AdminCommentairesRouteImport } from './routes/admin.commentaires'
 import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
+import { Route as AdminEditorialCalendarRouteImport } from './routes/admin.editorial-calendar'
 import { Route as AdminFavorisRouteImport } from './routes/admin.favoris'
 import { Route as AdminHistoriqueRouteImport } from './routes/admin.historique'
 import { Route as AdminLivresRouteImport } from './routes/admin.livres'
@@ -158,6 +160,11 @@ const AdminAuteursRoute = AdminAuteursRouteImport.update({
   path: '/auteurs',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCalendrierRoute = AdminCalendrierRouteImport.update({
+  id: '/calendrier',
+  path: '/calendrier',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
@@ -176,6 +183,11 @@ const AdminCommentairesRoute = AdminCommentairesRouteImport.update({
 const AdminCouponsRoute = AdminCouponsRouteImport.update({
   id: '/coupons',
   path: '/coupons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEditorialCalendarRoute = AdminEditorialCalendarRouteImport.update({
+  id: '/editorial-calendar',
+  path: '/editorial-calendar',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminFavorisRoute = AdminFavorisRouteImport.update({
@@ -351,10 +363,12 @@ export interface FileRoutesByFullPath {
   '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/calendrier': typeof AdminCalendrierRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
   '/admin/favoris': typeof AdminFavorisRoute
   '/admin/historique': typeof AdminHistoriqueRoute
   '/admin/livres': typeof AdminLivresRoute
@@ -403,10 +417,12 @@ export interface FileRoutesByTo {
   '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/calendrier': typeof AdminCalendrierRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
   '/admin/favoris': typeof AdminFavorisRoute
   '/admin/historique': typeof AdminHistoriqueRoute
   '/admin/livres': typeof AdminLivresRoute
@@ -458,10 +474,12 @@ export interface FileRoutesById {
   '/admin/actualites': typeof AdminActualitesRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/auteurs': typeof AdminAuteursRoute
+  '/admin/calendrier': typeof AdminCalendrierRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
   '/admin/favoris': typeof AdminFavorisRoute
   '/admin/historique': typeof AdminHistoriqueRoute
   '/admin/livres': typeof AdminLivresRoute
@@ -515,10 +533,12 @@ export interface FileRouteTypes {
     | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
+    | '/admin/calendrier'
     | '/admin/categories'
     | '/admin/commandes'
     | '/admin/commentaires'
     | '/admin/coupons'
+    | '/admin/editorial-calendar'
     | '/admin/favoris'
     | '/admin/historique'
     | '/admin/livres'
@@ -567,10 +587,12 @@ export interface FileRouteTypes {
     | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
+    | '/admin/calendrier'
     | '/admin/categories'
     | '/admin/commandes'
     | '/admin/commentaires'
     | '/admin/coupons'
+    | '/admin/editorial-calendar'
     | '/admin/favoris'
     | '/admin/historique'
     | '/admin/livres'
@@ -621,10 +643,12 @@ export interface FileRouteTypes {
     | '/admin/actualites'
     | '/admin/articles'
     | '/admin/auteurs'
+    | '/admin/calendrier'
     | '/admin/categories'
     | '/admin/commandes'
     | '/admin/commentaires'
     | '/admin/coupons'
+    | '/admin/editorial-calendar'
     | '/admin/favoris'
     | '/admin/historique'
     | '/admin/livres'
@@ -814,6 +838,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuteursRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/calendrier': {
+      id: '/admin/calendrier'
+      path: '/calendrier'
+      fullPath: '/admin/calendrier'
+      preLoaderRoute: typeof AdminCalendrierRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/categories': {
       id: '/admin/categories'
       path: '/categories'
@@ -840,6 +871,13 @@ declare module '@tanstack/react-router' {
       path: '/coupons'
       fullPath: '/admin/coupons'
       preLoaderRoute: typeof AdminCouponsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/editorial-calendar': {
+      id: '/admin/editorial-calendar'
+      path: '/editorial-calendar'
+      fullPath: '/admin/editorial-calendar'
+      preLoaderRoute: typeof AdminEditorialCalendarRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/favoris': {
@@ -1079,10 +1117,12 @@ interface AdminRouteChildren {
   AdminActualitesRoute: typeof AdminActualitesRoute
   AdminArticlesRoute: typeof AdminArticlesRoute
   AdminAuteursRoute: typeof AdminAuteursRoute
+  AdminCalendrierRoute: typeof AdminCalendrierRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommandesRoute: typeof AdminCommandesRoute
   AdminCommentairesRoute: typeof AdminCommentairesRoute
   AdminCouponsRoute: typeof AdminCouponsRoute
+  AdminEditorialCalendarRoute: typeof AdminEditorialCalendarRoute
   AdminFavorisRoute: typeof AdminFavorisRoute
   AdminHistoriqueRoute: typeof AdminHistoriqueRoute
   AdminLivresRoute: typeof AdminLivresRoute
@@ -1108,10 +1148,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminActualitesRoute: AdminActualitesRoute,
   AdminArticlesRoute: AdminArticlesRoute,
   AdminAuteursRoute: AdminAuteursRoute,
+  AdminCalendrierRoute: AdminCalendrierRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommandesRoute: AdminCommandesRoute,
   AdminCommentairesRoute: AdminCommentairesRoute,
   AdminCouponsRoute: AdminCouponsRoute,
+  AdminEditorialCalendarRoute: AdminEditorialCalendarRoute,
   AdminFavorisRoute: AdminFavorisRoute,
   AdminHistoriqueRoute: AdminHistoriqueRoute,
   AdminLivresRoute: AdminLivresRoute,
