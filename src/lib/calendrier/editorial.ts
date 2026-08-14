@@ -119,8 +119,8 @@ export function versElement(
     titre: String(item["titre"] ?? "Sans titre"),
     date,
     statut,
-    categorie: item["categorie"] ? String(item["categorie"]) : undefined,
-    auteur: item["auteur"] ? String(item["auteur"]) : undefined,
+    ...(item["categorie"] ? { categorie: String(item["categorie"]) } : {}),
+    ...(item["auteur"] ? { auteur: String(item["auteur"]) } : {}),
     lien:
       type === "livre"
         ? `/admin/livres`

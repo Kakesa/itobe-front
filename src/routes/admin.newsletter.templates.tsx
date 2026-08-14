@@ -109,7 +109,7 @@ function TemplatesPage() {
             <p className="mt-2 flex-1 text-sm text-muted-foreground">
               {String(t["description"] ?? "")}
             </p>
-            {t["usage"] && (
+            {Boolean(t["usage"]) && (
               <p className="mt-2 text-xs text-muted-foreground">
                 <span className="font-medium text-foreground">Quand l&apos;utiliser :</span>{" "}
                 {String(t["usage"])}
