@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { BookCover } from "@/components/book-cover";
 import { getLivre, livres, nomAuteur } from "@/lib/data";
-import { BibliothequeApi } from "@/lib/api-client";
+import { BibliothequeApi, getToken } from "@/lib/api-client";
 import { lireSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/bibliotheque")({
@@ -50,6 +50,10 @@ function Bibliotheque() {
 
   useEffect(() => {
     async function loadBiblio() {
+      if (!getToken()) {
+        setLoading(false);
+        return;
+      }
       try {
         const res = await BibliothequeApi.getLibrary();
         if (res?.data) {

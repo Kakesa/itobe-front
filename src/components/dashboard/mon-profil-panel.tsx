@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { ShieldCheck, Trash2, X } from "lucide-react";
-import { bibliotheque, getLivre, nomAuteur } from "@/lib/data";
-import { connexions } from "@/lib/admin-data";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { ShieldCheck, Trash2, X, Check, Loader2 } from "lucide-react";
+import { getLivre, nomAuteur } from "@/lib/data";
 import { useSession } from "@/hooks/use-session";
 import { useRole } from "@/hooks/use-role";
+import { AuthApi, BibliothequeApi, getToken } from "@/lib/api-client";
+import { sauvegarderSession, deconnecter } from "@/lib/auth";
 
 function Interrupteur({
   actif,
@@ -43,93 +44,276 @@ function Interrupteur({
   );
 }
 
-/** Contenu « Mon profil » — tous les rôles (admin, éditeur, lecteur). */
+/** Contenu « Mon profil » — Connecté dynamiquement au profil utilisateur de l'API Backend */
 export function MonProfilPanel() {
   const { session } = useSession();
   const { role } = useRole();
+  const navigate = useNavigate();
 
-  const nomDefaut = session
-    ? `${session.prenom} ${session.nom}`
-    : role === "admin"
-      ? "Espoir Kakesa"
-      : role === "editeur"
-        ? "Christopher Bigo's"
-        : "Nadia Kabeya";
-  const emailDefaut =
-    session?.email ??
-    (role === "admin"
-      ? "admin@itobe.cd"
-      : role === "editeur"
-        ? "editeur@itobe.cd"
-        : "nadia.kabeya@example.cd");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
+  // Informations utilisateur
+  const [nom, setNom] = useState(session?.nom || "");
+  const [prenom, setPrenom] = useState(session?.prenom || "");
+  const [email, setEmail] = useState(session?.email || "");
+  const [telephone, setTelephone] = useState("");
+  const [ville, setVille] = useState("Kinshasa");
+  const [userRole, setUserRole] = useState(role);
+
+  // Préférences
   const [newsletter, setNewsletter] = useState(true);
   const [nouveautes, setNouveautes] = useState(true);
   const [resume, setResume] = useState(false);
   const [theme, setTheme] = useState<"clair" | "sombre" | "auto">("clair");
   const [taille, setTaille] = useState(18);
-  const [enregistre, setEnregistre] = useState(false);
+  const [messageEnregistre, setMessageEnregistre] = useState("");
 
+  // Mot de passe
   const [mdpActuel, setMdpActuel] = useState("");
   const [mdpNouveau, setMdpNouveau] = useState("");
   const [mdpConfirme, setMdpConfirme] = useState("");
   const [retourMdp, setRetourMdp] = useState<{ ok: boolean; texte: string } | null>(null);
+  const [chargementMdp, setChargementMdp] = useState(false);
+
+  // 2FA & Sécurité
   const [deuxFa, setDeuxFa] = useState(false);
   const [code, setCode] = useState("");
+  const [connexions, setConnexions] = useState<any[]>([]);
+
+  // Progression réelle du lecteur
+  const [progressionsReelles, setProgressionsReelles] = useState<Record<string, number>>({});
+
+  // Suppression compte
   const [suppression, setSuppression] = useState(false);
   const [confirmationTexte, setConfirmationTexte] = useState("");
-  const [compteSupprime, setCompteSupprime] = useState(false);
+  const [suppressionEnCours, setSuppressionEnCours] = useState(false);
 
-  const changerMdp = () => {
+  // Chargement des données réelles du profil
+  useEffect(() => {
+    async function chargerProfil() {
+      if (!getToken()) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const [meRes, bibRes] = await Promise.all([
+          AuthApi.me().catch(() => null),
+          role === "lecteur" ? BibliothequeApi.getLibrary().catch(() => null) : null,
+        ]);
+
+        if (meRes?.data) {
+          const u = meRes.data;
+          setNom(u.nom || "");
+          setPrenom(u.prenom || "");
+          setEmail(u.email || "");
+          setTelephone(u.telephone || "");
+          setVille(u.ville || "Kinshasa");
+          setUserRole(u.role || role);
+
+          if (u.preferences) {
+            setNewsletter(u.preferences.newsletter ?? true);
+            setNouveautes(u.preferences.nouveautes ?? true);
+            setResume(u.preferences.resume ?? false);
+            setTheme(u.preferences.themeLecture || "clair");
+            setTaille(u.preferences.taillePolice || 18);
+          }
+
+          if (u.deuxFacteurs) {
+            setDeuxFa(u.deuxFacteurs.actif ?? false);
+          }
+
+          if (u.historiqueConnexions && u.historiqueConnexions.length > 0) {
+            setConnexions(u.historiqueConnexions);
+          } else {
+            setConnexions([
+              {
+                id: "actuelle",
+                appareil: "Navigateur Web",
+                navigateur: "Session active",
+                lieu: u.ville || "Kinshasa, RDC",
+                ip: "127.0.0.1",
+                date: "Aujourd'hui",
+                statut: "Réussie",
+                actuelle: true,
+              },
+            ]);
+          }
+        }
+
+        if (bibRes?.data?.progressions) {
+          setProgressionsReelles(bibRes.data.progressions);
+        }
+      } catch (err) {
+        console.warn("[MonProfil] Erreur lors du chargement :", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    chargerProfil();
+  }, [role]);
+
+  // Sauvegarde des informations et préférences
+  const enregistrerProfil = async () => {
+    setSaving(true);
+    setMessageEnregistre("");
+    try {
+      const payload = {
+        nom: nom.trim(),
+        prenom: prenom.trim(),
+        telephone: telephone.trim(),
+        ville: ville.trim(),
+        preferences: {
+          newsletter,
+          nouveautes,
+          resume,
+          themeLecture: theme,
+          taillePolice: taille,
+        },
+      };
+
+      const res = await AuthApi.updateProfile(payload);
+      if (res?.data) {
+        sauvegarderSession({
+          id: res.data._id || session?.id,
+          email: res.data.email || email,
+          nom: res.data.nom || nom,
+          prenom: res.data.prenom || prenom,
+          role: (res.data.role as any) || userRole,
+        });
+      }
+      setMessageEnregistre("Modifications enregistrées avec succès.");
+      setTimeout(() => setMessageEnregistre(""), 4000);
+    } catch (err: any) {
+      setMessageEnregistre(err.message || "Erreur lors de l'enregistrement.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Changement de mot de passe
+  const changerMdp = async () => {
+    setRetourMdp(null);
     if (!mdpActuel || !mdpNouveau) {
       setRetourMdp({ ok: false, texte: "Renseignez le mot de passe actuel et le nouveau." });
       return;
     }
-    if (mdpNouveau.length < 8) {
-      setRetourMdp({ ok: false, texte: "8 caractères minimum." });
+    if (mdpNouveau.length < 6) {
+      setRetourMdp({ ok: false, texte: "Le mot de passe doit faire au moins 6 caractères." });
       return;
     }
     if (mdpNouveau !== mdpConfirme) {
-      setRetourMdp({ ok: false, texte: "La confirmation ne correspond pas." });
+      setRetourMdp({ ok: false, texte: "La confirmation du mot de passe ne correspond pas." });
       return;
     }
-    setRetourMdp({ ok: true, texte: "Mot de passe mis à jour." });
-    setMdpActuel("");
-    setMdpNouveau("");
-    setMdpConfirme("");
+
+    setChargementMdp(true);
+    try {
+      await AuthApi.changePassword({
+        ancienPassword: mdpActuel,
+        nouveauPassword: mdpNouveau,
+      });
+      setRetourMdp({ ok: true, texte: "Mot de passe mis à jour avec succès." });
+      setMdpActuel("");
+      setMdpNouveau("");
+      setMdpConfirme("");
+    } catch (err: any) {
+      setRetourMdp({ ok: false, texte: err.message || "Erreur lors de la mise à jour du mot de passe." });
+    } finally {
+      setChargementMdp(false);
+    }
   };
 
-  const progression = Object.entries(bibliotheque.progression);
-  const moyenne = Math.round(
-    progression.reduce((s, [, p]) => s + p, 0) / Math.max(progression.length, 1),
-  );
-  const estLecteur = role === "lecteur";
+  // Suppression définitive du compte
+  const handleSupprimerCompte = async () => {
+    setSuppressionEnCours(true);
+    try {
+      await AuthApi.deleteAccount();
+      deconnecter();
+      void navigate({ to: "/connexion" });
+    } catch (err: any) {
+      alert(err.message || "Erreur lors de la suppression du compte.");
+      setSuppressionEnCours(false);
+    }
+  };
+
+  const progression = Object.entries(progressionsReelles);
+  const moyenne =
+    progression.length > 0
+      ? Math.round(progression.reduce((s, [, p]) => s + p, 0) / progression.length)
+      : 0;
+
+  const estLecteur = userRole === "lecteur";
+
+  if (loading) {
+    return (
+      <div className="flex h-64 items-center justify-center gap-3 text-muted-foreground">
+        <Loader2 className="size-5 animate-spin" />
+        <span>Chargement de votre profil...</span>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/60 px-3 py-1 text-xs text-muted-foreground">
-        Compte <span className="font-medium capitalize text-foreground">{role}</span>
+        Compte <span className="font-medium capitalize text-foreground">{userRole}</span>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-8">
           <section className="rounded-xl border border-border bg-card p-6">
-            <h2 className="text-xl">Informations</h2>
+            <h2 className="text-xl">Informations personnelles</h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              {[
-                ["Nom complet", nomDefaut],
-                ["Adresse e-mail", emailDefaut],
-                ["Téléphone", "+243 81 000 00 00"],
-                ["Ville", "Kinshasa"],
-              ].map(([label, valeur]) => (
-                <label key={label} className="block text-sm">
-                  <span className="text-xs text-muted-foreground">{label}</span>
-                  <input
-                    defaultValue={valeur}
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                  />
-                </label>
-              ))}
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Nom</span>
+                <input
+                  value={nom}
+                  onChange={(e) => setNom(e.target.value)}
+                  placeholder="Nom de famille"
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Prénom</span>
+                <input
+                  value={prenom}
+                  onChange={(e) => setPrenom(e.target.value)}
+                  placeholder="Prénom"
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Adresse e-mail</span>
+                <input
+                  disabled
+                  value={email}
+                  className="mt-1 w-full cursor-not-allowed rounded-lg border border-border bg-secondary/30 px-3 py-2 text-sm text-muted-foreground"
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Téléphone</span>
+                <input
+                  value={telephone}
+                  onChange={(e) => setTelephone(e.target.value)}
+                  placeholder="+243 ..."
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+
+              <label className="block text-sm sm:col-span-2">
+                <span className="text-xs text-muted-foreground">Ville</span>
+                <input
+                  value={ville}
+                  onChange={(e) => setVille(e.target.value)}
+                  placeholder="Kinshasa, Lubumbashi..."
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
             </div>
           </section>
 
@@ -203,33 +387,44 @@ export function MonProfilPanel() {
               <ShieldCheck className="size-4 text-accent" />
               <h2 className="text-xl">Sécurité du compte</h2>
             </div>
-            <p className="kicker mt-6">Mot de passe</p>
+            <p className="kicker mt-6">Changer le mot de passe</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              {["Mot de passe actuel", "Nouveau mot de passe", "Confirmer"].map((l, i) => (
-                <label key={l} className="block text-sm">
-                  <span className="text-xs text-muted-foreground">{l}</span>
-                  <input
-                    type="password"
-                    value={i === 0 ? mdpActuel : i === 1 ? mdpNouveau : mdpConfirme}
-                    onChange={(e) =>
-                      i === 0
-                        ? setMdpActuel(e.target.value)
-                        : i === 1
-                          ? setMdpNouveau(e.target.value)
-                          : setMdpConfirme(e.target.value)
-                    }
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                  />
-                </label>
-              ))}
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Mot de passe actuel</span>
+                <input
+                  type="password"
+                  value={mdpActuel}
+                  onChange={(e) => setMdpActuel(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Nouveau mot de passe</span>
+                <input
+                  type="password"
+                  value={mdpNouveau}
+                  onChange={(e) => setMdpNouveau(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Confirmer</span>
+                <input
+                  type="password"
+                  value={mdpConfirme}
+                  onChange={(e) => setMdpConfirme(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <button
                 type="button"
+                disabled={chargementMdp}
                 onClick={changerMdp}
-                className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-secondary"
+                className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-secondary disabled:opacity-50"
               >
-                Mettre à jour le mot de passe
+                {chargementMdp ? "Mise à jour..." : "Mettre à jour le mot de passe"}
               </button>
               {retourMdp && (
                 <span className={`text-sm ${retourMdp.ok ? "text-accent" : "text-destructive"}`}>
@@ -247,18 +442,17 @@ export function MonProfilPanel() {
                   setCode("");
                 }}
                 label="Vérification en deux étapes"
-                aide="Un code à 6 chiffres est demandé à chaque nouvelle connexion."
+                aide="Un code de sécurité est demandé à chaque nouvelle connexion."
               />
             </div>
             {deuxFa && (
               <div className="mt-4 rounded-lg border border-border bg-background p-4">
                 <p className="text-xs text-muted-foreground">
-                  Scannez le QR dans votre application d&apos;authentification, puis saisissez le
-                  code.
+                  Scannez le QR dans votre application d&apos;authentification, puis saisissez le code.
                 </p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <div className="grid size-24 place-items-center rounded-lg border border-dashed border-border text-[0.6rem] text-muted-foreground">
-                    QR code
+                    2FA Prêt
                   </div>
                   <div>
                     <input
@@ -279,16 +473,16 @@ export function MonProfilPanel() {
 
             <p className="kicker mt-8">Historique des connexions</p>
             <ul className="mt-3 divide-y divide-border text-sm">
-              {connexions.map((c) => (
-                <li key={c.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
-                  <span className="font-medium">{c.appareil}</span>
+              {connexions.map((c, i) => (
+                <li key={c.id || i} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3">
+                  <span className="font-medium">{c.appareil || "Appareil"}</span>
                   <span className="text-xs text-muted-foreground">
                     {c.navigateur} · {c.lieu} · {c.ip}
                   </span>
-                  <span className="ml-auto text-xs text-muted-foreground">{c.date}</span>
+                  <span className="ml-auto text-xs text-muted-foreground">{c.date || "Récemment"}</span>
                   <span
                     className={`rounded-full px-2.5 py-0.5 text-xs ${
-                      c.statut === "Réussie"
+                      c.actuelle || c.statut === "Réussie"
                         ? "bg-accent/15 text-accent"
                         : "bg-destructive/10 text-destructive"
                     }`}
@@ -320,54 +514,65 @@ export function MonProfilPanel() {
           <div className="flex items-center gap-4">
             <button
               type="button"
-              onClick={() => setEnregistre(true)}
-              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+              disabled={saving}
+              onClick={enregistrerProfil}
+              className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground disabled:opacity-50"
             >
-              Enregistrer mes préférences
+              {saving ? <Loader2 className="size-4 animate-spin" /> : <Check className="size-4" />}
+              {saving ? "Enregistrement..." : "Enregistrer mes modifications"}
             </button>
-            {enregistre && <span className="text-sm text-accent">Préférences enregistrées.</span>}
+            {messageEnregistre && (
+              <span className="text-sm font-medium text-accent">{messageEnregistre}</span>
+            )}
           </div>
         </div>
 
         <aside className="space-y-6">
           <div className="rounded-xl border border-border bg-card p-6">
-            <p className="kicker">Rôle</p>
-            <p className="mt-3 font-display text-2xl capitalize">{role}</p>
-            <p className="mt-1 text-sm text-muted-foreground">{emailDefaut}</p>
+            <p className="kicker">Rôle & Espace</p>
+            <p className="mt-3 font-display text-2xl capitalize">{userRole}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{email}</p>
           </div>
 
           {estLecteur && (
             <>
               <div className="rounded-xl border border-border bg-card p-6">
-                <p className="kicker">Ma progression</p>
+                <p className="kicker">Ma progression de lecture</p>
                 <p className="mt-3 font-display text-4xl">{moyenne} %</p>
-                <ul className="mt-6 space-y-4">
-                  {progression.map(([slug, pct]) => {
-                    const l = getLivre(slug);
-                    if (!l) return null;
-                    return (
-                      <li key={slug}>
-                        <p className="text-sm">{l.titre}</p>
-                        <p className="text-xs text-muted-foreground">{nomAuteur(l.auteur)}</p>
-                        <div className="mt-2 h-1.5 w-full rounded-full bg-secondary">
-                          <div
-                            className="h-full rounded-full bg-accent"
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {progression.length > 0 ? (
+                  <ul className="mt-6 space-y-4">
+                    {progression.map(([slug, pct]) => {
+                      const l = getLivre(slug);
+                      if (!l) return null;
+                      return (
+                        <li key={slug}>
+                          <p className="text-sm font-medium">{l.titre}</p>
+                          <p className="text-xs text-muted-foreground">{nomAuteur(l.auteur)}</p>
+                          <div className="mt-2 h-1.5 w-full rounded-full bg-secondary">
+                            <div
+                              className="h-full rounded-full bg-accent"
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  <p className="mt-4 text-xs text-muted-foreground">
+                    Aucun livre entamé pour le moment.
+                  </p>
+                )}
               </div>
+
               <div className="rounded-xl border border-border bg-card p-6">
-                <p className="kicker">Abonnement</p>
-                <p className="mt-3 text-sm">Formule actuelle : Gratuite</p>
+                <p className="kicker">Formule d&apos;accès</p>
+                <p className="mt-3 text-sm">Statut : Compte Standard</p>
                 <Link
                   to="/premium"
                   className="mt-4 inline-block rounded-lg bg-accent px-4 py-2 text-sm text-accent-foreground"
                 >
-                  Passer à Premium
+                  Découvrir l&apos;Abonnement Premium
                 </Link>
               </div>
             </>
@@ -389,37 +594,32 @@ export function MonProfilPanel() {
                 <X className="size-4" />
               </button>
             </div>
-            {compteSupprime ? (
-              <p className="mt-4 text-sm">Demande enregistrée.</p>
-            ) : (
-              <>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Saisissez <strong>SUPPRIMER</strong> pour confirmer.
-                </p>
-                <input
-                  value={confirmationTexte}
-                  onChange={(e) => setConfirmationTexte(e.target.value)}
-                  className="mt-4 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
-                />
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setSuppression(false)}
-                    className="rounded-lg border border-border px-4 py-2 text-sm"
-                  >
-                    Annuler
-                  </button>
-                  <button
-                    type="button"
-                    disabled={confirmationTexte !== "SUPPRIMER"}
-                    onClick={() => setCompteSupprime(true)}
-                    className="rounded-lg bg-destructive px-4 py-2 text-sm text-destructive-foreground disabled:opacity-40"
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              </>
-            )}
+            <p className="mt-3 text-sm text-muted-foreground">
+              Saisissez <strong>SUPPRIMER</strong> pour confirmer la suppression définitive de votre compte.
+            </p>
+            <input
+              value={confirmationTexte}
+              onChange={(e) => setConfirmationTexte(e.target.value)}
+              placeholder="SUPPRIMER"
+              className="mt-4 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-destructive"
+            />
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setSuppression(false)}
+                className="rounded-lg border border-border px-4 py-2 text-sm"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                disabled={confirmationTexte !== "SUPPRIMER" || suppressionEnCours}
+                onClick={handleSupprimerCompte}
+                className="rounded-lg bg-destructive px-4 py-2 text-sm text-destructive-foreground disabled:opacity-40"
+              >
+                {suppressionEnCours ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
           </div>
         </div>
       )}

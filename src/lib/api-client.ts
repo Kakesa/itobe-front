@@ -124,6 +124,13 @@ export const AuthApi = {
   },
 
   me: () => api.get("/auth/me"),
+  updateProfile: (data: { nom?: string; prenom?: string; telephone?: string; ville?: string; preferences?: any }) =>
+    api.put("/auth/me", data),
+  changePassword: (data: { ancienPassword: string; nouveauPassword: string }) =>
+    api.put("/auth/change-password", data),
+  setup2FA: () => api.post("/auth/2fa/setup"),
+  verify2FA: (token: string) => api.post("/auth/2fa/verify", { token }),
+  deleteAccount: () => api.delete("/auth/me"),
   logout: () => {
     clearTokens();
   },

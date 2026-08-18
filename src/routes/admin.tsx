@@ -29,7 +29,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { menuAdmin, roles } from "@/lib/admin-data";
+import { menuAdmin } from "@/lib/admin-data";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
 
@@ -79,7 +79,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
 };
 
 function AdminLayout() {
-  const { role, changerRole } = useRole();
+  const { role } = useRole();
   const { session, deconnexion } = useSession();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -161,7 +161,6 @@ function AdminLayout() {
               <p className="truncate">{session.email}</p>
             </div>
           )}
-          <RoleSwitcher role={role} onChange={changerRole} />
           <button
             type="button"
             onClick={logout}
@@ -185,9 +184,6 @@ function AdminLayout() {
           <p className="font-display text-lg">
             Itobe<span className="text-accent">.</span>
           </p>
-          <div className="ml-auto">
-            <RoleSwitcher role={role} onChange={changerRole} compact />
-          </div>
         </header>
 
         {mobileOpen && (
@@ -223,32 +219,5 @@ function AdminLayout() {
         </main>
       </div>
     </div>
-  );
-}
-
-function RoleSwitcher({
-  role,
-  onChange,
-  compact,
-}: {
-  role: string;
-  onChange: (r: "admin" | "editeur" | "lecteur") => void;
-  compact?: boolean;
-}) {
-  return (
-    <select
-      value={role}
-      onChange={(e) => onChange(e.target.value as "admin" | "editeur" | "lecteur")}
-      className={`rounded-lg border border-border bg-background text-sm ${
-        compact ? "px-2 py-1" : "w-full px-3 py-2"
-      }`}
-      aria-label="Changer de rôle (démo)"
-    >
-      {roles.map((r) => (
-        <option key={r.id} value={r.id}>
-          {r.label}
-        </option>
-      ))}
-    </select>
   );
 }
