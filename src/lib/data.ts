@@ -1,4 +1,5 @@
-// Données de démonstration (front uniquement).
+// Données de démonstration (front uniquement) avec Hydratation depuis l'API réel en fallback.
+import { AuteursApi, ArticlesApi, LivresApi } from "./api-client";
 import { faussesCouvertures } from "./fausses-couvertures";
 
 export type Article = {
@@ -77,7 +78,7 @@ const loremParas = (sujet: string) => [
   `Reste la question du modèle économique. Entre mobile money, abonnements et aperçus gratuits calibrés, les plateformes cherchent le juste équilibre entre accès et rémunération des créateurs.`,
 ];
 
-export const articles: Article[] = [
+const articlesSeed: Article[] = [
   {
     slug: "edition-numerique-nouvelle-generation",
     titre: "L'édition numérique face à une nouvelle génération de lecteurs",
@@ -170,7 +171,7 @@ const chapitres = (n: number, pages: number) =>
     gratuit: i < 2,
   }));
 
-export const livres: Livre[] = [
+const livresSeed: Livre[] = [
   {
     slug: "le-fleuve-et-la-page",
     titre: "Le Fleuve et la Page",
@@ -303,7 +304,7 @@ export const livres: Livre[] = [
   },
 ];
 
-export const auteurs: Auteur[] = [
+export const auteursSeed: Auteur[] = [
   {
     slug: "christopher-bigos",
     nom: "Christopher Bigo's",
@@ -344,6 +345,239 @@ export const auteurs: Auteur[] = [
     telechargements: 1330,
   },
 ];
+
+export let auteurs: Auteur[] = auteursSeed;
+
+const ADMIN_DATA_KEY = "itobe.admin.data.v5";
+
+const lireDonneesAdmin = () => {
+  if (typeof window === "undefined") return {} as Record<string, any>;
+  try {
+    const brut = window.localStorage.getItem(ADMIN_DATA_KEY);
+    if (!brut) return {} as Record<string, any>;
+    const parsed = JSON.parse(brut);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {} as Record<string, any>;
+  }
+};
+
+const normaliserTags = (value: unknown) =>
+  Array.isArray(value)
+    ? value.map((v) => String(v)).filter(Boolean)
+    : String(value ?? "")
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean);
+
+const normaliserFormats = (value: unknown): Array<"PDF" | "EPUB" | "Papier"> => {
+  if (Array.isArray(value)) {
+    const vals = value.map((v) => String(v)).filter(Boolean) as string[];
+    return vals.filter((v): v is "PDF" | "EPUB" | "Papier" => ["PDF", "EPUB", "Papier"].includes(v)) as Array<"PDF" | "EPUB" | "Papier">;
+  }
+
+  const vals = String(value ?? "PDF, EPUB")
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
+
+  return vals.filter((v): v is "PDF" | "EPUB" | "Papier" => ["PDF", "EPUB", "Papier"].includes(v)) as Array<"PDF" | "EPUB" | "Papier">;
+};
+
+const publicationParDefaut = () => new Date().toISOString().slice(0, 10);
+
+const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Article => ({
+  slug: String(row["slug"] ?? row["id"] ?? `article-admin-${index}`),
+  titre: String(row["titre"] ?? `Article ${index + 1}`),
+  chapo: String(row["chapo"] ?? row["resume"] ?? ""),
+  categorie: String(row["categorie"] ?? "Actualités"),
+  tags: normaliserTags(row["tags"]),
+  auteur: String(row["auteur"] ?? "espoir-kakesa"),
+  date: String(row["date"] ?? row["datePublication"] ?? publicationParDefaut()),
+  lecture: String(row["lecture"] ?? "5 min"),
+  image: String(
+    row["image"] ?? row["couverture"] ??
+      "linear-gradient(135deg, oklch(0.62 0.15 48), oklch(0.38 0.06 40))",
+  ),
+  populaire: Boolean(row["populaire"] ?? row["aLaUne"] ?? false),
+  corps: Array.isArray(row["corps"])
+    ? row["corps"].map((part) => String(part))
+    : [String(row["contenu"] ?? row["chapo"] ?? "")],
+});
+
+const livreDepuisAdmin = (row: Record<string, unknown>, index: number): Livre => {
+  const sousTitre = typeof row["sousTitre"] === "string" ? String(row["sousTitre"]) : undefined;
+  const promo = Number(row["promo"] ?? 0) > 0 ? Number(row["promo"]) : undefined;
+  const chapitres = Array.isArray(row["chapitres"]) ? row["chapitres"] as Record<string, unknown>[] : [];
+
+  return {
+    slug: String(row["slug"] ?? row["id"] ?? `livre-admin-${index}`),
+    titre: String(row["titre"] ?? `Livre ${index + 1}`),
+    ...(sousTitre ? { sousTitre } : {}),
+    auteur: String(row["auteur"] ?? "espoir-kakesa"),
+    isbn: String(row["isbn"] ?? ""),
+    resume: String(row["resume"] ?? row["description"] ?? ""),
+    pages: Number(row["pages"] ?? 200),
+    langue: String(row["langue"] ?? "Français"),
+    categorie: String(row["categorie"] ?? "Roman"),
+    publication: String(row["publication"] ?? row["date"] ?? publicationParDefaut()),
+    formats: normaliserFormats(row["formats"]),
+    prix: Number(row["prix"] ?? 12),
+    ...(typeof promo === "number" ? { promo } : {}),
+    stock: Number(row["stock"] ?? 0),
+    disponible: Boolean(row["disponible"] ?? true),
+    aLaUne: Boolean(row["aLaUne"] ?? false),
+    couleur: String(
+      row["couleur"] ?? "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+    ),
+    ...(typeof row["couverture"] === "string" ? { couverture: row["couverture"] as string } : {}),
+    apercuPages: Number(row["apercuPages"] ?? 10),
+    apercuPourcent: Number(row["apercuPourcent"] ?? 10),
+    chapitres: chapitres.map((chapitre) => ({
+      titre: String(chapitre["titre"] ?? "Chapitre"),
+      pages: Array.isArray(chapitre["pages"])
+        ? (chapitre["pages"] as unknown[]).map((page) => Number(page)).filter((page) => Number.isFinite(page))
+        : [],
+      gratuit: Boolean(chapitre["gratuit"] ?? false),
+    })),
+  };
+};
+
+const articlesPubliesAdmin = (): Article[] => {
+  const admin = lireDonneesAdmin() as { articles?: Record<string, unknown>[] };
+  const items = Array.isArray(admin.articles) ? admin.articles : [];
+  return items
+    .filter((row: Record<string, unknown>) => row["statut"] === "Publié" || row["etat"] === "Publié")
+    .map((row: Record<string, unknown>, index: number) => articleDepuisAdmin(row, index));
+};
+
+const livresDisponiblesAdmin = (): Livre[] => {
+  const admin = lireDonneesAdmin() as { livres?: Record<string, unknown>[] };
+  const items = Array.isArray(admin.livres) ? admin.livres : [];
+  return items
+    .filter((row: Record<string, unknown>) => Boolean(row["disponible"]))
+    .map((row: Record<string, unknown>, index: number) => livreDepuisAdmin(row, index));
+};
+
+export let articles: Article[] = [...articlesSeed, ...articlesPubliesAdmin()].filter(
+  (article, index, arr) => arr.findIndex((entry) => entry.slug === article.slug) === index,
+);
+
+export let livres: Livre[] = [...livresSeed, ...livresDisponiblesAdmin()].filter(
+  (livre, index, arr) => arr.findIndex((entry) => entry.slug === livre.slug) === index,
+);
+
+const normaliserValeurApi = (payload: unknown): any[] => {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === "object") {
+    const record = payload as Record<string, unknown>;
+    if (Array.isArray(record["data"])) return record["data"] as any[];
+    if (Array.isArray(record["articles"])) return record["articles"] as any[];
+    if (Array.isArray(record["livres"])) return record["livres"] as any[];
+    if (Array.isArray(record["auteurs"])) return record["auteurs"] as any[];
+  }
+  return [];
+};
+
+const normaliserArticleApi = (entry: any): Article => ({
+  slug: String(entry?.slug ?? entry?._id ?? "article"),
+  titre: String(entry?.titre ?? "Article"),
+  chapo: String(entry?.chapo ?? entry?.resume ?? entry?.contenu ?? ""),
+  categorie: String(entry?.categorie?.nom ?? entry?.categorie ?? "Actualités"),
+  tags: Array.isArray(entry?.tags) ? entry.tags.map((tag: unknown) => String(tag)) : [],
+  auteur: String(entry?.auteur?.slug ?? entry?.auteur ?? "espoir-kakesa"),
+  date: String(entry?.datePublication ?? entry?.date ?? publicationParDefaut()),
+  lecture: String(entry?.lecture ?? "5 min"),
+  image:
+    typeof entry?.couverture === "string" && entry.couverture
+      ? entry.couverture
+      : "linear-gradient(135deg, oklch(0.62 0.15 48), oklch(0.38 0.06 40))",
+  populaire: Boolean(entry?.populaire ?? entry?.aLaUne ?? false),
+  corps: Array.isArray(entry?.corps)
+    ? entry.corps.map((part: unknown) => String(part))
+    : [String(entry?.contenu ?? entry?.chapo ?? "")],
+});
+
+const normaliserLivreApi = (entry: any): Livre => {
+  const promoValue =
+    entry?.promo !== undefined && entry?.promo !== null && Number(entry.promo) > 0 ? Number(entry.promo) : undefined;
+
+  return {
+    slug: String(entry?.slug ?? entry?._id ?? "livre"),
+    titre: String(entry?.titre ?? "Livre"),
+    ...(typeof entry?.sousTitre === "string" ? { sousTitre: entry.sousTitre } : {}),
+    auteur: String(entry?.auteur?.slug ?? entry?.auteur ?? "espoir-kakesa"),
+    isbn: String(entry?.isbn ?? ""),
+    resume: String(entry?.resume ?? ""),
+    pages: Number(entry?.pages ?? 200),
+    langue: String(entry?.langue ?? "Français"),
+    categorie: String(entry?.categorie?.nom ?? entry?.categorie ?? "Roman"),
+    publication: String(entry?.publication ?? entry?.datePublication ?? publicationParDefaut()),
+    formats: Array.isArray(entry?.formats)
+      ? (entry.formats.filter((val: unknown) => ["PDF", "EPUB", "Papier"].includes(String(val))) as Array<"PDF" | "EPUB" | "Papier">)
+      : ["PDF"],
+    prix: Number(entry?.prix ?? 0),
+    ...(promoValue !== undefined ? { promo: promoValue } : {}),
+    stock: Number(entry?.stock ?? 0),
+    disponible: Boolean(entry?.disponible ?? true),
+    aLaUne: Boolean(entry?.aLaUne ?? false),
+    couleur: String(entry?.couleur ?? "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))"),
+    ...(typeof entry?.couverture === "string" ? { couverture: entry.couverture } : {}),
+    apercuPages: Number(entry?.apercuPages ?? 10),
+    apercuPourcent: Number(entry?.apercuPourcent ?? 10),
+    chapitres: Array.isArray(entry?.chapitres)
+      ? entry.chapitres.map((chapitre: any) => ({
+          titre: String(chapitre?.titre ?? "Chapitre"),
+          pages: Array.isArray(chapitre?.pages) ? chapitre.pages.map((page: unknown) => Number(page)) : [],
+          gratuit: Boolean(chapitre?.gratuit ?? false),
+        }))
+      : [],
+  };
+};
+
+const normaliserAuteurApi = (entry: any): Auteur => ({
+  slug: String(entry?.slug ?? entry?._id ?? "auteur"),
+  nom: String(entry?.nom ?? "Auteur"),
+  role: String(entry?.role ?? "Auteur"),
+  bio: String(entry?.bio ?? ""),
+  ville: String(entry?.ville ?? ""),
+  reseaux: Array.isArray(entry?.reseaux)
+    ? entry.reseaux.map((item: any) => ({ label: String(item?.label ?? "Link"), url: String(item?.url ?? "#") }))
+    : [],
+  ventes: Number(entry?.ventes ?? 0),
+  lectures: Number(entry?.lectures ?? 0),
+  telechargements: Number(entry?.telechargements ?? 0),
+});
+
+export const hydratePublicData = async () => {
+  if (typeof window === "undefined") return;
+
+  try {
+    const [articlesApi, livresApi, auteursApi] = await Promise.all([
+      ArticlesApi.getAll({ page: 1, limit: 200 }),
+      LivresApi.getAll({ page: 1, limit: 200 }),
+      AuteursApi.getAll({ page: 1, limit: 200 }),
+    ]);
+
+    const articlesLive = normaliserValeurApi(articlesApi).map(normaliserArticleApi);
+    const livresLive = normaliserValeurApi(livresApi).map(normaliserLivreApi);
+    const auteursLive = normaliserValeurApi(auteursApi).map(normaliserAuteurApi);
+
+    articles = [...articlesLive, ...articlesPubliesAdmin()].filter(
+      (article, index, arr) => arr.findIndex((entry) => entry.slug === article.slug) === index,
+    );
+    livres = [...livresLive, ...livresDisponiblesAdmin()].filter(
+      (livre, index, arr) => arr.findIndex((entry) => entry.slug === livre.slug) === index,
+    );
+    auteurs = auteursLive.length > 0 ? auteursLive : auteursSeed;
+  } catch {
+    // On garde le fallback local si l'API n'est pas encore disponible.
+  }
+};
+
+if (typeof window !== "undefined") {
+  void hydratePublicData();
+}
 
 export const getAuteur = (slug: string) => auteurs.find((a) => a.slug === slug);
 export const nomAuteur = (slug: string) => getAuteur(slug)?.nom ?? slug;

@@ -5,6 +5,7 @@ import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
+import { ArticlesApi, LivresApi } from "@/lib/api-client";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
@@ -84,17 +85,53 @@ export function CrudModule({
   const libelle = (row: Item) =>
     String(row["titre"] ?? row["nom"] ?? row["code"] ?? row["email"] ?? row.id);
 
-  const enregistrer = (valeurs: Record<string, unknown>) => {
-    if (edition?.row) {
-      modifier(edition.row.id, valeurs);
-      const apres = { ...edition.row, ...valeurs } as Item;
-      notify.modifie(singulier, String(valeurs["titre"] ?? valeurs["nom"] ?? edition.row.id));
-      onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
-    } else {
-      const item = creer(valeurs);
-      notify.cree(singulier, libelle(item));
-      onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+  const normaliserReponseApi = (payload: any): Item => {
+    const item = payload?.data ?? payload ?? {};
+    const id = String(item?.id ?? item?._id ?? crypto.randomUUID());
+    return { ...(item ?? {}), id } as Item;
+  };
+
+  const enregistrer = async (valeurs: Record<string, unknown>) => {
+    try {
+      if (collection === "articles") {
+        if (edition?.row) {
+          await ArticlesApi.update(String(edition.row.id), valeurs);
+        } else {
+          const response = await ArticlesApi.create(valeurs);
+          const item = normaliserReponseApi(response);
+          creer(item);
+          notify.cree(singulier, libelle(item));
+          onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+          setEdition(null);
+          return;
+        }
+      }
+
+      if (collection === "livres") {
+        if (edition?.row) {
+          await LivresApi.update(String(edition.row.id), valeurs);
+        } else {
+          const response = await LivresApi.create(valeurs);
+          const item = normaliserReponseApi(response);
+          creer(item);
+          notify.cree(singulier, libelle(item));
+          onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+          setEdition(null);
+          return;
+        }
+      }
+
+      if (edition?.row) {
+        modifier(edition.row.id, valeurs);
+        const apres = { ...edition.row, ...valeurs } as Item;
+        notify.modifie(singulier, String(valeurs["titre"] ?? valeurs["nom"] ?? edition.row.id));
+        onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
+      }
+    } catch (error) {
+      notify.erreur(error instanceof Error ? error.message : "Erreur lors de l'enregistrement");
+      return;
     }
+
     setEdition(null);
   };
 

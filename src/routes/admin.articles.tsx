@@ -14,6 +14,7 @@ import { categoriesMedia, formatDate, nomAuteur } from "@/lib/data";
 import { etatsModeration, transitions, type EtatModeration } from "@/lib/admin-data";
 import { useRole } from "@/hooks/use-role";
 import { useCollection } from "@/lib/admin/store";
+import { ArticlesApi } from "@/lib/api-client";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
 import { useNotifierAbonnes } from "@/hooks/use-notifier-abonnes";
@@ -61,17 +62,28 @@ function AdminArticles() {
         .includes(q.toLowerCase()),
   );
 
-  const enregistrer = (valeurs: ArticleFormValues) => {
+  const enregistrer = async (valeurs: ArticleFormValues) => {
     const payload = formVersItem(valeurs);
-    if (edition) {
-      modifier(edition.id, payload);
-      notify.modifie("Article", String(payload["titre"]));
-      notifierSiPublication("article", edition, { ...edition, ...payload });
-    } else {
-      const item = creer(payload);
-      notify.cree("Article", String(payload["titre"]));
-      notifierSiPublication("article", null, item);
+
+    try {
+      if (edition) {
+        await ArticlesApi.update(String(edition.id), payload);
+        modifier(edition.id, payload);
+        notify.modifie("Article", String(payload["titre"]));
+        notifierSiPublication("article", edition, { ...edition, ...payload });
+      } else {
+        const response = await ArticlesApi.create(payload);
+        const created = response?.data ?? response ?? payload;
+        const item = { ...created, id: String(created?.id ?? created?._id ?? `${Date.now()}`) } as Item;
+        creer(item);
+        notify.cree("Article", String(payload["titre"]));
+        notifierSiPublication("article", null, item);
+      }
+    } catch (error) {
+      notify.erreur(error instanceof Error ? error.message : "Erreur lors de l'enregistrement de l'article");
+      return;
     }
+
     setMode("liste");
     setEdition(null);
   };
