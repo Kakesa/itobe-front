@@ -178,3 +178,11 @@ export const RechercheApi = {
 export const NewsletterApi = {
   subscribe: (email: string) => api.post("/newsletter/subscribe", { email }),
 };
+
+export const BibliothequeApi = {
+  getLibrary: () => api.get("/bibliotheque"),
+  toggleFavori: (slug: string) => api.post(`/bibliotheque/favoris/${slug}`),
+  updateProgress: (data: { slug: string; page?: number; pourcentage?: number }) =>
+    api.put("/bibliotheque/progression", data),
+  checkAccess: (slug: string) => api.get(`/bibliotheque/acces/${slug}`),
+};

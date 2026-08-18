@@ -5,7 +5,6 @@
 import {
   articles,
   auteurs,
-  bibliotheque,
   categoriesLivres,
   categoriesMedia,
   getLivre,
@@ -14,6 +13,8 @@ import {
   serieMensuelle,
 } from "@/lib/data";
 import { commandes } from "@/lib/admin-data";
+import { lireSession } from "@/lib/auth";
+import { BibliothequeApi } from "@/lib/api-client";
 import type {
   ActiviteItem,
   AlerteItem,
@@ -260,45 +261,81 @@ export const DashboardService = {
   },
 
   async getLecteurDashboard(): Promise<DashboardLecteurPayload> {
-    await delay();
-    const mapLivre = (slug: string) => {
-      const l = getLivre(slug)!;
-      return { slug, titre: l.titre, couleur: l.couleur };
-    };
+    const session = lireSession();
+    const prenom = session?.prenom || session?.nom || "Lecteur";
+
+    // 1. Tenter de récupérer la bibliothèque réelle de l'utilisateur connecté via l'API
+    try {
+      const res = await BibliothequeApi.getLibrary();
+      if (res?.data) {
+        const biblio = res.data;
+        const mapApiLivre = (l: any) => ({
+          slug: l.slug || "",
+          titre: l.titre || "",
+          couleur: l.couleur || "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+        });
+
+        const achetes = (biblio.achetes || []).map(mapApiLivre);
+        const favoris = (biblio.favoris || []).map(mapApiLivre);
+        const telecharges = (biblio.telecharges || []).map((t: any) => ({
+          slug: t.slug || "",
+          titre: t.titre || "",
+        }));
+
+        const continuer = (biblio.enCours || []).map((ec: any) => ({
+          slug: ec.slug || "",
+          titre: ec.titre || "",
+          progression: ec.pourcentage || 0,
+          couleur: ec.couleur || "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+        }));
+
+        const achetesSlugs = new Set(achetes.map((a: any) => a.slug));
+        const catalogueDispo = livres.map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur }));
+
+        return {
+          prenom,
+          continuer,
+          bibliotheque: achetes,
+          favoris,
+          derniersAchats: achetes.map((a: any) => ({
+            slug: a.slug,
+            titre: a.titre,
+            date: "Récemment",
+          })),
+          historique: continuer.map((c: any) => ({
+            slug: c.slug,
+            titre: c.titre,
+            date: "Récemment",
+          })),
+          recommandations: catalogueDispo.filter((l) => !achetesSlugs.has(l.slug)).slice(0, 3),
+          nouveautes: catalogueDispo.slice(0, 3),
+          tempsLectureTotal: continuer.length > 0 ? `${continuer.length * 45} min` : "0 min",
+          telechargements: telecharges,
+          marquePages: (biblio.marquePages || []).map((m: any) => ({
+            slug: m.livre?.slug || "",
+            titre: m.livre?.titre || "Livre",
+            page: m.page || 1,
+          })),
+        };
+      }
+    } catch (e) {
+      console.warn("[Lecteur Dashboard] Impossible de charger la bibliothèque API :", e);
+    }
+
+    // 2. Si non connecté ou compte sans données : renvoyer un espace vide et isolé
+    const catalogueDispo = livres.map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur }));
     return {
-      prenom: "Nadia",
-      continuer: Object.entries(bibliotheque.progression)
-        .filter(([, p]) => p > 0 && p < 100)
-        .map(([slug, progression]) => {
-          const l = getLivre(slug)!;
-          return { slug, titre: l.titre, progression, couleur: l.couleur };
-        }),
-      bibliotheque: bibliotheque.achetes.map(mapLivre),
-      favoris: bibliotheque.favoris.map(mapLivre),
-      derniersAchats: bibliotheque.achetes.map((slug) => ({
-        slug,
-        titre: getLivre(slug)!.titre,
-        date: "2026-07-10",
-      })),
-      historique: Object.keys(bibliotheque.progression).map((slug) => ({
-        slug,
-        titre: getLivre(slug)!.titre,
-        date: "2026-07-28",
-      })),
-      recommandations: livres
-        .filter((l) => !bibliotheque.achetes.includes(l.slug))
-        .slice(0, 3)
-        .map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur })),
-      nouveautes: livres.slice(0, 3).map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur })),
-      tempsLectureTotal: "14 h 32 min",
-      telechargements: bibliotheque.telecharges.map((slug) => ({
-        slug,
-        titre: getLivre(slug)!.titre,
-      })),
-      marquePages: [
-        { slug: "le-fleuve-et-la-page", titre: "Le Fleuve et la Page", page: 128 },
-        { slug: "grammaire-du-courage", titre: "Grammaire du courage", page: 64 },
-      ],
+      prenom,
+      continuer: [],
+      bibliotheque: [],
+      favoris: [],
+      derniersAchats: [],
+      historique: [],
+      recommandations: catalogueDispo.slice(0, 3),
+      nouveautes: catalogueDispo.slice(0, 3),
+      tempsLectureTotal: "0 min",
+      telechargements: [],
+      marquePages: [],
     };
   },
 };
