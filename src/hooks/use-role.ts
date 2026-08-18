@@ -10,9 +10,13 @@ function normaliser(v: string | null): Role {
 }
 
 export function useRole() {
-  const [role, setRole] = useState<Role>("admin");
+  const [role, setRole] = useState<Role>(() => {
+    if (typeof window === "undefined") return "lecteur";
+    return normaliser(localStorage.getItem(CLE));
+  });
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     setRole(normaliser(localStorage.getItem(CLE)));
     const onChange = () => setRole(normaliser(localStorage.getItem(CLE)));
     window.addEventListener("itobe-role", onChange);

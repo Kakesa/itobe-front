@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
@@ -74,13 +75,18 @@ function AdminArticles() {
       } else {
         const response = await ArticlesApi.create(payload);
         const created = response?.data ?? response ?? payload;
-        const item = { ...created, id: String(created?.id ?? created?._id ?? `${Date.now()}`) } as Item;
+        const item = {
+          ...created,
+          id: String(created?.id ?? created?._id ?? `${Date.now()}`),
+        } as Item;
         creer(item);
         notify.cree("Article", String(payload["titre"]));
         notifierSiPublication("article", null, item);
       }
     } catch (error) {
-      notify.erreur(error instanceof Error ? error.message : "Erreur lors de l'enregistrement de l'article");
+      notify.erreur(
+        error instanceof Error ? error.message : "Erreur lors de l'enregistrement de l'article",
+      );
       return;
     }
 
@@ -91,8 +97,7 @@ function AdminArticles() {
   const appliquer = (row: Item, cible: EtatModeration, note?: string) => {
     const patch = {
       etat: cible,
-      statut:
-        cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon",
+      statut: cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon",
     };
     modifier(row.id, patch);
     notify.succes(`« ${String(row["titre"])} » → ${cible}`, { description: note });
@@ -150,7 +155,7 @@ function AdminArticles() {
       </div>
 
       <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card">
-        <table className="w-full min-w-[720px] text-sm">
+        <table className="w-full min-w-180 text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-muted-foreground">
               <th className="px-4 py-3 font-normal">Titre</th>
@@ -227,11 +232,7 @@ function AdminArticles() {
       <ConfirmDialog
         ouvert={!!aSupprimer}
         titre="Supprimer l'article ?"
-        message={
-          aSupprimer
-            ? `« ${String(aSupprimer["titre"])} » sera définitivement retiré.`
-            : ""
-        }
+        message={aSupprimer ? `« ${String(aSupprimer["titre"])} » sera définitivement retiré.` : ""}
         onAnnuler={() => setASupprimer(null)}
         onConfirmer={() => {
           if (aSupprimer) {

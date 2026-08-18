@@ -6,6 +6,15 @@ const API_BASE = import.meta.env["VITE_API_URL"] || "http://localhost:5000/api/v
 const TOKEN_KEY = "itobe.token";
 const REFRESH_TOKEN_KEY = "itobe.refreshToken";
 
+function readAuthTokensFromResponse(payload: any): { token?: string; refreshToken?: string } {
+  const data = payload?.data ?? payload ?? {};
+  const token = data.accessToken ?? data.token ?? payload?.accessToken ?? payload?.token ?? null;
+  const refreshToken =
+    data.refreshToken ?? payload?.refreshToken ?? data.refresh_token ?? payload?.refresh_token ?? null;
+
+  return { token: token ?? undefined, refreshToken: refreshToken ?? undefined };
+}
+
 export class ApiError extends Error {
   statusCode: number;
   errors?: any;
@@ -109,18 +118,20 @@ export const api = {
 export const AuthApi = {
   login: async (credentials: { email: string; password: string }) => {
     const res = await api.post("/auth/login", credentials);
-    if (res.data?.token) {
-      setTokens(res.data.token, res.data.refreshToken);
+    const { token, refreshToken } = readAuthTokensFromResponse(res);
+    if (token) {
+      setTokens(token, refreshToken);
     }
-    return res.data;
+    return res.data ?? res;
   },
 
   register: async (payload: { nom: string; email: string; password: string; role?: string }) => {
     const res = await api.post("/auth/register", payload);
-    if (res.data?.token) {
-      setTokens(res.data.token, res.data.refreshToken);
+    const { token, refreshToken } = readAuthTokensFromResponse(res);
+    if (token) {
+      setTokens(token, refreshToken);
     }
-    return res.data;
+    return res.data ?? res;
   },
 
   me: () => api.get("/auth/me"),
