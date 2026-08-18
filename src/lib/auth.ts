@@ -1,4 +1,5 @@
 import type { Role } from "@/lib/admin-data";
+import { AuthApi, clearTokens } from "./api-client";
 
 export type CompteDemo = {
   email: string;
@@ -8,7 +9,7 @@ export type CompteDemo = {
   role: Role;
 };
 
-/** Comptes de démonstration (front only). */
+/** Comptes de démonstration / secours */
 export const comptesDemo: CompteDemo[] = [
   {
     email: "admin@itobe.cd",
@@ -34,6 +35,7 @@ export const comptesDemo: CompteDemo[] = [
 ];
 
 export type SessionUtilisateur = {
+  id?: string;
   email: string;
   nom: string;
   prenom: string;
@@ -43,6 +45,9 @@ export type SessionUtilisateur = {
 const CLE_SESSION = "itobe.session";
 const CLE_ROLE = "itobe.role";
 
+/**
+ * Authentification synchrone (mock)
+ */
 export function authentifier(email: string, password: string): SessionUtilisateur | null {
   const compte = comptesDemo.find(
     (c) => c.email.toLowerCase() === email.trim().toLowerCase() && c.password === password,
@@ -54,6 +59,36 @@ export function authentifier(email: string, password: string): SessionUtilisateu
     prenom: compte.prenom,
     role: compte.role,
   };
+}
+
+/**
+ * Authentification réelle avec l'API Backend REST
+ */
+export async function authentifierApi(email: string, password: string): Promise<SessionUtilisateur | null> {
+  try {
+    const data = await AuthApi.login({ email, password });
+    if (data?.user) {
+      const user = data.user;
+      const session: SessionUtilisateur = {
+        id: user._id || user.id,
+        email: user.email,
+        nom: user.nom,
+        prenom: user.prenom || "",
+        role: user.role as Role,
+      };
+      sauvegarderSession(session);
+      return session;
+    }
+  } catch (error) {
+    console.warn("[Auth API] Échec de connexion API, essai du fallback local :", error);
+  }
+
+  // Fallback local
+  const sessionLocale = authentifier(email, password);
+  if (sessionLocale) {
+    sauvegarderSession(sessionLocale);
+  }
+  return sessionLocale;
 }
 
 export function sauvegarderSession(session: SessionUtilisateur) {
@@ -75,6 +110,9 @@ export function lireSession(): SessionUtilisateur | null {
 }
 
 export function deconnecter() {
+  clearTokens();
   localStorage.removeItem(CLE_SESSION);
+  localStorage.removeItem(CLE_ROLE);
   window.dispatchEvent(new Event("itobe-session"));
+  window.dispatchEvent(new Event("itobe-role"));
 }

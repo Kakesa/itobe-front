@@ -1,10 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  authentifier,
+  authentifierApi,
   comptesDemo,
   sauvegarderSession,
 } from "@/lib/auth";
+import { AuthApi } from "@/lib/api-client";
 import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/connexion")({
@@ -30,27 +31,51 @@ function Connexion() {
   const [email, setEmail] = useState("admin@itobe.cd");
   const [password, setPassword] = useState("admin123");
   const [nom, setNom] = useState("");
+  const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
   const navigate = useNavigate();
   const { session, deconnexion } = useSession();
 
-  const soumettre = (e: React.FormEvent<HTMLFormElement>) => {
+  const soumettre = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErreur("");
+    setChargement(true);
 
-    if (mode === "inscription") {
-      setErreur("Inscription désactivée en démo — utilisez un compte ci-dessous.");
-      return;
+    try {
+      if (mode === "inscription") {
+        const data = await AuthApi.register({
+          nom: nom.trim(),
+          email: email.trim(),
+          password,
+          role: "lecteur",
+        });
+
+        if (data?.user) {
+          const user = data.user;
+          sauvegarderSession({
+            id: user._id || user.id,
+            email: user.email,
+            nom: user.nom,
+            prenom: user.prenom || "",
+            role: user.role,
+          });
+          void navigate({ to: "/admin" });
+          return;
+        }
+      } else {
+        const user = await authentifierApi(email, password);
+        if (!user) {
+          setErreur("E-mail ou mot de passe incorrect.");
+          return;
+        }
+
+        void navigate({ to: "/admin" });
+      }
+    } catch (err: any) {
+      setErreur(err.message || "Une erreur est survenue lors de la connexion.");
+    } finally {
+      setChargement(false);
     }
-
-    const user = authentifier(email, password);
-    if (!user) {
-      setErreur("E-mail ou mot de passe incorrect.");
-      return;
-    }
-
-    sauvegarderSession(user);
-    void navigate({ to: "/admin" });
   };
 
   if (session) {
@@ -58,7 +83,7 @@ function Connexion() {
       <div className="mx-auto max-w-md px-4 py-20 text-center">
         <p className="kicker">Connecté</p>
         <h1 className="mt-3 font-display text-3xl">
-          Bonjour, {session.prenom}
+          Bonjour, {session.prenom || session.nom}
         </h1>
         <p className="mt-3 text-sm text-muted-foreground">
           {session.email} · rôle <span className="font-medium text-foreground">{session.role}</span>
@@ -95,7 +120,7 @@ function Connexion() {
 
         <div className="mt-8 rounded-sm border border-border bg-card p-4 text-sm">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Comptes démo
+            Comptes démo disponibles
           </p>
           <ul className="mt-3 space-y-2 text-muted-foreground">
             {comptesDemo.map((c) => (
@@ -172,16 +197,17 @@ function Connexion() {
           )}
           <button
             type="submit"
-            className="w-full rounded-sm bg-primary px-4 py-3 text-sm font-medium text-primary-foreground"
+            disabled={chargement}
+            className="w-full rounded-sm bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
-            {mode === "connexion" ? "Se connecter" : "Créer mon compte"}
+            {chargement ? "Chargement..." : mode === "connexion" ? "Se connecter" : "Créer mon compte"}
           </button>
         </form>
 
         <p className="mt-5 text-center text-xs text-muted-foreground">
-          Démo front — pas de serveur d&apos;auth.{" "}
+          Connecté à l&apos;API REST Itobe Backend.{" "}
           <Link to="/admin" className="text-accent hover:underline">
-            Aller au dashboard
+            Accès direct au dashboard
           </Link>
         </p>
       </div>
