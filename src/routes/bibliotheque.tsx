@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { BookCover } from "@/components/book-cover";
+import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { getLivre, livres, nomAuteur } from "@/lib/data";
 import { BibliothequeApi, getToken } from "@/lib/api-client";
 import { lireSession } from "@/lib/auth";
@@ -32,6 +33,8 @@ const onglets = [
 ] as const;
 
 function Bibliotheque() {
+  const navigate = useNavigate();
+  const { aDesAchats, loading: achatsLoading } = useADesAchats();
   const [onglet, setOnglet] = useState<(typeof onglets)[number]["id"]>("achetes");
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<{
@@ -47,6 +50,13 @@ function Bibliotheque() {
   });
 
   const session = lireSession();
+
+  useEffect(() => {
+    if (achatsLoading) return;
+    if (!aDesAchats) {
+      void navigate({ to: "/edition", replace: true });
+    }
+  }, [achatsLoading, aDesAchats, navigate]);
 
   useEffect(() => {
     async function loadBiblio() {
@@ -79,6 +89,10 @@ function Bibliotheque() {
       : data[onglet as "achetes" | "favoris" | "telecharges"] || [];
 
   const enCours = Object.entries(data.progressions).slice(0, 2);
+
+  if (achatsLoading || !aDesAchats) {
+    return null;
+  }
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">

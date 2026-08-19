@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
+import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
 
 export function SiteFooter() {
   const portail = usePortailActif();
+  const { aDesAchats } = useADesAchats();
   const estMedia = portail === "media";
 
   return (
@@ -50,11 +52,13 @@ export function SiteFooter() {
                     Catalogue
                   </Link>
                 </li>
-                <li>
-                  <Link to="/bibliotheque" className="hover:text-foreground">
-                    Ma bibliothèque
-                  </Link>
-                </li>
+                {aDesAchats && (
+                  <li>
+                    <Link to="/bibliotheque" className="hover:text-foreground">
+                      Ma bibliothèque
+                    </Link>
+                  </li>
+                )}
               </>
             )}
             <li>

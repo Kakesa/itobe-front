@@ -4,6 +4,7 @@ import { BookCover } from "@/components/book-cover";
 import { useSession } from "@/hooks/use-session";
 import { CommandesApi, getToken } from "@/lib/api-client";
 import { fetchLivreBySlug, getLivre, nomAuteur, prixAffiche, type Livre } from "@/lib/data";
+import { notifierBibliothequeMiseAJour } from "@/hooks/use-a-des-achats";
 
 export const Route = createFileRoute("/achat/$slug")({
   head: () => ({
@@ -84,6 +85,7 @@ function Achat() {
         const cmd = res?.data ?? res;
         if (!annule) {
           setReference(cmd?.reference ?? "");
+          notifierBibliothequeMiseAJour();
           setEtape("confirme");
         }
       } catch (err: unknown) {

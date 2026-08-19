@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowLeft, Menu, Search, ShoppingCart, X } from "lucide-react";
+import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
 import { usePanierCount } from "@/hooks/use-panier";
 
@@ -27,10 +28,17 @@ const liensEdition: Lien[] = [
 export function SiteHeader() {
   const portail = usePortailActif();
   const panierCount = usePanierCount();
+  const { aDesAchats } = useADesAchats();
   const [ouvert, setOuvert] = useState(false);
   const home = portail === "media" ? "/media" : "/edition";
   const titre = portail === "media" ? "Média" : "Maison d'édition";
-  const liens = portail === "media" ? liensMedia : liensEdition;
+  const liens = useMemo(() => {
+    const base = portail === "media" ? liensMedia : liensEdition;
+    if (portail === "edition" && !aDesAchats) {
+      return base.filter((l) => l.to !== "/bibliotheque");
+    }
+    return base;
+  }, [portail, aDesAchats]);
   const accent =
     portail === "media" ? "border-b-[#70a2e1]" : "border-b-[#ea5312]";
   return (

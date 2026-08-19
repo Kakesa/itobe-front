@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { BookCover } from "@/components/book-cover";
 import { usePanier } from "@/hooks/use-panier";
+import { notifierBibliothequeMiseAJour } from "@/hooks/use-a-des-achats";
 import { useSession } from "@/hooks/use-session";
 import { getLivre, nomAuteur } from "@/lib/data";
 import { getToken } from "@/lib/api-client";
@@ -65,6 +66,7 @@ function PanierPage() {
         ...(moyen === "mobile" && telephone ? { telephone } : {}),
       });
       setCommandesCreees(result?.count ?? result?.commandes?.length ?? 1);
+      notifierBibliothequeMiseAJour();
       setEtape("confirme");
     } catch (err: unknown) {
       setEtape("paiement");

@@ -1,5 +1,5 @@
 import { Link, Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   BarChart3,
   BookMarked,
@@ -30,6 +30,7 @@ import {
   X,
 } from "lucide-react";
 import { menuAdmin } from "@/lib/admin-data";
+import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
 
@@ -80,6 +81,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
 
 function AdminLayout() {
   const { role } = useRole();
+  const { aDesAchats } = useADesAchats();
   const { session, deconnexion } = useSession();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -89,12 +91,25 @@ function AdminLayout() {
     void navigate({ to: "/connexion" });
   };
 
-  const groupes = menuAdmin
-    .map((g) => ({
-      ...g,
-      items: g.items.filter((i) => i.roles.includes(role)),
-    }))
-    .filter((g) => g.items.length > 0);
+  const groupes = useMemo(
+    () =>
+      menuAdmin
+        .map((g) => ({
+          ...g,
+          items: g.items.filter((i) => {
+            if (!i.roles.includes(role)) return false;
+            if (
+              !aDesAchats &&
+              (i.to === "/admin/ma-bibliotheque" || i.label === "Bibliothèque")
+            ) {
+              return false;
+            }
+            return true;
+          }),
+        }))
+        .filter((g) => g.items.length > 0),
+    [role, aDesAchats],
+  );
 
   const espaceLabel =
     role === "lecteur" ? "Espace lecteur" : role === "editeur" ? "Espace éditeur" : "Back-office";
