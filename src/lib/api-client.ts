@@ -125,7 +125,14 @@ export const AuthApi = {
     return res.data ?? res;
   },
 
-  register: async (payload: { nom: string; email: string; password: string; role?: string }) => {
+  register: async (payload: {
+    nom: string;
+    email: string;
+    password: string;
+    telephone?: string;
+    adresse?: string;
+    role?: string;
+  }) => {
     const res = await api.post("/auth/register", payload);
     const { token, refreshToken } = readAuthTokensFromResponse(res);
     if (token) {

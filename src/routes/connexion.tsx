@@ -5,7 +5,7 @@ import { authentifierApi, sauvegarderSession } from "@/lib/auth";
 import { AuthApi } from "@/lib/api-client";
 import { fusionnerPanierApresConnexion } from "@/lib/panier/merge-on-login";
 import { useSession } from "@/hooks/use-session";
-import { BookOpen, Newspaper, Shield, Sparkles } from "lucide-react";
+import { BookOpen, Newspaper, Shield } from "lucide-react";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -37,6 +37,8 @@ function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
+  const [telephone, setTelephone] = useState("");
+  const [adresse, setAdresse] = useState("");
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
   const navigate = useNavigate();
@@ -53,6 +55,8 @@ function Connexion() {
           nom: nom.trim(),
           email: email.trim(),
           password,
+          telephone: telephone.trim(),
+          adresse: adresse.trim(),
           role: "lecteur",
         });
 
@@ -171,16 +175,42 @@ function Connexion() {
 
         <form className="mt-6 space-y-4" onSubmit={soumettre}>
           {mode === "inscription" && (
-            <label className="block text-sm">
-              <span className="text-xs text-muted-foreground">Nom complet</span>
-              <input
-                required
-                value={nom}
-                onChange={(e) => setNom(e.target.value)}
-                placeholder="Ex: Jean Mukendi"
-                className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-              />
-            </label>
+            <>
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Nom complet</span>
+                <input
+                  required
+                  value={nom}
+                  onChange={(e) => setNom(e.target.value)}
+                  placeholder="Ex: Jean Mukendi"
+                  className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Numéro de téléphone</span>
+                <input
+                  required
+                  type="tel"
+                  value={telephone}
+                  onChange={(e) => setTelephone(e.target.value)}
+                  placeholder="+243 81 234 5678"
+                  autoComplete="tel"
+                  className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Adresse complète</span>
+                <textarea
+                  required
+                  rows={2}
+                  value={adresse}
+                  onChange={(e) => setAdresse(e.target.value)}
+                  placeholder="Ex: 12 Av. de la Paix, Commune de Gombe, Kinshasa"
+                  autoComplete="street-address"
+                  className="mt-1 w-full resize-none rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
+                />
+              </label>
+            </>
           )}
 
           <label className="block text-sm">
