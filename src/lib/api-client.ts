@@ -142,7 +142,14 @@ export const AuthApi = {
   },
 
   me: () => api.get("/auth/me"),
-  updateProfile: (data: { nom?: string; prenom?: string; telephone?: string; ville?: string; preferences?: any }) =>
+  updateProfile: (data: {
+    nom?: string;
+    prenom?: string;
+    telephone?: string;
+    adresse?: string;
+    ville?: string;
+    preferences?: any;
+  }) =>
     api.put("/auth/me", data),
   changePassword: (data: { ancienPassword: string; nouveauPassword: string }) =>
     api.put("/auth/change-password", data),

@@ -58,6 +58,7 @@ export function MonProfilPanel() {
   const [prenom, setPrenom] = useState(session?.prenom || "");
   const [email, setEmail] = useState(session?.email || "");
   const [telephone, setTelephone] = useState("");
+  const [adresse, setAdresse] = useState("");
   const [ville, setVille] = useState("Kinshasa");
   const [userRole, setUserRole] = useState(role);
 
@@ -108,6 +109,7 @@ export function MonProfilPanel() {
           setPrenom(u.prenom || "");
           setEmail(u.email || "");
           setTelephone(u.telephone || "");
+          setAdresse(u.adresse || "");
           setVille(u.ville || "Kinshasa");
           setUserRole(u.role || role);
 
@@ -163,6 +165,7 @@ export function MonProfilPanel() {
         nom: nom.trim(),
         prenom: prenom.trim(),
         telephone: telephone.trim(),
+        adresse: adresse.trim(),
         ville: ville.trim(),
         preferences: {
           newsletter,
@@ -302,6 +305,18 @@ export function MonProfilPanel() {
                   onChange={(e) => setTelephone(e.target.value)}
                   placeholder="+243 ..."
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </label>
+
+              <label className="block text-sm sm:col-span-2">
+                <span className="text-xs text-muted-foreground">Adresse complète</span>
+                <textarea
+                  rows={2}
+                  value={adresse}
+                  onChange={(e) => setAdresse(e.target.value)}
+                  placeholder="Ex: 12 Av. de la Paix, Commune de Gombe, Kinshasa"
+                  autoComplete="street-address"
+                  className="mt-1 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
                 />
               </label>
 
