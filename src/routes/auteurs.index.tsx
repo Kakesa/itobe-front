@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { auteurs, livres } from "@/lib/data";
+import { auteurs } from "@/lib/data";
+import { useLivres } from "@/hooks/use-livres";
 
 export const Route = createFileRoute("/auteurs/")({
   head: () => ({
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/auteurs/")({
 });
 
 function AuteursPage() {
+  const { livres } = useLivres();
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
       <p className="kicker">Communauté</p>

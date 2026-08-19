@@ -1,6 +1,5 @@
-// Données de démonstration (front uniquement) avec Hydratation depuis l'API réel en fallback.
+// Données publiques : catalogue livres depuis l'API (MongoDB) uniquement.
 import { AuteursApi, ArticlesApi, LivresApi } from "./api-client";
-import { faussesCouvertures } from "./fausses-couvertures";
 
 export type Article = {
   slug: string;
@@ -159,150 +158,7 @@ const articlesSeed: Article[] = [
   },
 ];
 
-const chapitres = (n: number, pages: number) =>
-  Array.from({ length: n }, (_, i) => ({
-    titre:
-      ["Ouverture", "Le seuil", "Les voix", "La fracture", "Retour", "Le fleuve", "Épilogue"][i % 7] +
-      ` — chapitre ${i + 1}`,
-    pages: Array.from(
-      { length: Math.round(pages / n) },
-      (_, p) => Math.round((pages / n) * i) + p + 1,
-    ),
-    gratuit: i < 2,
-  }));
-
-const livresSeed: Livre[] = [
-  {
-    slug: "le-fleuve-et-la-page",
-    titre: "Le Fleuve et la Page",
-    sousTitre: "Récits d'une ville qui écrit",
-    auteur: "christopher-bigos",
-    isbn: "978-2-1234-5680-1",
-    resume:
-      "Une traversée littéraire de Kinshasa, de ses ateliers d'écriture à ses librairies de fortune. Un livre qui écoute la ville autant qu'il la raconte.",
-    pages: 248,
-    langue: "Français",
-    categorie: "Essai",
-    publication: "2026-05-12",
-    formats: ["PDF", "EPUB", "Papier"],
-    prix: 18,
-    promo: 12,
-    stock: 42,
-    disponible: true,
-    aLaUne: true,
-    couleur: "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
-    couverture: faussesCouvertures["le-fleuve-et-la-page"],
-    apercuPages: 24,
-    apercuPourcent: 10,
-    chapitres: chapitres(7, 248),
-  },
-  {
-    slug: "nuit-blanche-a-matonge",
-    titre: "Nuit blanche à Matonge",
-    sousTitre: "Roman",
-    auteur: "marie-lomba",
-    isbn: "978-2-1234-5681-8",
-    resume:
-      "Trois personnages, une nuit, un quartier qui ne dort jamais. Un roman choral sur l'amitié et les promesses tenues de justesse.",
-    pages: 312,
-    langue: "Français",
-    categorie: "Roman",
-    publication: "2026-03-02",
-    formats: ["PDF", "EPUB"],
-    prix: 15,
-    stock: 0,
-    disponible: true,
-    couleur: "linear-gradient(160deg, oklch(0.42 0.1 265), oklch(0.22 0.04 270))",
-    couverture: faussesCouvertures["nuit-blanche-a-matonge"],
-    apercuPages: 18,
-    apercuPourcent: 6,
-    chapitres: chapitres(6, 312),
-  },
-  {
-    slug: "grammaire-du-courage",
-    titre: "Grammaire du courage",
-    auteur: "espoir-kakesa",
-    isbn: "978-2-1234-5682-5",
-    resume:
-      "Un manuel intime pour celles et ceux qui commencent. Vingt chapitres courts, vingt manières de tenir debout.",
-    pages: 180,
-    langue: "Français",
-    categorie: "Développement personnel",
-    publication: "2026-01-20",
-    formats: ["PDF", "EPUB", "Papier"],
-    prix: 12,
-    stock: 120,
-    disponible: true,
-    couleur: "linear-gradient(160deg, oklch(0.74 0.13 72), oklch(0.42 0.07 60))",
-    couverture: faussesCouvertures["grammaire-du-courage"],
-    apercuPages: 20,
-    apercuPourcent: 12,
-    chapitres: chapitres(5, 180),
-  },
-  {
-    slug: "poemes-du-quatrieme-jour",
-    titre: "Poèmes du quatrième jour",
-    auteur: "marie-lomba",
-    isbn: "978-2-1234-5683-2",
-    resume: "Recueil de poésie autour de l'attente, du fleuve et des départs.",
-    pages: 96,
-    langue: "Français",
-    categorie: "Poésie",
-    publication: "2025-11-08",
-    formats: ["PDF", "Papier"],
-    prix: 9,
-    stock: 8,
-    disponible: true,
-    couleur: "linear-gradient(160deg, oklch(0.57 0.15 34), oklch(0.28 0.05 30))",
-    couverture: faussesCouvertures["poemes-du-quatrieme-jour"],
-    apercuPages: 10,
-    apercuPourcent: 10,
-    chapitres: chapitres(4, 96),
-  },
-  {
-    slug: "histoire-des-presses",
-    titre: "Histoire des presses africaines",
-    sousTitre: "1950–2025",
-    auteur: "christopher-bigos",
-    isbn: "978-2-1234-5684-9",
-    resume:
-      "Soixante-quinze ans d'imprimerie, de censure et de résistance éditoriale, racontés par les archives.",
-    pages: 420,
-    langue: "Français",
-    categorie: "Histoire",
-    publication: "2025-09-15",
-    formats: ["PDF", "EPUB", "Papier"],
-    prix: 26,
-    promo: 21,
-    stock: 15,
-    disponible: true,
-    couleur: "linear-gradient(160deg, oklch(0.38 0.06 150), oklch(0.2 0.03 160))",
-    couverture: faussesCouvertures["histoire-des-presses"],
-    apercuPages: 30,
-    apercuPourcent: 7,
-    chapitres: chapitres(7, 420),
-  },
-  {
-    slug: "le-cartable-de-kimia",
-    titre: "Le cartable de Kimia",
-    auteur: "espoir-kakesa",
-    isbn: "978-2-1234-5685-6",
-    resume: "Un conte illustré pour les 7-11 ans, sur l'école, l'amitié et les grands départs.",
-    pages: 64,
-    langue: "Français",
-    categorie: "Jeunesse",
-    publication: "2025-06-30",
-    formats: ["PDF", "Papier"],
-    prix: 7,
-    stock: 60,
-    disponible: true,
-    couleur: "linear-gradient(160deg, oklch(0.7 0.14 160), oklch(0.36 0.06 165))",
-    couverture: faussesCouvertures["le-cartable-de-kimia"],
-    apercuPages: 8,
-    apercuPourcent: 12,
-    chapitres: chapitres(4, 64),
-  },
-];
+export const PUBLIC_DATA_EVENT = "itobe-public-data";
 
 export const auteursSeed: Auteur[] = [
   {
@@ -370,20 +226,6 @@ const normaliserTags = (value: unknown) =>
         .map((v) => v.trim())
         .filter(Boolean);
 
-const normaliserFormats = (value: unknown): Array<"PDF" | "EPUB" | "Papier"> => {
-  if (Array.isArray(value)) {
-    const vals = value.map((v) => String(v)).filter(Boolean) as string[];
-    return vals.filter((v): v is "PDF" | "EPUB" | "Papier" => ["PDF", "EPUB", "Papier"].includes(v)) as Array<"PDF" | "EPUB" | "Papier">;
-  }
-
-  const vals = String(value ?? "PDF, EPUB")
-    .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean);
-
-  return vals.filter((v): v is "PDF" | "EPUB" | "Papier" => ["PDF", "EPUB", "Papier"].includes(v)) as Array<"PDF" | "EPUB" | "Papier">;
-};
-
 const publicationParDefaut = () => new Date().toISOString().slice(0, 10);
 
 const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Article => ({
@@ -405,44 +247,6 @@ const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Articl
     : [String(row["contenu"] ?? row["chapo"] ?? "")],
 });
 
-const livreDepuisAdmin = (row: Record<string, unknown>, index: number): Livre => {
-  const sousTitre = typeof row["sousTitre"] === "string" ? String(row["sousTitre"]) : undefined;
-  const promo = Number(row["promo"] ?? 0) > 0 ? Number(row["promo"]) : undefined;
-  const chapitres = Array.isArray(row["chapitres"]) ? row["chapitres"] as Record<string, unknown>[] : [];
-
-  return {
-    slug: String(row["slug"] ?? row["id"] ?? `livre-admin-${index}`),
-    titre: String(row["titre"] ?? `Livre ${index + 1}`),
-    ...(sousTitre ? { sousTitre } : {}),
-    auteur: String(row["auteur"] ?? "espoir-kakesa"),
-    isbn: String(row["isbn"] ?? ""),
-    resume: String(row["resume"] ?? row["description"] ?? ""),
-    pages: Number(row["pages"] ?? 200),
-    langue: String(row["langue"] ?? "Français"),
-    categorie: String(row["categorie"] ?? "Roman"),
-    publication: String(row["publication"] ?? row["date"] ?? publicationParDefaut()),
-    formats: normaliserFormats(row["formats"]),
-    prix: Number(row["prix"] ?? 12),
-    ...(typeof promo === "number" ? { promo } : {}),
-    stock: Number(row["stock"] ?? 0),
-    disponible: Boolean(row["disponible"] ?? true),
-    aLaUne: Boolean(row["aLaUne"] ?? false),
-    couleur: String(
-      row["couleur"] ?? "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
-    ),
-    ...(typeof row["couverture"] === "string" ? { couverture: row["couverture"] as string } : {}),
-    apercuPages: Number(row["apercuPages"] ?? 10),
-    apercuPourcent: Number(row["apercuPourcent"] ?? 10),
-    chapitres: chapitres.map((chapitre) => ({
-      titre: String(chapitre["titre"] ?? "Chapitre"),
-      pages: Array.isArray(chapitre["pages"])
-        ? (chapitre["pages"] as unknown[]).map((page) => Number(page)).filter((page) => Number.isFinite(page))
-        : [],
-      gratuit: Boolean(chapitre["gratuit"] ?? false),
-    })),
-  };
-};
-
 const articlesPubliesAdmin = (): Article[] => {
   const admin = lireDonneesAdmin() as { articles?: Record<string, unknown>[] };
   const items = Array.isArray(admin.articles) ? admin.articles : [];
@@ -451,21 +255,12 @@ const articlesPubliesAdmin = (): Article[] => {
     .map((row: Record<string, unknown>, index: number) => articleDepuisAdmin(row, index));
 };
 
-const livresDisponiblesAdmin = (): Livre[] => {
-  const admin = lireDonneesAdmin() as { livres?: Record<string, unknown>[] };
-  const items = Array.isArray(admin.livres) ? admin.livres : [];
-  return items
-    .filter((row: Record<string, unknown>) => Boolean(row["disponible"]))
-    .map((row: Record<string, unknown>, index: number) => livreDepuisAdmin(row, index));
-};
-
 export let articles: Article[] = [...articlesSeed, ...articlesPubliesAdmin()].filter(
   (article, index, arr) => arr.findIndex((entry) => entry.slug === article.slug) === index,
 );
 
-export let livres: Livre[] = [...livresSeed, ...livresDisponiblesAdmin()].filter(
-  (livre, index, arr) => arr.findIndex((entry) => entry.slug === livre.slug) === index,
-);
+/** Catalogue public : uniquement les livres MongoDB (via API). */
+export let livres: Livre[] = [];
 
 const normaliserValeurApi = (payload: unknown): any[] => {
   if (Array.isArray(payload)) return payload;
@@ -566,12 +361,11 @@ export const hydratePublicData = async () => {
     articles = [...articlesLive, ...articlesPubliesAdmin()].filter(
       (article, index, arr) => arr.findIndex((entry) => entry.slug === article.slug) === index,
     );
-    livres = [...livresLive, ...livresDisponiblesAdmin()].filter(
-      (livre, index, arr) => arr.findIndex((entry) => entry.slug === livre.slug) === index,
-    );
+    livres = livresLive;
     auteurs = auteursLive.length > 0 ? auteursLive : auteursSeed;
+    window.dispatchEvent(new Event(PUBLIC_DATA_EVENT));
   } catch {
-    // On garde le fallback local si l'API n'est pas encore disponible.
+    /* API indisponible : catalogue livres vide */
   }
 };
 
@@ -582,6 +376,28 @@ if (typeof window !== "undefined") {
 export const getAuteur = (slug: string) => auteurs.find((a) => a.slug === slug);
 export const nomAuteur = (slug: string) => getAuteur(slug)?.nom ?? slug;
 export const getLivre = (slug: string) => livres.find((l) => l.slug === slug);
+
+/** Charge un livre depuis l'API et met à jour le cache local. */
+export async function fetchLivreBySlug(slug: string): Promise<Livre | null> {
+  const cached = getLivre(slug);
+  if (cached) return cached;
+
+  try {
+    const res = await LivresApi.getBySlug(slug);
+    const entry = res?.data?.livre ?? res?.livre ?? res?.data ?? null;
+    if (!entry) return null;
+    const livre = normaliserLivreApi(entry);
+    const idx = livres.findIndex((l) => l.slug === livre.slug);
+    if (idx >= 0) livres[idx] = livre;
+    else livres.push(livre);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event(PUBLIC_DATA_EVENT));
+    }
+    return livre;
+  } catch {
+    return null;
+  }
+}
 export const getArticle = (slug: string) => articles.find((a) => a.slug === slug);
 
 export const formatDate = (iso: string) =>

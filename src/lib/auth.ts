@@ -1,5 +1,6 @@
 import type { Role } from "@/lib/admin-data";
 import { AuthApi, clearTokens } from "./api-client";
+import { fusionnerPanierApresConnexion } from "./panier/merge-on-login";
 
 export type CompteDemo = {
   email: string;
@@ -77,6 +78,7 @@ export async function authentifierApi(email: string, password: string): Promise<
         role: user.role as Role,
       };
       sauvegarderSession(session);
+      await fusionnerPanierApresConnexion();
       return session;
     }
   } catch (error) {

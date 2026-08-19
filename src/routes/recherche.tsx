@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { articles, auteurs, livres, nomAuteur, prixAffiche } from "@/lib/data";
+import { articles, auteurs, nomAuteur, prixAffiche } from "@/lib/data";
+import { useLivres } from "@/hooks/use-livres";
 
 export const Route = createFileRoute("/recherche")({
   head: () => ({
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/recherche")({
 });
 
 function Recherche() {
+  const { livres } = useLivres();
   const [q, setQ] = useState("");
   const [type, setType] = useState("tout");
   const term = q.trim().toLowerCase();
@@ -50,7 +52,7 @@ function Recherche() {
               l.resume.toLowerCase().includes(term) ||
               l.categorie.toLowerCase().includes(term),
           ),
-    [term],
+    [term, livres],
   );
 
   const resAuteurs = useMemo(

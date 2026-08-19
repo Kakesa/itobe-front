@@ -1,11 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { z } from "zod";
 import { authentifierApi, sauvegarderSession } from "@/lib/auth";
 import { AuthApi } from "@/lib/api-client";
+import { fusionnerPanierApresConnexion } from "@/lib/panier/merge-on-login";
 import { useSession } from "@/hooks/use-session";
 import { BookOpen, Newspaper, Shield, Sparkles } from "lucide-react";
 
+const searchSchema = z.object({
+  redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute("/connexion")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Connexion — Espace Itobe" },
@@ -24,6 +31,8 @@ export const Route = createFileRoute("/connexion")({
 });
 
 function Connexion() {
+  const { redirect } = Route.useSearch();
+  const destination = redirect && redirect.startsWith("/") ? redirect : "/admin";
   const [mode, setMode] = useState<"connexion" | "inscription">("connexion");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,7 +65,8 @@ function Connexion() {
             prenom: user.prenom || "",
             role: user.role,
           });
-          void navigate({ to: "/admin" });
+          await fusionnerPanierApresConnexion();
+          void navigate({ to: destination });
           return;
         }
       } else {
@@ -66,7 +76,7 @@ function Connexion() {
           return;
         }
 
-        void navigate({ to: "/admin" });
+        void navigate({ to: destination });
       }
     } catch (err: any) {
       setErreur(err.message || "Une erreur est survenue lors de la connexion.");

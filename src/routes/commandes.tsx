@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertTriangle, ArrowLeft, BookOpen, Download, ReceiptText } from "lucide-react";
 import { mesCommandes, type MaCommande } from "@/lib/admin-data";
+import { CommandesApi, getToken } from "@/lib/api-client";
 import { formatDate } from "@/lib/data";
+import { useSession } from "@/hooks/use-session";
 
 export const Route = createFileRoute("/commandes")({
   head: () => ({
@@ -35,15 +37,92 @@ const TON: Record<MaCommande["statut"], string> = {
 
 const filtres = ["Toutes", "Payée", "En attente", "Échouée", "Remboursée"] as const;
 
+type CommandeUi = MaCommande;
+
+function mapperCommandeApi(c: {
+  _id?: string;
+  reference?: string;
+  livreTitre?: string;
+  livre?: { titre?: string; slug?: string };
+  montant?: number;
+  statut?: MaCommande["statut"];
+  moyen?: MaCommande["moyen"];
+  format?: MaCommande["format"];
+  date?: string;
+  motif?: string;
+}): CommandeUi {
+  const livre = c.livre;
+  return {
+    id: String(c._id ?? c.reference ?? ""),
+    reference: String(c.reference ?? ""),
+    titre: String(c.livreTitre ?? livre?.titre ?? "Livre"),
+    slug: String(livre?.slug ?? ""),
+    montant: Number(c.montant ?? 0),
+    statut: c.statut ?? "En attente",
+    moyen: c.moyen ?? "Mobile Money",
+    format: c.format ?? "EPUB + PDF",
+    date: c.date ? new Date(String(c.date)).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+    ...(c.motif ? { motif: c.motif } : {}),
+  };
+}
+
 function Commandes() {
+  const { connecte } = useSession();
   const [filtre, setFiltre] = useState<(typeof filtres)[number]>("Toutes");
-  const [ouverte, setOuverte] = useState<string | null>(mesCommandes[0]?.id ?? null);
+  const [commandes, setCommandes] = useState<CommandeUi[]>(mesCommandes);
+  const [loading, setLoading] = useState(false);
+  const [ouverte, setOuverte] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
-  const liste = mesCommandes.filter((c) => filtre === "Toutes" || c.statut === filtre);
-  const total = mesCommandes
+  useEffect(() => {
+    if (!connecte || !getToken()) {
+      setCommandes(mesCommandes);
+      setOuverte(mesCommandes[0]?.id ?? null);
+      return;
+    }
+
+    let annule = false;
+    setLoading(true);
+    CommandesApi.getMine(filtre)
+      .then((res) => {
+        if (annule) return;
+        const raw = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+        const mapped = (raw as Parameters<typeof mapperCommandeApi>[0][]).map(mapperCommandeApi);
+        setCommandes(mapped);
+        setOuverte(mapped[0]?.id ?? null);
+      })
+      .catch(() => {
+        if (!annule) setCommandes(mesCommandes);
+      })
+      .finally(() => {
+        if (!annule) setLoading(false);
+      });
+
+    return () => {
+      annule = true;
+    };
+  }, [connecte, filtre]);
+
+  const liste = commandes.filter((c) => filtre === "Toutes" || c.statut === filtre);
+  const total = commandes
     .filter((c) => c.statut === "Payée")
     .reduce((s, c) => s + c.montant, 0);
+
+  const annulerCommande = async (id: string) => {
+    if (!getToken()) {
+      setMessage(`Commande ${id} annulée.`);
+      return;
+    }
+    try {
+      await CommandesApi.cancel(id);
+      setCommandes((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, statut: "Remboursée" as const } : c)),
+      );
+      setMessage(`Commande ${id} annulée.`);
+    } catch {
+      setMessage("Impossible d'annuler cette commande.");
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14">
@@ -54,10 +133,14 @@ function Commandes() {
         ouvrages.
       </p>
 
+      {loading && (
+        <p className="mt-4 text-sm text-muted-foreground">Chargement de vos commandes…</p>
+      )}
+
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <div className="rounded-sm border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground">Commandes</p>
-          <p className="mt-1 font-display text-3xl">{mesCommandes.length}</p>
+          <p className="mt-1 font-display text-3xl">{commandes.length}</p>
         </div>
         <div className="rounded-sm border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground">Total dépensé</p>
@@ -66,7 +149,7 @@ function Commandes() {
         <div className="rounded-sm border border-border bg-card p-4">
           <p className="text-xs text-muted-foreground">À régulariser</p>
           <p className="mt-1 font-display text-3xl">
-            {mesCommandes.filter((c) => c.statut !== "Payée" && c.statut !== "Remboursée").length}
+            {commandes.filter((c) => c.statut !== "Payée" && c.statut !== "Remboursée").length}
           </p>
         </div>
       </div>
@@ -106,7 +189,7 @@ function Commandes() {
                 <div className="min-w-0">
                   <p className="font-display text-lg">{c.titre}</p>
                   <p className="text-xs text-muted-foreground">
-                    {c.id} · {formatDate(c.date)} · {c.moyen}
+                    {c.reference || c.id} · {formatDate(c.date)} · {c.moyen}
                   </p>
                 </div>
                 <span className="ml-auto font-display text-lg">{c.montant.toFixed(2)} $</span>
@@ -131,7 +214,7 @@ function Commandes() {
                     ))}
                   </dl>
 
-                  {c.statut === "Échouée" && (
+                  {c.statut === "Échouée" && c.motif && (
                     <div className="mt-5 flex items-start gap-3 rounded-sm border border-destructive/40 bg-destructive/5 p-4 text-sm">
                       <AlertTriangle className="mt-0.5 size-4 shrink-0 text-destructive" />
                       <div>
@@ -142,7 +225,7 @@ function Commandes() {
                   )}
 
                   <div className="mt-5 flex flex-wrap gap-3 text-sm">
-                    {c.statut === "Payée" && (
+                    {c.statut === "Payée" && c.slug && (
                       <>
                         <Link
                           to="/reader/$slug"
@@ -176,7 +259,7 @@ function Commandes() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => setMessage(`Commande ${c.id} annulée.`)}
+                          onClick={() => void annulerCommande(c.id)}
                           className="rounded-sm border border-border px-4 py-2 text-destructive"
                         >
                           Annuler la commande
@@ -184,7 +267,7 @@ function Commandes() {
                       </>
                     )}
 
-                    {c.statut === "Échouée" && (
+                    {c.statut === "Échouée" && c.slug && (
                       <>
                         <Link
                           to="/achat/$slug"
@@ -228,7 +311,7 @@ function Commandes() {
         })}
       </ul>
 
-      {liste.length === 0 && (
+      {liste.length === 0 && !loading && (
         <p className="mt-8 text-sm text-muted-foreground">Aucune commande dans ce filtre.</p>
       )}
 

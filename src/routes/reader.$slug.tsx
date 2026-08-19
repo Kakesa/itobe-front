@@ -15,11 +15,12 @@ import {
   Sun,
   X,
 } from "lucide-react";
-import { getLivre, nomAuteur, pageTexte } from "@/lib/data";
+import { getLivre, nomAuteur, pageTexte, fetchLivreBySlug } from "@/lib/data";
+import { useAccesLecture } from "@/hooks/use-acces-lecture";
 
 export const Route = createFileRoute("/reader/$slug")({
-  loader: ({ params }) => {
-    const livre = getLivre(params.slug);
+  loader: async ({ params }) => {
+    const livre = (await fetchLivreBySlug(params.slug)) ?? getLivre(params.slug);
     if (!livre) throw notFound();
     return { livre };
   },
@@ -35,8 +36,11 @@ export const Route = createFileRoute("/reader/$slug")({
 
 function Reader() {
   const { slug } = Route.useParams();
-  const livre = getLivre(slug)!;
+  const { livre: livreCharge } = Route.useLoaderData();
+  const livre = getLivre(slug) ?? livreCharge;
   const cle = `itobe-reader-${livre.slug}`;
+
+  const { accesComplet, loading: accesLoading } = useAccesLecture(slug, livre.apercuPages);
 
   const [page, setPage] = useState(1);
   const [sombre, setSombre] = useState(false);
@@ -61,7 +65,8 @@ function Reader() {
   }, [cle, page, marques]);
 
   const pagesGratuites = livre.apercuPages;
-  const verrouille = page > pagesGratuites;
+  const verrouille = !accesLoading && !accesComplet && page > pagesGratuites;
+  const chapitreVerrouille = (gratuit: boolean) => !accesComplet && !gratuit;
   const paragraphes = useMemo(() => pageTexte(livre, page), [livre, page]);
   const chapitreCourant = livre.chapitres.find((c) => c.pages.includes(page));
 
@@ -152,7 +157,9 @@ function Reader() {
                         className="flex w-full items-center justify-between gap-2 rounded-sm px-2 py-2 text-left text-sm hover:bg-secondary"
                       >
                         <span className="truncate">{c.titre}</span>
-                        {!c.gratuit && <Lock className="size-3 shrink-0 text-muted-foreground" />}
+                        {chapitreVerrouille(c.gratuit) && (
+                          <Lock className="size-3 shrink-0 text-muted-foreground" />
+                        )}
                       </button>
                     </li>
                   ))}
@@ -217,7 +224,8 @@ function Reader() {
                     <p key={i}>{p}</p>
                   ))}
                   <p className="pt-6 text-center text-xs text-muted-foreground">
-                    {nomAuteur(livre.auteur)} — {livre.titre} · exemplaire filigrané
+                    {nomAuteur(livre.auteur)} — {livre.titre}
+                    {accesComplet ? " · accès complet" : " · exemplaire filigrané"}
                   </p>
                 </article>
               )}
@@ -247,8 +255,8 @@ function Reader() {
                 aria-label="Progression"
               />
               <p className="mt-1 text-center text-[0.7rem] text-muted-foreground">
-                Page {page} / {livre.pages} · {Math.round((page / livre.pages) * 100)} % ·
-                progression synchronisée
+                Page {page} / {livre.pages} · {Math.round((page / livre.pages) * 100)} %
+                {accesComplet ? " · accès complet" : " · aperçu gratuit"}
               </p>
             </div>
 

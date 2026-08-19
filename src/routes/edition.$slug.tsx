@@ -1,12 +1,15 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { BookOpen, Download, Heart, ShoppingCart } from "lucide-react";
+import { BookOpen, Check, Download, Heart, ShoppingCart } from "lucide-react";
 import { BookCover } from "@/components/book-cover";
-import { formatDate, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
+import { useAccesLecture } from "@/hooks/use-acces-lecture";
+import { usePanier } from "@/hooks/use-panier";
+import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
+import { formatParDefaut } from "@/lib/panier/guest-cart";
 
 export const Route = createFileRoute("/edition/$slug")({
-  loader: ({ params }) => {
-    const livre = getLivre(params.slug);
+  loader: async ({ params }) => {
+    const livre = (await fetchLivreBySlug(params.slug)) ?? getLivre(params.slug);
     if (!livre) throw notFound();
     return { livre };
   },
@@ -54,8 +57,24 @@ function LivrePage() {
   const { livre } = Route.useLoaderData();
   const auteur = getAuteur(livre.auteur);
   const [favori, setFavori] = useState(false);
-  const [panier, setPanier] = useState(false);
+  const [ajoute, setAjoute] = useState(false);
+  const { ajouter, ajoutEnCours } = usePanier();
+  const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
+  const accesSansAchat = accesComplet && !dejaAchete;
   const memeAuteur = livres.filter((l) => l.auteur === livre.auteur && l.slug !== livre.slug);
+
+  const ajouterAuPanier = async () => {
+    if (dejaAchete || accesComplet) return;
+    await ajouter({
+      slug: livre.slug,
+      titre: livre.titre,
+      quantity: 1,
+      format: formatParDefaut(livre.formats),
+      prixUnitaire: livre.promo ?? livre.prix,
+    });
+    setAjoute(true);
+    setTimeout(() => setAjoute(false), 2000);
+  };
 
   const fiche: [string, string][] = [
     ["ISBN", livre.isbn],
@@ -116,22 +135,71 @@ function LivrePage() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              to="/achat/$slug"
-              params={{ slug: livre.slug }}
-              onClick={() => setPanier(true)}
-              className="inline-flex items-center gap-2 rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground"
-            >
-              <ShoppingCart className="size-4" />
-              Acheter
-            </Link>
+            {dejaAchete ? (
+              <div className="w-full rounded-sm border border-accent/40 bg-accent/5 px-4 py-3 text-sm">
+                <p className="font-medium text-accent">Vous avez déjà acheté ce livre.</p>
+                <p className="mt-1 text-muted-foreground">
+                  Retrouvez-le dans votre bibliothèque pour le lire ou le télécharger.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Link
+                    to="/reader/$slug"
+                    params={{ slug: livre.slug }}
+                    className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
+                  >
+                    <BookOpen className="size-4" />
+                    Lire maintenant
+                  </Link>
+                  <Link
+                    to="/bibliotheque"
+                    className="inline-flex items-center rounded-sm border border-border px-4 py-2 text-sm"
+                  >
+                    Ma bibliothèque
+                  </Link>
+                </div>
+              </div>
+            ) : accesSansAchat ? (
+              <div className="w-full rounded-sm border border-border bg-card px-4 py-3 text-sm">
+                <p className="font-medium">Accès complet via votre abonnement Premium.</p>
+                <Link
+                  to="/reader/$slug"
+                  params={{ slug: livre.slug }}
+                  className="mt-3 inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
+                >
+                  <BookOpen className="size-4" />
+                  Lire maintenant
+                </Link>
+              </div>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  disabled={ajoutEnCours || !livre.disponible || accesComplet}
+                  onClick={() => void ajouterAuPanier()}
+                  className="inline-flex items-center gap-2 rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
+                >
+                  {ajoute ? <Check className="size-4" /> : <ShoppingCart className="size-4" />}
+                  {ajoute ? "Ajouté" : "Ajouter au panier"}
+                </button>
+                <Link
+                  to="/achat/$slug"
+                  params={{ slug: livre.slug }}
+                  className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 text-sm font-medium"
+                >
+                  Acheter maintenant
+                </Link>
+              </>
+            )}
+            {!dejaAchete && !accesSansAchat && (
             <Link
               to="/reader/$slug"
               params={{ slug: livre.slug }}
               className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 text-sm font-medium"
             >
-              <BookOpen className="size-4" /> Lire l'extrait gratuit
+              <BookOpen className="size-4" />
+              {accesComplet ? "Lire maintenant" : "Lire l'extrait gratuit"}
             </Link>
+            )}
             <button
               onClick={() => setFavori((v) => !v)}
               className="inline-flex items-center gap-2 rounded-sm border border-border px-4 py-3 text-sm"
@@ -142,32 +210,45 @@ function LivrePage() {
           </div>
 
           <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-            <Download className="size-3" /> Téléchargement PDF/EPUB inclus après achat · Paiement
-            Mobile Money ou carte bancaire.
+            {dejaAchete ? (
+              <>
+                <Download className="size-3" />
+                Téléchargement PDF/EPUB disponible depuis votre bibliothèque.
+              </>
+            ) : (
+              <>
+                <Download className="size-3" /> Téléchargement PDF/EPUB inclus après achat · Paiement
+                Mobile Money ou carte bancaire.
+              </>
+            )}
           </p>
 
           {/* Aperçu gratuit */}
           <div className="mt-10 rounded-sm border border-border bg-card p-5">
-            <p className="kicker">Aperçu gratuit</p>
+            <p className="kicker">{accesComplet ? "Votre ouvrage" : "Aperçu gratuit"}</p>
             <p className="mt-2 text-sm">
-              {livre.apercuPages} pages accessibles librement, soit {livre.apercuPourcent} % de
-              l'ouvrage.
+              {accesComplet
+                ? "Vous avez accès à l'intégralité de cet ouvrage dans votre bibliothèque."
+                : `${livre.apercuPages} pages accessibles librement, soit ${livre.apercuPourcent} % de l'ouvrage.`}
             </p>
             <ul className="mt-4 space-y-2 text-sm">
-              {livre.chapitres.map((c: { titre: string; gratuit: boolean }) => (
+              {livre.chapitres.map((c: { titre: string; gratuit: boolean }) => {
+                const libre = accesComplet || c.gratuit;
+                return (
                 <li key={c.titre} className="flex items-center justify-between gap-4">
-                  <span className={c.gratuit ? "" : "text-muted-foreground"}>{c.titre}</span>
+                  <span className={libre ? "" : "text-muted-foreground"}>{c.titre}</span>
                   <span
                     className={`shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] ${
-                      c.gratuit
+                      libre
                         ? "bg-accent/15 text-accent"
                         : "bg-secondary text-muted-foreground"
                     }`}
                   >
-                    {c.gratuit ? "Gratuit" : "Verrouillé"}
+                    {libre ? (accesComplet ? "Inclus" : "Gratuit") : "Verrouillé"}
                   </span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </div>
 

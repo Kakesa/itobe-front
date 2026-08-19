@@ -18,6 +18,7 @@ import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
 import { Route as MediaRouteImport } from './routes/media'
+import { Route as PanierRouteImport } from './routes/panier'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RechercheRouteImport } from './routes/recherche'
@@ -108,6 +109,11 @@ const EditionRoute = EditionRouteImport.update({
 const MediaRoute = MediaRouteImport.update({
   id: '/media',
   path: '/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanierRoute = PanierRouteImport.update({
+  id: '/panier',
+  path: '/panier',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumRoute = PremiumRouteImport.update({
@@ -354,6 +360,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
@@ -408,6 +415,7 @@ export interface FileRoutesByTo {
   '/commandes': typeof CommandesRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
@@ -465,6 +473,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
@@ -524,6 +533,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
@@ -578,6 +588,7 @@ export interface FileRouteTypes {
     | '/commandes'
     | '/connexion'
     | '/contact'
+    | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
@@ -634,6 +645,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
@@ -692,6 +704,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
   MediaRoute: typeof MediaRouteWithChildren
+  PanierRoute: typeof PanierRoute
   PremiumRoute: typeof PremiumRoute
   ProfilRoute: typeof ProfilRoute
   RechercheRoute: typeof RechercheRoute
@@ -766,6 +779,13 @@ declare module '@tanstack/react-router' {
       path: '/media'
       fullPath: '/media'
       preLoaderRoute: typeof MediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panier': {
+      id: '/panier'
+      path: '/panier'
+      fullPath: '/panier'
+      preLoaderRoute: typeof PanierRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium': {
@@ -1212,6 +1232,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,
   MediaRoute: MediaRouteWithChildren,
+  PanierRoute: PanierRoute,
   PremiumRoute: PremiumRoute,
   ProfilRoute: ProfilRoute,
   RechercheRoute: RechercheRoute,

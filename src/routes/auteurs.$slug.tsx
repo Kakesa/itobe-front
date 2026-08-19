@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { BookCover } from "@/components/book-cover";
-import { articles, auteurs, formatDate, getAuteur, livres } from "@/lib/data";
+import { articles, auteurs, formatDate, getAuteur } from "@/lib/data";
+import { useLivres } from "@/hooks/use-livres";
 
 export const Route = createFileRoute("/auteurs/$slug")({
   loader: ({ params }) => {
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/auteurs/$slug")({
 
 function AuteurPage() {
   const { slug } = Route.useParams();
+  const { livres } = useLivres();
   const auteur = auteurs.find((a) => a.slug === slug)!;
   const sesLivres = livres.filter((l) => l.auteur === slug);
   const sesArticles = articles.filter((a) => a.auteur === slug);

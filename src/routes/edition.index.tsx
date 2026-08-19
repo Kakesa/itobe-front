@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BookCover } from "@/components/book-cover";
-import { categoriesLivres, livres, nomAuteur, prixAffiche } from "@/lib/data";
+import { useLivres } from "@/hooks/use-livres";
+import { categoriesLivres, nomAuteur, prixAffiche } from "@/lib/data";
 
 export const Route = createFileRoute("/edition/")({
   head: () => ({
@@ -28,6 +29,7 @@ const HERO_IMG =
   "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1800&q=80";
 
 function Catalogue() {
+  const { livres, loading } = useLivres();
   const [cat, setCat] = useState("Toutes");
   const [format, setFormat] = useState("Tous");
   const [tri, setTri] = useState("recent");
@@ -42,7 +44,7 @@ function Catalogue() {
       l = [...l].sort((a, b) => b.publication.localeCompare(a.publication));
     if (tri === "titre") l = [...l].sort((a, b) => a.titre.localeCompare(b.titre));
     return l;
-  }, [cat, format, tri, prixMax]);
+  }, [cat, format, tri, prixMax, livres]);
 
   const promos = livres.filter((l) => l.promo);
 
@@ -156,6 +158,14 @@ function Catalogue() {
           </aside>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+            {loading && (
+              <p className="col-span-full text-sm text-muted-foreground">Chargement du catalogue…</p>
+            )}
+            {!loading && liste.length === 0 && (
+              <p className="col-span-full text-sm text-muted-foreground">
+                Aucun livre disponible pour le moment.
+              </p>
+            )}
             {liste.map((l) => (
               <Link key={l.slug} to="/edition/$slug" params={{ slug: l.slug }} className="group">
                 <div className="relative">

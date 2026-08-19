@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BookCover } from "@/components/book-cover";
-import { getLivre, nomAuteur, prixAffiche } from "@/lib/data";
+import { useSession } from "@/hooks/use-session";
+import { CommandesApi, getToken } from "@/lib/api-client";
+import { fetchLivreBySlug, getLivre, nomAuteur, prixAffiche, type Livre } from "@/lib/data";
 
 export const Route = createFileRoute("/achat/$slug")({
   head: () => ({
@@ -27,16 +29,75 @@ type Etape = "moyen" | "details" | "traitement" | "confirme";
 function Achat() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
-  const livre = getLivre(slug);
+  const { connecte } = useSession();
+  const [livre, setLivre] = useState<Livre | null>(() => getLivre(slug) ?? null);
+  const [chargementLivre, setChargementLivre] = useState(!getLivre(slug));
   const [etape, setEtape] = useState<Etape>("moyen");
   const [moyen, setMoyen] = useState<"mobile" | "carte">("mobile");
+  const [operateur, setOperateur] = useState("M-Pesa");
+  const [telephone, setTelephone] = useState("");
   const [compte, setCompte] = useState(5);
+  const [reference, setReference] = useState("");
+  const [erreur, setErreur] = useState("");
+
+  useEffect(() => {
+    if (livre) return;
+    let annule = false;
+    void fetchLivreBySlug(slug).then((l) => {
+      if (!annule) {
+        setLivre(l);
+        setChargementLivre(false);
+      }
+    });
+    return () => {
+      annule = true;
+    };
+  }, [slug, livre]);
+
+  useEffect(() => {
+    if (connecte || !livre) return;
+    void navigate({
+      to: "/connexion",
+      search: { redirect: `/achat/${slug}` },
+    });
+  }, [connecte, livre, navigate, slug]);
 
   useEffect(() => {
     if (etape !== "traitement") return;
-    const t = setTimeout(() => setEtape("confirme"), 1800);
-    return () => clearTimeout(t);
-  }, [etape]);
+
+    const token = getToken();
+    if (!token || !livre) {
+      const t = setTimeout(() => setEtape("confirme"), 1800);
+      return () => clearTimeout(t);
+    }
+
+    let annule = false;
+    (async () => {
+      try {
+        const res = await CommandesApi.create({
+          livreSlugOrId: livre.slug,
+          moyen: moyen === "mobile" ? "Mobile Money" : "Carte bancaire",
+          format: "EPUB + PDF",
+          operateur: moyen === "mobile" ? operateur : "Visa",
+          ...(moyen === "mobile" && telephone ? { telephone } : {}),
+        });
+        const cmd = res?.data ?? res;
+        if (!annule) {
+          setReference(cmd?.reference ?? "");
+          setEtape("confirme");
+        }
+      } catch (err: unknown) {
+        if (!annule) {
+          setErreur(err instanceof Error ? err.message : "Paiement échoué");
+          setEtape("details");
+        }
+      }
+    })();
+
+    return () => {
+      annule = true;
+    };
+  }, [etape, livre, moyen, operateur, telephone]);
 
   useEffect(() => {
     if (etape !== "confirme") return;
@@ -47,6 +108,14 @@ function Achat() {
       clearTimeout(fin);
     };
   }, [etape, navigate]);
+
+  if (chargementLivre) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center text-sm text-muted-foreground">
+        Chargement de l&apos;ouvrage…
+      </div>
+    );
+  }
 
   if (!livre) {
     return (
@@ -128,7 +197,11 @@ function Achat() {
                   <>
                     <label className="block text-sm sm:col-span-2">
                       <span className="text-xs text-muted-foreground">Opérateur</span>
-                      <select className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm">
+                      <select
+                        value={operateur}
+                        onChange={(e) => setOperateur(e.target.value)}
+                        className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
+                      >
                         <option>M-Pesa</option>
                         <option>Orange Money</option>
                         <option>Airtel Money</option>
@@ -137,6 +210,8 @@ function Achat() {
                     <label className="block text-sm sm:col-span-2">
                       <span className="text-xs text-muted-foreground">Numéro de téléphone</span>
                       <input
+                        value={telephone}
+                        onChange={(e) => setTelephone(e.target.value)}
                         placeholder="+243 …"
                         className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-2 text-sm"
                       />
@@ -171,6 +246,11 @@ function Achat() {
                   </>
                 )}
               </div>
+              {erreur && (
+                <p className="mt-4 rounded-sm bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                  {erreur}
+                </p>
+              )}
               <div className="mt-6 flex gap-3">
                 <button
                   type="button"
@@ -206,7 +286,7 @@ function Achat() {
                 « {livre.titre} » a été ajouté à votre bibliothèque.
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                Reçu envoyé par e-mail — référence #10429
+                Reçu envoyé par e-mail{reference ? ` — référence ${reference}` : ""}
               </p>
               <p className="mt-6 text-sm">
                 Retour automatique vers votre bibliothèque dans {Math.max(compte, 0)} s

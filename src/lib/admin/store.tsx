@@ -59,6 +59,7 @@ type Ctx = {
   creer: (c: NomCollection, valeurs: Omit<Item, "id"> & { id?: string }) => Item;
   modifier: (c: NomCollection, id: string, valeurs: Partial<Item>) => void;
   supprimer: (c: NomCollection, id: string) => void;
+  definir: (c: NomCollection, items: Item[]) => void;
   reinitialiser: () => void;
 };
 
@@ -104,11 +105,15 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
     setData((prev) => ({ ...prev, [c]: prev[c].filter((i) => i.id !== id) }));
   }, []);
 
+  const definir = useCallback<Ctx["definir"]>((c, items) => {
+    setData((prev) => ({ ...prev, [c]: items }));
+  }, []);
+
   const reinitialiser = useCallback(() => setData(initial()), []);
 
   const value = useMemo(
-    () => ({ data, creer, modifier, supprimer, reinitialiser }),
-    [data, creer, modifier, supprimer, reinitialiser],
+    () => ({ data, creer, modifier, supprimer, definir, reinitialiser }),
+    [data, creer, modifier, supprimer, definir, reinitialiser],
   );
 
   return <AdminDataContext.Provider value={value}>{children}</AdminDataContext.Provider>;
@@ -122,14 +127,15 @@ export function useAdminData() {
 
 /** Accès CRUD à une collection. */
 export function useCollection(nom: NomCollection) {
-  const { data, creer, modifier, supprimer } = useAdminData();
+  const { data, creer, modifier, supprimer, definir } = useAdminData();
   return useMemo(
     () => ({
       items: data[nom],
       creer: (v: Omit<Item, "id"> & { id?: string }) => creer(nom, v),
       modifier: (id: string, v: Partial<Item>) => modifier(nom, id, v),
       supprimer: (id: string) => supprimer(nom, id),
+      definir: (items: Item[]) => definir(nom, items),
     }),
-    [data, nom, creer, modifier, supprimer],
+    [data, nom, creer, modifier, supprimer, definir],
   );
 }

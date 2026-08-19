@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, Menu, Search, X } from "lucide-react";
+import { ArrowLeft, Menu, Search, ShoppingCart, X } from "lucide-react";
 import { usePortailActif } from "@/hooks/use-portail";
+import { usePanierCount } from "@/hooks/use-panier";
 
 type Lien = { to: string; label: string; exact?: boolean };
 
@@ -25,6 +26,7 @@ const liensEdition: Lien[] = [
 
 export function SiteHeader() {
   const portail = usePortailActif();
+  const panierCount = usePanierCount();
   const [ouvert, setOuvert] = useState(false);
   const home = portail === "media" ? "/media" : "/edition";
   const titre = portail === "media" ? "Média" : "Maison d'édition";
@@ -68,6 +70,20 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          {portail === "edition" && (
+            <Link
+              to="/panier"
+              aria-label="Panier"
+              className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <ShoppingCart className="size-4" />
+              {panierCount > 0 && (
+                <span className="absolute -right-1 -top-1 grid min-w-[1.125rem] place-items-center rounded-full bg-accent px-1 text-[0.65rem] font-medium text-accent-foreground">
+                  {panierCount > 99 ? "99+" : panierCount}
+                </span>
+              )}
+            </Link>
+          )}
           <Link
             to="/recherche"
             aria-label="Recherche"
@@ -127,6 +143,15 @@ export function SiteHeader() {
           >
             Connexion
           </Link>
+          {portail === "edition" && (
+            <Link
+              to="/panier"
+              onClick={() => setOuvert(false)}
+              className="block py-2 text-sm text-muted-foreground"
+            >
+              Panier{panierCount > 0 ? ` (${panierCount})` : ""}
+            </Link>
+          )}
           <Link
             to={portail === "media" ? "/edition" : "/media"}
             onClick={() => setOuvert(false)}

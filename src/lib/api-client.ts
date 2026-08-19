@@ -204,3 +204,44 @@ export const BibliothequeApi = {
     api.put("/bibliotheque/progression", data),
   checkAccess: (slug: string) => api.get(`/bibliotheque/acces/${slug}`),
 };
+
+export const PanierApi = {
+  get: () => api.get("/panier"),
+  addItem: (data: {
+    livreSlugOrId?: string;
+    livreId?: string;
+    quantity?: number;
+    format?: string;
+  }) => api.post("/panier/items", data),
+  updateItem: (livreId: string, data: { quantity?: number; format?: string }) =>
+    api.patch(`/panier/items/${livreId}`, data),
+  removeItem: (livreId: string) => api.delete(`/panier/items/${livreId}`),
+  clear: () => api.delete("/panier"),
+  merge: (items: Array<{ slug?: string; livreId?: string; quantity?: number; format?: string }>) =>
+    api.post("/panier/fusionner", { items }),
+  checkout: (data: {
+    moyen?: string;
+    operateur?: string;
+    telephone?: string;
+    couponCode?: string;
+  }) => api.post("/panier/checkout", data),
+};
+
+export const CommandesApi = {
+  getMine: (statut?: string) =>
+    api.get("/commandes/mes-commandes", statut && statut !== "Toutes" ? { statut } : undefined),
+  getAll: (params?: { page?: number; limit?: number; statut?: string; moyen?: string; q?: string }) =>
+    api.get("/commandes", params),
+  getById: (id: string) => api.get(`/commandes/${id}`),
+  updateStatus: (id: string, data: { statut: string; motif?: string }) =>
+    api.put(`/commandes/${id}/statut`, data),
+  create: (data: {
+    livreSlugOrId: string;
+    moyen?: string;
+    format?: string;
+    operateur?: string;
+    telephone?: string;
+    couponCode?: string;
+  }) => api.post("/commandes", data),
+  cancel: (id: string) => api.post(`/commandes/${id}/cancel`),
+};

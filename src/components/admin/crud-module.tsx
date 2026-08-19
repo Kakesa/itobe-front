@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, type ReactNode } from "react";
+import { useMemo, useState, useRef, useEffect, type ReactNode } from "react";
 import { ImagePlus, Pencil, Plus, Trash2, X } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
@@ -61,11 +61,55 @@ export function CrudModule({
   }) => void;
 }) {
   const { role } = useRole();
-  const { items, creer, modifier, supprimer } = useCollection(collection);
+  const { items, creer, modifier, supprimer, definir } = useCollection(collection);
   const [q, setQ] = useState("");
   const [valeurFiltre, setValeurFiltre] = useState("Tous");
   const [edition, setEdition] = useState<{ row: Item | null } | null>(null);
   const [aSupprimer, setASupprimer] = useState<Item | null>(null);
+
+  useEffect(() => {
+    if (collection !== "livres") return;
+
+    let annule = false;
+    LivresApi.getAll({ page: 1, limit: 200 })
+      .then((res) => {
+        if (annule) return;
+        const raw = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
+        const mapped: Item[] = raw.map((entry: Record<string, unknown>) => ({
+          id: String(entry["_id"] ?? entry["slug"] ?? ""),
+          publication: entry["publication"]
+            ? new Date(String(entry["publication"])).toISOString().slice(0, 10)
+            : new Date().toISOString().slice(0, 10),
+          titre: String(entry["titre"] ?? ""),
+          auteur: String(
+            (entry["auteur"] as { slug?: string } | undefined)?.slug ?? entry["auteur"] ?? "",
+          ),
+          categorie: String(
+            (entry["categorie"] as { nom?: string } | undefined)?.nom ?? entry["categorie"] ?? "",
+          ),
+          formats: Array.isArray(entry["formats"])
+            ? (entry["formats"] as string[]).join(", ")
+            : "PDF, EPUB",
+          prix: Number(entry["prix"] ?? 0),
+          promo: Number(entry["promo"] ?? 0),
+          stock: Number(entry["stock"] ?? 0),
+          disponible: Boolean(entry["disponible"] ?? true),
+          couverture: String(entry["couverture"] ?? ""),
+          couleur: String(
+            entry["couleur"] ??
+              "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+          ),
+        }));
+        definir(mapped);
+      })
+      .catch(() => {
+        /* liste vide si API indisponible */
+      });
+
+    return () => {
+      annule = true;
+    };
+  }, [collection, definir]);
 
   const liste = useMemo(() => {
     const texte = q.trim().toLowerCase();
