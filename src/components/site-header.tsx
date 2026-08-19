@@ -92,12 +92,6 @@ export function SiteHeader() {
             <Search className="size-4" />
           </Link>
           <Link
-            to="/admin/mon-profil"
-            className="hidden rounded-sm border border-border px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
-          >
-            Paramètres
-          </Link>
-          <Link
             to="/connexion"
             className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
           >
@@ -129,13 +123,6 @@ export function SiteHeader() {
             </Link>
           ))}
           <div className="my-2 border-t border-border" />
-          <Link
-            to="/admin/mon-profil"
-            onClick={() => setOuvert(false)}
-            className="block py-2 text-sm text-muted-foreground"
-          >
-            Paramètres
-          </Link>
           <Link
             to="/connexion"
             onClick={() => setOuvert(false)}
