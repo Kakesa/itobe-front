@@ -355,6 +355,41 @@
   perspective: 900px;
 }
 
+/* Couverture réaliste compacte (grilles catalogue / catégories) */
+.book-realistic--card {
+  --book-spine-w: clamp(7px, 3.5%, 11px);
+  --book-edge-w: clamp(3px, 1.5%, 5px);
+  --book-radius-tr: 16px;
+  --book-radius-br: 16px;
+  padding: 2px 0 8px;
+}
+
+.book-cover-wrap .book-realistic--card.book-realistic--tilt-face .book-realistic__body {
+  transform: perspective(900px) rotateY(-8deg) rotateX(2deg);
+}
+
+.book-cover-wrap .book-realistic--card.book-realistic--interactive:hover.book-realistic--tilt-face .book-realistic__body {
+  transform: perspective(900px) rotateY(-13deg) rotateX(3deg) translateY(-6px) scale(1.02);
+}
+
+.book-realistic--card .book-realistic__stage {
+  opacity: 0.6;
+}
+
+.book-realistic--card .book-realistic__corner {
+  width: 14px;
+  height: 14px;
+}
+
+.book-realistic--card .book-realistic__shadow {
+  filter: blur(10px);
+  opacity: 0.45;
+}
+
+.book-realistic--card .book-realistic__cover img {
+  border-radius: inherit;
+}
+
 .book-cover-3d {
   transform-style: preserve-3d;
   transition:
@@ -1238,26 +1273,35 @@
   }
 }
 
-.fiche-livre-v2__device {
-  padding: 1.25rem;
-  border-radius: 1.25rem;
-  background: linear-gradient(145deg, #e8e4df 0%, #d4cfc8 100%);
-  box-shadow:
-    0 24px 48px -20px color-mix(in oklab, var(--edition-ink) 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 50%, transparent);
+.fiche-livre-v2__preview {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-.fiche-livre-v2__device-screen {
-  overflow: hidden;
-  border-radius: 0.35rem;
-  background: #1a1a1a;
-  padding: 0.65rem;
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, black 20%, transparent);
+.fiche-livre-v2__book-showcase {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 0.25rem 0 1.75rem;
 }
 
-.fiche-livre-v2__device-screen .book-spine {
-  border-radius: 2px;
-  box-shadow: 0 8px 24px -8px color-mix(in oklab, black 40%, transparent);
+.fiche-livre-v2__book-showcase .book-realistic {
+  --book-radius-tr: 26px;
+  --book-radius-br: 26px;
+  padding: 0;
+}
+
+.fiche-livre-v2__book-showcase .book-realistic__stage {
+  background: radial-gradient(
+    ellipse 90% 80% at 45% 42%,
+    color-mix(in oklab, var(--edition-gold) 18%, transparent),
+    transparent 72%
+  );
+}
+
+.fiche-livre-v2__book-showcase .book-realistic__cover img {
+  border-radius: inherit;
 }
 
 .fiche-livre-v2__crumb {

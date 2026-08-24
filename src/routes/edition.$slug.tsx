@@ -104,10 +104,8 @@ function LivrePage() {
         {/* Hero */}
         <div className="fiche-livre-v2__hero">
           <aside className="fiche-livre-v2__preview">
-            <div className="fiche-livre-v2__device">
-              <div className="fiche-livre-v2__device-screen">
-                <BookCover livre={livre} className="size-full" />
-              </div>
+            <div className="fiche-livre-v2__book-showcase book-showcase">
+              <BookCover livre={livre} realistic animated variant="reveal" tilt="face" />
             </div>
           </aside>
 

@@ -9,6 +9,8 @@ type BookCoverProps = {
   variant?: "default" | "reveal" | "float";
   /** Présentation réaliste (fiche produit) : reliure, coins arrondis, tranche */
   realistic?: boolean;
+  /** Taille d'affichage */
+  size?: "default" | "card";
   /** Inclinaison 3D pour la galerie fiche livre */
   tilt?: "face" | "spine" | "edge";
 };
@@ -62,15 +64,18 @@ export function BookCover({
   animated = false,
   variant = "default",
   realistic = false,
+  size = "default",
   tilt = "face",
 }: BookCoverProps) {
   const image = livre.couverture?.trim();
+  const sizeClass = size === "card" ? "book-realistic--card" : "";
 
   if (realistic) {
     return (
       <div
         className={[
           "book-realistic group",
+          sizeClass,
           tiltClass[tilt],
           animated ? "book-realistic-wrap book-realistic--interactive" : "",
         ]

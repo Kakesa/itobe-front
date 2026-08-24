@@ -32,7 +32,7 @@ export function BookCard({
       style={{ animationDelay: `${Math.min(index, 12) * 70}ms` }}
     >
       <div className="book-cover-wrap relative">
-        <BookCover livre={livre} animated />
+        <BookCover livre={livre} realistic animated tilt="face" size="card" />
         {livre.promo && (
           <span className="absolute right-2 top-2 z-10 rounded-full bg-accent px-2 py-0.5 text-[0.65rem] font-medium text-accent-foreground animate-book-badge-pop">
             Promo
