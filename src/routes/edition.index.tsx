@@ -1,8 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { BookCover } from "@/components/book-cover";
+import { BookCard } from "@/components/book-card";
 import { useLivres } from "@/hooks/use-livres";
-import { categoriesLivres, nomAuteur, prixAffiche } from "@/lib/data";
+import { categoriesLivres } from "@/lib/data";
 
 export const Route = createFileRoute("/edition/")({
   head: () => ({
@@ -60,18 +60,28 @@ function Catalogue() {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
 
         <div className="relative z-10 mx-auto w-full max-w-4xl px-6 py-28 text-center md:px-12">
-          <p className="font-display text-2xl tracking-tight text-white md:text-3xl">
+          <p
+            className="font-display text-2xl tracking-tight text-white md:text-3xl animate-hero-in"
+            style={{ animationDelay: "0.15s" }}
+          >
             Itobe<span className="text-[var(--edition-orange)]">.</span>
           </p>
-          <h1 className="mx-auto mt-5 max-w-3xl font-display text-4xl leading-[1.08] text-white md:text-6xl lg:text-7xl">
+          <h1
+            className="mx-auto mt-5 max-w-3xl font-display text-4xl leading-[1.08] text-white md:text-6xl lg:text-7xl animate-hero-in"
+            style={{ animationDelay: "0.3s" }}
+          >
             Un monde de lecture, d&apos;édition et de découverte
           </h1>
-          <p className="mx-auto mt-5 max-w-xl text-base text-white/75 md:text-lg">
+          <p
+            className="mx-auto mt-5 max-w-xl text-base text-white/75 md:text-lg animate-hero-in"
+            style={{ animationDelay: "0.45s" }}
+          >
             Faire de l&apos;Afrique le cœur de la narration mondiale — romans, essais et jeunesse.
           </p>
           <a
             href="#catalogue"
-            className="mt-9 inline-flex items-center rounded-sm bg-[var(--edition-orange)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#d4480f]"
+            className="mt-9 inline-flex items-center rounded-sm bg-[var(--edition-orange)] px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-[#d4480f] hover:-translate-y-0.5 animate-hero-in"
+            style={{ animationDelay: "0.6s" }}
           >
             Découvrir le catalogue
           </a>
@@ -79,8 +89,10 @@ function Catalogue() {
       </section>
 
       <div id="catalogue" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14">
-        <p className="kicker">Maison d&apos;édition</p>
-        <h2 className="mt-3 text-3xl md:text-4xl">Catalogue</h2>
+        <p className="kicker animate-book-fade-up">Maison d&apos;édition</p>
+        <h2 className="mt-3 text-3xl md:text-4xl animate-book-fade-up" style={{ animationDelay: "80ms" }}>
+          Catalogue
+        </h2>
         <p className="mt-4 max-w-xl text-muted-foreground">
           {livres.length} ouvrages disponibles en PDF, EPUB et papier. Chaque livre propose un
           aperçu gratuit avant l&apos;achat.
@@ -166,27 +178,8 @@ function Catalogue() {
                 Aucun livre disponible pour le moment.
               </p>
             )}
-            {liste.map((l) => (
-              <Link key={l.slug} to="/edition/$slug" params={{ slug: l.slug }} className="group">
-                <div className="relative">
-                  <BookCover livre={l} className="transition-transform group-hover:-translate-y-1" />
-                  {l.promo && (
-                    <span className="absolute right-2 top-2 rounded-full bg-accent px-2 py-0.5 text-[0.65rem] font-medium text-accent-foreground">
-                      Promo
-                    </span>
-                  )}
-                </div>
-                <p className="mt-3 font-display leading-snug group-hover:text-accent">{l.titre}</p>
-                <p className="text-xs text-muted-foreground">{nomAuteur(l.auteur)}</p>
-                <p className="mt-1 text-sm">
-                  {prixAffiche(l)}
-                  {l.promo && (
-                    <span className="ml-2 text-xs text-muted-foreground line-through">
-                      {l.prix.toFixed(2)} $
-                    </span>
-                  )}
-                </p>
-              </Link>
+            {liste.map((l, i) => (
+              <BookCard key={l.slug} livre={l} index={i} showPrix />
             ))}
             {liste.length === 0 && (
               <p className="text-sm text-muted-foreground">Aucun livre ne correspond aux filtres.</p>

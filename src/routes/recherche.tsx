@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { articles, auteurs, nomAuteur, prixAffiche } from "@/lib/data";
+import { BookCard } from "@/components/book-card";
+import { articles, auteurs } from "@/lib/data";
 import { useLivres } from "@/hooks/use-livres";
 
 export const Route = createFileRoute("/recherche")({
@@ -132,27 +133,13 @@ function Recherche() {
       )}
 
       {montrer("livres") && resLivres.length > 0 && (
-        <section className="mt-10">
+        <section className="mt-10 animate-book-fade-up">
           <h2 className="text-2xl">Livres</h2>
-          <ul className="mt-4 divide-y divide-border">
-            {resLivres.map((l) => (
-              <li key={l.slug} className="flex items-baseline justify-between gap-4 py-4">
-                <div>
-                  <Link
-                    to="/edition/$slug"
-                    params={{ slug: l.slug }}
-                    className="font-display text-lg hover:text-accent"
-                  >
-                    {l.titre}
-                  </Link>
-                  <p className="text-sm text-muted-foreground">
-                    {nomAuteur(l.auteur)} · {l.categorie}
-                  </p>
-                </div>
-                <span className="shrink-0 text-sm">{prixAffiche(l)}</span>
-              </li>
+          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3">
+            {resLivres.map((l, i) => (
+              <BookCard key={l.slug} livre={l} index={i} showPrix />
             ))}
-          </ul>
+          </div>
         </section>
       )}
 

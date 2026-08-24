@@ -226,7 +226,17 @@ function Connexion() {
           </label>
 
           <label className="block text-sm">
-            <span className="text-xs text-muted-foreground">Mot de passe</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs text-muted-foreground">Mot de passe</span>
+              {mode === "connexion" && (
+                <Link
+                  to="/mot-de-passe-oublie"
+                  className="text-xs text-accent hover:underline"
+                >
+                  Mot de passe oublié ?
+                </Link>
+              )}
+            </div>
             <input
               required
               type="password"

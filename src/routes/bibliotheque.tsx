@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { BookCard } from "@/components/book-card";
 import { BookCover } from "@/components/book-cover";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { getLivre, livres, nomAuteur } from "@/lib/data";
@@ -108,15 +109,18 @@ function Bibliotheque() {
         <section className="mt-12">
           <h2 className="text-2xl">Reprendre la lecture</h2>
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            {enCours.map(([slug, pct]) => {
+            {enCours.map(([slug, pct], i) => {
               const l = getLivre(slug);
               if (!l) return null;
               return (
                 <div
                   key={slug}
-                  className="flex gap-5 rounded-sm border border-border bg-card p-5"
+                  className="flex gap-5 rounded-sm border border-border bg-card p-5 transition-shadow duration-300 hover:shadow-soft animate-book-fade-up"
+                  style={{ animationDelay: `${i * 100}ms` }}
                 >
-                  <BookCover livre={l} className="w-24 shrink-0" />
+                  <div className="book-cover-wrap w-24 shrink-0">
+                    <BookCover livre={l} animated variant="float" />
+                  </div>
                   <div className="flex flex-1 flex-col">
                     <p className="font-display text-lg leading-snug">{l.titre}</p>
                     <p className="text-xs text-muted-foreground">{nomAuteur(l.auteur)}</p>
@@ -161,16 +165,10 @@ function Bibliotheque() {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {slugs.map((s) => {
+          {slugs.map((s, i) => {
             const l = getLivre(s);
             if (!l) return null;
-            return (
-              <Link key={s} to="/reader/$slug" params={{ slug: s }} className="group">
-                <BookCover livre={l} className="transition-transform group-hover:-translate-y-1" />
-                <p className="mt-3 font-display leading-snug group-hover:text-accent">{l.titre}</p>
-                <p className="text-xs text-muted-foreground">{nomAuteur(l.auteur)}</p>
-              </Link>
-            );
+            return <BookCard key={s} livre={l} index={i} to="/reader/$slug" />;
           })}
           {!loading && slugs.length === 0 && (
             <div className="col-span-full py-8 text-muted-foreground">
@@ -186,11 +184,8 @@ function Bibliotheque() {
       <section className="mt-16">
         <h2 className="text-2xl">Suggestions du catalogue</h2>
         <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {livres.slice(0, 4).map((l) => (
-            <Link key={l.slug} to="/edition/$slug" params={{ slug: l.slug }} className="group">
-              <BookCover livre={l} className="transition-transform group-hover:-translate-y-1" />
-              <p className="mt-3 font-display leading-snug group-hover:text-accent">{l.titre}</p>
-            </Link>
+          {livres.slice(0, 4).map((l, i) => (
+            <BookCard key={l.slug} livre={l} index={i} showAuteur={false} />
           ))}
         </div>
       </section>

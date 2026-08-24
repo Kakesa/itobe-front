@@ -214,7 +214,8 @@ function Reader() {
                 </div>
               ) : (
                 <article
-                  className="no-select space-y-5 leading-relaxed"
+                  key={page}
+                  className="animate-reader-page no-select space-y-5 leading-relaxed"
                   style={{ fontSize: `${taille}px` }}
                   onCopy={(e) => e.preventDefault()}
                   onContextMenu={(e) => e.preventDefault()}

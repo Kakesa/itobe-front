@@ -18,10 +18,12 @@ import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
 import { Route as MediaRouteImport } from './routes/media'
+import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RechercheRouteImport } from './routes/recherche'
+import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
 import { Route as SynchronisationRouteImport } from './routes/synchronisation'
 import { Route as TableauDeBordRouteImport } from './routes/tableau-de-bord'
 import { Route as AchatSlugRouteImport } from './routes/achat.$slug'
@@ -111,6 +113,11 @@ const MediaRoute = MediaRouteImport.update({
   path: '/media',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MotDePasseOublieRoute = MotDePasseOublieRouteImport.update({
+  id: '/mot-de-passe-oublie',
+  path: '/mot-de-passe-oublie',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PanierRoute = PanierRouteImport.update({
   id: '/panier',
   path: '/panier',
@@ -129,6 +136,11 @@ const ProfilRoute = ProfilRouteImport.update({
 const RechercheRoute = RechercheRouteImport.update({
   id: '/recherche',
   path: '/recherche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReinitialiserMotDePasseRoute = ReinitialiserMotDePasseRouteImport.update({
+  id: '/reinitialiser-mot-de-passe',
+  path: '/reinitialiser-mot-de-passe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SynchronisationRoute = SynchronisationRouteImport.update({
@@ -360,10 +372,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
@@ -415,10 +429,12 @@ export interface FileRoutesByTo {
   '/commandes': typeof CommandesRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
@@ -473,10 +489,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
   '/media': typeof MediaRouteWithChildren
+  '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
+  '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
   '/synchronisation': typeof SynchronisationRoute
   '/tableau-de-bord': typeof TableauDeBordRoute
   '/achat/$slug': typeof AchatSlugRoute
@@ -533,10 +551,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/mot-de-passe-oublie'
     | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
+    | '/reinitialiser-mot-de-passe'
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
@@ -588,10 +608,12 @@ export interface FileRouteTypes {
     | '/commandes'
     | '/connexion'
     | '/contact'
+    | '/mot-de-passe-oublie'
     | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
+    | '/reinitialiser-mot-de-passe'
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
@@ -645,10 +667,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/edition'
     | '/media'
+    | '/mot-de-passe-oublie'
     | '/panier'
     | '/premium'
     | '/profil'
     | '/recherche'
+    | '/reinitialiser-mot-de-passe'
     | '/synchronisation'
     | '/tableau-de-bord'
     | '/achat/$slug'
@@ -704,10 +728,12 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
   MediaRoute: typeof MediaRouteWithChildren
+  MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   PanierRoute: typeof PanierRoute
   PremiumRoute: typeof PremiumRoute
   ProfilRoute: typeof ProfilRoute
   RechercheRoute: typeof RechercheRoute
+  ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
   SynchronisationRoute: typeof SynchronisationRoute
   TableauDeBordRoute: typeof TableauDeBordRoute
   AchatSlugRoute: typeof AchatSlugRoute
@@ -781,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mot-de-passe-oublie': {
+      id: '/mot-de-passe-oublie'
+      path: '/mot-de-passe-oublie'
+      fullPath: '/mot-de-passe-oublie'
+      preLoaderRoute: typeof MotDePasseOublieRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/panier': {
       id: '/panier'
       path: '/panier'
@@ -807,6 +840,13 @@ declare module '@tanstack/react-router' {
       path: '/recherche'
       fullPath: '/recherche'
       preLoaderRoute: typeof RechercheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reinitialiser-mot-de-passe': {
+      id: '/reinitialiser-mot-de-passe'
+      path: '/reinitialiser-mot-de-passe'
+      fullPath: '/reinitialiser-mot-de-passe'
+      preLoaderRoute: typeof ReinitialiserMotDePasseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/synchronisation': {
@@ -1232,10 +1272,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,
   MediaRoute: MediaRouteWithChildren,
+  MotDePasseOublieRoute: MotDePasseOublieRoute,
   PanierRoute: PanierRoute,
   PremiumRoute: PremiumRoute,
   ProfilRoute: ProfilRoute,
   RechercheRoute: RechercheRoute,
+  ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,
   SynchronisationRoute: SynchronisationRoute,
   TableauDeBordRoute: TableauDeBordRoute,
   AchatSlugRoute: AchatSlugRoute,

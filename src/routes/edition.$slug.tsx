@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { BookOpen, Check, Download, Heart, ShoppingCart } from "lucide-react";
-import { BookCover } from "@/components/book-cover";
+import { BookCard } from "@/components/book-card";
+import { BookCover, BookCoverThumb } from "@/components/book-cover";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { usePanier } from "@/hooks/use-panier";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
@@ -58,6 +59,7 @@ function LivrePage() {
   const auteur = getAuteur(livre.auteur);
   const [favori, setFavori] = useState(false);
   const [ajoute, setAjoute] = useState(false);
+  const [vueCouverture, setVueCouverture] = useState<"face" | "spine" | "edge">("face");
   const { ajouter, ajoutEnCours } = usePanier();
   const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
   const accesSansAchat = accesComplet && !dejaAchete;
@@ -88,7 +90,7 @@ function LivrePage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
-      <nav className="text-xs text-muted-foreground">
+      <nav className="text-xs text-muted-foreground animate-book-fade-up">
         <Link to="/edition" className="hover:text-foreground">
           Catalogue
         </Link>{" "}
@@ -96,20 +98,38 @@ function LivrePage() {
       </nav>
 
       <div className="mt-8 grid gap-12 md:grid-cols-[300px_1fr]">
-        <div>
-          <BookCover livre={livre} />
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            {[1, 2, 3].map((i) => (
+        <div className="animate-book-fade-up md:sticky md:top-24 md:self-start" style={{ animationDelay: "100ms" }}>
+          <div className="book-showcase mx-auto max-w-[300px]">
+            <BookCover livre={livre} animated variant="reveal" realistic tilt={vueCouverture} />
+          </div>
+          <div className="mt-5 grid grid-cols-3 gap-3">
+            {(
+              [
+                { id: "face" as const, label: "Vue de face" },
+                { id: "spine" as const, label: "Vue reliure" },
+                { id: "edge" as const, label: "Vue tranche" },
+              ] as const
+            ).map((vue, i) => (
               <div
-                key={i}
-                className="aspect-square rounded-sm opacity-60"
-                style={{ backgroundImage: livre.couleur }}
-              />
+                key={vue.id}
+                className="animate-book-fade-up"
+                style={{ animationDelay: `${200 + i * 80}ms` }}
+              >
+                <BookCoverThumb
+                  livre={livre}
+                  active={vueCouverture === vue.id}
+                  label={vue.label}
+                  onClick={() => setVueCouverture(vue.id)}
+                />
+              </div>
             ))}
           </div>
+          <p className="mt-3 text-center text-[0.65rem] text-muted-foreground">
+            Cliquez une miniature pour changer l&apos;angle
+          </p>
         </div>
 
-        <div>
+        <div className="animate-book-fade-up" style={{ animationDelay: "180ms" }}>
           <p className="kicker">{livre.categorie}</p>
           <h1 className="mt-3 text-4xl leading-tight md:text-5xl">{livre.titre}</h1>
           {livre.sousTitre && (
@@ -268,11 +288,8 @@ function LivrePage() {
         <section className="mt-16">
           <h2 className="text-2xl">Du même auteur</h2>
           <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {memeAuteur.map((l) => (
-              <Link key={l.slug} to="/edition/$slug" params={{ slug: l.slug }} className="group">
-                <BookCover livre={l} className="transition-transform group-hover:-translate-y-1" />
-                <p className="mt-3 font-display leading-snug group-hover:text-accent">{l.titre}</p>
-              </Link>
+            {memeAuteur.map((l, i) => (
+              <BookCard key={l.slug} livre={l} index={i} showAuteur={false} />
             ))}
           </div>
         </section>

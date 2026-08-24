@@ -153,6 +153,9 @@ export const AuthApi = {
     api.put("/auth/me", data),
   changePassword: (data: { ancienPassword: string; nouveauPassword: string }) =>
     api.put("/auth/change-password", data),
+  forgotPassword: (email: string) => api.post("/auth/forgot-password", { email }),
+  resetPassword: (data: { token: string; password: string }) =>
+    api.post("/auth/reset-password", data),
   setup2FA: () => api.post("/auth/2fa/setup"),
   verify2FA: (token: string) => api.post("/auth/2fa/verify", { token }),
   deleteAccount: () => api.delete("/auth/me"),

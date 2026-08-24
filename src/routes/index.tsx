@@ -76,17 +76,17 @@ function Accueil() {
 
           <Link
             to="/edition"
-            className="group flex flex-col overflow-hidden rounded-sm border border-[#383030]/15 bg-[#fdfaf4] shadow-soft transition-transform duration-300 hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-sm border border-[#383030]/15 bg-[#fdfaf4] shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-16px_rgba(234,83,18,0.25)]"
           >
             <div className="relative aspect-[16/11] overflow-hidden">
               <img
                 src={IMG_EDITION}
                 alt="Livres et édition"
-                className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                className="size-full object-cover transition-transform duration-700 group-hover:scale-110 animate-[edition-hero-zoom_20s_ease-out_forwards]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#211c1c]/70 via-[#211c1c]/20 to-transparent" />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-[#fdfaf4]/95 px-2.5 py-1 text-xs font-medium text-[#383030] backdrop-blur-sm">
-                <BookOpen className="size-3.5 text-[#ea5312]" />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-[#fdfaf4]/95 px-2.5 py-1 text-xs font-medium text-[#383030] backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
+                <BookOpen className="size-3.5 text-[#ea5312] transition-transform duration-500 group-hover:-rotate-12" />
                 Portail
               </span>
             </div>

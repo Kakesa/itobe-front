@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { BookCover } from "@/components/book-cover";
+import { BookCard } from "@/components/book-card";
 import { articles, auteurs, formatDate, getAuteur } from "@/lib/data";
 import { useLivres } from "@/hooks/use-livres";
 
@@ -83,11 +83,8 @@ function AuteurPage() {
         <section className="mt-16">
           <h2 className="text-2xl">Livres publiés</h2>
           <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {sesLivres.map((l) => (
-              <Link key={l.slug} to="/edition/$slug" params={{ slug: l.slug }} className="group">
-                <BookCover livre={l} className="transition-transform group-hover:-translate-y-1" />
-                <p className="mt-3 font-display leading-snug group-hover:text-accent">{l.titre}</p>
-              </Link>
+            {sesLivres.map((l, i) => (
+              <BookCard key={l.slug} livre={l} index={i} showAuteur={false} />
             ))}
           </div>
         </section>
