@@ -8,6 +8,7 @@ type BookCardProps = {
   index?: number;
   showAuteur?: boolean;
   showPrix?: boolean;
+  prixEnFcfa?: boolean;
   to?: "/edition/$slug" | "/reader/$slug";
 };
 
@@ -16,8 +17,13 @@ export function BookCard({
   index = 0,
   showAuteur = true,
   showPrix = false,
+  prixEnFcfa = false,
   to = "/edition/$slug",
 }: BookCardProps) {
+  const montant = livre.promo ?? livre.prix;
+  const prixLabel = prixEnFcfa
+    ? `${Math.round(montant * 2800).toLocaleString("fr-FR")} FCFA`
+    : prixAffiche(livre);
   return (
     <Link
       to={to}
@@ -42,9 +48,9 @@ export function BookCard({
         </p>
       )}
       {showPrix && (
-        <p className="mt-1 text-sm">
-          {prixAffiche(livre)}
-          {livre.promo && (
+        <p className={`mt-1 text-sm ${prixEnFcfa ? "font-semibold text-[var(--edition-orange)]" : ""}`}>
+          {prixLabel}
+          {livre.promo && !prixEnFcfa && (
             <span className="ml-2 text-xs text-muted-foreground line-through">
               {livre.prix.toFixed(2)} $
             </span>

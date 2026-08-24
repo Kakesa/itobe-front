@@ -1217,3 +1217,427 @@
 .fiche-livre__share-btn:hover {
   color: var(--foreground);
 }
+
+/* ——— Fiche livre v2 (mockup édition) ——— */
+.fiche-livre-v2 {
+  background: var(--edition-cream);
+  color: var(--edition-ink);
+  font-family: var(--font-edition);
+}
+
+.fiche-livre-v2__hero {
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .fiche-livre-v2__hero {
+    grid-template-columns: minmax(260px, 340px) 1fr;
+    gap: 3.5rem;
+  }
+}
+
+.fiche-livre-v2__device {
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, #e8e4df 0%, #d4cfc8 100%);
+  box-shadow:
+    0 24px 48px -20px color-mix(in oklab, var(--edition-ink) 35%, transparent),
+    inset 0 1px 0 color-mix(in oklab, white 50%, transparent);
+}
+
+.fiche-livre-v2__device-screen {
+  overflow: hidden;
+  border-radius: 0.35rem;
+  background: #1a1a1a;
+  padding: 0.65rem;
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, black 20%, transparent);
+}
+
+.fiche-livre-v2__device-screen .book-spine {
+  border-radius: 2px;
+  box-shadow: 0 8px 24px -8px color-mix(in oklab, black 40%, transparent);
+}
+
+.fiche-livre-v2__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--edition-brown) 65%, transparent);
+}
+
+.fiche-livre-v2__crumb a:hover {
+  color: var(--edition-orange);
+}
+
+.fiche-livre-v2__title {
+  margin-top: 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 4vw, 2.65rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--edition-ink);
+}
+
+.fiche-livre-v2__author {
+  margin-top: 0.65rem;
+  font-size: 0.95rem;
+  color: color-mix(in oklab, var(--edition-brown) 80%, transparent);
+}
+
+.fiche-livre-v2__author a {
+  color: var(--edition-orange);
+  font-weight: 500;
+}
+
+.fiche-livre-v2__author a:hover {
+  text-decoration: underline;
+}
+
+.fiche-livre-v2__stars {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  margin-top: 0.85rem;
+}
+
+.fiche-livre-v2__price-block {
+  margin-top: 1.25rem;
+}
+
+.fiche-livre-v2__price {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw, 2.15rem);
+  font-weight: 600;
+  color: var(--edition-ink);
+}
+
+.fiche-livre-v2__price-note {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--edition-muted);
+}
+
+.fiche-livre-v2__format-title {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--edition-brown);
+}
+
+.fiche-livre-v2__formats {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+@media (min-width: 540px) {
+  .fiche-livre-v2__formats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.fiche-livre-v2__format-opt {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--edition-brown);
+  border: 1px solid color-mix(in oklab, var(--edition-brown) 35%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in oklab, var(--edition-cream) 90%, white);
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.fiche-livre-v2__format-opt:hover {
+  border-color: color-mix(in oklab, var(--edition-brown) 55%, transparent);
+}
+
+.fiche-livre-v2__format-opt.is-active {
+  border-color: color-mix(in oklab, var(--edition-brown) 70%, transparent);
+  background: color-mix(in oklab, var(--edition-gold) 35%, var(--edition-cream));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--edition-brown) 15%, transparent);
+}
+
+.fiche-livre-v2__actions {
+  margin-top: 1.25rem;
+}
+
+.fiche-livre-v2__buy {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  background: var(--edition-orange);
+  border-radius: 0.35rem;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.fiche-livre-v2__buy:hover {
+  background: #d4480f;
+}
+
+.fiche-livre-v2__buy.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fiche-livre-v2__secondary-actions {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 0.65rem;
+}
+
+.fiche-livre-v2__preview-btn {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--edition-ink);
+  text-decoration: none;
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--edition-brown) 30%, transparent);
+  border-radius: 0.35rem;
+  transition: background 0.2s;
+}
+
+.fiche-livre-v2__preview-btn:hover {
+  background: color-mix(in oklab, white 70%, var(--edition-gold));
+}
+
+.fiche-livre-v2__wishlist {
+  display: grid;
+  place-items: center;
+  width: 2.85rem;
+  shrink: 0;
+  color: var(--edition-brown);
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--edition-brown) 30%, transparent);
+  border-radius: 0.35rem;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.fiche-livre-v2__wishlist.is-active {
+  color: var(--edition-orange);
+  border-color: var(--edition-orange);
+}
+
+.fiche-livre-v2__meta-box {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.25rem;
+  font-size: 0.82rem;
+  background: color-mix(in oklab, var(--edition-gold) 22%, var(--edition-cream));
+  border-radius: 0.5rem;
+}
+
+.fiche-livre-v2__meta-box div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.fiche-livre-v2__meta-box dt {
+  color: color-mix(in oklab, var(--edition-brown) 70%, transparent);
+}
+
+.fiche-livre-v2__meta-box dd {
+  text-align: right;
+  font-weight: 500;
+  color: var(--edition-ink);
+}
+
+.fiche-livre-v2__owned {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--edition-brown) 15%, transparent);
+  border-radius: 0.5rem;
+}
+
+.fiche-livre-v2__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin-top: 3rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--edition-brown) 20%, transparent);
+}
+
+.fiche-livre-v2__tab {
+  padding: 0.9rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--edition-muted);
+  transition: color 0.2s;
+}
+
+.fiche-livre-v2__tab:hover {
+  color: var(--edition-ink);
+}
+
+.fiche-livre-v2__tab.is-active {
+  color: var(--edition-ink);
+  box-shadow: inset 0 -2px 0 var(--edition-ink);
+}
+
+.fiche-livre-v2__panel {
+  padding: 2rem 0 1rem;
+  max-width: 780px;
+}
+
+.fiche-livre-v2__details-list {
+  display: grid;
+  gap: 0;
+}
+
+.fiche-livre-v2__details-list div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--edition-brown) 12%, transparent);
+}
+
+.fiche-livre-v2__details-list dt {
+  color: color-mix(in oklab, var(--edition-brown) 70%, transparent);
+}
+
+.fiche-livre-v2__details-list dd {
+  text-align: right;
+}
+
+.fiche-livre-v2__sommaire {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.fiche-livre-v2__sommaire li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0;
+  font-size: 0.9rem;
+  border-bottom: 1px solid color-mix(in oklab, var(--edition-brown) 10%, transparent);
+}
+
+.fiche-livre-v2__sommaire-tag {
+  margin-left: auto;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--edition-orange);
+  background: color-mix(in oklab, var(--edition-orange) 12%, transparent);
+  border-radius: 999px;
+}
+
+.fiche-livre-v2__sommaire-tag--lock {
+  color: var(--edition-muted);
+  background: color-mix(in oklab, var(--edition-muted) 15%, transparent);
+}
+
+.fiche-livre-v2__author-box {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--edition-gold) 28%, var(--edition-cream));
+  border-radius: 0.75rem;
+}
+
+.fiche-livre-v2__author-avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--edition-orange);
+  background: white;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--edition-ink) 20%, transparent);
+}
+
+.fiche-livre-v2__author-box-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.fiche-livre-v2__author-link {
+  display: inline-block;
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--edition-orange);
+}
+
+.fiche-livre-v2__author-link:hover {
+  text-decoration: underline;
+}
+
+.fiche-livre-v2__collection {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in oklab, var(--edition-brown) 15%, transparent);
+}
+
+.fiche-livre-v2__collection-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.fiche-livre-v2__collection-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.fiche-livre-v2__carousel-btn {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--edition-brown);
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--edition-brown) 25%, transparent);
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+
+.fiche-livre-v2__carousel-btn:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--edition-gold) 40%, white);
+}
+
+.fiche-livre-v2__carousel-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

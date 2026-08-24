@@ -13,7 +13,7 @@ const searchSchema = z.object({
 });
 
 const LABELS_FORMAT_ACHAT: Record<"numerique" | "papier", string> = {
-  numerique: "Numérique (EPUB + PDF)",
+  numerique: "Numérique",
   papier: "Papier",
 };
 
