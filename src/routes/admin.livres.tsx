@@ -57,10 +57,13 @@ function AdminLivres() {
         {
           cle: "prix",
           label: "Prix",
-          rendu: (r) =>
-            Number(r["promo"]) > 0
-              ? `${Number(r["promo"]).toFixed(2)} $`
-              : `${Number(r["prix"]).toFixed(2)} $`,
+          rendu: (r) => {
+            const num = Number(r["promo"]) > 0 ? Number(r["promo"]) : Number(r["prix"]);
+            const papier = Number(r["prixPapier"]);
+            const numStr = `${num.toFixed(2)} $ num.`;
+            if (papier > 0) return `${numStr} · ${papier.toFixed(2)} $ pap.`;
+            return numStr;
+          },
         },
         { cle: "stock", label: "Stock", classe: "text-muted-foreground" },
         {
@@ -72,6 +75,13 @@ function AdminLivres() {
       champs={[
         { nom: "titre", label: "Titre", requis: true },
         {
+          nom: "resume",
+          label: "Résumé / synopsis",
+          type: "textarea",
+          requis: true,
+          placeholder: "Description de l'ouvrage affichée sur la fiche livre",
+        },
+        {
           nom: "couverture",
           label: "Image de couverture",
           type: "image",
@@ -80,10 +90,12 @@ function AdminLivres() {
         { nom: "auteur", label: "Auteur", type: "select", options: auteurs.map((a) => a.slug) },
         { nom: "categorie", label: "Catégorie", type: "select", options: categoriesLivres },
         { nom: "formats", label: "Formats", placeholder: "PDF, EPUB, Papier" },
-        { nom: "prix", label: "Prix ($)", type: "number" },
-        { nom: "promo", label: "Prix promo ($)", type: "number" },
+        { nom: "prix", label: "Prix numérique ($)", type: "number" },
+        { nom: "prixPapier", label: "Prix papier ($)", type: "number" },
+        { nom: "promo", label: "Prix promo numérique ($)", type: "number" },
+        { nom: "pages", label: "Nombre de pages", type: "number" },
         { nom: "stock", label: "Stock", type: "number" },
-        { nom: "disponible", label: "Publier (en vente)", type: "switch", placeholder: "En vente" },
+        { nom: "disponible", label: "Publier (en vente)", type: "switch", placeholder: "En vente", defaut: true },
       ]}
     />
   );

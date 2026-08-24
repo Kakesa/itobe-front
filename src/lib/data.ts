@@ -28,6 +28,7 @@ export type Livre = {
   publication: string;
   formats: ("PDF" | "EPUB" | "Papier")[];
   prix: number;
+  prixPapier?: number;
   promo?: number;
   stock: number;
   disponible: boolean;
@@ -312,6 +313,7 @@ const normaliserLivreApi = (entry: any): Livre => {
       ? (entry.formats.filter((val: unknown) => ["PDF", "EPUB", "Papier"].includes(String(val))) as Array<"PDF" | "EPUB" | "Papier">)
       : ["PDF"],
     prix: Number(entry?.prix ?? 0),
+    ...(Number(entry?.prixPapier) > 0 ? { prixPapier: Number(entry.prixPapier) } : {}),
     ...(promoValue !== undefined ? { promo: promoValue } : {}),
     stock: Number(entry?.stock ?? 0),
     disponible: Boolean(entry?.disponible ?? true),
@@ -350,12 +352,14 @@ export const hydratePublicData = async () => {
   try {
     const [articlesApi, livresApi, auteursApi] = await Promise.all([
       ArticlesApi.getAll({ page: 1, limit: 200 }),
-      LivresApi.getAll({ page: 1, limit: 200 }),
+      LivresApi.fetchAll(),
       AuteursApi.getAll({ page: 1, limit: 200 }),
     ]);
 
     const articlesLive = normaliserValeurApi(articlesApi).map(normaliserArticleApi);
-    const livresLive = normaliserValeurApi(livresApi).map(normaliserLivreApi);
+    const livresLive = (Array.isArray(livresApi) ? livresApi : normaliserValeurApi(livresApi)).map(
+      normaliserLivreApi,
+    );
     const auteursLive = normaliserValeurApi(auteursApi).map(normaliserAuteurApi);
 
     articles = [...articlesLive, ...articlesPubliesAdmin()].filter(

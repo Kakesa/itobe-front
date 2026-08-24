@@ -5,6 +5,7 @@ import { BookCard } from "@/components/book-card";
 import { BookCover } from "@/components/book-cover";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
+import { prixLivreFormat } from "@/lib/livre-prix";
 
 export const Route = createFileRoute("/edition/$slug")({
   loader: async ({ params }) => {
@@ -76,10 +77,7 @@ function LivrePage() {
   const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
   const accesSansAchat = accesComplet && !dejaAchete;
 
-  const prixBase = livre.promo ?? livre.prix;
-  const prixNumerique = Number((prixBase * 0.55).toFixed(2));
-  const prixPapier = prixBase;
-  const prixAffiche = formatChoisi === "numerique" ? prixNumerique : prixPapier;
+  const prixAffiche = prixLivreFormat(livre, formatChoisi);
 
   const collection = useMemo(
     () => livres.filter((l) => l.categorie === livre.categorie && l.slug !== livre.slug),
@@ -129,11 +127,6 @@ function LivrePage() {
 
             <Etoiles note={NOTE_MOCK} />
 
-            <div className="fiche-livre-v2__price-block">
-              <p className="fiche-livre-v2__price">{prixDollar(prixAffiche)}</p>
-              <p className="fiche-livre-v2__price-note">TVA incluse</p>
-            </div>
-
             {dejaAchete ? (
               <div className="fiche-livre-v2__owned">
                 <p className="font-medium">Vous possédez déjà cet ouvrage.</p>
@@ -162,15 +155,22 @@ function LivrePage() {
                     onClick={() => setFormatChoisi("numerique")}
                     className={`fiche-livre-v2__format-opt ${formatChoisi === "numerique" ? "is-active" : ""}`}
                   >
-                    Numérique {prixDollar(prixNumerique, true)}
+                    Numérique
                   </button>
                   <button
                     type="button"
                     onClick={() => setFormatChoisi("papier")}
                     className={`fiche-livre-v2__format-opt ${formatChoisi === "papier" ? "is-active" : ""}`}
                   >
-                    Papier {prixDollar(prixPapier, true)}
+                    Papier
                   </button>
+                </div>
+
+                <div className="fiche-livre-v2__price-block">
+                  <p className="fiche-livre-v2__price">{prixDollar(prixAffiche)}</p>
+                  <p className="fiche-livre-v2__price-note">
+                    {formatChoisi === "numerique" ? "Numérique" : "Papier"} — TVA incluse
+                  </p>
                 </div>
 
                 <div className="fiche-livre-v2__actions">

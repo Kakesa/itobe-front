@@ -1357,6 +1357,10 @@
   margin-top: 1.25rem;
 }
 
+.fiche-livre-v2__formats + .fiche-livre-v2__price-block {
+  margin-top: 1rem;
+}
+
 .fiche-livre-v2__price {
   font-family: var(--font-display);
   font-size: clamp(1.75rem, 3vw, 2.15rem);

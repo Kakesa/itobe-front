@@ -173,8 +173,8 @@ export async function fetchPublicArticles(): Promise<PublicArticle[]> {
 
 export async function fetchPublicLivres(): Promise<PublicLivre[]> {
   try {
-    const response = await LivresApi.getAll({ page: 1, limit: 200 });
-    return asArray<any>(response).map(normalizePublicLivre);
+    const response = await LivresApi.fetchAll();
+    return (Array.isArray(response) ? response : asArray<any>(response)).map(normalizePublicLivre);
   } catch {
     return [];
   }

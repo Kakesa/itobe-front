@@ -5,7 +5,8 @@ import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
-import { ArticlesApi, LivresApi } from "@/lib/api-client";
+import { ArticlesApi, LivresApi, ApiError } from "@/lib/api-client";
+import { hydratePublicData } from "@/lib/data";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
@@ -24,6 +25,7 @@ export type Champ = {
   options?: string[];
   requis?: boolean;
   placeholder?: string;
+  defaut?: boolean | string | number;
 };
 
 export function CrudModule({
@@ -67,40 +69,61 @@ export function CrudModule({
   const [edition, setEdition] = useState<{ row: Item | null } | null>(null);
   const [aSupprimer, setASupprimer] = useState<Item | null>(null);
 
+  const mapperLivresAdmin = (payload: unknown): Item[] => {
+    const raw = Array.isArray(payload) ? payload : normaliserValeurApi(payload);
+    return raw.map((entry: Record<string, unknown>) => ({
+      id: String(entry["_id"] ?? entry["slug"] ?? ""),
+      publication: entry["publication"]
+        ? new Date(String(entry["publication"])).toISOString().slice(0, 10)
+        : new Date().toISOString().slice(0, 10),
+      titre: String(entry["titre"] ?? ""),
+      resume: String(entry["resume"] ?? ""),
+      pages: Number(entry["pages"] ?? 200),
+      auteur: String(
+        (entry["auteur"] as { slug?: string } | undefined)?.slug ?? entry["auteur"] ?? "",
+      ),
+      categorie: String(
+        (entry["categorie"] as { nom?: string } | undefined)?.nom ?? entry["categorie"] ?? "",
+      ),
+      formats: Array.isArray(entry["formats"])
+        ? (entry["formats"] as string[]).join(", ")
+        : "PDF, EPUB",
+      prix: Number(entry["prix"] ?? 0),
+      prixPapier: Number(entry["prixPapier"] ?? 0),
+      promo: Number(entry["promo"] ?? 0),
+      stock: Number(entry["stock"] ?? 0),
+      disponible: Boolean(entry["disponible"] ?? true),
+      couverture: String(entry["couverture"] ?? ""),
+      couleur: String(
+        entry["couleur"] ??
+          "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
+      ),
+    }));
+  };
+
+  const normaliserValeurApi = (payload: unknown): Record<string, unknown>[] => {
+    if (Array.isArray(payload)) return payload as Record<string, unknown>[];
+    if (payload && typeof payload === "object") {
+      const record = payload as Record<string, unknown>;
+      if (Array.isArray(record["data"])) return record["data"] as Record<string, unknown>[];
+    }
+    return [];
+  };
+
+  const rechargerLivresAdmin = async () => {
+    const raw = await LivresApi.fetchAllAdmin();
+    definir(mapperLivresAdmin(raw));
+    await hydratePublicData();
+  };
+
   useEffect(() => {
     if (collection !== "livres") return;
 
     let annule = false;
-    LivresApi.getAll({ page: 1, limit: 200 })
-      .then((res) => {
+    LivresApi.fetchAllAdmin()
+      .then((raw) => {
         if (annule) return;
-        const raw = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-        const mapped: Item[] = raw.map((entry: Record<string, unknown>) => ({
-          id: String(entry["_id"] ?? entry["slug"] ?? ""),
-          publication: entry["publication"]
-            ? new Date(String(entry["publication"])).toISOString().slice(0, 10)
-            : new Date().toISOString().slice(0, 10),
-          titre: String(entry["titre"] ?? ""),
-          auteur: String(
-            (entry["auteur"] as { slug?: string } | undefined)?.slug ?? entry["auteur"] ?? "",
-          ),
-          categorie: String(
-            (entry["categorie"] as { nom?: string } | undefined)?.nom ?? entry["categorie"] ?? "",
-          ),
-          formats: Array.isArray(entry["formats"])
-            ? (entry["formats"] as string[]).join(", ")
-            : "PDF, EPUB",
-          prix: Number(entry["prix"] ?? 0),
-          promo: Number(entry["promo"] ?? 0),
-          stock: Number(entry["stock"] ?? 0),
-          disponible: Boolean(entry["disponible"] ?? true),
-          couverture: String(entry["couverture"] ?? ""),
-          couleur: String(
-            entry["couleur"] ??
-              "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
-          ),
-        }));
-        definir(mapped);
+        definir(mapperLivresAdmin(raw));
       })
       .catch(() => {
         /* liste vide si API indisponible */
@@ -135,6 +158,36 @@ export function CrudModule({
     return { ...(item ?? {}), id } as Item;
   };
 
+  const preparerPayloadLivre = (valeurs: Record<string, unknown>) => {
+    const payload = { ...valeurs };
+    if (!String(payload.resume ?? "").trim()) {
+      payload.resume = "Résumé à compléter.";
+    }
+    if (!payload.pages || Number(payload.pages) < 1) {
+      payload.pages = 200;
+    }
+    if (!String(payload.formats ?? "").trim()) {
+      payload.formats = "PDF, EPUB";
+    }
+    if (!payload.promo || Number(payload.promo) <= 0) {
+      delete payload.promo;
+    }
+    if (!payload.prixPapier || Number(payload.prixPapier) <= 0) {
+      delete payload.prixPapier;
+    }
+    return payload;
+  };
+
+  const messageErreurApi = (error: unknown) => {
+    if (error instanceof ApiError) {
+      if (Array.isArray(error.errors) && error.errors.length > 0) {
+        return error.errors.join(" · ");
+      }
+      return error.message;
+    }
+    return error instanceof Error ? error.message : "Erreur lors de l'enregistrement";
+  };
+
   const enregistrer = async (valeurs: Record<string, unknown>) => {
     try {
       if (collection === "articles") {
@@ -152,17 +205,24 @@ export function CrudModule({
       }
 
       if (collection === "livres") {
+        const payload = preparerPayloadLivre(valeurs);
         if (edition?.row) {
-          await LivresApi.update(String(edition.row.id), valeurs);
-        } else {
-          const response = await LivresApi.create(valeurs);
-          const item = normaliserReponseApi(response);
-          creer(item);
-          notify.cree(singulier, libelle(item));
-          onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+          await LivresApi.update(String(edition.row.id), payload);
+          await rechargerLivresAdmin();
+          const apres = { ...edition.row, ...payload } as Item;
+          notify.modifie(singulier, String(valeurs["titre"] ?? edition.row.id));
+          onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
           setEdition(null);
           return;
         }
+
+        const response = await LivresApi.create(payload);
+        const item = normaliserReponseApi(response);
+        await rechargerLivresAdmin();
+        notify.cree(singulier, libelle(item));
+        onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+        setEdition(null);
+        return;
       }
 
       if (edition?.row) {
@@ -172,7 +232,7 @@ export function CrudModule({
         onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
       }
     } catch (error) {
-      notify.erreur(error instanceof Error ? error.message : "Erreur lors de l'enregistrement");
+      notify.erreur(messageErreurApi(error));
       return;
     }
 
@@ -439,6 +499,7 @@ function FormulaireDialog({
 
 function valeurInitiale(valeur: unknown, champ: Champ): unknown {
   if (valeur !== undefined && valeur !== null) return valeur;
+  if (champ.defaut !== undefined) return champ.defaut;
   if (champ.type === "switch") return false;
   if (champ.type === "number") return 0;
   if (champ.type === "select") return champ.options?.[0] ?? "";

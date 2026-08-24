@@ -6,14 +6,10 @@ import {
 } from "@/lib/auth";
 
 export function useSession() {
-  const [session, setSession] = useState<SessionUtilisateur | null>(() => {
-    if (typeof window === "undefined") return null;
-    return lireSession();
-  });
+  const [session, setSession] = useState<SessionUtilisateur | null>(null);
   const [pret, setPret] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     setSession(lireSession());
     setPret(true);
     const sync = () => setSession(lireSession());

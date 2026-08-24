@@ -1,9 +1,10 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { ArrowLeft, Menu, Search, ShoppingCart, X } from "lucide-react";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
 import { usePanierCount } from "@/hooks/use-panier";
+import { useSession } from "@/hooks/use-session";
 
 type Lien = { to: string; label: string; exact?: boolean };
 
@@ -29,6 +30,8 @@ export function SiteHeader() {
   const portail = usePortailActif();
   const panierCount = usePanierCount();
   const { aDesAchats } = useADesAchats();
+  const { connecte, pret, deconnexion } = useSession();
+  const navigate = useNavigate();
   const [ouvert, setOuvert] = useState(false);
   const home = portail === "media" ? "/media" : "/edition";
   const titre = portail === "media" ? "Média" : "Maison d'édition";
@@ -41,6 +44,71 @@ export function SiteHeader() {
   }, [portail, aDesAchats]);
   const accent =
     portail === "media" ? "border-b-[#70a2e1]" : "border-b-[#ea5312]";
+
+  const seDeconnecter = () => {
+    deconnexion();
+    setOuvert(false);
+    void navigate({ to: portail === "media" ? "/media" : "/edition" });
+  };
+
+  const liensAuthDesktop = pret ? (
+    connecte ? (
+      <button
+        type="button"
+        onClick={seDeconnecter}
+        className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+      >
+        Déconnexion
+      </button>
+    ) : (
+      <>
+        <Link
+          to="/connexion"
+          className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+        >
+          Connexion
+        </Link>
+        <Link
+          to="/connexion"
+          search={{ mode: "inscription" }}
+          className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+        >
+          Inscription
+        </Link>
+      </>
+    )
+  ) : null;
+
+  const liensAuthMobile = pret ? (
+    connecte ? (
+      <button
+        type="button"
+        onClick={seDeconnecter}
+        className="block w-full py-2 text-left text-sm font-medium"
+      >
+        Déconnexion
+      </button>
+    ) : (
+      <>
+        <Link
+          to="/connexion"
+          onClick={() => setOuvert(false)}
+          className="block py-2 text-sm font-medium"
+        >
+          Connexion
+        </Link>
+        <Link
+          to="/connexion"
+          search={{ mode: "inscription" }}
+          onClick={() => setOuvert(false)}
+          className="block py-2 text-sm text-muted-foreground"
+        >
+          Inscription
+        </Link>
+      </>
+    )
+  ) : null;
+
   return (
     <header
       className={`sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
@@ -99,12 +167,7 @@ export function SiteHeader() {
           >
             <Search className="size-4" />
           </Link>
-          <Link
-            to="/connexion"
-            className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
-          >
-            Connexion
-          </Link>
+          {liensAuthDesktop}
           <button
             type="button"
             className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
@@ -131,13 +194,7 @@ export function SiteHeader() {
             </Link>
           ))}
           <div className="my-2 border-t border-border" />
-          <Link
-            to="/connexion"
-            onClick={() => setOuvert(false)}
-            className="block py-2 text-sm font-medium"
-          >
-            Connexion
-          </Link>
+          {liensAuthMobile}
           {portail === "edition" && (
             <Link
               to="/panier"

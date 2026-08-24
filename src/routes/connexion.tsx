@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { authentifierApi, sauvegarderSession } from "@/lib/auth";
 import { AuthApi } from "@/lib/api-client";
@@ -9,6 +9,7 @@ import { BookOpen, Newspaper, Shield } from "lucide-react";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
+  mode: z.enum(["connexion", "inscription"]).optional(),
 });
 
 export const Route = createFileRoute("/connexion")({
@@ -31,9 +32,9 @@ export const Route = createFileRoute("/connexion")({
 });
 
 function Connexion() {
-  const { redirect } = Route.useSearch();
+  const { redirect, mode: modeSearch } = Route.useSearch();
   const destination = redirect && redirect.startsWith("/") ? redirect : "/admin";
-  const [mode, setMode] = useState<"connexion" | "inscription">("connexion");
+  const [mode, setMode] = useState<"connexion" | "inscription">(modeSearch ?? "connexion");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
@@ -43,6 +44,10 @@ function Connexion() {
   const [erreur, setErreur] = useState("");
   const navigate = useNavigate();
   const { session, deconnexion } = useSession();
+
+  useEffect(() => {
+    if (modeSearch) setMode(modeSearch);
+  }, [modeSearch]);
 
   const soumettre = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

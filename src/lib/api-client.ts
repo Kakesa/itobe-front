@@ -73,6 +73,35 @@ async function request<T = any>(endpoint: string, options: RequestInit = {}): Pr
   return data;
 }
 
+type PaginatedPayload<T = unknown> = {
+  data?: T[];
+  pagination?: {
+    page?: number;
+    totalPages?: number;
+    hasNextPage?: boolean;
+  };
+};
+
+/** Récupère toutes les pages d'une ressource paginée. */
+export async function fetchAllPages<T = unknown>(
+  fetchPage: (page: number, limit: number) => Promise<PaginatedPayload<T>>,
+  pageSize = 100,
+): Promise<T[]> {
+  const all: T[] = [];
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const res = await fetchPage(page, pageSize);
+    const batch = Array.isArray(res?.data) ? res.data : [];
+    all.push(...batch);
+    totalPages = Number(res?.pagination?.totalPages ?? 1);
+    page += 1;
+  } while (page <= totalPages && page <= 100);
+
+  return all;
+}
+
 export const api = {
   get: <T = any>(url: string, params?: Record<string, any>) => {
     let finalUrl = url;
@@ -180,6 +209,12 @@ export const ArticlesApi = {
 export const LivresApi = {
   getAll: (params?: { page?: number; limit?: number; categorie?: string; format?: string; q?: string }) =>
     api.get("/livres", params),
+  getAllAdmin: (params?: { page?: number; limit?: number; categorie?: string; format?: string; q?: string }) =>
+    api.get("/livres/admin/all", params),
+  fetchAll: () =>
+    fetchAllPages((page, limit) => LivresApi.getAll({ page, limit })),
+  fetchAllAdmin: () =>
+    fetchAllPages((page, limit) => LivresApi.getAllAdmin({ page, limit })),
   getBySlug: (slug: string) => api.get(`/livres/${slug}`),
   create: (data: any) => api.post("/livres", data),
   update: (id: string, data: any) => api.put(`/livres/${id}`, data),

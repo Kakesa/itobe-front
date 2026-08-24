@@ -28,15 +28,141 @@ export const Route = createFileRoute("/edition/")({
 const HERO_IMG =
   "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1800&q=80";
 
+const selectFiltreClass =
+  "mt-2 w-full rounded-sm border border-border bg-background px-3 py-2.5 text-sm";
+
+function FiltresCatalogue({
+  cat,
+  format,
+  tri,
+  onCat,
+  onFormat,
+  onTri,
+  variant,
+}: {
+  cat: string;
+  format: string;
+  tri: string;
+  onCat: (v: string) => void;
+  onFormat: (v: string) => void;
+  onTri: (v: string) => void;
+  variant: "mobile" | "desktop";
+}) {
+  if (variant === "mobile") {
+    return (
+      <div className="grid gap-4 rounded-lg border border-border bg-card p-4 lg:hidden">
+        <label className="block">
+          <span className="kicker">Catégorie</span>
+          <select
+            value={cat}
+            onChange={(e) => onCat(e.target.value)}
+            className={selectFiltreClass}
+            aria-label="Filtrer par catégorie"
+          >
+            {["Toutes", ...categoriesLivres].map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="kicker">Format</span>
+          <select
+            value={format}
+            onChange={(e) => onFormat(e.target.value)}
+            className={selectFiltreClass}
+            aria-label="Filtrer par format"
+          >
+            {["Tous", "PDF", "EPUB", "Papier"].map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block">
+          <span className="kicker">Trier par</span>
+          <select
+            value={tri}
+            onChange={(e) => onTri(e.target.value)}
+            className={selectFiltreClass}
+            aria-label="Trier le catalogue"
+          >
+            <option value="recent">Plus récents</option>
+            <option value="prix">Prix croissant</option>
+            <option value="titre">Titre A–Z</option>
+          </select>
+        </label>
+      </div>
+    );
+  }
+
+  return (
+    <aside className="hidden space-y-8 lg:block">
+      <div>
+        <p className="kicker">Catégorie</p>
+        <div className="mt-3 space-y-1">
+          {["Toutes", ...categoriesLivres].map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => onCat(c)}
+              className={`block w-full text-left text-sm ${
+                cat === c ? "font-medium text-accent" : "text-muted-foreground"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="kicker">Format</p>
+        <div className="mt-3 space-y-1">
+          {["Tous", "PDF", "EPUB", "Papier"].map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => onFormat(f)}
+              className={`block w-full text-left text-sm ${
+                format === f ? "font-medium text-accent" : "text-muted-foreground"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="kicker">Trier par</p>
+        <select
+          value={tri}
+          onChange={(e) => onTri(e.target.value)}
+          className={selectFiltreClass}
+          aria-label="Trier le catalogue"
+        >
+          <option value="recent">Plus récents</option>
+          <option value="prix">Prix croissant</option>
+          <option value="titre">Titre A–Z</option>
+        </select>
+      </div>
+    </aside>
+  );
+}
+
 function Catalogue() {
   const { livres, loading } = useLivres();
   const [cat, setCat] = useState("Toutes");
   const [format, setFormat] = useState("Tous");
   const [tri, setTri] = useState("recent");
-  const [prixMax, setPrixMax] = useState(30);
 
   const liste = useMemo(() => {
-    let l = livres.filter((b) => (b.promo ?? b.prix) <= prixMax);
+    let l = [...livres];
     if (cat !== "Toutes") l = l.filter((b) => b.categorie === cat);
     if (format !== "Tous") l = l.filter((b) => b.formats.includes(format as "PDF"));
     if (tri === "prix") l = [...l].sort((a, b) => (a.promo ?? a.prix) - (b.promo ?? b.prix));
@@ -44,7 +170,7 @@ function Catalogue() {
       l = [...l].sort((a, b) => b.publication.localeCompare(a.publication));
     if (tri === "titre") l = [...l].sort((a, b) => a.titre.localeCompare(b.titre));
     return l;
-  }, [cat, format, tri, prixMax, livres]);
+  }, [cat, format, tri, livres]);
 
   const promos = livres.filter((l) => l.promo);
 
@@ -94,8 +220,9 @@ function Catalogue() {
           Catalogue
         </h2>
         <p className="mt-4 max-w-xl text-muted-foreground">
-          {livres.length} ouvrages disponibles en PDF, EPUB et papier. Chaque livre propose un
-          aperçu gratuit avant l&apos;achat.
+          {loading
+            ? "Chargement du catalogue…"
+            : `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`}
         </p>
 
         {promos.length > 0 && (
@@ -107,73 +234,38 @@ function Catalogue() {
           </div>
         )}
 
-        <div className="mt-10 grid gap-10 lg:grid-cols-[220px_1fr]">
-          <aside className="space-y-8">
-            <div>
-              <p className="kicker">Catégorie</p>
-              <div className="mt-3 space-y-1">
-                {["Toutes", ...categoriesLivres].map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setCat(c)}
-                    className={`block w-full text-left text-sm ${
-                      cat === c ? "font-medium text-accent" : "text-muted-foreground"
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
+        <FiltresCatalogue
+          variant="mobile"
+          cat={cat}
+          format={format}
+          tri={tri}
+          onCat={setCat}
+          onFormat={setFormat}
+          onTri={setTri}
+        />
 
-            <div>
-              <p className="kicker">Format</p>
-              <div className="mt-3 space-y-1">
-                {["Tous", "PDF", "EPUB", "Papier"].map((f) => (
-                  <button
-                    key={f}
-                    onClick={() => setFormat(f)}
-                    className={`block w-full text-left text-sm ${
-                      format === f ? "font-medium text-accent" : "text-muted-foreground"
-                    }`}
-                  >
-                    {f}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <p className="kicker">Prix max : {prixMax} $</p>
-              <input
-                type="range"
-                min={5}
-                max={30}
-                value={prixMax}
-                onChange={(e) => setPrixMax(Number(e.target.value))}
-                className="mt-3 w-full accent-[var(--accent)]"
-              />
-            </div>
-
-            <div>
-              <p className="kicker">Trier par</p>
-              <select
-                value={tri}
-                onChange={(e) => setTri(e.target.value)}
-                className="mt-3 w-full rounded-sm border border-border bg-background px-2 py-2 text-sm"
-              >
-                <option value="recent">Plus récents</option>
-                <option value="prix">Prix croissant</option>
-                <option value="titre">Titre A–Z</option>
-              </select>
-            </div>
-          </aside>
+        <div className="mt-6 grid gap-10 lg:mt-10 lg:grid-cols-[220px_1fr]">
+          <FiltresCatalogue
+            variant="desktop"
+            cat={cat}
+            format={format}
+            tri={tri}
+            onCat={setCat}
+            onFormat={setFormat}
+            onTri={setTri}
+          />
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             {loading && (
               <p className="col-span-full text-sm text-muted-foreground">Chargement du catalogue…</p>
             )}
-            {!loading && liste.length === 0 && (
+            {!loading && liste.length === 0 && livres.length > 0 && (
+              <p className="col-span-full text-sm text-muted-foreground">
+                Aucun livre ne correspond aux filtres ({livres.length} ouvrage{livres.length > 1 ? "s" : ""} au
+                catalogue). Essayez de choisir « Toutes » les catégories ou « Tous » les formats.
+              </p>
+            )}
+            {!loading && liste.length === 0 && livres.length === 0 && (
               <p className="col-span-full text-sm text-muted-foreground">
                 Aucun livre disponible pour le moment.
               </p>
@@ -181,9 +273,6 @@ function Catalogue() {
             {liste.map((l, i) => (
               <BookCard key={l.slug} livre={l} index={i} showPrix />
             ))}
-            {liste.length === 0 && (
-              <p className="text-sm text-muted-foreground">Aucun livre ne correspond aux filtres.</p>
-            )}
           </div>
         </div>
       </div>

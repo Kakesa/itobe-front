@@ -4,7 +4,8 @@ import { z } from "zod";
 import { BookCover } from "@/components/book-cover";
 import { useSession } from "@/hooks/use-session";
 import { CommandesApi, getToken } from "@/lib/api-client";
-import { fetchLivreBySlug, getLivre, nomAuteur, prixAffiche, type Livre } from "@/lib/data";
+import { fetchLivreBySlug, getLivre, nomAuteur, type Livre } from "@/lib/data";
+import { prixLivreFormat } from "@/lib/livre-prix";
 import { notifierBibliothequeMiseAJour } from "@/hooks/use-a-des-achats";
 import type { FormatLivre } from "@/lib/panier/types";
 
@@ -149,7 +150,8 @@ function Achat() {
     );
   }
 
-  const prix = livre.promo ?? livre.prix;
+  const formatAchatType = formatAchat ?? "numerique";
+  const prix = prixLivreFormat(livre, formatAchatType);
   const frais = moyen === "carte" ? 0.5 : 0.2;
 
   return (
@@ -344,7 +346,7 @@ function Achat() {
           <dl className="mt-6 space-y-2 text-sm">
             <div className="flex justify-between">
               <dt className="text-muted-foreground">Ouvrage</dt>
-              <dd>{prixAffiche(livre)}</dd>
+              <dd>{prix.toFixed(2)} $</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-muted-foreground">Frais de transaction</dt>
