@@ -1,12 +1,16 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
-import { BookOpen, Check, Download, Heart, ShoppingCart } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  Book,
+  BookOpen,
+  Copy,
+  Eye,
+  Monitor,
+} from "lucide-react";
 import { BookCard } from "@/components/book-card";
-import { BookCover, BookCoverThumb } from "@/components/book-cover";
+import { BookCover } from "@/components/book-cover";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
-import { usePanier } from "@/hooks/use-panier";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
-import { formatParDefaut } from "@/lib/panier/guest-cart";
 
 export const Route = createFileRoute("/edition/$slug")({
   loader: async ({ params }) => {
@@ -54,28 +58,77 @@ export const Route = createFileRoute("/edition/$slug")({
   component: LivrePage,
 });
 
+type OngletContenu = "descriptif" | "details" | "avis";
+type OngletDecouvrir = "auteur" | "categorie" | "selection";
+
+type FormatAchat = "numerique" | "papier";
+
+const LABELS_ACHAT: Record<FormatAchat, string> = {
+  numerique: "Numérique",
+  papier: "Papier",
+};
+
+const ORDRE_FORMATS: FormatAchat[] = ["papier", "numerique"];
+
+const ICONES_FORMAT: Record<FormatAchat, typeof Book> = {
+  papier: Book,
+  numerique: Monitor,
+};
+
+function prixAfficheFiche(prix: number) {
+  return `${prix.toFixed(2).replace(".", ",")} $`;
+}
+
+function FilAriane({ items }: { items: { label: string; to?: string }[] }) {
+  return (
+    <nav className="fiche-livre__breadcrumb" aria-label="Fil d'Ariane">
+      {items.map((item, i) => (
+        <span key={item.label} className="inline-flex items-center gap-2">
+          {i > 0 && <span className="text-muted-foreground/50" aria-hidden>•</span>}
+          {item.to ? (
+            <Link to={item.to} className="hover:text-foreground hover:underline">
+              {item.label}
+            </Link>
+          ) : (
+            <span className="text-foreground">{item.label}</span>
+          )}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
 function LivrePage() {
   const { livre } = Route.useLoaderData();
   const auteur = getAuteur(livre.auteur);
-  const [favori, setFavori] = useState(false);
-  const [ajoute, setAjoute] = useState(false);
-  const [vueCouverture, setVueCouverture] = useState<"face" | "spine" | "edge">("face");
-  const { ajouter, ajoutEnCours } = usePanier();
+  const prix = livre.promo ?? livre.prix;
+  const estNouveaute = livre.aLaUne || livre.publication >= "2025-01-01";
+  const [onglet, setOnglet] = useState<OngletContenu>("descriptif");
+  const [ongletDecouvrir, setOngletDecouvrir] = useState<OngletDecouvrir>("auteur");
+  const [lienCopie, setLienCopie] = useState(false);
   const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
   const accesSansAchat = accesComplet && !dejaAchete;
-  const memeAuteur = livres.filter((l) => l.auteur === livre.auteur && l.slug !== livre.slug);
 
-  const ajouterAuPanier = async () => {
-    if (dejaAchete || accesComplet) return;
-    await ajouter({
-      slug: livre.slug,
-      titre: livre.titre,
-      quantity: 1,
-      format: formatParDefaut(livre.formats),
-      prixUnitaire: livre.promo ?? livre.prix,
-    });
-    setAjoute(true);
-    setTimeout(() => setAjoute(false), 2000);
+  const memeAuteur = livres.filter((l) => l.auteur === livre.auteur && l.slug !== livre.slug);
+  const memeCategorie = livres.filter(
+    (l) => l.categorie === livre.categorie && l.slug !== livre.slug,
+  );
+  const selection = livres.filter((l) => l.slug !== livre.slug).slice(0, 4);
+
+  const livresDecouvrir = useMemo(() => {
+    if (ongletDecouvrir === "auteur") return memeAuteur;
+    if (ongletDecouvrir === "categorie") return memeCategorie;
+    return selection;
+  }, [ongletDecouvrir, memeAuteur, memeCategorie, selection]);
+
+  const copierLien = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setLienCopie(true);
+      setTimeout(() => setLienCopie(false), 2000);
+    } catch {
+      /* ignore */
+    }
   };
 
   const fiche: [string, string][] = [
@@ -84,216 +137,252 @@ function LivrePage() {
     ["Langue", livre.langue],
     ["Catégorie", livre.categorie],
     ["Publication", formatDate(livre.publication)],
-    ["Formats", livre.formats.join(", ")],
+    ["Formats disponibles", "Numérique, Papier"],
     ["Stock papier", livre.stock > 0 ? `${livre.stock} exemplaires` : "Numérique uniquement"],
+    ["Aperçu gratuit", `${livre.apercuPages} pages (${livre.apercuPourcent} %)`],
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
-      <nav className="text-xs text-muted-foreground animate-book-fade-up">
-        <Link to="/edition" className="hover:text-foreground">
-          Catalogue
-        </Link>{" "}
-        / <span>{livre.categorie}</span>
-      </nav>
+    <div className="fiche-livre">
+      <div className="mx-auto max-w-6xl px-4 pb-20 pt-8">
+        <FilAriane
+          items={[
+            { label: "Accueil", to: "/" },
+            { label: "Itobe Éditions", to: "/edition" },
+            { label: livre.categorie },
+            { label: livre.titre },
+          ]}
+        />
 
-      <div className="mt-8 grid gap-12 md:grid-cols-[300px_1fr]">
-        <div className="animate-book-fade-up md:sticky md:top-24 md:self-start" style={{ animationDelay: "100ms" }}>
-          <div className="book-showcase mx-auto max-w-[300px]">
-            <BookCover livre={livre} animated variant="reveal" realistic tilt={vueCouverture} />
-          </div>
-          <div className="mt-5 grid grid-cols-3 gap-3">
-            {(
-              [
-                { id: "face" as const, label: "Vue de face" },
-                { id: "spine" as const, label: "Vue reliure" },
-                { id: "edge" as const, label: "Vue tranche" },
-              ] as const
-            ).map((vue, i) => (
-              <div
-                key={vue.id}
-                className="animate-book-fade-up"
-                style={{ animationDelay: `${200 + i * 80}ms` }}
-              >
-                <BookCoverThumb
-                  livre={livre}
-                  active={vueCouverture === vue.id}
-                  label={vue.label}
-                  onClick={() => setVueCouverture(vue.id)}
-                />
-              </div>
-            ))}
-          </div>
-          <p className="mt-3 text-center text-[0.65rem] text-muted-foreground">
-            Cliquez une miniature pour changer l&apos;angle
-          </p>
-        </div>
+        {/* Hero — style maison d'édition */}
+        <div className="fiche-livre__hero mt-10">
+          <aside className="fiche-livre__covers">
+            <div className="fiche-livre__cover-main">
+              <BookCover livre={livre} className="fiche-livre__cover-flat" />
+            </div>
+            <div className="fiche-livre__cover-alt">
+              <BookCover livre={livre} className="fiche-livre__cover-flat fiche-livre__cover-flat--small" />
+            </div>
+          </aside>
 
-        <div className="animate-book-fade-up" style={{ animationDelay: "180ms" }}>
-          <p className="kicker">{livre.categorie}</p>
-          <h1 className="mt-3 text-4xl leading-tight md:text-5xl">{livre.titre}</h1>
-          {livre.sousTitre && (
-            <p className="mt-2 text-lg text-muted-foreground">{livre.sousTitre}</p>
-          )}
-          {auteur && (
-            <Link
-              to="/auteurs/$slug"
-              params={{ slug: auteur.slug }}
-              className="mt-4 inline-block text-sm text-accent hover:underline"
-            >
-              par {auteur.nom}
-            </Link>
-          )}
-
-          <p className="mt-6 max-w-2xl leading-relaxed">{livre.resume}</p>
-
-          <div className="mt-8 flex items-end gap-4">
-            <p className="font-display text-3xl">{(livre.promo ?? livre.prix).toFixed(2)} $</p>
-            {livre.promo && (
-              <p className="pb-1 text-muted-foreground line-through">{livre.prix.toFixed(2)} $</p>
+          <div className="fiche-livre__buybox">
+            {(estNouveaute || livre.promo) && (
+              <span className="fiche-livre__badge">
+                {livre.promo ? "Promotion" : "Nouveauté"}
+              </span>
             )}
-          </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+            <h1 className="fiche-livre__title">{livre.titre}</h1>
+            {livre.sousTitre && <p className="fiche-livre__subtitle">{livre.sousTitre}</p>}
+
+            {auteur && (
+              <h2 className="fiche-livre__author">
+                <Link to="/auteurs/$slug" params={{ slug: auteur.slug }} className="hover:underline">
+                  {auteur.nom}
+                </Link>
+              </h2>
+            )}
+
+            <p className="fiche-livre__meta">
+              <span>{formatDate(livre.publication)}</span>
+              <span aria-hidden> · </span>
+              <span>{livre.categorie}</span>
+            </p>
+
             {dejaAchete ? (
-              <div className="w-full rounded-sm border border-accent/40 bg-accent/5 px-4 py-3 text-sm">
-                <p className="font-medium text-accent">Vous avez déjà acheté ce livre.</p>
-                <p className="mt-1 text-muted-foreground">
-                  Retrouvez-le dans votre bibliothèque pour le lire ou le télécharger.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
+              <div className="fiche-livre__owned mt-8">
+                <p className="font-medium">Vous possédez déjà cet ouvrage.</p>
+                <div className="mt-4 flex flex-wrap gap-3">
                   <Link
                     to="/reader/$slug"
                     params={{ slug: livre.slug }}
-                    className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
+                    className="fiche-livre__btn fiche-livre__btn--primary"
                   >
                     <BookOpen className="size-4" />
                     Lire maintenant
                   </Link>
-                  <Link
-                    to="/bibliotheque"
-                    className="inline-flex items-center rounded-sm border border-border px-4 py-2 text-sm"
-                  >
+                  <Link to="/bibliotheque" className="fiche-livre__btn fiche-livre__btn--outline">
                     Ma bibliothèque
                   </Link>
                 </div>
               </div>
             ) : accesSansAchat ? (
-              <div className="w-full rounded-sm border border-border bg-card px-4 py-3 text-sm">
+              <div className="fiche-livre__owned mt-8">
                 <p className="font-medium">Accès complet via votre abonnement Premium.</p>
                 <Link
                   to="/reader/$slug"
                   params={{ slug: livre.slug }}
-                  className="mt-3 inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-sm font-medium text-accent-foreground"
+                  className="fiche-livre__btn fiche-livre__btn--primary mt-4"
                 >
                   <BookOpen className="size-4" />
                   Lire maintenant
                 </Link>
               </div>
             ) : (
-              <>
-                <button
-                  type="button"
-                  disabled={ajoutEnCours || !livre.disponible || accesComplet}
-                  onClick={() => void ajouterAuPanier()}
-                  className="inline-flex items-center gap-2 rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
-                >
-                  {ajoute ? <Check className="size-4" /> : <ShoppingCart className="size-4" />}
-                  {ajoute ? "Ajouté" : "Ajouter au panier"}
-                </button>
+              <div className="fiche-livre__achat mt-8">
+                <p className="fiche-livre__format-label">Commander selon votre format</p>
+
+                <div className="fiche-livre__format-row">
+                  {ORDRE_FORMATS.map((f) => {
+                    const Icone = ICONES_FORMAT[f];
+                    const contenu = (
+                      <>
+                        <span className="fiche-livre__format-btn-label">
+                          <Icone className="size-5 shrink-0" strokeWidth={1.75} />
+                          {LABELS_ACHAT[f]}
+                        </span>
+                        <span className="fiche-livre__format-btn-price">{prixAfficheFiche(prix)}</span>
+                      </>
+                    );
+
+                    if (!livre.disponible) {
+                      return (
+                        <div
+                          key={f}
+                          className="fiche-livre__format-btn is-disabled"
+                          title="Ouvrage indisponible"
+                        >
+                          {contenu}
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <Link
+                        key={f}
+                        to="/achat/$slug"
+                        params={{ slug: livre.slug }}
+                        search={{ format: f }}
+                        className={`fiche-livre__format-btn ${f === "papier" ? "is-active" : ""}`}
+                      >
+                        {contenu}
+                      </Link>
+                    );
+                  })}
+                </div>
+
                 <Link
-                  to="/achat/$slug"
+                  to="/reader/$slug"
                   params={{ slug: livre.slug }}
-                  className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 text-sm font-medium"
+                  className="fiche-livre__feuilleter"
                 >
-                  Acheter maintenant
+                  <Eye className="size-4" strokeWidth={1.75} />
+                  Feuilleter
                 </Link>
-              </>
-            )}
-            {!dejaAchete && !accesSansAchat && (
-            <Link
-              to="/reader/$slug"
-              params={{ slug: livre.slug }}
-              className="inline-flex items-center gap-2 rounded-sm border border-border px-5 py-3 text-sm font-medium"
-            >
-              <BookOpen className="size-4" />
-              {accesComplet ? "Lire maintenant" : "Lire l'extrait gratuit"}
-            </Link>
-            )}
-            <button
-              onClick={() => setFavori((v) => !v)}
-              className="inline-flex items-center gap-2 rounded-sm border border-border px-4 py-3 text-sm"
-            >
-              <Heart className={`size-4 ${favori ? "fill-accent text-accent" : ""}`} />
-              {favori ? "Favori" : "Ajouter aux favoris"}
-            </button>
-          </div>
-
-          <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-            {dejaAchete ? (
-              <>
-                <Download className="size-3" />
-                Téléchargement PDF/EPUB disponible depuis votre bibliothèque.
-              </>
-            ) : (
-              <>
-                <Download className="size-3" /> Téléchargement PDF/EPUB inclus après achat · Paiement
-                Mobile Money ou carte bancaire.
-              </>
-            )}
-          </p>
-
-          {/* Aperçu gratuit */}
-          <div className="mt-10 rounded-sm border border-border bg-card p-5">
-            <p className="kicker">{accesComplet ? "Votre ouvrage" : "Aperçu gratuit"}</p>
-            <p className="mt-2 text-sm">
-              {accesComplet
-                ? "Vous avez accès à l'intégralité de cet ouvrage dans votre bibliothèque."
-                : `${livre.apercuPages} pages accessibles librement, soit ${livre.apercuPourcent} % de l'ouvrage.`}
-            </p>
-            <ul className="mt-4 space-y-2 text-sm">
-              {livre.chapitres.map((c: { titre: string; gratuit: boolean }) => {
-                const libre = accesComplet || c.gratuit;
-                return (
-                <li key={c.titre} className="flex items-center justify-between gap-4">
-                  <span className={libre ? "" : "text-muted-foreground"}>{c.titre}</span>
-                  <span
-                    className={`shrink-0 rounded-full px-2 py-0.5 text-[0.65rem] ${
-                      libre
-                        ? "bg-accent/15 text-accent"
-                        : "bg-secondary text-muted-foreground"
-                    }`}
-                  >
-                    {libre ? (accesComplet ? "Inclus" : "Gratuit") : "Verrouillé"}
-                  </span>
-                </li>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Fiche technique */}
-          <dl className="mt-10 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {fiche.map(([k, v]) => (
-              <div key={k} className="flex justify-between border-b border-border pb-2 text-sm">
-                <dt className="text-muted-foreground">{k}</dt>
-                <dd className="text-right">{v}</dd>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Onglets Descriptif / Détails / Avis */}
+        <div className="fiche-livre__tabs mt-16">
+          {(
+            [
+              ["descriptif", "Descriptif"],
+              ["details", "Détails"],
+              ["avis", "Avis"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setOnglet(id)}
+              className={`fiche-livre__tab ${onglet === id ? "is-active" : ""}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <div className="fiche-livre__tab-panel">
+          {onglet === "descriptif" && (
+            <div className="fiche-livre__descriptif">
+              <span className="fiche-livre__langue">{livre.langue.slice(0, 4).toUpperCase()}</span>
+              <div className="prose-book mt-6 space-y-4 text-[0.95rem] leading-relaxed text-foreground/90">
+                {livre.resume.split(/\n\n+/).map((para, i) => (
+                  <p key={i}>{para.trim()}</p>
+                ))}
+              </div>
+              {!accesComplet && (
+                <div className="mt-10 rounded-sm border border-border bg-secondary/30 p-5">
+                  <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Aperçu gratuit
+                  </p>
+                  <p className="mt-2 text-sm">
+                    {livre.apercuPages} pages accessibles via « Feuilleter », soit {livre.apercuPourcent} % de
+                    l&apos;ouvrage.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {onglet === "details" && (
+            <dl className="fiche-livre__details">
+              {fiche.map(([k, v]) => (
+                <div key={k} className="fiche-livre__detail-row">
+                  <dt>{k}</dt>
+                  <dd>{v}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          {onglet === "avis" && (
+            <div className="py-8 text-center text-sm text-muted-foreground">
+              <p>Aucun avis lecteur pour le moment.</p>
+              <p className="mt-2">Soyez le premier à partager votre opinion après lecture.</p>
+            </div>
+          )}
+        </div>
+
+        {/* Découvrir plus — comme Calmann-Lévy */}
+        <section className="fiche-livre__discover mt-20 border-t border-border pt-14">
+          <h2 className="fiche-livre__discover-title">Découvrir plus de livres</h2>
+          <div className="fiche-livre__discover-tabs mt-6">
+            {(
+              [
+                ["auteur", "Du même auteur"],
+                ["categorie", "Du même thème"],
+                ["selection", "Sélection"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setOngletDecouvrir(id)}
+                className={`fiche-livre__discover-tab ${ongletDecouvrir === id ? "is-active" : ""}`}
+              >
+                {label}
+              </button>
             ))}
-          </dl>
+          </div>
+          {livresDecouvrir.length > 0 ? (
+            <div className="mt-8 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-4">
+              {livresDecouvrir.slice(0, 4).map((l, i) => (
+                <BookCard key={l.slug} livre={l} index={i} showPrix />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-8 text-sm text-muted-foreground">
+              Aucune suggestion dans cette rubrique pour le moment.
+            </p>
+          )}
+        </section>
+
+        {/* Partage */}
+        <div className="fiche-livre__share mt-14 flex flex-wrap items-center gap-4 border-t border-border pt-8">
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">Partager</span>
+          <button
+            type="button"
+            onClick={() => void copierLien()}
+            className="fiche-livre__share-btn"
+          >
+            <Copy className="size-3.5" />
+            {lienCopie ? "Lien copié" : "Copier le lien"}
+          </button>
         </div>
       </div>
-
-      {memeAuteur.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-2xl">Du même auteur</h2>
-          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {memeAuteur.map((l, i) => (
-              <BookCard key={l.slug} livre={l} index={i} showAuteur={false} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

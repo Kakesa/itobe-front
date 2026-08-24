@@ -1,12 +1,28 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { z } from "zod";
 import { BookCover } from "@/components/book-cover";
 import { useSession } from "@/hooks/use-session";
 import { CommandesApi, getToken } from "@/lib/api-client";
 import { fetchLivreBySlug, getLivre, nomAuteur, prixAffiche, type Livre } from "@/lib/data";
 import { notifierBibliothequeMiseAJour } from "@/hooks/use-a-des-achats";
+import type { FormatLivre } from "@/lib/panier/types";
+
+const searchSchema = z.object({
+  format: z.enum(["numerique", "papier"]).optional(),
+});
+
+const LABELS_FORMAT_ACHAT: Record<"numerique" | "papier", string> = {
+  numerique: "Numérique (EPUB + PDF)",
+  papier: "Papier",
+};
+
+function formatAchatDepuisSearch(format?: "numerique" | "papier"): FormatLivre {
+  return format === "papier" ? "Papier" : "EPUB + PDF";
+}
 
 export const Route = createFileRoute("/achat/$slug")({
+  validateSearch: searchSchema,
   head: () => ({
     meta: [
       { title: "Paiement sécurisé — Mobile Money ou carte | Itobe" },
@@ -29,6 +45,7 @@ type Etape = "moyen" | "details" | "traitement" | "confirme";
 
 function Achat() {
   const { slug } = Route.useParams();
+  const { format: formatAchat } = Route.useSearch();
   const navigate = useNavigate();
   const { connecte } = useSession();
   const [livre, setLivre] = useState<Livre | null>(() => getLivre(slug) ?? null);
@@ -40,6 +57,8 @@ function Achat() {
   const [compte, setCompte] = useState(5);
   const [reference, setReference] = useState("");
   const [erreur, setErreur] = useState("");
+  const formatCommande = formatAchatDepuisSearch(formatAchat);
+  const libelleFormat = LABELS_FORMAT_ACHAT[formatAchat ?? "numerique"];
 
   useEffect(() => {
     if (livre) return;
@@ -59,9 +78,9 @@ function Achat() {
     if (connecte || !livre) return;
     void navigate({
       to: "/connexion",
-      search: { redirect: `/achat/${slug}` },
+      search: { redirect: `/achat/${slug}${formatAchat ? `?format=${formatAchat}` : ""}` },
     });
-  }, [connecte, livre, navigate, slug]);
+  }, [connecte, livre, navigate, slug, formatAchat]);
 
   useEffect(() => {
     if (etape !== "traitement") return;
@@ -78,7 +97,7 @@ function Achat() {
         const res = await CommandesApi.create({
           livreSlugOrId: livre.slug,
           moyen: moyen === "mobile" ? "Mobile Money" : "Carte bancaire",
-          format: "EPUB + PDF",
+          format: formatCommande,
           operateur: moyen === "mobile" ? operateur : "Visa",
           ...(moyen === "mobile" && telephone ? { telephone } : {}),
         });
@@ -99,7 +118,7 @@ function Achat() {
     return () => {
       annule = true;
     };
-  }, [etape, livre, moyen, operateur, telephone]);
+  }, [etape, livre, moyen, operateur, telephone, formatCommande]);
 
   useEffect(() => {
     if (etape !== "confirme") return;
@@ -319,7 +338,7 @@ function Achat() {
             <div>
               <p className="font-display leading-snug">{livre.titre}</p>
               <p className="text-xs text-muted-foreground">{nomAuteur(livre.auteur)}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{livre.formats.join(" · ")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{libelleFormat}</p>
             </div>
           </div>
           <dl className="mt-6 space-y-2 text-sm">
