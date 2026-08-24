@@ -215,15 +215,20 @@ function Catalogue() {
       </section>
 
       <div id="catalogue" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14">
-        <p className="kicker animate-book-fade-up">Maison d&apos;édition</p>
-        <h2 className="mt-3 text-3xl md:text-4xl animate-book-fade-up" style={{ animationDelay: "80ms" }}>
-          Catalogue
-        </h2>
-        <p className="mt-4 max-w-xl text-muted-foreground">
-          {loading
-            ? "Chargement du catalogue…"
-            : `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`}
-        </p>
+        <div className="text-center md:text-left">
+          <p className="kicker animate-book-fade-up">Maison d&apos;édition</p>
+          <h2
+            className="mt-3 text-3xl md:text-4xl animate-book-fade-up"
+            style={{ animationDelay: "80ms" }}
+          >
+            Catalogue
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-muted-foreground md:mx-0">
+            {loading
+              ? "Chargement du catalogue…"
+              : `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`}
+          </p>
+        </div>
 
         {promos.length > 0 && (
           <div className="mt-8 border border-accent/40 bg-accent/10 p-4 text-sm">
