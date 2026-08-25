@@ -108,7 +108,7 @@ export function SiteFooter() {
 
           {/* Newsletter */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-display text-lg text-white">Lettre d&apos;Information</p>
+            <p className="font-display text-lg text-white">Newsletter</p>
             <p className="mt-3 text-sm leading-relaxed text-white/70">
               Inscrivez-vous pour recevoir nos publications hebdomadaires et lancements de livres.
             </p>
