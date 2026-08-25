@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Menu, Search, ShoppingCart, X } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
-import { usePanierCount } from "@/hooks/use-panier";
 import { useSession } from "@/hooks/use-session";
 
 type Lien = { to: string; label: string; exact?: boolean };
@@ -111,33 +110,26 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
+      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
-        <Link
-          to="/"
-          aria-label="Retour aux portails Itobe"
-          className="grid size-9 shrink-0 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
+        <Link to={home} className="site-header__brand shrink-0">
+          <span className="flex items-center gap-2.5">
+            <span className="site-header__logo-mark" aria-hidden>
+              I
+            </span>
+            <span className="site-header__logo-text">ITOBE</span>
+          </span>
+          <span className="site-header__tagline">{titre}</span>
         </Link>
 
-        <Link to={home} className="shrink-0">
-          <span className="block font-display text-lg leading-none tracking-tight md:text-xl">
-            Itobe<span className="text-accent">.</span>
-          </span>
-          <span className="mt-0.5 block text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground">
-            {titre}
-          </span>
-        </Link>
-
-        <nav className="hidden flex-1 items-center justify-center gap-5 lg:flex">
+        <nav className="site-header__nav hidden flex-1 items-center justify-center gap-5 lg:flex">
           {liens.map((l) => (
             <Link
               key={l.to + l.label}
               to={l.to}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-              activeProps={{ className: "text-foreground font-medium" }}
+              className="site-header__link"
+              activeProps={{ className: "site-header__link is-active" }}
               activeOptions={{ exact: Boolean(l.exact) }}
             >
               {l.label}
@@ -180,14 +172,14 @@ export function SiteHeader() {
       </div>
 
       {ouvert && (
-        <nav className="border-t border-border bg-card px-4 py-3 lg:hidden">
+        <nav className="site-header__nav site-header__nav--mobile border-t border-border bg-card px-4 py-3 lg:hidden">
           {liens.map((l) => (
             <Link
               key={l.to + l.label}
               to={l.to}
               onClick={() => setOuvert(false)}
-              className="block py-2 text-sm text-muted-foreground"
-              activeProps={{ className: "text-foreground font-medium" }}
+              className="site-header__link block py-2"
+              activeProps={{ className: "site-header__link is-active block py-2" }}
               activeOptions={{ exact: Boolean(l.exact) }}
             >
               {l.label}
