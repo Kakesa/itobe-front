@@ -252,8 +252,11 @@ export const NewsletterApi = {
 export const BibliothequeApi = {
   getLibrary: () => api.get("/bibliotheque"),
   toggleFavori: (slug: string) => api.post(`/bibliotheque/favoris/${slug}`),
+  registerDownload: (slug: string) => api.post(`/bibliotheque/telechargements/${slug}`),
   updateProgress: (data: { slug: string; page?: number; pourcentage?: number }) =>
     api.put("/bibliotheque/progression", data),
+  manageBookmark: (data: { slug: string; page: number; note?: string }) =>
+    api.post("/bibliotheque/marque-pages", data),
   checkAccess: (slug: string) => api.get(`/bibliotheque/acces/${slug}`),
 };
 

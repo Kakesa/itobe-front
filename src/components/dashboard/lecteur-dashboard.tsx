@@ -4,10 +4,17 @@ import { Bookmark, Clock, Download, Heart } from "lucide-react";
 import { lecteurDashboardQuery } from "@/lib/dashboard/queries";
 import type { DashboardLecteurPayload } from "@/lib/dashboard/types";
 import { KpiCard, SectionCard, SkeletonBlock } from "@/components/dashboard/ui";
+import { useRole } from "@/hooks/use-role";
+import { AccesRestreint } from "@/components/admin-ui";
 
 /** Dashboard lecteur — contenu principal de `/admin` pour le rôle lecteur. */
 export function LecteurDashboard() {
+  const { role } = useRole();
   const { data, isLoading } = useQuery(lecteurDashboardQuery());
+
+  if (role !== "lecteur") {
+    return <AccesRestreint requis={["lecteur"]} />;
+  }
 
   if (isLoading || !data) {
     return (
@@ -50,8 +57,16 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
       </div>
 
       <SectionCard titre="Continuer la lecture">
-        <div className="grid gap-4 sm:grid-cols-2">
-          {data.continuer.map((l) => (
+        {data.continuer.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Aucune lecture en cours.{" "}
+            <Link to="/edition" className="text-accent hover:underline">
+              Découvrir le catalogue
+            </Link>
+          </p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {data.continuer.map((l) => (
             <Link
               key={l.slug}
               to="/reader/$slug"
@@ -75,8 +90,9 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
                 </div>
               </div>
             </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </SectionCard>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -88,16 +104,20 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="space-y-2">
-            {data.bibliotheque.map((l) => (
+          {data.bibliotheque.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun livre acheté pour le moment.</p>
+          ) : (
+            <ul className="space-y-2">
+              {data.bibliotheque.map((l) => (
               <li key={l.slug} className="flex items-center gap-3 text-sm">
                 <div className="size-8 rounded" style={{ backgroundImage: l.couleur }} />
                 <Link to="/edition/$slug" params={{ slug: l.slug }} className="hover:text-accent">
                   {l.titre}
                 </Link>
               </li>
-            ))}
-          </ul>
+              ))}
+            </ul>
+          )}
         </SectionCard>
 
         <SectionCard
@@ -108,16 +128,20 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="space-y-2">
-            {data.favoris.map((l) => (
+          {data.favoris.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun favori enregistré.</p>
+          ) : (
+            <ul className="space-y-2">
+              {data.favoris.map((l) => (
               <li key={l.slug} className="flex items-center gap-3 text-sm">
                 <Heart className="size-3.5 text-accent" />
                 <Link to="/edition/$slug" params={{ slug: l.slug }} className="hover:text-accent">
                   {l.titre}
                 </Link>
               </li>
-            ))}
-          </ul>
+              ))}
+            </ul>
+          )}
         </SectionCard>
       </div>
 
@@ -130,14 +154,18 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="divide-y divide-border text-sm">
-            {data.derniersAchats.map((a) => (
-              <li key={a.slug} className="flex justify-between py-2">
-                <span>{a.titre}</span>
-                <span className="text-xs text-muted-foreground">{a.date}</span>
-              </li>
-            ))}
-          </ul>
+          {data.derniersAchats.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun achat récent.</p>
+          ) : (
+            <ul className="divide-y divide-border text-sm">
+              {data.derniersAchats.map((a) => (
+                <li key={a.slug} className="flex justify-between py-2">
+                  <span>{a.titre}</span>
+                  <span className="text-xs text-muted-foreground">{a.date}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </SectionCard>
 
         <SectionCard
@@ -148,15 +176,19 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="divide-y divide-border text-sm">
-            {data.historique.map((h) => (
-              <li key={h.slug} className="flex items-center gap-2 py-2">
-                <Clock className="size-3.5 text-muted-foreground" />
-                <span className="flex-1">{h.titre}</span>
-                <span className="text-xs text-muted-foreground">{h.date}</span>
-              </li>
-            ))}
-          </ul>
+          {data.historique.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucune lecture récente.</p>
+          ) : (
+            <ul className="divide-y divide-border text-sm">
+              {data.historique.map((h) => (
+                <li key={h.slug + h.date} className="flex items-center gap-2 py-2">
+                  <Clock className="size-3.5 text-muted-foreground" />
+                  <span className="flex-1">{h.titre}</span>
+                  <span className="text-xs text-muted-foreground">{h.date}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </SectionCard>
       </div>
 
@@ -199,14 +231,18 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="space-y-2 text-sm">
-            {data.telechargements.map((t) => (
-              <li key={t.slug} className="flex items-center gap-2">
-                <Download className="size-3.5 text-muted-foreground" />
-                {t.titre}
-              </li>
-            ))}
-          </ul>
+          {data.telechargements.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun téléchargement.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {data.telechargements.map((t) => (
+                <li key={t.slug} className="flex items-center gap-2">
+                  <Download className="size-3.5 text-muted-foreground" />
+                  {t.titre}
+                </li>
+              ))}
+            </ul>
+          )}
         </SectionCard>
 
         <SectionCard
@@ -217,21 +253,25 @@ function DashboardVue({ data }: { data: DashboardLecteurPayload }) {
             </Link>
           }
         >
-          <ul className="space-y-2 text-sm">
-            {data.marquePages.map((m) => (
-              <li key={m.slug + m.page} className="flex items-center gap-2">
-                <Bookmark className="size-3.5 text-accent" />
-                <Link
-                  to="/reader/$slug"
-                  params={{ slug: m.slug }}
-                  className="flex-1 hover:text-accent"
-                >
-                  {m.titre}
-                </Link>
-                <span className="text-xs text-muted-foreground">p. {m.page}</span>
-              </li>
-            ))}
-          </ul>
+          {data.marquePages.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Aucun marque-page.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {data.marquePages.map((m) => (
+                <li key={m.slug + m.page} className="flex items-center gap-2">
+                  <Bookmark className="size-3.5 text-accent" />
+                  <Link
+                    to="/reader/$slug"
+                    params={{ slug: m.slug }}
+                    className="flex-1 hover:text-accent"
+                  >
+                    {m.titre}
+                  </Link>
+                  <span className="text-xs text-muted-foreground">p. {m.page}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </SectionCard>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { BibliothequeApi, getToken } from "@/lib/api-client";
+import { dashboardKeys } from "@/lib/dashboard/queries";
 import { useSession } from "@/hooks/use-session";
 
 export const ACHATS_QUERY_KEY = ["bibliotheque-a-des-achats"] as const;
@@ -27,7 +28,10 @@ export function useADesAchats() {
 
   useEffect(() => {
     const sync = () => {
-      if (apiActif) void queryClient.invalidateQueries({ queryKey: ACHATS_QUERY_KEY });
+      if (apiActif) {
+        void queryClient.invalidateQueries({ queryKey: ACHATS_QUERY_KEY });
+        void queryClient.invalidateQueries({ queryKey: dashboardKeys.lecteur() });
+      }
     };
     window.addEventListener("itobe-session", sync);
     window.addEventListener("itobe-bibliotheque", sync);

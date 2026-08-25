@@ -68,8 +68,8 @@ export function authentifier(email: string, password: string): SessionUtilisateu
 export async function authentifierApi(email: string, password: string): Promise<SessionUtilisateur | null> {
   try {
     const data = await AuthApi.login({ email, password });
-    if (data?.user) {
-      const user = data.user;
+    const user = data?.user ?? data?.data?.user;
+    if (user) {
       const session: SessionUtilisateur = {
         id: user._id || user.id,
         email: user.email,
@@ -85,7 +85,7 @@ export async function authentifierApi(email: string, password: string): Promise<
     console.warn("[Auth API] Échec de connexion API, essai du fallback local :", error);
   }
 
-  // Fallback local
+  // Fallback local (sans token API — favoris/achats indisponibles)
   const sessionLocale = authentifier(email, password);
   if (sessionLocale) {
     sauvegarderSession(sessionLocale);

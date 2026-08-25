@@ -27,5 +27,6 @@ export const lecteurDashboardQuery = () =>
   queryOptions({
     queryKey: dashboardKeys.lecteur(),
     queryFn: () => DashboardService.getLecteurDashboard(),
-    staleTime: 60_000,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
   });

@@ -128,14 +128,26 @@ export function useAdminData() {
 /** Accès CRUD à une collection. */
 export function useCollection(nom: NomCollection) {
   const { data, creer, modifier, supprimer, definir } = useAdminData();
+
+  const creerItem = useCallback(
+    (v: Omit<Item, "id"> & { id?: string }) => creer(nom, v),
+    [creer, nom],
+  );
+  const modifierItem = useCallback(
+    (id: string, v: Partial<Item>) => modifier(nom, id, v),
+    [modifier, nom],
+  );
+  const supprimerItem = useCallback((id: string) => supprimer(nom, id), [supprimer, nom]);
+  const definirItems = useCallback((items: Item[]) => definir(nom, items), [definir, nom]);
+
   return useMemo(
     () => ({
       items: data[nom],
-      creer: (v: Omit<Item, "id"> & { id?: string }) => creer(nom, v),
-      modifier: (id: string, v: Partial<Item>) => modifier(nom, id, v),
-      supprimer: (id: string) => supprimer(nom, id),
-      definir: (items: Item[]) => definir(nom, items),
+      creer: creerItem,
+      modifier: modifierItem,
+      supprimer: supprimerItem,
+      definir: definirItems,
     }),
-    [data, nom, creer, modifier, supprimer, definir],
+    [data, nom, creerItem, modifierItem, supprimerItem, definirItems],
   );
 }

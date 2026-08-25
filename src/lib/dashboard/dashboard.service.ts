@@ -1,20 +1,18 @@
 /**
- * DashboardService — couche métier mock (front).
- * Remplaçable plus tard par des appels API (DashboardController).
+ * DashboardService — couche métier (admin mock, lecteur via API).
  */
 import {
   articles,
   auteurs,
   categoriesLivres,
   categoriesMedia,
-  getLivre,
   livres,
   nomAuteur,
   serieMensuelle,
 } from "@/lib/data";
 import { commandes } from "@/lib/admin-data";
 import { lireSession } from "@/lib/auth";
-import { BibliothequeApi } from "@/lib/api-client";
+import { BibliothequeApi, CommandesApi, LivresApi, getToken } from "@/lib/api-client";
 import type {
   ActiviteItem,
   AlerteItem,
@@ -29,6 +27,32 @@ import type {
 } from "./types";
 
 const delay = (ms = 280) => new Promise((r) => setTimeout(r, ms));
+
+const COULEUR_DEFAUT =
+  "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))";
+
+function formaterDate(v: string | Date | undefined): string {
+  if (!v) return "Récemment";
+  const d = typeof v === "string" ? new Date(v) : v;
+  if (Number.isNaN(d.getTime())) return "Récemment";
+  return d.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+}
+
+function formaterCommande(c: any) {
+  const livre = c.livre;
+  return {
+    id: c.reference || c._id || "",
+    slug: livre?.slug || "",
+    titre: c.livreTitre || livre?.titre || "Livre",
+    format: c.format || "EPUB + PDF",
+    moyen: c.moyen || "Mobile Money",
+    reference: c.reference || "",
+    montant: c.montant ?? 0,
+    statut: c.statut || "En attente",
+    date: formaterDate(c.date),
+    motif: c.motif,
+  };
+}
 
 function enrichirLivres(): LivreDashboard[] {
   return livres.map((l, i) => {
@@ -191,6 +215,36 @@ function alertes(livresD: LivreDashboard[]): AlerteItem[] {
   return items;
 }
 
+async function chargerCatalogueApi() {
+  try {
+    const liste = await LivresApi.fetchAll();
+    return liste.map((l: any) => ({
+      slug: l.slug || "",
+      titre: l.titre || "",
+      couleur: l.couleur || COULEUR_DEFAUT,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+function payloadLecteurVide(prenom: string, catalogue: { slug: string; titre: string; couleur: string }[]): DashboardLecteurPayload {
+  return {
+    prenom,
+    continuer: [],
+    bibliotheque: [],
+    favoris: [],
+    derniersAchats: [],
+    historique: [],
+    recommandations: catalogue.slice(0, 3),
+    nouveautes: catalogue.slice(0, 3),
+    tempsLectureTotal: "0 min",
+    telechargements: [],
+    marquePages: [],
+    commandes: [],
+  };
+}
+
 export const DashboardService = {
   async getAdminDashboard(periode: PeriodeFiltre = "annee"): Promise<DashboardAdminPayload> {
     await delay();
@@ -263,84 +317,100 @@ export const DashboardService = {
   async getLecteurDashboard(): Promise<DashboardLecteurPayload> {
     const session = lireSession();
     const prenom = session?.prenom || session?.nom || "Lecteur";
+    const catalogueDispo = await chargerCatalogueApi();
 
-    // 1. Tenter de récupérer la bibliothèque réelle de l'utilisateur connecté via l'API
-    try {
-      const res = await BibliothequeApi.getLibrary();
-      if (res?.data) {
-        const biblio = res.data;
-        const mapApiLivre = (l: any) => ({
-          slug: l.slug || "",
-          titre: l.titre || "",
-          couleur: l.couleur || "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
-        });
-
-        const achetes = (biblio.achetes || []).map(mapApiLivre);
-        const favoris = (biblio.favoris || []).map(mapApiLivre);
-        const telecharges = (biblio.telecharges || []).map((t: any) => ({
-          slug: t.slug || "",
-          titre: t.titre || "",
-        }));
-
-        const continuer = (biblio.enCours || []).map((ec: any) => ({
-          slug: ec.slug || "",
-          titre: ec.titre || "",
-          progression: ec.pourcentage || 0,
-          couleur: ec.couleur || "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
-        }));
-
-        const achetesSlugs = new Set(achetes.map((a: any) => a.slug));
-        const catalogueDispo = livres.map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur }));
-
-        return {
-          prenom,
-          continuer,
-          bibliotheque: achetes,
-          favoris,
-          derniersAchats: achetes.map((a: any) => ({
-            slug: a.slug,
-            titre: a.titre,
-            date: "Récemment",
-          })),
-          historique: continuer.map((c: any) => ({
-            slug: c.slug,
-            titre: c.titre,
-            date: "Récemment",
-          })),
-          recommandations: catalogueDispo.filter((l) => !achetesSlugs.has(l.slug)).slice(0, 3),
-          nouveautes: catalogueDispo.slice(0, 3),
-          tempsLectureTotal: continuer.length > 0 ? `${continuer.length * 45} min` : "0 min",
-          telechargements: telecharges,
-          marquePages: (biblio.marquePages || []).map((m: any) => ({
-            slug: m.livre?.slug || "",
-            titre: m.livre?.titre || "Livre",
-            page: m.page || 1,
-          })),
-        };
-      }
-    } catch (e) {
-      console.warn("[Lecteur Dashboard] Impossible de charger la bibliothèque API :", e);
+    if (!getToken()) {
+      return payloadLecteurVide(prenom, catalogueDispo);
     }
 
-    // 2. Si non connecté ou compte sans données : renvoyer un espace vide et isolé
-    const catalogueDispo = livres.map((l) => ({ slug: l.slug, titre: l.titre, couleur: l.couleur }));
-    return {
-      prenom,
-      continuer: [],
-      bibliotheque: [],
-      favoris: [],
-      derniersAchats: [],
-      historique: [],
-      recommandations: catalogueDispo.slice(0, 3),
-      nouveautes: catalogueDispo.slice(0, 3),
-      tempsLectureTotal: "0 min",
-      telechargements: [],
-      marquePages: [],
-    };
+    try {
+      const [bibRes, cmdRes] = await Promise.all([
+        BibliothequeApi.getLibrary(),
+        CommandesApi.getMine().catch(() => null),
+      ]);
+
+      const biblio = bibRes?.data ?? bibRes;
+      if (!biblio) {
+        return payloadLecteurVide(prenom, catalogueDispo);
+      }
+
+      const mapLivre = (l: any) => ({
+        slug: l?.slug || "",
+        titre: l?.titre || "",
+        couleur: l?.couleur || COULEUR_DEFAUT,
+      });
+
+      const bibliotheque = (biblio.achetes || []).map(mapLivre).filter((l: any) => l.slug);
+      const favoris = (biblio.favoris || []).map(mapLivre).filter((l: any) => l.slug);
+      const telechargements = (biblio.telecharges || []).map((t: any) => ({
+        slug: t?.slug || "",
+        titre: t?.titre || "",
+      })).filter((t: any) => t.slug);
+
+      const continuer = (biblio.enCours || []).map((ec: any) => ({
+        slug: ec.slug || "",
+        titre: ec.titre || "",
+        progression: ec.pourcentage || 0,
+        couleur: ec.couleur || COULEUR_DEFAUT,
+      })).filter((c: any) => c.slug);
+
+      const historique = (biblio.historiqueLecture || biblio.enCours || []).map((h: any) => ({
+        slug: h.slug || "",
+        titre: h.titre || "",
+        date: formaterDate(h.date),
+      })).filter((h: any) => h.slug);
+
+      const derniersAchats = (biblio.achetes || [])
+        .map((a: any) => ({
+          slug: a.slug || "",
+          titre: a.titre || "",
+          date: formaterDate(a.dateAchat),
+        }))
+        .filter((a: any) => a.slug)
+        .sort((a: any, b: any) => (a.date < b.date ? 1 : -1));
+
+      const marquePages = (biblio.marquePages || [])
+        .map((m: any) => ({
+          slug: m.livre?.slug || "",
+          titre: m.livre?.titre || "Livre",
+          page: m.page || 1,
+        }))
+        .filter((m: any) => m.slug);
+
+      const commandesUtilisateur = Array.isArray(cmdRes?.data)
+        ? cmdRes.data.map(formaterCommande)
+        : Array.isArray(cmdRes)
+          ? cmdRes.map(formaterCommande)
+          : [];
+
+      const achetesSlugs = new Set(bibliotheque.map((a: any) => a.slug));
+      const minutesEstimes = continuer.reduce((s: number, c: any) => s + Math.round(c.progression * 0.45), 0);
+
+      return {
+        prenom,
+        continuer,
+        bibliotheque,
+        favoris,
+        derniersAchats: derniersAchats.length > 0 ? derniersAchats : commandesUtilisateur.slice(0, 5).map((c) => ({
+          slug: c.slug,
+          titre: c.titre,
+          date: c.date,
+        })),
+        historique,
+        recommandations: catalogueDispo.filter((l) => !achetesSlugs.has(l.slug)).slice(0, 3),
+        nouveautes: catalogueDispo.slice(0, 3),
+        tempsLectureTotal: minutesEstimes > 0 ? `${minutesEstimes} min` : "0 min",
+        telechargements,
+        marquePages,
+        commandes: commandesUtilisateur,
+      };
+    } catch (e) {
+      console.warn("[Lecteur Dashboard] Impossible de charger la bibliothèque API :", e);
+      return payloadLecteurVide(prenom, catalogueDispo);
+    }
   },
 };
 
-// Réexport pour analytics spécialisés (architecture évolutive)
 export const AnalyticsService = {
   getSeries: (periode: PeriodeFiltre) => seriesPourPeriode(periode),
   getCategories: () => categoriesLivres,

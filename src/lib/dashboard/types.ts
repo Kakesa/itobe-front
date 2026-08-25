@@ -165,4 +165,16 @@ export type DashboardLecteurPayload = {
   tempsLectureTotal: string;
   telechargements: { slug: string; titre: string }[];
   marquePages: { slug: string; titre: string; page: number }[];
+  commandes: {
+    id: string;
+    slug: string;
+    titre: string;
+    format: string;
+    moyen: string;
+    reference: string;
+    montant: number;
+    statut: string;
+    date: string;
+    motif?: string;
+  }[];
 };

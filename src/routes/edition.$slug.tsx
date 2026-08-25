@@ -1,9 +1,10 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { BookOpen, ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Download, Heart, Star } from "lucide-react";
 import { BookCard } from "@/components/book-card";
 import { BookCover } from "@/components/book-cover";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
+import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
 import { prixLivreFormat } from "@/lib/livre-prix";
 
@@ -69,13 +70,26 @@ function Etoiles({ note }: { note: number }) {
 
 function LivrePage() {
   const { livre } = Route.useLoaderData();
+  const navigate = useNavigate();
   const auteur = getAuteur(livre.auteur);
   const [onglet, setOnglet] = useState<OngletContenu>("synopsis");
   const [formatChoisi, setFormatChoisi] = useState<FormatAchat>("numerique");
-  const [favori, setFavori] = useState(false);
   const [indexCollection, setIndexCollection] = useState(0);
   const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
+  const { favori, toggleFavori, enregistrerTelechargement, connecte, erreurFavori } =
+    useBibliothequeLivre(livre.slug, livre.pages);
   const accesSansAchat = accesComplet && !dejaAchete;
+
+  const handleFavori = async () => {
+    if (!connecte) {
+      void navigate({
+        to: "/connexion",
+        search: { redirect: `/edition/${livre.slug}` },
+      });
+      return;
+    }
+    await toggleFavori();
+  };
 
   const prixAffiche = prixLivreFormat(livre, formatChoisi);
 
@@ -127,6 +141,27 @@ function LivrePage() {
 
             <Etoiles note={NOTE_MOCK} />
 
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => void handleFavori()}
+                aria-label={favori ? "Retirer des favoris" : "Ajouter aux favoris"}
+                title={favori ? "Retirer des favoris" : "Ajouter aux favoris"}
+                className={`fiche-livre-v2__wishlist ${favori ? "is-active" : ""}`}
+              >
+                <Heart className={`size-4 ${favori ? "fill-current" : ""}`} />
+              </button>
+              <span className="text-sm text-[var(--edition-brown)]/80">
+                {favori ? "Dans vos favoris" : "Ajouter aux favoris"}
+              </span>
+              {!connecte && (
+                <span className="text-xs text-[var(--edition-muted)]">(connexion requise)</span>
+              )}
+              {erreurFavori && (
+                <span className="text-xs text-destructive">{erreurFavori}</span>
+              )}
+            </div>
+
             {dejaAchete ? (
               <div className="fiche-livre-v2__owned">
                 <p className="font-medium">Vous possédez déjà cet ouvrage.</p>
@@ -134,9 +169,17 @@ function LivrePage() {
                   <Link to="/reader/$slug" params={{ slug: livre.slug }} className="fiche-livre-v2__buy">
                     Lire maintenant
                   </Link>
-                  <Link to="/bibliotheque" className="fiche-livre-v2__preview-btn">
+                  <Link to="/admin/ma-bibliotheque" className="fiche-livre-v2__preview-btn">
                     Ma bibliothèque
                   </Link>
+                  <button
+                    type="button"
+                    onClick={() => void enregistrerTelechargement()}
+                    className="fiche-livre-v2__preview-btn inline-flex items-center gap-2"
+                  >
+                    <Download className="size-4" />
+                    Télécharger
+                  </button>
                 </div>
               </div>
             ) : accesSansAchat ? (
@@ -191,14 +234,6 @@ function LivrePage() {
                       <BookOpen className="size-4" />
                       Lire un aperçu
                     </Link>
-                    <button
-                      type="button"
-                      onClick={() => setFavori((v) => !v)}
-                      aria-label={favori ? "Retirer des favoris" : "Ajouter aux favoris"}
-                      className={`fiche-livre-v2__wishlist ${favori ? "is-active" : ""}`}
-                    >
-                      <Heart className={`size-4 ${favori ? "fill-current" : ""}`} />
-                    </button>
                   </div>
                 </div>
               </>

@@ -81,7 +81,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
 
 function AdminLayout() {
   const { role } = useRole();
-  const { aDesAchats } = useADesAchats();
+  useADesAchats();
   const { session, deconnexion } = useSession();
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -96,19 +96,10 @@ function AdminLayout() {
       menuAdmin
         .map((g) => ({
           ...g,
-          items: g.items.filter((i) => {
-            if (!i.roles.includes(role)) return false;
-            if (
-              !aDesAchats &&
-              (i.to === "/admin/ma-bibliotheque" || i.label === "Bibliothèque")
-            ) {
-              return false;
-            }
-            return true;
-          }),
+          items: g.items.filter((i) => i.roles.includes(role)),
         }))
         .filter((g) => g.items.length > 0),
-    [role, aDesAchats],
+    [role],
   );
 
   const espaceLabel =

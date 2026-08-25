@@ -1,5 +1,5 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Bookmark,
   ChevronLeft,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { getLivre, nomAuteur, pageTexte, fetchLivreBySlug } from "@/lib/data";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
+import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 
 export const Route = createFileRoute("/reader/$slug")({
   loader: async ({ params }) => {
@@ -36,33 +37,58 @@ export const Route = createFileRoute("/reader/$slug")({
 
 function Reader() {
   const { slug } = Route.useParams();
+  const navigate = useNavigate();
   const { livre: livreCharge } = Route.useLoaderData();
   const livre = getLivre(slug) ?? livreCharge;
   const cle = `itobe-reader-${livre.slug}`;
 
   const { accesComplet, loading: accesLoading } = useAccesLecture(slug, livre.apercuPages);
+  const {
+    favori,
+    toggleFavori,
+    marques,
+    toggleMarque,
+    pageInitiale,
+    charge: bibCharge,
+    sauverProgression,
+    connecte,
+  } = useBibliothequeLivre(slug, livre.pages);
 
   const [page, setPage] = useState(1);
   const [sombre, setSombre] = useState(false);
   const [taille, setTaille] = useState(18);
   const [sommaire, setSommaire] = useState(false);
   const [recherche, setRecherche] = useState("");
-  const [marques, setMarques] = useState<number[]>([]);
-  const [favori, setFavori] = useState(false);
+  const pageInitAppliquee = useRef(false);
 
-  // Reprise de lecture (démo locale)
+  // Reprise de lecture : API si connecté, sinon cache local (aperçu)
   useEffect(() => {
+    if (pageInitAppliquee.current) return;
+    if (connecte) {
+      if (!bibCharge) return;
+      setPage(pageInitiale);
+      pageInitAppliquee.current = true;
+      return;
+    }
     const sauvegarde = localStorage.getItem(cle);
     if (sauvegarde) {
-      const { page: p, marques: m } = JSON.parse(sauvegarde);
+      const { page: p } = JSON.parse(sauvegarde);
       if (typeof p === "number") setPage(p);
-      if (Array.isArray(m)) setMarques(m);
     }
-  }, [cle]);
+    pageInitAppliquee.current = true;
+  }, [cle, connecte, bibCharge, pageInitiale]);
 
   useEffect(() => {
-    localStorage.setItem(cle, JSON.stringify({ page, marques }));
-  }, [cle, page, marques]);
+    if (connecte) return;
+    localStorage.setItem(cle, JSON.stringify({ page }));
+  }, [cle, page, connecte]);
+
+  // Sauvegarde progression API (debounce)
+  useEffect(() => {
+    if (!connecte || !accesComplet) return;
+    const t = setTimeout(() => void sauverProgression(page), 800);
+    return () => clearTimeout(t);
+  }, [page, connecte, accesComplet, sauverProgression]);
 
   const pagesGratuites = livre.apercuPages;
   const verrouille = !accesLoading && !accesComplet && page > pagesGratuites;
@@ -71,6 +97,14 @@ function Reader() {
   const chapitreCourant = livre.chapitres.find((c) => c.pages.includes(page));
 
   const aller = (p: number) => setPage(Math.min(Math.max(1, p), livre.pages));
+
+  const handleFavori = async () => {
+    if (!connecte) {
+      void navigate({ to: "/connexion", search: { redirect: `/reader/${slug}` } });
+      return;
+    }
+    await toggleFavori();
+  };
 
   return (
     <div className={sombre ? "dark" : ""}>
@@ -101,16 +135,14 @@ function Reader() {
           </div>
 
           <button
-            onClick={() =>
-              setMarques((m) => (m.includes(page) ? m.filter((x) => x !== page) : [...m, page]))
-            }
+            onClick={() => void toggleMarque(page)}
             className="grid size-9 place-items-center rounded-full border border-border"
             aria-label="Marque-page"
           >
             <Bookmark className={`size-4 ${marques.includes(page) ? "fill-accent text-accent" : ""}`} />
           </button>
           <button
-            onClick={() => setFavori((v) => !v)}
+            onClick={() => void handleFavori()}
             className="hidden size-9 place-items-center rounded-full border border-border sm:grid"
             aria-label="Favori"
           >
