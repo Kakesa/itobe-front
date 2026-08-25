@@ -27,7 +27,6 @@ const liensEdition: Lien[] = [
 
 export function SiteHeader() {
   const portail = usePortailActif();
-  const panierCount = usePanierCount();
   const { aDesAchats } = useADesAchats();
   const { connecte, pret, deconnexion } = useSession();
   const navigate = useNavigate();
@@ -138,20 +137,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          {portail === "edition" && (
-            <Link
-              to="/panier"
-              aria-label="Panier"
-              className="relative grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ShoppingCart className="size-4" />
-              {panierCount > 0 && (
-                <span className="absolute -right-1 -top-1 grid min-w-[1.125rem] place-items-center rounded-full bg-accent px-1 text-[0.65rem] font-medium text-accent-foreground">
-                  {panierCount > 99 ? "99+" : panierCount}
-                </span>
-              )}
-            </Link>
-          )}
           <Link
             to="/recherche"
             aria-label="Recherche"
@@ -187,15 +172,6 @@ export function SiteHeader() {
           ))}
           <div className="my-2 border-t border-border" />
           {liensAuthMobile}
-          {portail === "edition" && (
-            <Link
-              to="/panier"
-              onClick={() => setOuvert(false)}
-              className="block py-2 text-sm text-muted-foreground"
-            >
-              Panier{panierCount > 0 ? ` (${panierCount})` : ""}
-            </Link>
-          )}
           <Link
             to={portail === "media" ? "/edition" : "/media"}
             onClick={() => setOuvert(false)}
