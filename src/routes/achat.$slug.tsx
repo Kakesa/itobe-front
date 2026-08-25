@@ -7,6 +7,7 @@ import { CommandesApi, getToken } from "@/lib/api-client";
 import { fetchLivreBySlug, getLivre, nomAuteur, type Livre } from "@/lib/data";
 import { prixLivreFormat } from "@/lib/livre-prix";
 import { notifierBibliothequeMiseAJour } from "@/hooks/use-a-des-achats";
+import { buildAchatRedirect } from "@/lib/redirect-navigation";
 import type { FormatLivre } from "@/lib/panier/types";
 
 const searchSchema = z.object({
@@ -48,7 +49,7 @@ function Achat() {
   const { slug } = Route.useParams();
   const { format: formatAchat } = Route.useSearch();
   const navigate = useNavigate();
-  const { connecte } = useSession();
+  const { connecte, pret } = useSession();
   const [livre, setLivre] = useState<Livre | null>(() => getLivre(slug) ?? null);
   const [chargementLivre, setChargementLivre] = useState(!getLivre(slug));
   const [etape, setEtape] = useState<Etape>("moyen");
@@ -76,12 +77,12 @@ function Achat() {
   }, [slug, livre]);
 
   useEffect(() => {
-    if (connecte || !livre) return;
+    if (!pret || connecte || !livre) return;
     void navigate({
       to: "/connexion",
-      search: { redirect: `/achat/${slug}${formatAchat ? `?format=${formatAchat}` : ""}` },
+      search: { redirect: buildAchatRedirect(slug, formatAchat) },
     });
-  }, [connecte, livre, navigate, slug, formatAchat]);
+  }, [pret, connecte, livre, navigate, slug, formatAchat]);
 
   useEffect(() => {
     if (etape !== "traitement") return;
@@ -124,12 +125,27 @@ function Achat() {
   useEffect(() => {
     if (etape !== "confirme") return;
     const tick = setInterval(() => setCompte((c) => c - 1), 1000);
-    const fin = setTimeout(() => navigate({ to: "/bibliotheque" }), 5000);
+    const fin = setTimeout(
+      () =>
+        void navigate({
+          to: "/reader/$slug",
+          params: { slug: livre!.slug },
+        }),
+      8000,
+    );
     return () => {
       clearInterval(tick);
       clearTimeout(fin);
     };
-  }, [etape, navigate]);
+  }, [etape, navigate, livre?.slug]);
+
+  if (!pret || (!connecte && livre)) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-20 text-center text-sm text-muted-foreground">
+        Redirection vers la connexion…
+      </div>
+    );
+  }
 
   if (chargementLivre) {
     return (
@@ -156,7 +172,14 @@ function Achat() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14">
-      <p className="kicker">Paiement</p>
+      <Link
+        to="/edition/$slug"
+        params={{ slug: livre.slug }}
+        className="text-sm text-muted-foreground hover:text-accent"
+      >
+        ← Retour à la fiche livre
+      </Link>
+      <p className="kicker mt-6">Paiement</p>
       <h1 className="mt-3 text-4xl">Finaliser votre achat</h1>
 
       <ol className="mt-8 flex flex-wrap gap-4 text-xs text-muted-foreground">
@@ -312,21 +335,27 @@ function Achat() {
                 Reçu envoyé par e-mail{reference ? ` — référence ${reference}` : ""}
               </p>
               <p className="mt-6 text-sm">
-                Retour automatique vers votre bibliothèque dans {Math.max(compte, 0)} s
+                Ouverture du lecteur dans {Math.max(compte, 0)} s
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <Link
-                  to="/bibliotheque"
-                  className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
-                >
-                  Aller à ma bibliothèque
-                </Link>
-                <Link
                   to="/reader/$slug"
                   params={{ slug: livre.slug }}
+                  className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+                >
+                  Lire maintenant
+                </Link>
+                <Link
+                  to="/admin/ma-bibliotheque"
                   className="rounded-sm border border-border px-5 py-2.5 text-sm"
                 >
-                  Commencer la lecture
+                  Ma bibliothèque
+                </Link>
+                <Link
+                  to="/admin/mes-achats"
+                  className="rounded-sm border border-border px-5 py-2.5 text-sm"
+                >
+                  Mes achats
                 </Link>
               </div>
             </div>

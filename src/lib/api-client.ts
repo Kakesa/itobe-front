@@ -62,7 +62,12 @@ async function request<T = any>(endpoint: string, options: RequestInit = {}): Pr
   const response = await fetch(url, {
     ...options,
     headers,
+    cache: "no-store",
   });
+
+  if (response.status === 304) {
+    throw new ApiError("Réponse en cache invalide — réessayez.", 304);
+  }
 
   const data = await response.json().catch(() => ({}));
 
@@ -82,10 +87,10 @@ type PaginatedPayload<T = unknown> = {
   };
 };
 
-/** Récupère toutes les pages d'une ressource paginée. */
+/** Récupère toutes les pages d'une ressource paginée (max 500 par page, backend plafond 500). */
 export async function fetchAllPages<T = unknown>(
   fetchPage: (page: number, limit: number) => Promise<PaginatedPayload<T>>,
-  pageSize = 100,
+  pageSize = 500,
 ): Promise<T[]> {
   const all: T[] = [];
   let page = 1;
@@ -96,8 +101,10 @@ export async function fetchAllPages<T = unknown>(
     const batch = Array.isArray(res?.data) ? res.data : [];
     all.push(...batch);
     totalPages = Number(res?.pagination?.totalPages ?? 1);
+    const hasNext = res?.pagination?.hasNextPage ?? page < totalPages;
+    if (!hasNext || batch.length === 0) break;
     page += 1;
-  } while (page <= totalPages && page <= 100);
+  } while (page <= totalPages && page <= 50);
 
   return all;
 }

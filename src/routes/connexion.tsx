@@ -5,6 +5,11 @@ import { authentifierApi, sauvegarderSession } from "@/lib/auth";
 import { AuthApi } from "@/lib/api-client";
 import { fusionnerPanierApresConnexion } from "@/lib/panier/merge-on-login";
 import { useSession } from "@/hooks/use-session";
+import {
+  destinationApresConnexion,
+  parseRedirectPath,
+} from "@/lib/redirect-navigation";
+import type { Role } from "@/lib/admin-data";
 import { BookOpen, Newspaper, Shield } from "lucide-react";
 
 const searchSchema = z.object({
@@ -33,7 +38,6 @@ export const Route = createFileRoute("/connexion")({
 
 function Connexion() {
   const { redirect, mode: modeSearch } = Route.useSearch();
-  const destination = redirect && redirect.startsWith("/") ? redirect : "/admin";
   const [mode, setMode] = useState<"connexion" | "inscription">(modeSearch ?? "connexion");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +52,23 @@ function Connexion() {
   useEffect(() => {
     if (modeSearch) setMode(modeSearch);
   }, [modeSearch]);
+
+  useEffect(() => {
+    if (!session || !redirect) return;
+    const cible = parseRedirectPath(redirect);
+    if (cible) void navigate(cible);
+  }, [session, redirect, navigate]);
+
+  const allerApresAuth = (role: Role) => {
+    if (redirect) {
+      const cible = parseRedirectPath(redirect);
+      if (cible) {
+        void navigate(cible);
+        return;
+      }
+    }
+    void navigate({ to: destinationApresConnexion(role) });
+  };
 
   const soumettre = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,7 +96,7 @@ function Connexion() {
             role: user.role,
           });
           await fusionnerPanierApresConnexion();
-          void navigate({ to: destination });
+          allerApresAuth((user.role as Role) || "lecteur");
           return;
         }
       } else {
@@ -85,7 +106,7 @@ function Connexion() {
           return;
         }
 
-        void navigate({ to: destination });
+        allerApresAuth(user.role);
       }
     } catch (err: any) {
       setErreur(err.message || "Une erreur est survenue lors de la connexion.");
@@ -95,6 +116,8 @@ function Connexion() {
   };
 
   if (session) {
+    const cibleAchat = redirect ? parseRedirectPath(redirect) : null;
+
     return (
       <div className="mx-auto max-w-md px-4 py-20 text-center">
         <p className="kicker">Connecté</p>
@@ -105,12 +128,22 @@ function Connexion() {
           {session.email} · rôle <span className="font-medium text-foreground capitalize">{session.role}</span>
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Link
-            to="/admin"
-            className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
-          >
-            Ouvrir mon espace
-          </Link>
+          {cibleAchat ? (
+            <button
+              type="button"
+              onClick={() => void navigate(cibleAchat)}
+              className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+            >
+              Continuer mon achat
+            </button>
+          ) : (
+            <Link
+              to={destinationApresConnexion(session.role)}
+              className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+            >
+              {session.role === "lecteur" ? "Retour au catalogue" : "Ouvrir mon espace"}
+            </Link>
+          )}
           <button
             type="button"
             onClick={deconnexion}

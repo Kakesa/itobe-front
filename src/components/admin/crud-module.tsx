@@ -125,8 +125,14 @@ export function CrudModule({
         if (annule) return;
         definir(mapperLivresAdmin(raw));
       })
-      .catch(() => {
-        /* liste vide si API indisponible */
+      .catch((err) => {
+        if (!annule) {
+          notify.error(
+            err instanceof ApiError && err.statusCode === 401
+              ? "Reconnectez-vous pour charger tous les livres."
+              : "Impossible de charger la liste complète des livres.",
+          );
+        }
       });
 
     return () => {

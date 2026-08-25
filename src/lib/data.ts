@@ -1,5 +1,5 @@
 // Données publiques : catalogue livres depuis l'API (MongoDB) uniquement.
-import { AuteursApi, ArticlesApi, LivresApi } from "./api-client";
+import { AuteursApi, ArticlesApi, LivresApi, fetchAllPages } from "./api-client";
 
 export type Article = {
   slug: string;
@@ -351,9 +351,9 @@ export const hydratePublicData = async () => {
 
   try {
     const [articlesApi, livresApi, auteursApi] = await Promise.all([
-      ArticlesApi.getAll({ page: 1, limit: 200 }),
+      fetchAllPages((page, limit) => ArticlesApi.getAll({ page, limit })),
       LivresApi.fetchAll(),
-      AuteursApi.getAll({ page: 1, limit: 200 }),
+      fetchAllPages((page, limit) => AuteursApi.getAll({ page, limit })),
     ]);
 
     const articlesLive = normaliserValeurApi(articlesApi).map(normaliserArticleApi);
