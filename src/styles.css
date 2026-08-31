@@ -59,82 +59,92 @@
   --color-edition-gold: var(--edition-gold);
   --color-edition-teal: var(--edition-teal);
   --color-edition-blue: var(--edition-blue);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-brown: var(--brand-brown);
+  --color-brand-blue: var(--brand-blue);
   --shadow-book: 0 18px 40px -18px color-mix(in oklab, var(--ink) 45%, transparent);
   --shadow-soft: 0 2px 10px -4px color-mix(in oklab, var(--ink) 22%, transparent);
 }
 
 :root {
+  /* ——— Palette principale ITOBE ——— */
+  --brand-orange: #ea5312;
+  --brand-gold: #ffd37d;
+  --brand-brown: #383030;
+  --brand-blue: #70a2e1;
+
   /* Palette alignée sur itobeeditions.com (Elementor kit) */
   --radius: 0.35rem;
-  --edition-orange: #ea5312;
+  --edition-orange: var(--brand-orange);
   --edition-cream: #fdfaf4;
   --edition-ink: #211c1c;
-  --edition-brown: #383030;
-  --edition-gold: #ffd37d;
+  --edition-brown: var(--brand-brown);
+  --edition-gold: var(--brand-gold);
   --edition-peach: #ffbaba;
   --edition-teal: #79c4b5;
-  --edition-blue: #70a2e1;
+  --edition-blue: var(--brand-blue);
   --edition-muted: #b3b3b3;
   --edition-surface: #f7f7f7;
 
   --paper: #fdfaf4;
   --ink: #211c1c;
   --background: #fdfaf4;
-  --foreground: #383030;
+  --foreground: var(--brand-brown);
   --card: #ffffff;
-  --card-foreground: #383030;
+  --card-foreground: var(--brand-brown);
   --popover: #ffffff;
-  --popover-foreground: #383030;
+  --popover-foreground: var(--brand-brown);
   --primary: #211c1c;
   --primary-foreground: #fdfaf4;
   --secondary: #f7f7f7;
-  --secondary-foreground: #383030;
+  --secondary-foreground: var(--brand-brown);
   --muted: #f7f7f7;
-  --muted-foreground: #383030bd;
-  --accent: #ea5312;
+  --muted-foreground: color-mix(in srgb, var(--brand-brown) 74%, transparent);
+  --accent: var(--brand-orange);
   --accent-foreground: #ffffff;
-  --ochre: #ffd37d;
-  --ochre-foreground: #211c1c;
-  --terracotta: #ea5312;
+  --ochre: var(--brand-gold);
+  --ochre-foreground: var(--brand-brown);
+  --terracotta: var(--brand-orange);
   --destructive: #cf2e2e;
   --destructive-foreground: #ffffff;
-  --border: color-mix(in srgb, #383030 14%, transparent);
-  --input: color-mix(in srgb, #383030 14%, transparent);
-  --ring: #ea5312;
-  --chart-1: #ea5312;
-  --chart-2: #ffd37d;
+  --border: color-mix(in srgb, var(--brand-brown) 14%, transparent);
+  --input: color-mix(in srgb, var(--brand-brown) 14%, transparent);
+  --ring: var(--brand-orange);
+  --chart-1: var(--brand-orange);
+  --chart-2: var(--brand-gold);
   --chart-3: #79c4b5;
-  --chart-4: #70a2e1;
-  --chart-5: #383030;
+  --chart-4: var(--brand-blue);
+  --chart-5: var(--brand-brown);
   --sidebar: #ffffff;
-  --sidebar-foreground: #383030;
-  --sidebar-primary: #ea5312;
+  --sidebar-foreground: var(--brand-brown);
+  --sidebar-primary: var(--brand-orange);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f7f7f7;
   --sidebar-accent-foreground: #211c1c;
-  --sidebar-border: color-mix(in srgb, #383030 12%, transparent);
-  --sidebar-ring: #ea5312;
+  --sidebar-border: color-mix(in srgb, var(--brand-brown) 12%, transparent);
+  --sidebar-ring: var(--brand-orange);
 }
 
 /* Thème renforcé Maison d'édition (itobeeditions.com) */
 .theme-edition {
   --background: #fdfaf4;
-  --foreground: #383030;
+  --foreground: var(--brand-brown);
   --card: #ffffff;
   --card-foreground: #211c1c;
   --primary: #211c1c;
   --primary-foreground: #fdfaf4;
   --secondary: #f7f7f7;
-  --secondary-foreground: #383030;
+  --secondary-foreground: var(--brand-brown);
   --muted: #f7f7f7;
-  --muted-foreground: #383030bd;
-  --accent: #ea5312;
+  --muted-foreground: color-mix(in srgb, var(--brand-brown) 74%, transparent);
+  --accent: var(--brand-orange);
   --accent-foreground: #ffffff;
-  --ochre: #ffd37d;
-  --ochre-foreground: #211c1c;
-  --terracotta: #ea5312;
-  --border: color-mix(in srgb, #383030 14%, transparent);
-  --ring: #ea5312;
+  --ochre: var(--brand-gold);
+  --ochre-foreground: var(--brand-brown);
+  --terracotta: var(--brand-orange);
+  --border: color-mix(in srgb, var(--brand-brown) 14%, transparent);
+  --ring: var(--brand-orange);
   --ink: #211c1c;
   --paper: #fdfaf4;
   font-family: var(--font-edition);
@@ -159,39 +169,90 @@
   --ink: #fdfaf4;
   --background: #211c1c;
   --foreground: #fdfaf4;
-  --card: #383030;
+  --card: var(--brand-brown);
   --card-foreground: #fdfaf4;
-  --popover: #383030;
+  --popover: var(--brand-brown);
   --popover-foreground: #fdfaf4;
   --primary: #fdfaf4;
   --primary-foreground: #211c1c;
-  --secondary: #383030;
+  --secondary: var(--brand-brown);
   --secondary-foreground: #fdfaf4;
-  --muted: #383030;
+  --muted: var(--brand-brown);
   --muted-foreground: #b3b3b3;
-  --accent: #ea5312;
+  --accent: var(--brand-orange);
   --accent-foreground: #ffffff;
-  --ochre: #ffd37d;
-  --ochre-foreground: #211c1c;
-  --terracotta: #ea5312;
+  --ochre: var(--brand-gold);
+  --ochre-foreground: var(--brand-brown);
+  --terracotta: var(--brand-orange);
   --destructive: #ffbaba;
   --destructive-foreground: #211c1c;
   --border: color-mix(in srgb, #fdfaf4 14%, transparent);
   --input: color-mix(in srgb, #fdfaf4 16%, transparent);
-  --ring: #ea5312;
-  --chart-1: #ea5312;
-  --chart-2: #ffd37d;
+  --ring: var(--brand-orange);
+  --chart-1: var(--brand-orange);
+  --chart-2: var(--brand-gold);
   --chart-3: #79c4b5;
-  --chart-4: #70a2e1;
+  --chart-4: var(--brand-blue);
   --chart-5: #ffbaba;
   --sidebar: #211c1c;
   --sidebar-foreground: #fdfaf4;
-  --sidebar-primary: #ea5312;
+  --sidebar-primary: var(--brand-orange);
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #383030;
+  --sidebar-accent: var(--brand-brown);
   --sidebar-accent-foreground: #fdfaf4;
   --sidebar-border: color-mix(in srgb, #fdfaf4 12%, transparent);
-  --sidebar-ring: #ea5312;
+  --sidebar-ring: var(--brand-orange);
+}
+
+/* ——— Admin portails (Média / Édition) ——— */
+.admin-portal--media .admin-portal-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand-blue) 55%, var(--brand-brown)) 0%,
+    color-mix(in oklab, var(--brand-blue) 38%, var(--brand-brown)) 45%,
+    color-mix(in oklab, var(--brand-brown) 92%, black) 100%
+  );
+  color: white;
+}
+
+.admin-portal--edition .admin-portal-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand-orange) 65%, var(--brand-brown)) 0%,
+    color-mix(in oklab, var(--brand-orange) 42%, var(--brand-brown)) 42%,
+    color-mix(in oklab, var(--brand-brown) 95%, black) 100%
+  );
+  color: white;
+}
+
+.admin-portal--media .admin-portal-accent {
+  background: var(--brand-blue);
+  color: white;
+}
+
+.admin-portal--media .admin-portal-badge {
+  background: color-mix(in oklab, var(--brand-blue) 22%, transparent);
+  color: color-mix(in oklab, var(--brand-blue) 55%, white);
+}
+
+.admin-portal--edition .admin-portal-accent {
+  background: var(--brand-orange);
+  color: white;
+}
+
+.admin-portal--edition .admin-portal-badge {
+  background: color-mix(in oklab, var(--brand-orange) 25%, transparent);
+  color: color-mix(in oklab, var(--brand-gold) 75%, white);
+}
+
+.admin-portal--media .admin-portal-header {
+  border-color: color-mix(in oklab, var(--brand-blue) 20%, transparent);
+  background: color-mix(in oklab, var(--brand-blue) 8%, white);
+}
+
+.admin-portal--edition .admin-portal-header {
+  border-color: color-mix(in oklab, var(--brand-orange) 20%, transparent);
+  background: color-mix(in oklab, var(--brand-gold) 18%, white);
 }
 
 @layer base {
@@ -1691,6 +1752,384 @@
 }
 
 /* ------------------------------------------------------------------ */
+/* Fiche auteur (profil éditorial)                                     */
+/* ------------------------------------------------------------------ */
+
+.auteur-fiche {
+  background: var(--edition-cream);
+  color: var(--brand-brown);
+  font-family: var(--font-edition);
+  min-height: 60vh;
+}
+
+.auteur-fiche__crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--brand-brown) 60%, transparent);
+}
+
+.auteur-fiche__crumb a:hover {
+  color: var(--brand-orange);
+}
+
+.auteur-fiche__hero {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .auteur-fiche__hero {
+    grid-template-columns: 220px 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.auteur-fiche__portrait {
+  justify-self: center;
+}
+
+@media (min-width: 768px) {
+  .auteur-fiche__portrait {
+    justify-self: start;
+  }
+}
+
+.auteur-fiche__photo {
+  width: 11rem;
+  height: 11rem;
+  border-radius: 999px;
+  object-fit: cover;
+  box-shadow:
+    0 0 0 4px color-mix(in oklab, var(--brand-gold) 45%, white),
+    0 12px 32px -8px color-mix(in oklab, var(--brand-brown) 25%, transparent);
+}
+
+@media (min-width: 768px) {
+  .auteur-fiche__photo {
+    width: 13.5rem;
+    height: 13.5rem;
+  }
+}
+
+.auteur-fiche__avatar-fallback {
+  display: grid;
+  place-items: center;
+  width: 11rem;
+  height: 11rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--brand-orange) 15%, var(--edition-cream));
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--brand-orange);
+  box-shadow: 0 12px 32px -8px color-mix(in oklab, var(--brand-brown) 20%, transparent);
+}
+
+.auteur-fiche__kicker {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--brand-orange);
+}
+
+.auteur-fiche__name {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--edition-ink);
+}
+
+.auteur-fiche__ville {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--brand-brown) 70%, transparent);
+}
+
+.auteur-fiche__reseaux {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+
+.auteur-fiche__reseau-link {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-brown);
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--brand-brown) 22%, transparent);
+  border-radius: 0.35rem;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.auteur-fiche__reseau-link:hover {
+  border-color: var(--brand-orange);
+  color: var(--brand-orange);
+  background: color-mix(in oklab, var(--brand-gold) 25%, white);
+}
+
+.auteur-fiche__bio {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: color-mix(in oklab, var(--brand-gold) 22%, var(--edition-cream));
+  border-radius: 0.75rem;
+}
+
+.auteur-fiche__section-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--edition-ink);
+}
+
+.auteur-fiche__section-lead {
+  margin-top: 0.35rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--brand-brown) 65%, transparent);
+}
+
+.auteur-fiche__bio-text {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 1rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: color-mix(in oklab, var(--brand-brown) 88%, transparent);
+}
+
+.auteur-fiche__works,
+.auteur-fiche__articles {
+  margin-top: 3.5rem;
+}
+
+.auteur-fiche__article-list {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0;
+}
+
+.auteur-fiche__article-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--brand-brown) 12%, transparent);
+}
+
+.auteur-fiche__article-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--edition-ink);
+  transition: color 0.2s;
+}
+
+.auteur-fiche__article-title:hover {
+  color: var(--brand-orange);
+}
+
+.auteur-fiche__article-chapo {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--brand-brown) 75%, transparent);
+}
+
+.auteur-fiche__article-meta {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: color-mix(in oklab, var(--brand-brown) 55%, transparent);
+}
+
+.auteur-fiche__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid color-mix(in oklab, var(--brand-brown) 12%, transparent);
+}
+
+.auteur-fiche__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: white;
+  background: var(--brand-orange);
+  border-radius: 0.35rem;
+  transition: opacity 0.2s;
+}
+
+.auteur-fiche__cta:hover {
+  opacity: 0.92;
+}
+
+.auteur-fiche__cta--outline {
+  color: var(--brand-brown);
+  background: white;
+  border: 1px solid color-mix(in oklab, var(--brand-brown) 25%, transparent);
+}
+
+.auteur-fiche__cta--outline:hover {
+  opacity: 1;
+  background: color-mix(in oklab, var(--brand-gold) 30%, white);
+}
+
+/* ------------------------------------------------------------------ */
+/* Page À propos / Notre maison                                        */
+/* ------------------------------------------------------------------ */
+
+.apropos-page {
+  background: var(--edition-cream);
+  color: var(--brand-brown);
+  font-family: var(--font-edition);
+}
+
+.apropos-page__hero {
+  position: relative;
+  min-height: clamp(18rem, 42vw, 28rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.apropos-page__hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.apropos-page__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--brand-brown) 55%, transparent) 0%,
+    color-mix(in oklab, var(--brand-brown) 78%, transparent) 100%
+  );
+}
+
+.apropos-page__hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.apropos-page__hero-kicker {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--brand-gold) 90%, white);
+}
+
+.apropos-page__split {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .apropos-page__split {
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
+  }
+}
+
+.apropos-page__figure {
+  margin: 0;
+}
+
+.apropos-page__figure-img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 40px -16px color-mix(in oklab, var(--brand-brown) 35%, transparent);
+}
+
+.apropos-page__figure-cap {
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: color-mix(in oklab, var(--brand-brown) 60%, transparent);
+  text-align: center;
+}
+
+.apropos-page__quote {
+  border-left: 3px solid var(--brand-orange);
+  padding-left: 1.25rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--edition-ink);
+}
+
+.apropos-page__pillar-media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+.apropos-page__feature-grid {
+  display: grid;
+}
+
+@media (min-width: 900px) {
+  .apropos-page__feature-grid {
+    grid-template-columns: 1.05fr 1fr;
+  }
+}
+
+.apropos-page__feature-media {
+  margin: 0;
+  min-height: 16rem;
+}
+
+@media (min-width: 900px) {
+  .apropos-page__feature-media {
+    min-height: 100%;
+  }
+}
+
+.apropos-page__feature-body {
+  padding: 2rem;
+}
+
+@media (min-width: 900px) {
+  .apropos-page__feature-body {
+    padding: 2.5rem 2.75rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.apropos-page__eco-media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ */
 /* Header site — typo alignée sur le footer                            */
 /* ------------------------------------------------------------------ */
 
@@ -1699,8 +2138,8 @@
   place-items: center;
   width: 1.75rem;
   height: 1.75rem;
-  background: #d99b4f;
-  color: #1c1917;
+  background: var(--brand-gold);
+  color: var(--brand-brown);
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
@@ -1759,7 +2198,7 @@
 /* ------------------------------------------------------------------ */
 
 .site-footer {
-  background: #1c1917;
+  background: var(--brand-brown);
   color: #fafaf9;
 }
 
@@ -1768,8 +2207,8 @@
   place-items: center;
   width: 2.25rem;
   height: 2.25rem;
-  background: #d99b4f;
-  color: #1c1917;
+  background: var(--brand-gold);
+  color: var(--brand-brown);
   font-family: var(--font-display, Georgia, serif);
   font-size: 1.125rem;
   font-weight: 700;
@@ -1779,7 +2218,7 @@
 .site-footer__heading {
   font-family: var(--font-display, Georgia, serif);
   font-size: 1.125rem;
-  color: #d99b4f;
+  color: var(--brand-gold);
 }
 
 .site-footer__link {
@@ -1804,13 +2243,13 @@
 }
 
 .site-footer__input:focus {
-  border-color: rgb(217 155 79 / 0.55);
+  border-color: color-mix(in oklab, var(--brand-gold) 55%, transparent);
 }
 
 .site-footer__cta {
   border-radius: 0.25rem;
-  background: #d99b4f;
-  color: #1c1917;
+  background: var(--brand-gold);
+  color: var(--brand-brown);
   transition: opacity 0.2s;
 }
 
@@ -1831,6 +2270,6 @@
 
 .site-footer__social:hover {
   color: #fff;
-  border-color: rgb(217 155 79 / 0.6);
-  background: rgb(217 155 79 / 0.1);
+  border-color: color-mix(in oklab, var(--brand-gold) 60%, transparent);
+  background: color-mix(in oklab, var(--brand-gold) 10%, transparent);
 }

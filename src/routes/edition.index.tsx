@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BookCard } from "@/components/book-card";
+import { CatalogueLivresSkeleton } from "@/components/book-skeletons";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLivres } from "@/hooks/use-livres";
 import { categoriesLivres } from "@/lib/data";
 
@@ -224,13 +226,15 @@ function Catalogue() {
             Catalogue
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted-foreground md:mx-0">
-            {loading
-              ? "Chargement du catalogue…"
-              : `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`}
+            {loading ? (
+              <Skeleton className="mx-auto h-4 w-72 max-w-full md:mx-0" />
+            ) : (
+              `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`
+            )}
           </p>
         </div>
 
-        {promos.length > 0 && (
+        {loading ? null : promos.length > 0 && (
           <div className="mt-8 border border-accent/40 bg-accent/10 p-4 text-sm">
             <span className="kicker">Promotions</span>{" "}
             <span className="ml-2">
@@ -261,9 +265,7 @@ function Catalogue() {
           />
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            {loading && (
-              <p className="col-span-full text-sm text-muted-foreground">Chargement du catalogue…</p>
-            )}
+            {loading && <CatalogueLivresSkeleton count={9} />}
             {!loading && liste.length === 0 && livres.length > 0 && (
               <p className="col-span-full text-sm text-muted-foreground">
                 Aucun livre ne correspond aux filtres ({livres.length} ouvrage{livres.length > 1 ? "s" : ""} au

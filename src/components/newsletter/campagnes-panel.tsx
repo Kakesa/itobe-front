@@ -106,7 +106,7 @@ export function CampagnesPanel() {
       ],
     });
     notify.cree("Campagne", String(item["nom"]));
-    void navigate({ to: "/admin/newsletter/campagne/$id", params: { id: item.id } });
+    void navigate({ to: "/admin/media/newsletter/campagne/$id", params: { id: item.id } });
   };
 
   const dupliquer = (c: Item) => {
@@ -295,7 +295,7 @@ export function CampagnesPanel() {
                 <tr key={c.id}>
                   <td className="px-4 py-3">
                     <Link
-                      to="/admin/newsletter/campagne/$id"
+                      to="/admin/media/newsletter/campagne/$id"
                       params={{ id: c.id }}
                       className="font-medium hover:text-accent"
                     >
@@ -349,7 +349,7 @@ export function CampagnesPanel() {
                                   : Eye,
                             onClick: () =>
                               void navigate({
-                                to: "/admin/newsletter/campagne/$id",
+                                to: "/admin/media/newsletter/campagne/$id",
                                 params: { id: c.id },
                               }),
                           },
@@ -370,7 +370,7 @@ export function CampagnesPanel() {
                             hidden: c["statut"] !== "DRAFT",
                             onClick: () =>
                               void navigate({
-                                to: "/admin/newsletter/campagne/$id",
+                                to: "/admin/media/newsletter/campagne/$id",
                                 params: { id: c.id },
                               }),
                           },

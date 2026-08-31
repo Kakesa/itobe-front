@@ -28,7 +28,120 @@ export type SectionAdmin = {
   icon?: string;
 };
 
-/** Menu espace connecté groupé (ADMIN + ÉDITEUR + LECTEUR). */
+/** Menu espace Média (admin). */
+export const menuMediaAdmin: {
+  groupe: string;
+  items: { to: string; label: string; roles: Role[] }[];
+}[] = [
+  {
+    groupe: "",
+    items: [{ to: "/admin/media", label: "Dashboard", roles: ["admin"] }],
+  },
+  {
+    groupe: "Contenu Média",
+    items: [
+      { to: "/admin/media/articles", label: "Articles", roles: ["admin"] },
+      { to: "/admin/media/actualites", label: "Actualités", roles: ["admin"] },
+      { to: "/admin/media/medias", label: "Médiathèque", roles: ["admin"] },
+      { to: "/admin/media/categories", label: "Catégories", roles: ["admin"] },
+      { to: "/admin/media/calendrier", label: "Calendrier éditorial", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Audience",
+    items: [
+      { to: "/admin/media/commentaires", label: "Commentaires", roles: ["admin"] },
+      { to: "/admin/media/newsletter", label: "Newsletter", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Analytiques",
+    items: [
+      { to: "/admin/media/rapports", label: "Rapports", roles: ["admin"] },
+      { to: "/admin/media/statistiques", label: "Statistiques", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Paramètres",
+    items: [
+      { to: "/admin/media/mon-profil", label: "Mon profil", roles: ["admin"] },
+      { to: "/admin/media/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
+      { to: "/admin/media/parametres", label: "Plateforme", roles: ["admin"] },
+      { to: "/admin/media/roles", label: "Rôles & Permissions", roles: ["admin"] },
+    ],
+  },
+];
+
+/** Menu espace Édition (admin + éditeur). */
+export const menuEditionAdmin: {
+  groupe: string;
+  items: { to: string; label: string; roles: Role[] }[];
+}[] = [
+  {
+    groupe: "",
+    items: [{ to: "/admin/edition", label: "Dashboard", roles: ["admin", "editeur"] }],
+  },
+  {
+    groupe: "Catalogue",
+    items: [
+      { to: "/admin/edition/livres", label: "Livres", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/auteurs", label: "Auteurs", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/categories", label: "Catégories", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/calendrier", label: "Calendrier éditorial", roles: ["admin", "editeur"] },
+    ],
+  },
+  {
+    groupe: "Commercial",
+    items: [
+      { to: "/admin/edition/commandes", label: "Commandes", roles: ["admin"] },
+      { to: "/admin/edition/paiements", label: "Paiements", roles: ["admin"] },
+      { to: "/admin/edition/coupons", label: "Coupons", roles: ["admin"] },
+      { to: "/admin/edition/promotions", label: "Promotions", roles: ["admin"] },
+    ],
+  },
+  {
+    groupe: "Analytiques",
+    items: [
+      { to: "/admin/edition/rapports", label: "Rapports", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/statistiques", label: "Statistiques", roles: ["admin", "editeur"] },
+    ],
+  },
+  {
+    groupe: "Paramètres",
+    items: [{ to: "/admin/edition/mon-profil", label: "Mon profil", roles: ["admin", "editeur"] }],
+  },
+];
+
+/** Menu espace lecteur. */
+export const menuLecteurAdmin: {
+  groupe: string;
+  items: { to: string; label: string; roles: Role[] }[];
+}[] = [
+  {
+    groupe: "",
+    items: [{ to: "/admin", label: "Dashboard", roles: ["lecteur"] }],
+  },
+  {
+    groupe: "Ma lecture",
+    items: [
+      { to: "/admin/ma-bibliotheque", label: "Bibliothèque", roles: ["lecteur"] },
+      { to: "/admin/favoris", label: "Favoris", roles: ["lecteur"] },
+      { to: "/admin/historique", label: "Historique", roles: ["lecteur"] },
+      { to: "/admin/telechargements", label: "Téléchargements", roles: ["lecteur"] },
+      { to: "/admin/marque-pages", label: "Marque-pages", roles: ["lecteur"] },
+    ],
+  },
+  {
+    groupe: "Achats",
+    items: [{ to: "/admin/mes-achats", label: "Mes achats", roles: ["lecteur"] }],
+  },
+  {
+    groupe: "Compte",
+    items: [{ to: "/admin/mon-profil", label: "Mon profil", roles: ["lecteur"] }],
+  },
+];
+
+/** @deprecated — menus scindés par portail : menuMediaAdmin, menuEditionAdmin, menuLecteurAdmin */
 export const menuAdmin: {
   groupe: string;
   items: { to: string; label: string; roles: Role[] }[];
@@ -89,7 +202,6 @@ export const menuAdmin: {
     items: [
       { to: "/admin/mon-profil", label: "Mon profil", roles: ["admin", "editeur", "lecteur"] },
       { to: "/admin/parametres", label: "Plateforme", roles: ["admin"] },
-      { to: "/admin/seo", label: "SEO", roles: ["admin"] },
       { to: "/admin/roles", label: "Rôles & Permissions", roles: ["admin"] },
     ],
   },

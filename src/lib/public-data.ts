@@ -44,6 +44,7 @@ export type PublicAuteur = {
   role: string;
   bio: string;
   ville: string;
+  photo?: string;
   reseaux: { label: string; url: string }[];
   ventes: number;
   lectures: number;
@@ -149,8 +150,9 @@ export const normalizePublicAuteur = (item: any): PublicAuteur => ({
   slug: String(item?.slug ?? item?._id ?? "auteur"),
   nom: String(item?.nom ?? "Auteur"),
   role: String(item?.role ?? "Auteur"),
-  bio: String(item?.bio ?? ""),
+  bio: String(item?.bio ?? item?.biographie ?? ""),
   ville: String(item?.ville ?? ""),
+  ...(typeof item?.photo === "string" && item.photo ? { photo: item.photo } : {}),
   reseaux: Array.isArray(item?.reseaux)
     ? item.reseaux.map((network: any) => ({
         label: String(network?.label ?? "Link"),
@@ -216,9 +218,16 @@ export async function fetchPublicLivreBySlug(slug: string) {
 export async function fetchPublicAuteurBySlug(slug: string) {
   try {
     const response = await AuteursApi.getBySlug(slug);
-    const auteur = response?.data?.auteur ?? response?.auteur ?? null;
-    return { auteur: auteur ? normalizePublicAuteur(auteur) : null };
+    const payload = response?.data ?? response;
+    const auteurRaw = payload?.auteur ?? null;
+    const livresRaw = payload?.livres ?? [];
+    const articlesRaw = payload?.articles ?? [];
+    return {
+      auteur: auteurRaw ? normalizePublicAuteur(auteurRaw) : null,
+      livres: asArray<any>(livresRaw).map(normalizePublicLivre),
+      articles: asArray<any>(articlesRaw).map(normalizePublicArticle),
+    };
   } catch {
-    return { auteur: null };
+    return { auteur: null, livres: [], articles: [] };
   }
 }

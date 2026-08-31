@@ -6,6 +6,7 @@ import { useSession } from "@/hooks/use-session";
 import { useRole } from "@/hooks/use-role";
 import { AuthApi, BibliothequeApi, getToken } from "@/lib/api-client";
 import { sauvegarderSession, deconnecter } from "@/lib/auth";
+import { MonProfilAuteurSection } from "@/components/dashboard/mon-profil-auteur-section";
 
 function Interrupteur({
   actif,
@@ -248,6 +249,7 @@ export function MonProfilPanel() {
       : 0;
 
   const estLecteur = userRole === "lecteur";
+  const peutGererFicheAuteur = userRole === "editeur" || userRole === "admin";
 
   if (loading) {
     return (
@@ -331,6 +333,8 @@ export function MonProfilPanel() {
               </label>
             </div>
           </section>
+
+          {peutGererFicheAuteur && <MonProfilAuteurSection />}
 
           <section className="rounded-xl border border-border bg-card p-6">
             <h2 className="text-xl">Notifications</h2>

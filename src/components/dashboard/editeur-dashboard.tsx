@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
+import {
+  Archive,
+  BookOpen,
+  BookOpenCheck,
+  DollarSign,
+  Download,
+  FilePen,
+  Heart,
+  TrendingUp,
+} from "lucide-react";
 import { editeurDashboardQuery } from "@/lib/dashboard/queries";
-import type { PeriodeFiltre } from "@/lib/dashboard/types";
+import type { DashboardEditeurPayload, PeriodeFiltre } from "@/lib/dashboard/types";
 import { PeriodFilter } from "@/components/dashboard/period-filter";
 import { KpiCard, SectionCard, SkeletonBlock } from "@/components/dashboard/ui";
 import { AreaMetricChart, BarMetricChart } from "@/components/dashboard/charts";
@@ -10,6 +20,58 @@ import { AreaMetricChart, BarMetricChart } from "@/components/dashboard/charts";
 function fmt(n: number) {
   return n.toLocaleString("fr-FR");
 }
+
+const EDITEUR_KPIS = [
+  {
+    label: "Livres publiés",
+    icon: BookOpen,
+    iconClassName: "bg-brand-orange/20 text-brand-orange",
+    valeur: (data: DashboardEditeurPayload) => data.publies,
+  },
+  {
+    label: "Brouillons",
+    icon: FilePen,
+    iconClassName: "bg-amber-500/15 text-amber-700",
+    valeur: (data: DashboardEditeurPayload) => data.brouillons,
+  },
+  {
+    label: "Archivés",
+    icon: Archive,
+    iconClassName: "bg-slate-500/15 text-slate-600",
+    valeur: (data: DashboardEditeurPayload) => data.archives,
+  },
+  {
+    label: "Revenus",
+    icon: DollarSign,
+    iconClassName: "bg-emerald-500/15 text-emerald-700",
+    valeur: (data: DashboardEditeurPayload) => `${fmt(Math.round(data.revenus))} $`,
+  },
+  {
+    label: "Lectures",
+    icon: BookOpenCheck,
+    iconClassName: "bg-sky-500/15 text-sky-700",
+    valeur: (data: DashboardEditeurPayload) => fmt(data.lectures),
+  },
+  {
+    label: "Téléchargements",
+    icon: Download,
+    iconClassName: "bg-violet-500/15 text-violet-700",
+    valeur: (data: DashboardEditeurPayload) => fmt(data.telechargements),
+  },
+  {
+    label: "Favoris",
+    icon: Heart,
+    iconClassName: "bg-rose-500/15 text-rose-700",
+    valeur: (data: DashboardEditeurPayload) => fmt(data.favoris),
+  },
+  {
+    label: "Dernières ventes",
+    icon: TrendingUp,
+    iconClassName: "bg-brand-orange/15 text-brand-orange",
+    valeur: (data: DashboardEditeurPayload) => data.dernieresVentes.length,
+    hint: "sur la période",
+  },
+] as const;
 
 export function EditeurDashboard() {
   const [periode, setPeriode] = useState<PeriodeFiltre>("annee");
@@ -41,18 +103,16 @@ export function EditeurDashboard() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard label="Livres publiés" valeur={data.publies} />
-        <KpiCard label="Brouillons" valeur={data.brouillons} />
-        <KpiCard label="Archivés" valeur={data.archives} />
-        <KpiCard label="Revenus" valeur={`${fmt(Math.round(data.revenus))} $`} />
-        <KpiCard label="Lectures" valeur={fmt(data.lectures)} />
-        <KpiCard label="Téléchargements" valeur={fmt(data.telechargements)} />
-        <KpiCard label="Favoris" valeur={fmt(data.favoris)} />
-        <KpiCard
-          label="Dernières ventes"
-          valeur={data.dernieresVentes.length}
-          hint="sur la période"
-        />
+        {EDITEUR_KPIS.map((kpi) => (
+          <KpiCard
+            key={kpi.label}
+            label={kpi.label}
+            valeur={kpi.valeur(data)}
+            hint={"hint" in kpi ? kpi.hint : undefined}
+            icon={kpi.icon}
+            iconClassName={kpi.iconClassName}
+          />
+        ))}
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -66,7 +126,7 @@ export function EditeurDashboard() {
         <SectionCard
           titre="Dernières ventes"
           action={
-            <Link to="/admin/livres" className="text-xs text-accent hover:underline">
+            <Link to="/admin/edition/livres" className="text-xs text-accent hover:underline">
               Gérer les livres
             </Link>
           }

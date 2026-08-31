@@ -1,3 +1,10 @@
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { PeriodeFiltre } from "@/lib/dashboard/types";
 
 const OPTIONS: { id: PeriodeFiltre; label: string }[] = [
@@ -18,21 +25,17 @@ export function PeriodFilter({
   onChange: (v: PeriodeFiltre) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5">
-      {OPTIONS.map((o) => (
-        <button
-          key={o.id}
-          type="button"
-          onClick={() => onChange(o.id)}
-          className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-            value === o.id
-              ? "bg-primary text-primary-foreground"
-              : "bg-secondary text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          {o.label}
-        </button>
-      ))}
-    </div>
+    <Select value={value} onValueChange={(v) => onChange(v as PeriodeFiltre)}>
+      <SelectTrigger className="h-9 w-[11.5rem] bg-background text-sm">
+        <SelectValue placeholder="Période" />
+      </SelectTrigger>
+      <SelectContent align="end">
+        {OPTIONS.map((o) => (
+          <SelectItem key={o.id} value={o.id}>
+            {o.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

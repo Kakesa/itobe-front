@@ -41,7 +41,7 @@ export function SiteHeader() {
     return base;
   }, [portail, aDesAchats]);
   const accent =
-    portail === "media" ? "border-b-[#70a2e1]" : "border-b-[#ea5312]";
+    portail === "media" ? "border-b-brand-blue" : "border-b-brand-orange";
 
   const seDeconnecter = () => {
     deconnexion();

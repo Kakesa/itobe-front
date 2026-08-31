@@ -1,12 +1,7 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/admin/module-placeholder";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/parametres")({
-  component: () => (
-    <ModulePlaceholder
-      titre="Paramètres"
-      description="Configuration générale de la plateforme Itobe."
-      requis={["admin"]}
-    />
-  ),
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/media/parametres" as "/admin/media/parametres" });
+  },
 });

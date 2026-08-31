@@ -1,5 +1,7 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { z } from "zod";
+import { useRole } from "@/hooks/use-role";
+import { destinationMonProfil } from "@/lib/redirect-navigation";
 
 const searchSchema = z.object({
   onglet: z.enum(["dashboard", "parametres", "profil"]).optional(),
@@ -22,8 +24,9 @@ export const Route = createFileRoute("/tableau-de-bord")({
 
 function TableauDeBord() {
   const { onglet } = Route.useSearch();
+  const { role } = useRole();
   if (onglet === "parametres" || onglet === "profil") {
-    return <Navigate to="/admin/mon-profil" />;
+    return <Navigate to={destinationMonProfil(role)} />;
   }
   return <Navigate to="/admin" />;
 }

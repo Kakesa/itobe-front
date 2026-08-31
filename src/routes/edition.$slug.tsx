@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-ro
 import { useMemo, useState } from "react";
 import { BookOpen, ChevronLeft, ChevronRight, Download, Heart, Star } from "lucide-react";
 import { BookCard } from "@/components/book-card";
+import { LivreDetailSkeleton } from "@/components/book-skeletons";
 import { BookCover } from "@/components/book-cover";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
@@ -14,6 +15,8 @@ export const Route = createFileRoute("/edition/$slug")({
     if (!livre) throw notFound();
     return { livre };
   },
+  pendingComponent: LivreDetailSkeleton,
+  pendingMs: 0,
   head: ({ params, loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Livre indisponible" }, { name: "robots", content: "noindex" }] };
@@ -361,7 +364,7 @@ function LivrePage() {
               <h2 className="fiche-livre-v2__author-box-title">À propos de l&apos;auteur : {auteur.nom}</h2>
               <p className="mt-3 text-sm leading-relaxed text-[var(--edition-brown)]/85">{auteur.bio}</p>
               <Link to="/auteurs/$slug" params={{ slug: auteur.slug }} className="fiche-livre-v2__author-link">
-                Voir tous ses livres →
+                Voir la fiche auteur →
               </Link>
             </div>
           </section>

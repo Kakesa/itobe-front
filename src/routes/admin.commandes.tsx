@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { CommandesAdminPanel } from "@/components/admin/commandes-panel";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/commandes")({
-  component: () => <CommandesAdminPanel />,
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/edition/commandes" as "/admin/edition/commandes" });
+  },
 });

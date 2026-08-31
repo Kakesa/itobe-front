@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -5,11 +6,15 @@ export function KpiCard({
   label,
   valeur,
   hint,
+  icon: Icon,
+  iconClassName,
   className,
 }: {
   label: string;
   valeur: string | number;
   hint?: string;
+  icon?: LucideIcon;
+  iconClassName?: string;
   className?: string;
 }) {
   return (
@@ -19,7 +24,19 @@ export function KpiCard({
         className,
       )}
     >
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        {Icon && (
+          <span
+            className={cn(
+              "grid size-9 shrink-0 place-items-center rounded-lg",
+              iconClassName ?? "bg-secondary text-muted-foreground",
+            )}
+          >
+            <Icon className="size-4" strokeWidth={1.75} />
+          </span>
+        )}
+      </div>
       <p className="mt-2 font-display text-2xl tracking-tight md:text-3xl">{valeur}</p>
       {hint && <p className="mt-1 text-xs text-accent">{hint}</p>}
     </div>

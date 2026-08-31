@@ -36,12 +36,14 @@ import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminCommandesRouteImport } from './routes/admin.commandes'
 import { Route as AdminCommentairesRouteImport } from './routes/admin.commentaires'
 import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
+import { Route as AdminEditionRouteImport } from './routes/admin.edition'
 import { Route as AdminEditorialCalendarRouteImport } from './routes/admin.editorial-calendar'
 import { Route as AdminFavorisRouteImport } from './routes/admin.favoris'
 import { Route as AdminHistoriqueRouteImport } from './routes/admin.historique'
 import { Route as AdminLivresRouteImport } from './routes/admin.livres'
 import { Route as AdminMaBibliothequeRouteImport } from './routes/admin.ma-bibliotheque'
 import { Route as AdminMarquePagesRouteImport } from './routes/admin.marque-pages'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminMediasRouteImport } from './routes/admin.medias'
 import { Route as AdminMesAchatsRouteImport } from './routes/admin.mes-achats'
 import { Route as AdminMonProfilRouteImport } from './routes/admin.mon-profil'
@@ -51,7 +53,6 @@ import { Route as AdminParametresRouteImport } from './routes/admin.parametres'
 import { Route as AdminPromotionsRouteImport } from './routes/admin.promotions'
 import { Route as AdminRapportsRouteImport } from './routes/admin.rapports'
 import { Route as AdminRolesRouteImport } from './routes/admin.roles'
-import { Route as AdminSeoRouteImport } from './routes/admin.seo'
 import { Route as AdminStatistiquesRouteImport } from './routes/admin.statistiques'
 import { Route as AdminTelechargementsRouteImport } from './routes/admin.telechargements'
 import { Route as AdminUtilisateursRouteImport } from './routes/admin.utilisateurs'
@@ -62,11 +63,42 @@ import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
+import { Route as AdminEditionIndexRouteImport } from './routes/admin.edition.index'
+import { Route as AdminEditionAuteursRouteImport } from './routes/admin.edition.auteurs'
+import { Route as AdminEditionCalendrierRouteImport } from './routes/admin.edition.calendrier'
+import { Route as AdminEditionCategoriesRouteImport } from './routes/admin.edition.categories'
+import { Route as AdminEditionCommandesRouteImport } from './routes/admin.edition.commandes'
+import { Route as AdminEditionCouponsRouteImport } from './routes/admin.edition.coupons'
+import { Route as AdminEditionLivresRouteImport } from './routes/admin.edition.livres'
+import { Route as AdminEditionMonProfilRouteImport } from './routes/admin.edition.mon-profil'
+import { Route as AdminEditionPaiementsRouteImport } from './routes/admin.edition.paiements'
+import { Route as AdminEditionPromotionsRouteImport } from './routes/admin.edition.promotions'
+import { Route as AdminEditionRapportsRouteImport } from './routes/admin.edition.rapports'
+import { Route as AdminEditionStatistiquesRouteImport } from './routes/admin.edition.statistiques'
+import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
+import { Route as AdminMediaActualitesRouteImport } from './routes/admin.media.actualites'
+import { Route as AdminMediaArticlesRouteImport } from './routes/admin.media.articles'
+import { Route as AdminMediaCalendrierRouteImport } from './routes/admin.media.calendrier'
+import { Route as AdminMediaCategoriesRouteImport } from './routes/admin.media.categories'
+import { Route as AdminMediaCommentairesRouteImport } from './routes/admin.media.commentaires'
+import { Route as AdminMediaMediasRouteImport } from './routes/admin.media.medias'
+import { Route as AdminMediaMonProfilRouteImport } from './routes/admin.media.mon-profil'
+import { Route as AdminMediaNewsletterRouteImport } from './routes/admin.media.newsletter'
+import { Route as AdminMediaParametresRouteImport } from './routes/admin.media.parametres'
+import { Route as AdminMediaRapportsRouteImport } from './routes/admin.media.rapports'
+import { Route as AdminMediaRolesRouteImport } from './routes/admin.media.roles'
+import { Route as AdminMediaStatistiquesRouteImport } from './routes/admin.media.statistiques'
+import { Route as AdminMediaUtilisateursRouteImport } from './routes/admin.media.utilisateurs'
 import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newsletter.index'
 import { Route as AdminNewsletterAbonnesRouteImport } from './routes/admin.newsletter.abonnes'
 import { Route as AdminNewsletterCampagnesRouteImport } from './routes/admin.newsletter.campagnes'
 import { Route as AdminNewsletterTemplatesRouteImport } from './routes/admin.newsletter.templates'
+import { Route as AdminMediaNewsletterIndexRouteImport } from './routes/admin.media.newsletter.index'
+import { Route as AdminMediaNewsletterAbonnesRouteImport } from './routes/admin.media.newsletter.abonnes'
+import { Route as AdminMediaNewsletterCampagnesRouteImport } from './routes/admin.media.newsletter.campagnes'
+import { Route as AdminMediaNewsletterTemplatesRouteImport } from './routes/admin.media.newsletter.templates'
 import { Route as AdminNewsletterCampagneIdRouteImport } from './routes/admin.newsletter.campagne.$id'
+import { Route as AdminMediaNewsletterCampagneIdRouteImport } from './routes/admin.media.newsletter.campagne.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -203,6 +235,11 @@ const AdminCouponsRoute = AdminCouponsRouteImport.update({
   path: '/coupons',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminEditionRoute = AdminEditionRouteImport.update({
+  id: '/edition',
+  path: '/edition',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminEditorialCalendarRoute = AdminEditorialCalendarRouteImport.update({
   id: '/editorial-calendar',
   path: '/editorial-calendar',
@@ -231,6 +268,11 @@ const AdminMaBibliothequeRoute = AdminMaBibliothequeRouteImport.update({
 const AdminMarquePagesRoute = AdminMarquePagesRouteImport.update({
   id: '/marque-pages',
   path: '/marque-pages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminMediasRoute = AdminMediasRouteImport.update({
@@ -276,11 +318,6 @@ const AdminRapportsRoute = AdminRapportsRouteImport.update({
 const AdminRolesRoute = AdminRolesRouteImport.update({
   id: '/roles',
   path: '/roles',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSeoRoute = AdminSeoRouteImport.update({
-  id: '/seo',
-  path: '/seo',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminStatistiquesRoute = AdminStatistiquesRouteImport.update({
@@ -333,6 +370,137 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
   path: '/reader/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminEditionIndexRoute = AdminEditionIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionAuteursRoute = AdminEditionAuteursRouteImport.update({
+  id: '/auteurs',
+  path: '/auteurs',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionCalendrierRoute = AdminEditionCalendrierRouteImport.update({
+  id: '/calendrier',
+  path: '/calendrier',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionCategoriesRoute = AdminEditionCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionCommandesRoute = AdminEditionCommandesRouteImport.update({
+  id: '/commandes',
+  path: '/commandes',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionCouponsRoute = AdminEditionCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionLivresRoute = AdminEditionLivresRouteImport.update({
+  id: '/livres',
+  path: '/livres',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionMonProfilRoute = AdminEditionMonProfilRouteImport.update({
+  id: '/mon-profil',
+  path: '/mon-profil',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionPaiementsRoute = AdminEditionPaiementsRouteImport.update({
+  id: '/paiements',
+  path: '/paiements',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionPromotionsRoute = AdminEditionPromotionsRouteImport.update({
+  id: '/promotions',
+  path: '/promotions',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionRapportsRoute = AdminEditionRapportsRouteImport.update({
+  id: '/rapports',
+  path: '/rapports',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
+const AdminEditionStatistiquesRoute =
+  AdminEditionStatistiquesRouteImport.update({
+    id: '/statistiques',
+    path: '/statistiques',
+    getParentRoute: () => AdminEditionRoute,
+  } as any)
+const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaActualitesRoute = AdminMediaActualitesRouteImport.update({
+  id: '/actualites',
+  path: '/actualites',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaArticlesRoute = AdminMediaArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaCalendrierRoute = AdminMediaCalendrierRouteImport.update({
+  id: '/calendrier',
+  path: '/calendrier',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaCategoriesRoute = AdminMediaCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaCommentairesRoute = AdminMediaCommentairesRouteImport.update({
+  id: '/commentaires',
+  path: '/commentaires',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaMediasRoute = AdminMediaMediasRouteImport.update({
+  id: '/medias',
+  path: '/medias',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaMonProfilRoute = AdminMediaMonProfilRouteImport.update({
+  id: '/mon-profil',
+  path: '/mon-profil',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaNewsletterRoute = AdminMediaNewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaParametresRoute = AdminMediaParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaRapportsRoute = AdminMediaRapportsRouteImport.update({
+  id: '/rapports',
+  path: '/rapports',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaRolesRoute = AdminMediaRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaStatistiquesRoute = AdminMediaStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
+const AdminMediaUtilisateursRoute = AdminMediaUtilisateursRouteImport.update({
+  id: '/utilisateurs',
+  path: '/utilisateurs',
+  getParentRoute: () => AdminMediaRoute,
+} as any)
 const AdminNewsletterIndexRoute = AdminNewsletterIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -355,11 +523,41 @@ const AdminNewsletterTemplatesRoute =
     path: '/templates',
     getParentRoute: () => AdminNewsletterRoute,
   } as any)
+const AdminMediaNewsletterIndexRoute =
+  AdminMediaNewsletterIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminMediaNewsletterRoute,
+  } as any)
+const AdminMediaNewsletterAbonnesRoute =
+  AdminMediaNewsletterAbonnesRouteImport.update({
+    id: '/abonnes',
+    path: '/abonnes',
+    getParentRoute: () => AdminMediaNewsletterRoute,
+  } as any)
+const AdminMediaNewsletterCampagnesRoute =
+  AdminMediaNewsletterCampagnesRouteImport.update({
+    id: '/campagnes',
+    path: '/campagnes',
+    getParentRoute: () => AdminMediaNewsletterRoute,
+  } as any)
+const AdminMediaNewsletterTemplatesRoute =
+  AdminMediaNewsletterTemplatesRouteImport.update({
+    id: '/templates',
+    path: '/templates',
+    getParentRoute: () => AdminMediaNewsletterRoute,
+  } as any)
 const AdminNewsletterCampagneIdRoute =
   AdminNewsletterCampagneIdRouteImport.update({
     id: '/campagne/$id',
     path: '/campagne/$id',
     getParentRoute: () => AdminNewsletterRoute,
+  } as any)
+const AdminMediaNewsletterCampagneIdRoute =
+  AdminMediaNewsletterCampagneIdRouteImport.update({
+    id: '/campagne/$id',
+    path: '/campagne/$id',
+    getParentRoute: () => AdminMediaNewsletterRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -389,12 +587,14 @@ export interface FileRoutesByFullPath {
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/edition': typeof AdminEditionRouteWithChildren
   '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
   '/admin/favoris': typeof AdminFavorisRoute
   '/admin/historique': typeof AdminHistoriqueRoute
   '/admin/livres': typeof AdminLivresRoute
   '/admin/ma-bibliotheque': typeof AdminMaBibliothequeRoute
   '/admin/marque-pages': typeof AdminMarquePagesRoute
+  '/admin/media': typeof AdminMediaRouteWithChildren
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
@@ -404,7 +604,6 @@ export interface FileRoutesByFullPath {
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/rapports': typeof AdminRapportsRoute
   '/admin/roles': typeof AdminRolesRoute
-  '/admin/seo': typeof AdminSeoRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/admin/telechargements': typeof AdminTelechargementsRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
@@ -416,11 +615,42 @@ export interface FileRoutesByFullPath {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
+  '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
+  '/admin/edition/categories': typeof AdminEditionCategoriesRoute
+  '/admin/edition/commandes': typeof AdminEditionCommandesRoute
+  '/admin/edition/coupons': typeof AdminEditionCouponsRoute
+  '/admin/edition/livres': typeof AdminEditionLivresRoute
+  '/admin/edition/mon-profil': typeof AdminEditionMonProfilRoute
+  '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
+  '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
+  '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/media/actualites': typeof AdminMediaActualitesRoute
+  '/admin/media/articles': typeof AdminMediaArticlesRoute
+  '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
+  '/admin/media/categories': typeof AdminMediaCategoriesRoute
+  '/admin/media/commentaires': typeof AdminMediaCommentairesRoute
+  '/admin/media/medias': typeof AdminMediaMediasRoute
+  '/admin/media/mon-profil': typeof AdminMediaMonProfilRoute
+  '/admin/media/newsletter': typeof AdminMediaNewsletterRouteWithChildren
+  '/admin/media/parametres': typeof AdminMediaParametresRoute
+  '/admin/media/rapports': typeof AdminMediaRapportsRoute
+  '/admin/media/roles': typeof AdminMediaRolesRoute
+  '/admin/media/statistiques': typeof AdminMediaStatistiquesRoute
+  '/admin/media/utilisateurs': typeof AdminMediaUtilisateursRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/edition/': typeof AdminEditionIndexRoute
+  '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
+  '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
+  '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
   '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
+  '/admin/media/newsletter/': typeof AdminMediaNewsletterIndexRoute
+  '/admin/media/newsletter/campagne/$id': typeof AdminMediaNewsletterCampagneIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -460,7 +690,6 @@ export interface FileRoutesByTo {
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/rapports': typeof AdminRapportsRoute
   '/admin/roles': typeof AdminRolesRoute
-  '/admin/seo': typeof AdminSeoRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/admin/telechargements': typeof AdminTelechargementsRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
@@ -472,11 +701,41 @@ export interface FileRoutesByTo {
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
+  '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
+  '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
+  '/admin/edition/categories': typeof AdminEditionCategoriesRoute
+  '/admin/edition/commandes': typeof AdminEditionCommandesRoute
+  '/admin/edition/coupons': typeof AdminEditionCouponsRoute
+  '/admin/edition/livres': typeof AdminEditionLivresRoute
+  '/admin/edition/mon-profil': typeof AdminEditionMonProfilRoute
+  '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
+  '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
+  '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/media/actualites': typeof AdminMediaActualitesRoute
+  '/admin/media/articles': typeof AdminMediaArticlesRoute
+  '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
+  '/admin/media/categories': typeof AdminMediaCategoriesRoute
+  '/admin/media/commentaires': typeof AdminMediaCommentairesRoute
+  '/admin/media/medias': typeof AdminMediaMediasRoute
+  '/admin/media/mon-profil': typeof AdminMediaMonProfilRoute
+  '/admin/media/parametres': typeof AdminMediaParametresRoute
+  '/admin/media/rapports': typeof AdminMediaRapportsRoute
+  '/admin/media/roles': typeof AdminMediaRolesRoute
+  '/admin/media/statistiques': typeof AdminMediaStatistiquesRoute
+  '/admin/media/utilisateurs': typeof AdminMediaUtilisateursRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/edition': typeof AdminEditionIndexRoute
+  '/admin/media': typeof AdminMediaIndexRoute
   '/admin/newsletter': typeof AdminNewsletterIndexRoute
+  '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
+  '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
+  '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
   '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
+  '/admin/media/newsletter': typeof AdminMediaNewsletterIndexRoute
+  '/admin/media/newsletter/campagne/$id': typeof AdminMediaNewsletterCampagneIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -506,12 +765,14 @@ export interface FileRoutesById {
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
   '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/edition': typeof AdminEditionRouteWithChildren
   '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
   '/admin/favoris': typeof AdminFavorisRoute
   '/admin/historique': typeof AdminHistoriqueRoute
   '/admin/livres': typeof AdminLivresRoute
   '/admin/ma-bibliotheque': typeof AdminMaBibliothequeRoute
   '/admin/marque-pages': typeof AdminMarquePagesRoute
+  '/admin/media': typeof AdminMediaRouteWithChildren
   '/admin/medias': typeof AdminMediasRoute
   '/admin/mes-achats': typeof AdminMesAchatsRoute
   '/admin/mon-profil': typeof AdminMonProfilRoute
@@ -521,7 +782,6 @@ export interface FileRoutesById {
   '/admin/promotions': typeof AdminPromotionsRoute
   '/admin/rapports': typeof AdminRapportsRoute
   '/admin/roles': typeof AdminRolesRoute
-  '/admin/seo': typeof AdminSeoRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/admin/telechargements': typeof AdminTelechargementsRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
@@ -533,11 +793,42 @@ export interface FileRoutesById {
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
+  '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
+  '/admin/edition/categories': typeof AdminEditionCategoriesRoute
+  '/admin/edition/commandes': typeof AdminEditionCommandesRoute
+  '/admin/edition/coupons': typeof AdminEditionCouponsRoute
+  '/admin/edition/livres': typeof AdminEditionLivresRoute
+  '/admin/edition/mon-profil': typeof AdminEditionMonProfilRoute
+  '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
+  '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
+  '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/media/actualites': typeof AdminMediaActualitesRoute
+  '/admin/media/articles': typeof AdminMediaArticlesRoute
+  '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
+  '/admin/media/categories': typeof AdminMediaCategoriesRoute
+  '/admin/media/commentaires': typeof AdminMediaCommentairesRoute
+  '/admin/media/medias': typeof AdminMediaMediasRoute
+  '/admin/media/mon-profil': typeof AdminMediaMonProfilRoute
+  '/admin/media/newsletter': typeof AdminMediaNewsletterRouteWithChildren
+  '/admin/media/parametres': typeof AdminMediaParametresRoute
+  '/admin/media/rapports': typeof AdminMediaRapportsRoute
+  '/admin/media/roles': typeof AdminMediaRolesRoute
+  '/admin/media/statistiques': typeof AdminMediaStatistiquesRoute
+  '/admin/media/utilisateurs': typeof AdminMediaUtilisateursRoute
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/admin/edition/': typeof AdminEditionIndexRoute
+  '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
+  '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
+  '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
   '/admin/newsletter/campagne/$id': typeof AdminNewsletterCampagneIdRoute
+  '/admin/media/newsletter/': typeof AdminMediaNewsletterIndexRoute
+  '/admin/media/newsletter/campagne/$id': typeof AdminMediaNewsletterCampagneIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -568,12 +859,14 @@ export interface FileRouteTypes {
     | '/admin/commandes'
     | '/admin/commentaires'
     | '/admin/coupons'
+    | '/admin/edition'
     | '/admin/editorial-calendar'
     | '/admin/favoris'
     | '/admin/historique'
     | '/admin/livres'
     | '/admin/ma-bibliotheque'
     | '/admin/marque-pages'
+    | '/admin/media'
     | '/admin/medias'
     | '/admin/mes-achats'
     | '/admin/mon-profil'
@@ -583,7 +876,6 @@ export interface FileRouteTypes {
     | '/admin/promotions'
     | '/admin/rapports'
     | '/admin/roles'
-    | '/admin/seo'
     | '/admin/statistiques'
     | '/admin/telechargements'
     | '/admin/utilisateurs'
@@ -595,11 +887,42 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/edition/auteurs'
+    | '/admin/edition/calendrier'
+    | '/admin/edition/categories'
+    | '/admin/edition/commandes'
+    | '/admin/edition/coupons'
+    | '/admin/edition/livres'
+    | '/admin/edition/mon-profil'
+    | '/admin/edition/paiements'
+    | '/admin/edition/promotions'
+    | '/admin/edition/rapports'
+    | '/admin/edition/statistiques'
+    | '/admin/media/actualites'
+    | '/admin/media/articles'
+    | '/admin/media/calendrier'
+    | '/admin/media/categories'
+    | '/admin/media/commentaires'
+    | '/admin/media/medias'
+    | '/admin/media/mon-profil'
+    | '/admin/media/newsletter'
+    | '/admin/media/parametres'
+    | '/admin/media/rapports'
+    | '/admin/media/roles'
+    | '/admin/media/statistiques'
+    | '/admin/media/utilisateurs'
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/admin/edition/'
+    | '/admin/media/'
     | '/admin/newsletter/'
+    | '/admin/media/newsletter/abonnes'
+    | '/admin/media/newsletter/campagnes'
+    | '/admin/media/newsletter/templates'
     | '/admin/newsletter/campagne/$id'
+    | '/admin/media/newsletter/'
+    | '/admin/media/newsletter/campagne/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -639,7 +962,6 @@ export interface FileRouteTypes {
     | '/admin/promotions'
     | '/admin/rapports'
     | '/admin/roles'
-    | '/admin/seo'
     | '/admin/statistiques'
     | '/admin/telechargements'
     | '/admin/utilisateurs'
@@ -651,11 +973,41 @@ export interface FileRouteTypes {
     | '/auteurs'
     | '/edition'
     | '/media'
+    | '/admin/edition/auteurs'
+    | '/admin/edition/calendrier'
+    | '/admin/edition/categories'
+    | '/admin/edition/commandes'
+    | '/admin/edition/coupons'
+    | '/admin/edition/livres'
+    | '/admin/edition/mon-profil'
+    | '/admin/edition/paiements'
+    | '/admin/edition/promotions'
+    | '/admin/edition/rapports'
+    | '/admin/edition/statistiques'
+    | '/admin/media/actualites'
+    | '/admin/media/articles'
+    | '/admin/media/calendrier'
+    | '/admin/media/categories'
+    | '/admin/media/commentaires'
+    | '/admin/media/medias'
+    | '/admin/media/mon-profil'
+    | '/admin/media/parametres'
+    | '/admin/media/rapports'
+    | '/admin/media/roles'
+    | '/admin/media/statistiques'
+    | '/admin/media/utilisateurs'
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/admin/edition'
+    | '/admin/media'
     | '/admin/newsletter'
+    | '/admin/media/newsletter/abonnes'
+    | '/admin/media/newsletter/campagnes'
+    | '/admin/media/newsletter/templates'
     | '/admin/newsletter/campagne/$id'
+    | '/admin/media/newsletter'
+    | '/admin/media/newsletter/campagne/$id'
   id:
     | '__root__'
     | '/'
@@ -684,12 +1036,14 @@ export interface FileRouteTypes {
     | '/admin/commandes'
     | '/admin/commentaires'
     | '/admin/coupons'
+    | '/admin/edition'
     | '/admin/editorial-calendar'
     | '/admin/favoris'
     | '/admin/historique'
     | '/admin/livres'
     | '/admin/ma-bibliotheque'
     | '/admin/marque-pages'
+    | '/admin/media'
     | '/admin/medias'
     | '/admin/mes-achats'
     | '/admin/mon-profil'
@@ -699,7 +1053,6 @@ export interface FileRouteTypes {
     | '/admin/promotions'
     | '/admin/rapports'
     | '/admin/roles'
-    | '/admin/seo'
     | '/admin/statistiques'
     | '/admin/telechargements'
     | '/admin/utilisateurs'
@@ -711,11 +1064,42 @@ export interface FileRouteTypes {
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/admin/edition/auteurs'
+    | '/admin/edition/calendrier'
+    | '/admin/edition/categories'
+    | '/admin/edition/commandes'
+    | '/admin/edition/coupons'
+    | '/admin/edition/livres'
+    | '/admin/edition/mon-profil'
+    | '/admin/edition/paiements'
+    | '/admin/edition/promotions'
+    | '/admin/edition/rapports'
+    | '/admin/edition/statistiques'
+    | '/admin/media/actualites'
+    | '/admin/media/articles'
+    | '/admin/media/calendrier'
+    | '/admin/media/categories'
+    | '/admin/media/commentaires'
+    | '/admin/media/medias'
+    | '/admin/media/mon-profil'
+    | '/admin/media/newsletter'
+    | '/admin/media/parametres'
+    | '/admin/media/rapports'
+    | '/admin/media/roles'
+    | '/admin/media/statistiques'
+    | '/admin/media/utilisateurs'
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/admin/edition/'
+    | '/admin/media/'
     | '/admin/newsletter/'
+    | '/admin/media/newsletter/abonnes'
+    | '/admin/media/newsletter/campagnes'
+    | '/admin/media/newsletter/templates'
     | '/admin/newsletter/campagne/$id'
+    | '/admin/media/newsletter/'
+    | '/admin/media/newsletter/campagne/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -933,6 +1317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCouponsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/edition': {
+      id: '/admin/edition'
+      path: '/edition'
+      fullPath: '/admin/edition'
+      preLoaderRoute: typeof AdminEditionRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/editorial-calendar': {
       id: '/admin/editorial-calendar'
       path: '/editorial-calendar'
@@ -973,6 +1364,13 @@ declare module '@tanstack/react-router' {
       path: '/marque-pages'
       fullPath: '/admin/marque-pages'
       preLoaderRoute: typeof AdminMarquePagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/medias': {
@@ -1036,13 +1434,6 @@ declare module '@tanstack/react-router' {
       path: '/roles'
       fullPath: '/admin/roles'
       preLoaderRoute: typeof AdminRolesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/seo': {
-      id: '/admin/seo'
-      path: '/seo'
-      fullPath: '/admin/seo'
-      preLoaderRoute: typeof AdminSeoRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/statistiques': {
@@ -1115,6 +1506,188 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReaderSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/edition/': {
+      id: '/admin/edition/'
+      path: '/'
+      fullPath: '/admin/edition/'
+      preLoaderRoute: typeof AdminEditionIndexRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/auteurs': {
+      id: '/admin/edition/auteurs'
+      path: '/auteurs'
+      fullPath: '/admin/edition/auteurs'
+      preLoaderRoute: typeof AdminEditionAuteursRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/calendrier': {
+      id: '/admin/edition/calendrier'
+      path: '/calendrier'
+      fullPath: '/admin/edition/calendrier'
+      preLoaderRoute: typeof AdminEditionCalendrierRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/categories': {
+      id: '/admin/edition/categories'
+      path: '/categories'
+      fullPath: '/admin/edition/categories'
+      preLoaderRoute: typeof AdminEditionCategoriesRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/commandes': {
+      id: '/admin/edition/commandes'
+      path: '/commandes'
+      fullPath: '/admin/edition/commandes'
+      preLoaderRoute: typeof AdminEditionCommandesRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/coupons': {
+      id: '/admin/edition/coupons'
+      path: '/coupons'
+      fullPath: '/admin/edition/coupons'
+      preLoaderRoute: typeof AdminEditionCouponsRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/livres': {
+      id: '/admin/edition/livres'
+      path: '/livres'
+      fullPath: '/admin/edition/livres'
+      preLoaderRoute: typeof AdminEditionLivresRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/mon-profil': {
+      id: '/admin/edition/mon-profil'
+      path: '/mon-profil'
+      fullPath: '/admin/edition/mon-profil'
+      preLoaderRoute: typeof AdminEditionMonProfilRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/paiements': {
+      id: '/admin/edition/paiements'
+      path: '/paiements'
+      fullPath: '/admin/edition/paiements'
+      preLoaderRoute: typeof AdminEditionPaiementsRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/promotions': {
+      id: '/admin/edition/promotions'
+      path: '/promotions'
+      fullPath: '/admin/edition/promotions'
+      preLoaderRoute: typeof AdminEditionPromotionsRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/rapports': {
+      id: '/admin/edition/rapports'
+      path: '/rapports'
+      fullPath: '/admin/edition/rapports'
+      preLoaderRoute: typeof AdminEditionRapportsRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/statistiques': {
+      id: '/admin/edition/statistiques'
+      path: '/statistiques'
+      fullPath: '/admin/edition/statistiques'
+      preLoaderRoute: typeof AdminEditionStatistiquesRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/media/': {
+      id: '/admin/media/'
+      path: '/'
+      fullPath: '/admin/media/'
+      preLoaderRoute: typeof AdminMediaIndexRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/actualites': {
+      id: '/admin/media/actualites'
+      path: '/actualites'
+      fullPath: '/admin/media/actualites'
+      preLoaderRoute: typeof AdminMediaActualitesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/articles': {
+      id: '/admin/media/articles'
+      path: '/articles'
+      fullPath: '/admin/media/articles'
+      preLoaderRoute: typeof AdminMediaArticlesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/calendrier': {
+      id: '/admin/media/calendrier'
+      path: '/calendrier'
+      fullPath: '/admin/media/calendrier'
+      preLoaderRoute: typeof AdminMediaCalendrierRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/categories': {
+      id: '/admin/media/categories'
+      path: '/categories'
+      fullPath: '/admin/media/categories'
+      preLoaderRoute: typeof AdminMediaCategoriesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/commentaires': {
+      id: '/admin/media/commentaires'
+      path: '/commentaires'
+      fullPath: '/admin/media/commentaires'
+      preLoaderRoute: typeof AdminMediaCommentairesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/medias': {
+      id: '/admin/media/medias'
+      path: '/medias'
+      fullPath: '/admin/media/medias'
+      preLoaderRoute: typeof AdminMediaMediasRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/mon-profil': {
+      id: '/admin/media/mon-profil'
+      path: '/mon-profil'
+      fullPath: '/admin/media/mon-profil'
+      preLoaderRoute: typeof AdminMediaMonProfilRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/newsletter': {
+      id: '/admin/media/newsletter'
+      path: '/newsletter'
+      fullPath: '/admin/media/newsletter'
+      preLoaderRoute: typeof AdminMediaNewsletterRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/parametres': {
+      id: '/admin/media/parametres'
+      path: '/parametres'
+      fullPath: '/admin/media/parametres'
+      preLoaderRoute: typeof AdminMediaParametresRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/rapports': {
+      id: '/admin/media/rapports'
+      path: '/rapports'
+      fullPath: '/admin/media/rapports'
+      preLoaderRoute: typeof AdminMediaRapportsRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/roles': {
+      id: '/admin/media/roles'
+      path: '/roles'
+      fullPath: '/admin/media/roles'
+      preLoaderRoute: typeof AdminMediaRolesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/statistiques': {
+      id: '/admin/media/statistiques'
+      path: '/statistiques'
+      fullPath: '/admin/media/statistiques'
+      preLoaderRoute: typeof AdminMediaStatistiquesRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
+    '/admin/media/utilisateurs': {
+      id: '/admin/media/utilisateurs'
+      path: '/utilisateurs'
+      fullPath: '/admin/media/utilisateurs'
+      preLoaderRoute: typeof AdminMediaUtilisateursRouteImport
+      parentRoute: typeof AdminMediaRoute
+    }
     '/admin/newsletter/': {
       id: '/admin/newsletter/'
       path: '/'
@@ -1143,6 +1716,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsletterTemplatesRouteImport
       parentRoute: typeof AdminNewsletterRoute
     }
+    '/admin/media/newsletter/': {
+      id: '/admin/media/newsletter/'
+      path: '/'
+      fullPath: '/admin/media/newsletter/'
+      preLoaderRoute: typeof AdminMediaNewsletterIndexRouteImport
+      parentRoute: typeof AdminMediaNewsletterRoute
+    }
+    '/admin/media/newsletter/abonnes': {
+      id: '/admin/media/newsletter/abonnes'
+      path: '/abonnes'
+      fullPath: '/admin/media/newsletter/abonnes'
+      preLoaderRoute: typeof AdminMediaNewsletterAbonnesRouteImport
+      parentRoute: typeof AdminMediaNewsletterRoute
+    }
+    '/admin/media/newsletter/campagnes': {
+      id: '/admin/media/newsletter/campagnes'
+      path: '/campagnes'
+      fullPath: '/admin/media/newsletter/campagnes'
+      preLoaderRoute: typeof AdminMediaNewsletterCampagnesRouteImport
+      parentRoute: typeof AdminMediaNewsletterRoute
+    }
+    '/admin/media/newsletter/templates': {
+      id: '/admin/media/newsletter/templates'
+      path: '/templates'
+      fullPath: '/admin/media/newsletter/templates'
+      preLoaderRoute: typeof AdminMediaNewsletterTemplatesRouteImport
+      parentRoute: typeof AdminMediaNewsletterRoute
+    }
     '/admin/newsletter/campagne/$id': {
       id: '/admin/newsletter/campagne/$id'
       path: '/campagne/$id'
@@ -1150,8 +1751,106 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminNewsletterCampagneIdRouteImport
       parentRoute: typeof AdminNewsletterRoute
     }
+    '/admin/media/newsletter/campagne/$id': {
+      id: '/admin/media/newsletter/campagne/$id'
+      path: '/campagne/$id'
+      fullPath: '/admin/media/newsletter/campagne/$id'
+      preLoaderRoute: typeof AdminMediaNewsletterCampagneIdRouteImport
+      parentRoute: typeof AdminMediaNewsletterRoute
+    }
   }
 }
+
+interface AdminEditionRouteChildren {
+  AdminEditionAuteursRoute: typeof AdminEditionAuteursRoute
+  AdminEditionCalendrierRoute: typeof AdminEditionCalendrierRoute
+  AdminEditionCategoriesRoute: typeof AdminEditionCategoriesRoute
+  AdminEditionCommandesRoute: typeof AdminEditionCommandesRoute
+  AdminEditionCouponsRoute: typeof AdminEditionCouponsRoute
+  AdminEditionLivresRoute: typeof AdminEditionLivresRoute
+  AdminEditionMonProfilRoute: typeof AdminEditionMonProfilRoute
+  AdminEditionPaiementsRoute: typeof AdminEditionPaiementsRoute
+  AdminEditionPromotionsRoute: typeof AdminEditionPromotionsRoute
+  AdminEditionRapportsRoute: typeof AdminEditionRapportsRoute
+  AdminEditionStatistiquesRoute: typeof AdminEditionStatistiquesRoute
+  AdminEditionIndexRoute: typeof AdminEditionIndexRoute
+}
+
+const AdminEditionRouteChildren: AdminEditionRouteChildren = {
+  AdminEditionAuteursRoute: AdminEditionAuteursRoute,
+  AdminEditionCalendrierRoute: AdminEditionCalendrierRoute,
+  AdminEditionCategoriesRoute: AdminEditionCategoriesRoute,
+  AdminEditionCommandesRoute: AdminEditionCommandesRoute,
+  AdminEditionCouponsRoute: AdminEditionCouponsRoute,
+  AdminEditionLivresRoute: AdminEditionLivresRoute,
+  AdminEditionMonProfilRoute: AdminEditionMonProfilRoute,
+  AdminEditionPaiementsRoute: AdminEditionPaiementsRoute,
+  AdminEditionPromotionsRoute: AdminEditionPromotionsRoute,
+  AdminEditionRapportsRoute: AdminEditionRapportsRoute,
+  AdminEditionStatistiquesRoute: AdminEditionStatistiquesRoute,
+  AdminEditionIndexRoute: AdminEditionIndexRoute,
+}
+
+const AdminEditionRouteWithChildren = AdminEditionRoute._addFileChildren(
+  AdminEditionRouteChildren,
+)
+
+interface AdminMediaNewsletterRouteChildren {
+  AdminMediaNewsletterAbonnesRoute: typeof AdminMediaNewsletterAbonnesRoute
+  AdminMediaNewsletterCampagnesRoute: typeof AdminMediaNewsletterCampagnesRoute
+  AdminMediaNewsletterTemplatesRoute: typeof AdminMediaNewsletterTemplatesRoute
+  AdminMediaNewsletterIndexRoute: typeof AdminMediaNewsletterIndexRoute
+  AdminMediaNewsletterCampagneIdRoute: typeof AdminMediaNewsletterCampagneIdRoute
+}
+
+const AdminMediaNewsletterRouteChildren: AdminMediaNewsletterRouteChildren = {
+  AdminMediaNewsletterAbonnesRoute: AdminMediaNewsletterAbonnesRoute,
+  AdminMediaNewsletterCampagnesRoute: AdminMediaNewsletterCampagnesRoute,
+  AdminMediaNewsletterTemplatesRoute: AdminMediaNewsletterTemplatesRoute,
+  AdminMediaNewsletterIndexRoute: AdminMediaNewsletterIndexRoute,
+  AdminMediaNewsletterCampagneIdRoute: AdminMediaNewsletterCampagneIdRoute,
+}
+
+const AdminMediaNewsletterRouteWithChildren =
+  AdminMediaNewsletterRoute._addFileChildren(AdminMediaNewsletterRouteChildren)
+
+interface AdminMediaRouteChildren {
+  AdminMediaActualitesRoute: typeof AdminMediaActualitesRoute
+  AdminMediaArticlesRoute: typeof AdminMediaArticlesRoute
+  AdminMediaCalendrierRoute: typeof AdminMediaCalendrierRoute
+  AdminMediaCategoriesRoute: typeof AdminMediaCategoriesRoute
+  AdminMediaCommentairesRoute: typeof AdminMediaCommentairesRoute
+  AdminMediaMediasRoute: typeof AdminMediaMediasRoute
+  AdminMediaMonProfilRoute: typeof AdminMediaMonProfilRoute
+  AdminMediaNewsletterRoute: typeof AdminMediaNewsletterRouteWithChildren
+  AdminMediaParametresRoute: typeof AdminMediaParametresRoute
+  AdminMediaRapportsRoute: typeof AdminMediaRapportsRoute
+  AdminMediaRolesRoute: typeof AdminMediaRolesRoute
+  AdminMediaStatistiquesRoute: typeof AdminMediaStatistiquesRoute
+  AdminMediaUtilisateursRoute: typeof AdminMediaUtilisateursRoute
+  AdminMediaIndexRoute: typeof AdminMediaIndexRoute
+}
+
+const AdminMediaRouteChildren: AdminMediaRouteChildren = {
+  AdminMediaActualitesRoute: AdminMediaActualitesRoute,
+  AdminMediaArticlesRoute: AdminMediaArticlesRoute,
+  AdminMediaCalendrierRoute: AdminMediaCalendrierRoute,
+  AdminMediaCategoriesRoute: AdminMediaCategoriesRoute,
+  AdminMediaCommentairesRoute: AdminMediaCommentairesRoute,
+  AdminMediaMediasRoute: AdminMediaMediasRoute,
+  AdminMediaMonProfilRoute: AdminMediaMonProfilRoute,
+  AdminMediaNewsletterRoute: AdminMediaNewsletterRouteWithChildren,
+  AdminMediaParametresRoute: AdminMediaParametresRoute,
+  AdminMediaRapportsRoute: AdminMediaRapportsRoute,
+  AdminMediaRolesRoute: AdminMediaRolesRoute,
+  AdminMediaStatistiquesRoute: AdminMediaStatistiquesRoute,
+  AdminMediaUtilisateursRoute: AdminMediaUtilisateursRoute,
+  AdminMediaIndexRoute: AdminMediaIndexRoute,
+}
+
+const AdminMediaRouteWithChildren = AdminMediaRoute._addFileChildren(
+  AdminMediaRouteChildren,
+)
 
 interface AdminNewsletterRouteChildren {
   AdminNewsletterAbonnesRoute: typeof AdminNewsletterAbonnesRoute
@@ -1182,12 +1881,14 @@ interface AdminRouteChildren {
   AdminCommandesRoute: typeof AdminCommandesRoute
   AdminCommentairesRoute: typeof AdminCommentairesRoute
   AdminCouponsRoute: typeof AdminCouponsRoute
+  AdminEditionRoute: typeof AdminEditionRouteWithChildren
   AdminEditorialCalendarRoute: typeof AdminEditorialCalendarRoute
   AdminFavorisRoute: typeof AdminFavorisRoute
   AdminHistoriqueRoute: typeof AdminHistoriqueRoute
   AdminLivresRoute: typeof AdminLivresRoute
   AdminMaBibliothequeRoute: typeof AdminMaBibliothequeRoute
   AdminMarquePagesRoute: typeof AdminMarquePagesRoute
+  AdminMediaRoute: typeof AdminMediaRouteWithChildren
   AdminMediasRoute: typeof AdminMediasRoute
   AdminMesAchatsRoute: typeof AdminMesAchatsRoute
   AdminMonProfilRoute: typeof AdminMonProfilRoute
@@ -1197,7 +1898,6 @@ interface AdminRouteChildren {
   AdminPromotionsRoute: typeof AdminPromotionsRoute
   AdminRapportsRoute: typeof AdminRapportsRoute
   AdminRolesRoute: typeof AdminRolesRoute
-  AdminSeoRoute: typeof AdminSeoRoute
   AdminStatistiquesRoute: typeof AdminStatistiquesRoute
   AdminTelechargementsRoute: typeof AdminTelechargementsRoute
   AdminUtilisateursRoute: typeof AdminUtilisateursRoute
@@ -1213,12 +1913,14 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCommandesRoute: AdminCommandesRoute,
   AdminCommentairesRoute: AdminCommentairesRoute,
   AdminCouponsRoute: AdminCouponsRoute,
+  AdminEditionRoute: AdminEditionRouteWithChildren,
   AdminEditorialCalendarRoute: AdminEditorialCalendarRoute,
   AdminFavorisRoute: AdminFavorisRoute,
   AdminHistoriqueRoute: AdminHistoriqueRoute,
   AdminLivresRoute: AdminLivresRoute,
   AdminMaBibliothequeRoute: AdminMaBibliothequeRoute,
   AdminMarquePagesRoute: AdminMarquePagesRoute,
+  AdminMediaRoute: AdminMediaRouteWithChildren,
   AdminMediasRoute: AdminMediasRoute,
   AdminMesAchatsRoute: AdminMesAchatsRoute,
   AdminMonProfilRoute: AdminMonProfilRoute,
@@ -1228,7 +1930,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPromotionsRoute: AdminPromotionsRoute,
   AdminRapportsRoute: AdminRapportsRoute,
   AdminRolesRoute: AdminRolesRoute,
-  AdminSeoRoute: AdminSeoRoute,
   AdminStatistiquesRoute: AdminStatistiquesRoute,
   AdminTelechargementsRoute: AdminTelechargementsRoute,
   AdminUtilisateursRoute: AdminUtilisateursRoute,

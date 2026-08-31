@@ -10,6 +10,14 @@ import {
   parseRedirectPath,
 } from "@/lib/redirect-navigation";
 import type { Role } from "@/lib/admin-data";
+import {
+  classeChamp,
+  connexionSchema,
+  erreursParChamp,
+  filtrerSaisieTelephone,
+  inscriptionSchema,
+  normaliserTelephoneRdc,
+} from "@/lib/inscription-validation";
 import { BookOpen, Newspaper, Shield } from "lucide-react";
 
 const searchSchema = z.object({
@@ -41,13 +49,30 @@ function Connexion() {
   const [mode, setMode] = useState<"connexion" | "inscription">(modeSearch ?? "connexion");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
   const [adresse, setAdresse] = useState("");
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [erreursChamps, setErreursChamps] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const { session, deconnexion } = useSession();
+
+  const effacerErreurChamp = (champ: string) => {
+    setErreursChamps((prev) => {
+      if (!prev[champ]) return prev;
+      const next = { ...prev };
+      delete next[champ];
+      return next;
+    });
+  };
+
+  const changerMode = (m: "connexion" | "inscription") => {
+    setMode(m);
+    setErreur("");
+    setErreursChamps({});
+  };
 
   useEffect(() => {
     if (modeSearch) setMode(modeSearch);
@@ -73,6 +98,30 @@ function Connexion() {
   const soumettre = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErreur("");
+    setErreursChamps({});
+
+    if (mode === "inscription") {
+      const validation = inscriptionSchema.safeParse({
+        nom,
+        email,
+        telephone,
+        adresse,
+        password,
+        confirmation,
+      });
+
+      if (!validation.success) {
+        setErreursChamps(erreursParChamp(validation.error));
+        return;
+      }
+    } else {
+      const validation = connexionSchema.safeParse({ email, password });
+      if (!validation.success) {
+        setErreursChamps(erreursParChamp(validation.error));
+        return;
+      }
+    }
+
     setChargement(true);
 
     try {
@@ -81,7 +130,7 @@ function Connexion() {
           nom: nom.trim(),
           email: email.trim(),
           password,
-          telephone: telephone.trim(),
+          telephone: normaliserTelephoneRdc(telephone.trim()) ?? telephone.trim(),
           adresse: adresse.trim(),
           role: "lecteur",
         });
@@ -109,7 +158,13 @@ function Connexion() {
         allerApresAuth(user.role);
       }
     } catch (err: any) {
-      setErreur(err.message || "Une erreur est survenue lors de la connexion.");
+      if (mode === "inscription" && err.statusCode === 409) {
+        setErreursChamps({ email: err.message || "Un compte existe déjà avec cette adresse e-mail." });
+      } else if (err.statusCode === 422 && Array.isArray(err.errors)) {
+        setErreur(err.errors.join(" "));
+      } else {
+        setErreur(err.message || "Une erreur est survenue lors de la connexion.");
+      }
     } finally {
       setChargement(false);
     }
@@ -157,180 +212,236 @@ function Connexion() {
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-14 px-4 py-16 md:grid-cols-2 md:items-center">
-      <div>
-        <p className="kicker">Espace personnel & professionnel</p>
-        <h1 className="mt-3 text-4xl leading-tight md:text-5xl">
-          Bienvenue sur Itobe.
-        </h1>
-        <p className="mt-5 text-muted-foreground">
-          Accédez à votre espace lecteur pour retrouver votre bibliothèque synchronisée, ou connectez-vous au back-office éditorial.
-        </p>
+    <div className="mx-auto max-w-5xl px-4 py-10 md:py-16">
+      <div className="grid gap-8 md:grid-cols-2 md:items-center md:gap-14">
+        <div className="order-1 text-center md:order-1 md:text-left">
+          <p className="kicker">Espace personnel & professionnel</p>
+          <h1 className="mt-3 font-display text-3xl leading-tight md:text-5xl">
+            Bienvenue sur Itobe.
+          </h1>
+          <p className="mx-auto mt-4 max-w-sm text-sm text-muted-foreground md:mx-0 md:mt-5 md:max-w-none md:text-base">
+            Accédez à votre espace lecteur pour retrouver votre bibliothèque synchronisée, ou connectez-vous au back-office éditorial.
+          </p>
 
-        <div className="mt-8 space-y-3">
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-sm">
-            <BookOpen className="mt-0.5 size-4 text-accent shrink-0" />
-            <div>
-              <p className="font-medium">Maison d&apos;Édition & Bibliothèque</p>
-              <p className="text-xs text-muted-foreground">Lecture en ligne, achats d&apos;ouvrages et synchronisation multi-appareils.</p>
+          <div className="mt-8 hidden space-y-3 md:block">
+            <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-left text-sm">
+              <BookOpen className="mt-0.5 size-4 shrink-0 text-accent" />
+              <div>
+                <p className="font-medium">Maison d&apos;Édition & Bibliothèque</p>
+                <p className="text-xs text-muted-foreground">
+                  Lecture en ligne, achats d&apos;ouvrages et synchronisation multi-appareils.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-sm">
-            <Newspaper className="mt-0.5 size-4 text-accent shrink-0" />
-            <div>
-              <p className="font-medium">Portail Média & Actualités</p>
-              <p className="text-xs text-muted-foreground">Articles, grands reportages, analyses culturelles et économiques.</p>
+            <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-left text-sm">
+              <Newspaper className="mt-0.5 size-4 shrink-0 text-accent" />
+              <div>
+                <p className="font-medium">Portail Média & Actualités</p>
+                <p className="text-xs text-muted-foreground">
+                  Articles, grands reportages, analyses culturelles et économiques.
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-sm">
-            <Shield className="mt-0.5 size-4 text-accent shrink-0" />
-            <div>
-              <p className="font-medium">Accès sécurisé</p>
-              <p className="text-xs text-muted-foreground">Gestion protégée de vos données et de vos abonnements.</p>
+            <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5 text-left text-sm">
+              <Shield className="mt-0.5 size-4 shrink-0 text-accent" />
+              <div>
+                <p className="font-medium">Accès sécurisé</p>
+                <p className="text-xs text-muted-foreground">
+                  Gestion protégée de vos données et de vos abonnements.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="rounded-sm border border-border bg-card p-7 shadow-soft">
-        <div className="flex gap-2">
-          {(["connexion", "inscription"] as const).map((m) => (
-            <button
-              key={m}
-              type="button"
-              onClick={() => {
-                setMode(m);
-                setErreur("");
-              }}
-              className={`flex-1 rounded-sm px-3 py-2 text-sm font-medium transition-colors ${
-                mode === m ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {m === "connexion" ? "Connexion" : "Créer un compte"}
-            </button>
-          ))}
-        </div>
+        <div className="order-2 rounded-sm border border-border bg-card p-5 shadow-soft sm:p-7 md:order-2">
+          <div className="flex gap-2">
+            {(["connexion", "inscription"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => changerMode(m)}
+                className={`flex-1 rounded-sm px-3 py-2.5 text-sm font-medium transition-colors ${
+                  mode === m ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {m === "connexion" ? "Connexion" : "Créer un compte"}
+              </button>
+            ))}
+          </div>
 
-        <form className="mt-6 space-y-4" onSubmit={soumettre}>
-          {mode === "inscription" && (
-            <>
-              <label className="block text-sm">
-                <span className="text-xs text-muted-foreground">Nom complet</span>
-                <input
-                  required
-                  value={nom}
-                  onChange={(e) => setNom(e.target.value)}
-                  placeholder="Ex: Jean Mukendi"
-                  className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-                />
-              </label>
-              <label className="block text-sm">
-                <span className="text-xs text-muted-foreground">Numéro de téléphone</span>
-                <input
-                  required
-                  type="tel"
-                  value={telephone}
-                  onChange={(e) => setTelephone(e.target.value)}
-                  placeholder="+243 81 234 5678"
-                  autoComplete="tel"
-                  className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-                />
-              </label>
-              <label className="block text-sm">
-                <span className="text-xs text-muted-foreground">Adresse complète</span>
-                <textarea
-                  required
-                  rows={2}
-                  value={adresse}
-                  onChange={(e) => setAdresse(e.target.value)}
-                  placeholder="Ex: 12 Av. de la Paix, Commune de Gombe, Kinshasa"
-                  autoComplete="street-address"
-                  className="mt-1 w-full resize-none rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-                />
-              </label>
-            </>
-          )}
+          <form className="mt-6 space-y-4" onSubmit={soumettre}>
+            {mode === "inscription" && (
+              <>
+                <label className="block text-sm">
+                  <span className="text-xs text-muted-foreground">Nom complet</span>
+                  <input
+                    value={nom}
+                    onChange={(e) => {
+                      setNom(e.target.value);
+                      effacerErreurChamp("nom");
+                    }}
+                    placeholder="Ex: Jean Mukendi"
+                    autoComplete="name"
+                    aria-invalid={Boolean(erreursChamps.nom)}
+                    className={classeChamp(Boolean(erreursChamps.nom))}
+                  />
+                  {erreursChamps.nom && (
+                    <p className="mt-1 text-xs text-destructive">{erreursChamps.nom}</p>
+                  )}
+                </label>
+                <label className="block text-sm">
+                  <span className="text-xs text-muted-foreground">Numéro de téléphone</span>
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    value={telephone}
+                    onChange={(e) => {
+                      setTelephone(filtrerSaisieTelephone(e.target.value));
+                      effacerErreurChamp("telephone");
+                    }}
+                    placeholder="+243 81 234 5678"
+                    autoComplete="tel"
+                    aria-invalid={Boolean(erreursChamps.telephone)}
+                    className={classeChamp(Boolean(erreursChamps.telephone))}
+                  />
+                  {erreursChamps.telephone ? (
+                    <p className="mt-1 text-xs text-destructive">{erreursChamps.telephone}</p>
+                  ) : (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Format RDC : +243 ou 0 suivi de 9 chiffres.
+                    </p>
+                  )}
+                </label>
+                <label className="block text-sm">
+                  <span className="text-xs text-muted-foreground">Adresse complète</span>
+                  <textarea
+                    rows={2}
+                    value={adresse}
+                    onChange={(e) => {
+                      setAdresse(e.target.value);
+                      effacerErreurChamp("adresse");
+                    }}
+                    placeholder="Ex: 12 Av. de la Paix, Commune de Gombe, Kinshasa"
+                    autoComplete="street-address"
+                    aria-invalid={Boolean(erreursChamps.adresse)}
+                    className={`${classeChamp(Boolean(erreursChamps.adresse))} resize-none`}
+                  />
+                  {erreursChamps.adresse && (
+                    <p className="mt-1 text-xs text-destructive">{erreursChamps.adresse}</p>
+                  )}
+                </label>
+              </>
+            )}
 
-          <label className="block text-sm">
-            <span className="text-xs text-muted-foreground">Adresse e-mail</span>
-            <input
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="votre.email@domaine.com"
-              className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-            />
-          </label>
-
-          <label className="block text-sm">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-xs text-muted-foreground">Mot de passe</span>
-              {mode === "connexion" && (
-                <Link
-                  to="/mot-de-passe-oublie"
-                  className="text-xs text-accent hover:underline"
-                >
-                  Mot de passe oublié ?
-                </Link>
+            <label className="block text-sm">
+              <span className="text-xs text-muted-foreground">Adresse e-mail</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  effacerErreurChamp("email");
+                }}
+                placeholder="votre.email@domaine.com"
+                autoComplete="email"
+                aria-invalid={Boolean(erreursChamps.email)}
+                className={classeChamp(Boolean(erreursChamps.email))}
+              />
+              {erreursChamps.email && (
+                <p className="mt-1 text-xs text-destructive">{erreursChamps.email}</p>
               )}
-            </div>
-            <input
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="mt-1 w-full rounded-sm border border-border bg-background px-3 py-3 text-sm outline-none focus:border-accent"
-            />
-          </label>
+            </label>
 
-          {erreur && (
-            <p className="rounded-sm bg-destructive/10 px-3 py-2 text-sm text-destructive">
-              {erreur}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={chargement}
-            className="w-full rounded-sm bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
-          >
-            {chargement ? "Veuillez patienter..." : mode === "connexion" ? "Se connecter" : "Créer mon compte"}
-          </button>
-        </form>
-
-        <p className="mt-5 text-center text-xs text-muted-foreground">
-          {mode === "connexion" ? (
-            <>
-              Pas encore de compte ?{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("inscription");
-                  setErreur("");
+            <label className="block text-sm">
+              <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <span className="text-xs text-muted-foreground">Mot de passe</span>
+                {mode === "connexion" && (
+                  <Link to="/mot-de-passe-oublie" className="text-xs text-accent hover:underline">
+                    Mot de passe oublié ?
+                  </Link>
+                )}
+              </div>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  effacerErreurChamp("password");
                 }}
-                className="text-accent hover:underline"
-              >
-                Inscrivez-vous
-              </button>
-            </>
-          ) : (
-            <>
-              Vous avez déjà un compte ?{" "}
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("connexion");
-                  setErreur("");
-                }}
-                className="text-accent hover:underline"
-              >
-                Connectez-vous
-              </button>
-            </>
-          )}
-        </p>
+                placeholder="••••••••"
+                autoComplete={mode === "connexion" ? "current-password" : "new-password"}
+                aria-invalid={Boolean(erreursChamps.password)}
+                className={classeChamp(Boolean(erreursChamps.password))}
+              />
+              {erreursChamps.password && (
+                <p className="mt-1 text-xs text-destructive">{erreursChamps.password}</p>
+              )}
+              {mode === "inscription" && !erreursChamps.password && (
+                <p className="mt-1 text-xs text-muted-foreground">Minimum 6 caractères.</p>
+              )}
+            </label>
+
+            {mode === "inscription" && (
+              <label className="block text-sm">
+                <span className="text-xs text-muted-foreground">Confirmer le mot de passe</span>
+                <input
+                  type="password"
+                  value={confirmation}
+                  onChange={(e) => {
+                    setConfirmation(e.target.value);
+                    effacerErreurChamp("confirmation");
+                  }}
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                  aria-invalid={Boolean(erreursChamps.confirmation)}
+                  className={classeChamp(Boolean(erreursChamps.confirmation))}
+                />
+                {erreursChamps.confirmation && (
+                  <p className="mt-1 text-xs text-destructive">{erreursChamps.confirmation}</p>
+                )}
+              </label>
+            )}
+
+            {erreur && (
+              <p className="rounded-sm bg-destructive/10 px-3 py-2 text-sm text-destructive">{erreur}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={chargement}
+              className="w-full rounded-sm bg-primary px-4 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
+            >
+              {chargement ? "Veuillez patienter..." : mode === "connexion" ? "Se connecter" : "Créer mon compte"}
+            </button>
+          </form>
+
+          <p className="mt-5 text-center text-xs text-muted-foreground">
+            {mode === "connexion" ? (
+              <>
+                Pas encore de compte ?{" "}
+                <button
+                  type="button"
+                  onClick={() => changerMode("inscription")}
+                  className="text-accent hover:underline"
+                >
+                  Inscrivez-vous
+                </button>
+              </>
+            ) : (
+              <>
+                Vous avez déjà un compte ?{" "}
+                <button
+                  type="button"
+                  onClick={() => changerMode("connexion")}
+                  className="text-accent hover:underline"
+                >
+                  Connectez-vous
+                </button>
+              </>
+            )}
+          </p>
+        </div>
       </div>
     </div>
   );

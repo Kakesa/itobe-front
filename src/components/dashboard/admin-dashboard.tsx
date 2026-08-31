@@ -131,7 +131,7 @@ export function AdminDashboard() {
       <SectionCard
         titre="Dernières commandes"
         action={
-          <Link to="/admin/commandes" className="text-xs text-accent hover:underline">
+          <Link to="/admin/edition/commandes" className="text-xs text-accent hover:underline">
             Tout voir
           </Link>
         }
@@ -161,7 +161,7 @@ export function AdminDashboard() {
                     <Statut valeur={c.statut} />
                   </td>
                   <td className="py-2.5 text-right">
-                    <Link to="/admin/commandes" className="text-xs text-accent hover:underline">
+                    <Link to="/admin/edition/commandes" className="text-xs text-accent hover:underline">
                       Détails
                     </Link>
                   </td>

@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AbonnesPanel } from "@/components/newsletter/abonnes-panel";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/newsletter/abonnes")({
-  component: () => <AbonnesPanel />,
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/media/newsletter/abonnes" as "/admin/media/newsletter/abonnes" });
+  },
 });

@@ -11,13 +11,13 @@ import {
 import { SectionCard } from "./ui";
 
 const actions = [
-  { to: "/admin/articles", label: "Nouvel article", icon: Newspaper },
-  { to: "/admin/livres", label: "Nouveau livre", icon: BookPlus },
-  { to: "/admin/categories", label: "Nouvelle catégorie", icon: FolderPlus },
-  { to: "/admin/auteurs", label: "Nouvel auteur", icon: UserPlus },
-  { to: "/admin/promotions", label: "Nouvelle promotion", icon: Percent },
-  { to: "/admin/coupons", label: "Nouveau coupon", icon: Tag },
-  { to: "/admin/newsletter", label: "Nouvelle Newsletter", icon: Mail },
+  { to: "/admin/media/articles", label: "Nouvel article", icon: Newspaper },
+  { to: "/admin/edition/livres", label: "Nouveau livre", icon: BookPlus },
+  { to: "/admin/media/categories", label: "Catégorie média", icon: FolderPlus },
+  { to: "/admin/edition/auteurs", label: "Nouvel auteur", icon: UserPlus },
+  { to: "/admin/edition/promotions", label: "Nouvelle promotion", icon: Percent },
+  { to: "/admin/edition/coupons", label: "Nouveau coupon", icon: Tag },
+  { to: "/admin/media/newsletter", label: "Nouvelle Newsletter", icon: Mail },
 ] as const;
 
 export function QuickActions() {

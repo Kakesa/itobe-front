@@ -232,6 +232,8 @@ export const AuteursApi = {
   getAll: (params?: { page?: number; limit?: number; q?: string }) =>
     api.get("/auteurs", params),
   getBySlug: (slug: string) => api.get(`/auteurs/${slug}`),
+  getMyProfile: () => api.get("/auteurs/me/profile"),
+  updateMyBio: (bio: string) => api.patch("/auteurs/me/bio", { bio }),
   create: (data: any) => api.post("/auteurs", data),
   update: (id: string, data: any) => api.put(`/auteurs/${id}`, data),
   delete: (id: string) => api.delete(`/auteurs/${id}`),

@@ -1,4 +1,6 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { useRole } from "@/hooks/use-role";
+import { destinationMonProfil } from "@/lib/redirect-navigation";
 
 export const Route = createFileRoute("/profil")({
   head: () => ({
@@ -7,5 +9,10 @@ export const Route = createFileRoute("/profil")({
       { name: "robots", content: "noindex" },
     ],
   }),
-  component: () => <Navigate to="/admin/mon-profil" />,
+  component: ProfilRedirect,
 });
+
+function ProfilRedirect() {
+  const { role } = useRole();
+  return <Navigate to={destinationMonProfil(role)} />;
+}

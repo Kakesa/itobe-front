@@ -47,6 +47,7 @@ export type Auteur = {
   role: string;
   bio: string;
   ville: string;
+  photo?: string;
   reseaux: { label: string; url: string }[];
   ventes: number;
   lectures: number;
@@ -166,8 +167,9 @@ export const auteursSeed: Auteur[] = [
     slug: "christopher-bigos",
     nom: "Christopher Bigo's",
     role: "Éditeur & essayiste",
-    bio: "Fondateur d'Itobe. Il écrit sur la ville, la mémoire et les métiers du livre depuis quinze ans.",
+    bio: "Fondateur d'Itobe. Il écrit sur la ville, la mémoire et les métiers du livre depuis quinze ans.\n\nBasé à Kinshasa, il consacre une part essentielle de son travail à documenter les mutations urbaines et la circulation des idées en Afrique centrale.",
     ville: "Kinshasa",
+    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
     reseaux: [
       { label: "X", url: "#" },
       { label: "LinkedIn", url: "#" },
@@ -180,8 +182,9 @@ export const auteursSeed: Auteur[] = [
     slug: "marie-lomba",
     nom: "Marie Lomba",
     role: "Romancière & poétesse",
-    bio: "Autrice de romans choraux et de poésie brève. Ses textes explorent la nuit urbaine et les silences familiaux.",
+    bio: "Autrice de romans choraux et de poésie brève. Ses textes explorent la nuit urbaine et les silences familiaux.\n\nÉconomiste de formation, elle croise fiction et analyse des industries créatives africaines dans ses chroniques.",
     ville: "Lubumbashi",
+    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop&crop=face",
     reseaux: [{ label: "Instagram", url: "#" }],
     ventes: 2240,
     lectures: 12980,
@@ -191,8 +194,9 @@ export const auteursSeed: Auteur[] = [
     slug: "espoir-kakesa",
     nom: "Espoir Kakesa",
     role: "Journaliste & auteur",
-    bio: "Journaliste culturel, il anime le podcast « Dans l'atelier d'écriture » et publie des essais courts.",
+    bio: "Journaliste culturel, critique littéraire et reporter d'investigation basé à Kinshasa.\n\nIl anime le podcast « Dans l'atelier d'écriture » et couvre la scène éditoriale congolaise. Ses enquêtes croisent culture, politique et société.\n\nAuteur d'essais sur l'action collective, il publie régulièrement des portraits d'auteurs et des chroniques sur la lecture numérique.",
     ville: "Kinshasa",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
     reseaux: [
       { label: "X", url: "#" },
       { label: "Site", url: "#" },
@@ -336,8 +340,9 @@ const normaliserAuteurApi = (entry: any): Auteur => ({
   slug: String(entry?.slug ?? entry?._id ?? "auteur"),
   nom: String(entry?.nom ?? "Auteur"),
   role: String(entry?.role ?? "Auteur"),
-  bio: String(entry?.bio ?? ""),
+  bio: String(entry?.bio ?? entry?.biographie ?? ""),
   ville: String(entry?.ville ?? ""),
+  ...(typeof entry?.photo === "string" && entry.photo ? { photo: entry.photo } : {}),
   reseaux: Array.isArray(entry?.reseaux)
     ? entry.reseaux.map((item: any) => ({ label: String(item?.label ?? "Link"), url: String(item?.url ?? "#") }))
     : [],

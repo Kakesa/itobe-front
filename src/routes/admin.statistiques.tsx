@@ -1,12 +1,7 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/admin/module-placeholder";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/statistiques")({
-  component: () => (
-    <ModulePlaceholder
-      titre="Statistiques"
-      description="Indicateurs détaillés et filtres avancés."
-      requis={["admin", "editeur"]}
-    />
-  ),
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/media/statistiques" as "/admin/media/statistiques" });
+  },
 });

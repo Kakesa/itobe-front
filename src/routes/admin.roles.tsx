@@ -1,12 +1,7 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/admin/module-placeholder";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/roles")({
-  component: () => (
-    <ModulePlaceholder
-      titre="Rôles & Permissions"
-      description="Matrice des droits ADMIN, ÉDITEUR et LECTEUR."
-      requis={["admin"]}
-    />
-  ),
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/media/roles" as "/admin/media/roles" });
+  },
 });

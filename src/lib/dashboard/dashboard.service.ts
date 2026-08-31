@@ -202,15 +202,15 @@ function activites(): ActiviteItem[] {
 function alertes(livresD: LivreDashboard[]): AlerteItem[] {
   const items: AlerteItem[] = [];
   livresD.filter((l) => l.stock === 0).forEach((l) =>
-    items.push({ id: `stock-${l.slug}`, niveau: "critique", message: `Rupture de stock : ${l.titre}`, lien: "/admin/livres" }),
+    items.push({ id: `stock-${l.slug}`, niveau: "critique", message: `Rupture de stock : ${l.titre}`, lien: "/admin/edition/livres" }),
   );
   commandes.filter((c) => c.statut === "Échouée").forEach((c) =>
     items.push({ id: `pay-${c.id}`, niveau: "critique", message: `Paiement échoué ${c.id}`, lien: "/admin/paiements" }),
   );
   commandes.filter((c) => c.statut === "En attente").forEach((c) =>
-    items.push({ id: `att-${c.id}`, niveau: "attention", message: `Commande en attente ${c.id}`, lien: "/admin/commandes" }),
+    items.push({ id: `att-${c.id}`, niveau: "attention", message: `Commande en attente ${c.id}`, lien: "/admin/edition/commandes" }),
   );
-  items.push({ id: "brouillon", niveau: "attention", message: "1 brouillon article non publié depuis 7 jours", lien: "/admin/articles" });
+  items.push({ id: "brouillon", niveau: "attention", message: "1 brouillon article non publié depuis 7 jours", lien: "/admin/media/articles" });
   items.push({ id: "promo", niveau: "info", message: "2 promotions actives à surveiller", lien: "/admin/promotions" });
   return items;
 }

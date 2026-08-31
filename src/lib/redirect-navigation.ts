@@ -49,6 +49,14 @@ export function parseRedirectPath(redirect: string): NavigateOptions | null {
 
 /** Destination par défaut après connexion (hors parcours d'achat). */
 export function destinationApresConnexion(role: Role): string {
-  if (role === "admin" || role === "editeur") return "/admin";
+  if (role === "admin") return "/admin/media";
+  if (role === "editeur") return "/admin/edition";
   return "/edition";
+}
+
+/** Page Mon profil dans l'espace correspondant au rôle. */
+export function destinationMonProfil(role: Role): "/admin/media/mon-profil" | "/admin/edition/mon-profil" | "/admin/mon-profil" {
+  if (role === "admin") return "/admin/media/mon-profil";
+  if (role === "editeur") return "/admin/edition/mon-profil";
+  return "/admin/mon-profil";
 }

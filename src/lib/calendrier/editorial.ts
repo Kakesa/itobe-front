@@ -123,10 +123,10 @@ export function versElement(
     ...(item["auteur"] ? { auteur: String(item["auteur"]) } : {}),
     lien:
       type === "livre"
-        ? `/admin/livres`
+        ? `/admin/edition/livres`
         : type === "actualite"
-          ? `/admin/actualites`
-          : `/admin/articles`,
+          ? `/admin/media/actualites`
+          : `/admin/media/articles`,
   };
 }
 

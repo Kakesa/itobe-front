@@ -1,12 +1,7 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
-import { ModulePlaceholder } from "@/components/admin/module-placeholder";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/rapports")({
-  component: () => (
-    <ModulePlaceholder
-      titre="Rapports"
-      description="Exports et rapports d'activité Média + Édition."
-      requis={["admin", "editeur"]}
-    />
-  ),
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/media/rapports" as "/admin/media/rapports" });
+  },
 });
