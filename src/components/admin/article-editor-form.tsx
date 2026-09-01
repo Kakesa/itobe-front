@@ -3,6 +3,7 @@ import { ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { auteurs, categoriesMedia, nomAuteur } from "@/lib/data";
 import { notify } from "@/lib/notify";
 import { uploadMediaImage } from "@/lib/upload-media";
+import { ArticleRichEditor } from "@/components/admin/article-rich-editor";
 
 export type ArticleFormValues = {
   titre: string;
@@ -149,16 +150,11 @@ export function ArticleEditorForm({
         </div>
 
         <div>
-          <label htmlFor="art-contenu" className={label}>
-            Contenu
-          </label>
-          <textarea
-            id="art-contenu"
-            rows={14}
+          <label className={label}>Contenu</label>
+          <ArticleRichEditor
             value={v.contenu}
-            onChange={(e) => set("contenu", e.target.value)}
+            onChange={(html) => set("contenu", html)}
             placeholder="Rédigez le corps de l'article…"
-            className={`${champ} min-h-[280px] font-sans leading-relaxed`}
           />
         </div>
 
@@ -445,11 +441,20 @@ export function ArticleEditorForm({
 }
 
 export function articleVersForm(row: Record<string, unknown>): ArticleFormValues & { id: string } {
+  const rawContenu = String(row["contenu"] ?? "");
+  const contenu =
+    rawContenu.trim().startsWith("<") || !rawContenu.trim()
+      ? rawContenu
+      : rawContenu
+          .split(/\n{2,}/)
+          .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+          .join("");
+
   return {
     id: String(row["id"]),
     titre: String(row["titre"] ?? ""),
     resume: String(row["resume"] ?? row["chapo"] ?? ""),
-    contenu: String(row["contenu"] ?? ""),
+    contenu,
     auteur: String(row["auteur"] ?? auteurs[0]?.slug ?? ""),
     categorie: String(row["categorie"] ?? "Actualités"),
     tags: Array.isArray(row["tags"]) ? row["tags"].join(", ") : String(row["tags"] ?? ""),

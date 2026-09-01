@@ -2268,3 +2268,163 @@
   border-color: color-mix(in oklab, var(--brand-gold) 60%, transparent);
   background: color-mix(in oklab, var(--brand-gold) 10%, transparent);
 }
+
+/* ------------------------------------------------------------------ */
+/* Éditeur riche — articles admin                                      */
+/* ------------------------------------------------------------------ */
+
+.rich-editor {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--background);
+}
+
+.rich-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.45rem 0.55rem;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in oklab, var(--secondary) 65%, var(--background));
+}
+
+.rich-editor__style {
+  height: 2rem;
+  min-width: 5.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid var(--border);
+  background: var(--background);
+  padding: 0 0.5rem;
+  font-size: 0.78rem;
+}
+
+.rich-editor__sep {
+  width: 1px;
+  height: 1.25rem;
+  margin: 0 0.15rem;
+  background: var(--border);
+}
+
+.rich-editor__btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  color: var(--muted-foreground);
+  transition: background 0.15s, color 0.15s;
+}
+
+.rich-editor__btn:hover {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+.rich-editor__btn--active {
+  background: color-mix(in oklab, var(--accent) 18%, var(--background));
+  color: var(--accent);
+}
+
+.rich-editor__content {
+  min-height: 17.5rem;
+  padding: 1rem 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  outline: none;
+}
+
+.rich-editor__content p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.rich-editor__preview h1,
+.rich-editor__content h1 {
+  margin: 1.25rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.rich-editor__preview h2,
+.rich-editor__content h2 {
+  margin: 1.1rem 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.rich-editor__preview h3,
+.rich-editor__content h3 {
+  margin: 1rem 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.rich-editor__preview ul,
+.rich-editor__content ul,
+.rich-editor__preview ol,
+.rich-editor__content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.4rem;
+}
+
+.rich-editor__quote,
+.rich-editor__preview blockquote,
+.rich-editor__content blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--brand-orange);
+  font-style: italic;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
+
+.rich-editor__code-block,
+.rich-editor__preview pre,
+.rich-editor__content pre {
+  margin: 1rem 0;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--secondary) 80%, var(--background));
+  padding: 0.85rem 1rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+.rich-editor__inline-code,
+.rich-editor__preview code:not(pre code),
+.rich-editor__content code:not(pre code) {
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--secondary) 85%, var(--background));
+  padding: 0.1rem 0.35rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85em;
+}
+
+.rich-editor__link,
+.rich-editor__preview a,
+.rich-editor__content a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.rich-editor__image,
+.rich-editor__preview img,
+.rich-editor__content img {
+  margin: 1rem 0;
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+.rich-editor__preview hr,
+.rich-editor__content hr {
+  margin: 1.25rem 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}

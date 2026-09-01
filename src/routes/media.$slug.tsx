@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArticleCover } from "@/components/article-cover";
+import { ArticleHtmlBody } from "@/components/admin/article-rich-editor";
 import { articles, formatDate, getArticle, getAuteur, nomAuteur } from "@/lib/data";
 import {
   fetchPublicArticleBySlug,
@@ -88,11 +89,7 @@ function ArticlePage() {
         <ArticleCover src={article.couverture ?? article.image} alt={article.titre} />
       </div>
 
-      <div className="mt-10 space-y-6 text-[1.05rem] leading-relaxed">
-        {article.corps.map((p: string, i: number) => (
-          <p key={i}>{p}</p>
-        ))}
-      </div>
+      <ArticleHtmlBody html={article.contenu} fallbackParagraphs={article.corps} />
 
       <div className="mt-10 flex flex-wrap gap-2">
         {article.tags.map((t: string) => (

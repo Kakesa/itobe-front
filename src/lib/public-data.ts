@@ -14,6 +14,7 @@ export type PublicArticle = {
   couverture?: string;
   populaire?: boolean;
   corps: string[];
+  contenu?: string;
 };
 
 export type PublicLivre = {
@@ -108,6 +109,7 @@ export const normalizePublicArticle = (item: any): PublicArticle => {
   ...(couverture ? { couverture } : {}),
   image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(item?.populaire ?? item?.aLaUne ?? false),
+  contenu: String(item?.contenu ?? ""),
   corps: Array.isArray(item?.corps)
     ? item.corps.map((part: unknown) => String(part))
     : [String(item?.contenu ?? item?.chapo ?? "")],
