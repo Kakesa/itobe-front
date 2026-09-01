@@ -11,6 +11,11 @@ import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
 import { uploadMediaImage } from "@/lib/upload-media";
+import {
+  ArticleRichEditor,
+  plainTextToHtml,
+  richTextIsEmpty,
+} from "@/components/admin/article-rich-editor";
 
 export type Colonne = {
   cle: string;
@@ -22,7 +27,7 @@ export type Colonne = {
 export type Champ = {
   nom: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "switch" | "date" | "image";
+  type?: "text" | "textarea" | "richtext" | "number" | "select" | "switch" | "date" | "image";
   options?: string[];
   requis?: boolean;
   placeholder?: string;
@@ -397,9 +402,14 @@ function FormulaireDialog({
     ),
   );
 
-  const manquant = champs.some(
-    (c) => c.requis && String(valeurs[c.nom] ?? "").trim() === "",
-  );
+  const manquant = champs.some((c) => {
+    if (!c.requis) return false;
+    const val = valeurs[c.nom];
+    if (c.type === "richtext") return richTextIsEmpty(String(val ?? ""));
+    return String(val ?? "").trim() === "";
+  });
+
+  const largeForm = champs.some((c) => c.type === "richtext");
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-ink/50 p-4">
@@ -413,7 +423,7 @@ function FormulaireDialog({
           }
           onEnregistrer(valeurs);
         }}
-        className="relative max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-xl border border-border bg-card p-6 shadow-xl"
+        className={`relative max-h-[85vh] w-full overflow-y-auto rounded-xl border border-border bg-card p-6 shadow-xl ${largeForm ? "max-w-3xl" : "max-w-lg"}`}
       >
         <h3 className="font-display text-xl">{titre}</h3>
         <div className="mt-5 grid gap-4">
@@ -427,7 +437,13 @@ function FormulaireDialog({
                   {c.label}
                   {c.requis && " *"}
                 </label>
-                {c.type === "textarea" ? (
+                {c.type === "richtext" ? (
+                  <ArticleRichEditor
+                    value={String(valeurs[c.nom] ?? "")}
+                    onChange={(html) => setValeurs((v) => ({ ...v, [c.nom]: html }))}
+                    placeholder={c.placeholder ?? "Rédigez la description…"}
+                  />
+                ) : c.type === "textarea" ? (
                   <textarea
                     id={id}
                     rows={3}
@@ -505,7 +521,10 @@ function FormulaireDialog({
 }
 
 function valeurInitiale(valeur: unknown, champ: Champ): unknown {
-  if (valeur !== undefined && valeur !== null) return valeur;
+  if (valeur !== undefined && valeur !== null) {
+    if (champ.type === "richtext") return plainTextToHtml(String(valeur));
+    return valeur;
+  }
   if (champ.defaut !== undefined) return champ.defaut;
   if (champ.type === "switch") return false;
   if (champ.type === "number") return 0;

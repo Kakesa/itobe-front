@@ -29,6 +29,23 @@ type ArticleRichEditorProps = {
 
 type BlockStyle = "paragraph" | "h1" | "h2" | "h3";
 
+export function plainTextToHtml(text: string): string {
+  const raw = text.trim();
+  if (!raw || raw.startsWith("<")) return text;
+  return raw
+    .split(/\n{2,}/)
+    .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+export function stripHtml(text: string): string {
+  return text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+export function richTextIsEmpty(html: string): boolean {
+  return !stripHtml(html);
+}
+
 function blockStyleFromEditor(editor: NonNullable<ReturnType<typeof useEditor>>): BlockStyle {
   if (editor.isActive("heading", { level: 1 })) return "h1";
   if (editor.isActive("heading", { level: 2 })) return "h2";

@@ -77,7 +77,7 @@ function AdminLivres() {
         {
           nom: "resume",
           label: "Résumé / synopsis",
-          type: "textarea",
+          type: "richtext",
           requis: true,
           placeholder: "Description de l'ouvrage affichée sur la fiche livre",
         },

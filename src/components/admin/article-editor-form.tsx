@@ -3,7 +3,7 @@ import { ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { auteurs, categoriesMedia, nomAuteur } from "@/lib/data";
 import { notify } from "@/lib/notify";
 import { uploadMediaImage } from "@/lib/upload-media";
-import { ArticleRichEditor } from "@/components/admin/article-rich-editor";
+import { ArticleRichEditor, plainTextToHtml } from "@/components/admin/article-rich-editor";
 
 export type ArticleFormValues = {
   titre: string;
@@ -442,13 +442,7 @@ export function ArticleEditorForm({
 
 export function articleVersForm(row: Record<string, unknown>): ArticleFormValues & { id: string } {
   const rawContenu = String(row["contenu"] ?? "");
-  const contenu =
-    rawContenu.trim().startsWith("<") || !rawContenu.trim()
-      ? rawContenu
-      : rawContenu
-          .split(/\n{2,}/)
-          .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
-          .join("");
+  const contenu = plainTextToHtml(rawContenu);
 
   return {
     id: String(row["id"]),

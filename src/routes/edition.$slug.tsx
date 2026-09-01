@@ -4,6 +4,7 @@ import { BookOpen, ChevronLeft, ChevronRight, Download, Heart, Star } from "luci
 import { BookCard } from "@/components/book-card";
 import { LivreDetailSkeleton } from "@/components/book-skeletons";
 import { BookCover } from "@/components/book-cover";
+import { ArticleHtmlBody, stripHtml } from "@/components/admin/article-rich-editor";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
@@ -22,12 +23,13 @@ export const Route = createFileRoute("/edition/$slug")({
       return { meta: [{ title: "Livre indisponible" }, { name: "robots", content: "noindex" }] };
     }
     const l = loaderData.livre;
+    const desc = stripHtml(l.resume).slice(0, 155);
     return {
       meta: [
         { title: `${l.titre} — ${nomAuteur(l.auteur)} | Éditions Itobe` },
-        { name: "description", content: l.resume.slice(0, 155) },
+        { name: "description", content: desc },
         { property: "og:title", content: l.titre },
-        { property: "og:description", content: l.resume.slice(0, 155) },
+        { property: "og:description", content: desc },
         { property: "og:type", content: "product" },
         { property: "og:url", content: `/edition/${params.slug}` },
       ],
@@ -290,10 +292,11 @@ function LivrePage() {
 
         <div className="fiche-livre-v2__panel">
           {onglet === "synopsis" && (
-            <div className="fiche-livre-v2__synopsis space-y-4 text-[0.95rem] leading-relaxed text-[var(--edition-brown)]/90">
-              {livre.resume.split(/\n\n+/).map((para, i) => (
-                <p key={i}>{para.trim()}</p>
-              ))}
+            <div className="fiche-livre-v2__synopsis text-[0.95rem] leading-relaxed text-[var(--edition-brown)]/90">
+              <ArticleHtmlBody
+                html={livre.resume}
+                fallbackParagraphs={livre.resume.split(/\n\n+/).map((p) => p.trim()).filter(Boolean)}
+              />
             </div>
           )}
 
