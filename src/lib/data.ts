@@ -1,5 +1,5 @@
-// Données publiques : catalogue livres depuis l'API (MongoDB) uniquement.
 import { AuteursApi, ArticlesApi, LivresApi, fetchAllPages } from "./api-client";
+import { ARTICLE_COVER_FALLBACK, extractCoverSource, resolveMediaUrl } from "./media-url";
 
 export type Article = {
   slug: string;
@@ -11,6 +11,8 @@ export type Article = {
   date: string;
   lecture: string;
   image: string;
+  /** URL brute de couverture (http, data URL ou /uploads). */
+  couverture?: string;
   populaire?: boolean;
   corps: string[];
 };
@@ -233,6 +235,15 @@ const normaliserTags = (value: unknown) =>
 
 const publicationParDefaut = () => new Date().toISOString().slice(0, 10);
 
+const articleCoverFromRow = (row: Record<string, unknown>): { couverture?: string; image: string } => {
+  const raw = extractCoverSource(String(row["couverture"] ?? row["image"] ?? ""));
+  const couverture = resolveMediaUrl(raw);
+  return {
+    ...(couverture ? { couverture } : {}),
+    image: couverture ?? ARTICLE_COVER_FALLBACK,
+  };
+};
+
 const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Article => ({
   slug: String(row["slug"] ?? row["id"] ?? `article-admin-${index}`),
   titre: String(row["titre"] ?? `Article ${index + 1}`),
@@ -242,10 +253,7 @@ const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Articl
   auteur: String(row["auteur"] ?? "espoir-kakesa"),
   date: String(row["date"] ?? row["datePublication"] ?? publicationParDefaut()),
   lecture: String(row["lecture"] ?? "5 min"),
-  image: String(
-    row["image"] ?? row["couverture"] ??
-      "linear-gradient(135deg, oklch(0.62 0.15 48), oklch(0.38 0.06 40))",
-  ),
+  ...articleCoverFromRow(row),
   populaire: Boolean(row["populaire"] ?? row["aLaUne"] ?? false),
   corps: Array.isArray(row["corps"])
     ? row["corps"].map((part) => String(part))
@@ -279,7 +287,11 @@ const normaliserValeurApi = (payload: unknown): any[] => {
   return [];
 };
 
-const normaliserArticleApi = (entry: any): Article => ({
+const normaliserArticleApi = (entry: any): Article => {
+  const raw = extractCoverSource(entry?.couverture ?? entry?.image);
+  const couverture = resolveMediaUrl(raw);
+
+  return {
   slug: String(entry?.slug ?? entry?._id ?? "article"),
   titre: String(entry?.titre ?? "Article"),
   chapo: String(entry?.chapo ?? entry?.resume ?? entry?.contenu ?? ""),
@@ -288,15 +300,14 @@ const normaliserArticleApi = (entry: any): Article => ({
   auteur: String(entry?.auteur?.slug ?? entry?.auteur ?? "espoir-kakesa"),
   date: String(entry?.datePublication ?? entry?.date ?? publicationParDefaut()),
   lecture: String(entry?.lecture ?? "5 min"),
-  image:
-    typeof entry?.couverture === "string" && entry.couverture
-      ? entry.couverture
-      : "linear-gradient(135deg, oklch(0.62 0.15 48), oklch(0.38 0.06 40))",
+  ...(couverture ? { couverture } : {}),
+  image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(entry?.populaire ?? entry?.aLaUne ?? false),
   corps: Array.isArray(entry?.corps)
     ? entry.corps.map((part: unknown) => String(part))
     : [String(entry?.contenu ?? entry?.chapo ?? "")],
-});
+};
+};
 
 const normaliserLivreApi = (entry: any): Livre => {
   const promoValue =

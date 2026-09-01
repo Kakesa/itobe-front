@@ -1,5 +1,5 @@
 import { useMemo, useState, useRef, useEffect, type ReactNode } from "react";
-import { ImagePlus, Pencil, Plus, Trash2, X } from "lucide-react";
+import { ImagePlus, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
@@ -10,6 +10,7 @@ import { hydratePublicData } from "@/lib/data";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
+import { uploadMediaImage } from "@/lib/upload-media";
 
 export type Colonne = {
   cle: string;
@@ -524,6 +525,7 @@ function ChampImage({
   onChange: (url: string) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
   const urlAffichee = valeur.startsWith("data:") ? "" : valeur;
 
   return (
@@ -533,7 +535,7 @@ function ChampImage({
           id={id}
           type="text"
           value={urlAffichee}
-          placeholder={placeholder ?? "URL de l'image"}
+          placeholder={placeholder ?? "URL Cloudinary ou lien externe"}
           onChange={(e) => onChange(e.target.value)}
           className="w-full flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
@@ -545,18 +547,31 @@ function ChampImage({
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (!f) return;
-            const reader = new FileReader();
-            reader.onload = () => onChange(String(reader.result));
-            reader.readAsDataURL(f);
+            setUploading(true);
+            void uploadMediaImage(f)
+              .then((url) => {
+                onChange(url);
+                notify.succes("Image téléversée sur Cloudinary");
+              })
+              .catch((error) => {
+                notify.erreur(
+                  error instanceof Error ? error.message : "Impossible de téléverser l'image",
+                );
+              })
+              .finally(() => {
+                setUploading(false);
+                e.target.value = "";
+              });
           }}
         />
         <button
           type="button"
+          disabled={uploading}
           onClick={() => fileRef.current?.click()}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary"
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary disabled:opacity-60"
         >
-          <ImagePlus className="size-4" />
-          Téléverser
+          {uploading ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
+          {uploading ? "Envoi…" : "Téléverser"}
         </button>
       </div>
       {valeur && (

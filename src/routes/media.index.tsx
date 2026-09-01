@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { articles, categoriesMedia, formatDate, nomAuteur } from "@/lib/data";
+import { useMemo, useState } from "react";
+import { ArticleCover } from "@/components/article-cover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useArticles } from "@/hooks/use-articles";
+import { categoriesMedia, formatDate, nomAuteur } from "@/lib/data";
 
 export const Route = createFileRoute("/media/")({
   head: () => ({
@@ -24,9 +27,14 @@ export const Route = createFileRoute("/media/")({
 });
 
 function MediaPage() {
+  const { articles, loading } = useArticles();
   const [cat, setCat] = useState<string>("Tous");
-  const liste = cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat);
-  const populaires = articles.filter((a) => a.populaire);
+
+  const liste = useMemo(
+    () => (cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat)),
+    [articles, cat],
+  );
+  const populaires = useMemo(() => articles.filter((a) => a.populaire), [articles]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-14">
@@ -55,37 +63,59 @@ function MediaPage() {
 
       <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_280px]">
         <div className="grid gap-10 sm:grid-cols-2">
-          {liste.map((a) => (
-            <Link key={a.slug} to="/media/$slug" params={{ slug: a.slug }} className="group">
-              <div className="aspect-[16/10] rounded-sm" style={{ backgroundImage: a.image }} />
-              <p className="kicker mt-4">{a.categorie}</p>
-              <h2 className="mt-1 text-xl leading-snug group-hover:text-accent">{a.titre}</h2>
-              <p className="mt-2 text-sm text-muted-foreground">{a.chapo}</p>
-              <p className="mt-3 text-xs text-muted-foreground">
-                {nomAuteur(a.auteur)} · {formatDate(a.date)} · {a.lecture}
-              </p>
-            </Link>
-          ))}
-          {liste.length === 0 && (
-            <p className="text-sm text-muted-foreground">Aucun article dans cette catégorie.</p>
+          {loading &&
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="space-y-3">
+                <Skeleton className="aspect-[16/10] w-full rounded-sm" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-6 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ))}
+
+          {!loading &&
+            liste.map((a) => (
+              <Link key={a.slug} to="/media/$slug" params={{ slug: a.slug }} className="group">
+                <div className="aspect-[16/10] overflow-hidden rounded-sm">
+                  <ArticleCover src={a.couverture ?? a.image} alt={a.titre} />
+                </div>
+                <p className="kicker mt-4">{a.categorie}</p>
+                <h2 className="mt-1 text-xl leading-snug group-hover:text-accent">{a.titre}</h2>
+                <p className="mt-2 text-sm text-muted-foreground">{a.chapo}</p>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  {nomAuteur(a.auteur)} · {formatDate(a.date)} · {a.lecture}
+                </p>
+              </Link>
+            ))}
+
+          {!loading && liste.length === 0 && (
+            <p className="text-sm text-muted-foreground">Aucun article publié pour le moment.</p>
           )}
         </div>
 
         <aside>
           <p className="kicker">Les plus lus</p>
           <ol className="mt-4 space-y-5">
-            {populaires.map((a, i) => (
-              <li key={a.slug} className="flex gap-3">
-                <span className="font-display text-2xl text-muted-foreground">{i + 1}</span>
-                <Link
-                  to="/media/$slug"
-                  params={{ slug: a.slug }}
-                  className="text-sm leading-snug hover:text-accent"
-                >
-                  {a.titre}
-                </Link>
-              </li>
-            ))}
+            {loading &&
+              Array.from({ length: 3 }).map((_, i) => (
+                <li key={i} className="flex gap-3">
+                  <Skeleton className="h-8 w-6" />
+                  <Skeleton className="h-4 flex-1" />
+                </li>
+              ))}
+            {!loading &&
+              populaires.map((a, i) => (
+                <li key={a.slug} className="flex gap-3">
+                  <span className="font-display text-2xl text-muted-foreground">{i + 1}</span>
+                  <Link
+                    to="/media/$slug"
+                    params={{ slug: a.slug }}
+                    className="text-sm leading-snug hover:text-accent"
+                  >
+                    {a.titre}
+                  </Link>
+                </li>
+              ))}
           </ol>
 
           <div className="mt-10 rounded-sm border border-border bg-card p-5">
@@ -107,7 +137,7 @@ function MediaPage() {
                 className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
               />
               <button className="w-full rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
-                S'abonner
+                S&apos;abonner
               </button>
             </form>
           </div>

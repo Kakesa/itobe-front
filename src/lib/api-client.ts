@@ -245,6 +245,13 @@ export const CategoriesApi = {
     api.post("/categories", data),
 };
 
+export const MediasApi = {
+  getAll: (params?: { page?: number; limit?: number; type?: string; q?: string }) =>
+    api.get("/medias", params),
+  upload: (formData: FormData) => api.post("/medias/upload", formData),
+  delete: (id: string) => api.delete(`/medias/${id}`),
+};
+
 export const ContactApi = {
   send: (data: { name: string; email: string; subject: string; message: string }) =>
     api.post("/contact", data),

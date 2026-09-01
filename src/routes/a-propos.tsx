@@ -1,14 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, Globe2, Sparkles } from "lucide-react";
 
-/** Visuels repris de itobeeditions.com/about */
+/** Visuels repris de itobeeditions.com */
 const IMG = {
   hero: "/images/a-propos/hero.jpg",
   mission: "/images/a-propos/mission.png",
   chezItobe: "/images/a-propos/chez-itobe.png",
-  media: "/images/a-propos/pillar-literature.jpg",
-  edition: "/images/a-propos/pillar-dialogue.png",
-  reader: "/images/a-propos/pillar-imaginaire.jpg",
 } as const;
 
 export const Route = createFileRoute("/a-propos")({
@@ -58,27 +55,6 @@ const piliersVision = [
     titre: "Façonner l'imaginaire collectif et changer les perspectives",
     texte:
       "La littérature africaine peut inverser cette tendance en proposant de nouvelles images, de nouveaux héros et de nouvelles perspectives.",
-  },
-];
-
-const ecosysteme = [
-  {
-    t: "Portail média",
-    d: "Actualités, articles, interviews et chroniques pour faire vivre la scène culturelle africaine au quotidien.",
-    image: IMG.media,
-    alt: "Illustration Itobe — littérature africaine",
-  },
-  {
-    t: "Maison d'édition",
-    d: "Catalogue numérique et papier, auteurs, promotions et commandes — le cœur éditorial d'Itobe.",
-    image: IMG.edition,
-    alt: "Illustration Itobe — dialogue et récits",
-  },
-  {
-    t: "Reader & bibliothèque",
-    d: "Lecture en ligne, progression synchronisée et bibliothèque personnelle pour chaque lecteur.",
-    image: IMG.reader,
-    alt: "Illustration Itobe — imaginaire collectif",
   },
 ];
 
@@ -171,55 +147,27 @@ function APropos() {
               briller sur la scène internationale, non seulement comme un héritage de notre passé,
               mais comme un puissant catalyseur de notre avenir.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/edition"
+                className="rounded-sm bg-brand-orange px-5 py-3 text-sm font-medium text-white hover:opacity-90"
+              >
+                Voir le catalogue
+              </Link>
+              <Link
+                to="/auteurs"
+                className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
+              >
+                Nos auteurs
+              </Link>
+              <Link
+                to="/contact"
+                className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
+              >
+                Nous contacter
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
-
-      <section className="rule-top mx-auto max-w-6xl px-4 py-16 md:py-20">
-        <p className="kicker">Plateforme Itobe</p>
-        <h2 className="mt-2 font-display text-2xl md:text-3xl">
-          Média &amp; édition, un même écosystème
-        </h2>
-        <p className="mt-4 max-w-2xl text-muted-foreground">
-          Itobe Entreprise réunit un portail média et une maison d&apos;édition numérique pour
-          créer, publier, diffuser et vendre des contenus de qualité — au service de la mission
-          éditoriale d&apos;Itobe Éditions.
-        </p>
-        <div className="mt-10 grid gap-5 sm:grid-cols-3">
-          {ecosysteme.map((e) => (
-            <article
-              key={e.t}
-              className="apropos-page__eco overflow-hidden rounded-lg border border-border bg-card"
-            >
-              <div className="apropos-page__eco-media">
-                <img src={e.image} alt={e.alt} className="size-full object-cover" loading="lazy" />
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg">{e.t}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{e.d}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-        <div className="mt-10 flex flex-wrap gap-3">
-          <Link
-            to="/edition"
-            className="rounded-sm bg-brand-orange px-5 py-3 text-sm font-medium text-white hover:opacity-90"
-          >
-            Voir le catalogue
-          </Link>
-          <Link
-            to="/auteurs"
-            className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
-          >
-            Nos auteurs
-          </Link>
-          <Link
-            to="/contact"
-            className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
-          >
-            Nous contacter
-          </Link>
         </div>
       </section>
     </div>

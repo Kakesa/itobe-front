@@ -1,11 +1,33 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { articles, formatDate, getArticle, nomAuteur, getAuteur } from "@/lib/data";
+import { ArticleCover } from "@/components/article-cover";
+import { articles, formatDate, getArticle, getAuteur, nomAuteur } from "@/lib/data";
+import {
+  fetchPublicArticleBySlug,
+  normalizePublicArticle,
+  type PublicArticle,
+} from "@/lib/public-data";
 
 export const Route = createFileRoute("/media/$slug")({
-  loader: ({ params }) => {
-    const article = getArticle(params.slug);
-    if (!article) throw notFound();
-    return { article };
+  loader: async ({ params }) => {
+    const api = await fetchPublicArticleBySlug(params.slug);
+
+    if (api.article) {
+      return {
+        article: api.article,
+        suite: api.suite,
+      };
+    }
+
+    const local = getArticle(params.slug);
+    if (!local) throw notFound();
+
+    return {
+      article: normalizePublicArticle(local),
+      suite: articles
+        .filter((a) => a.slug !== params.slug)
+        .slice(0, 3)
+        .map((a) => normalizePublicArticle(a)),
+    };
   },
   head: ({ params, loaderData }) => {
     if (!loaderData) {
@@ -41,9 +63,8 @@ export const Route = createFileRoute("/media/$slug")({
 });
 
 function ArticlePage() {
-  const { article } = Route.useLoaderData();
+  const { article, suite } = Route.useLoaderData();
   const auteur = getAuteur(article.auteur);
-  const suite = articles.filter((a) => a.slug !== article.slug).slice(0, 3);
 
   return (
     <article className="mx-auto max-w-3xl px-4 py-14">
@@ -63,7 +84,9 @@ function ArticlePage() {
         <span>{article.lecture} de lecture</span>
       </div>
 
-      <div className="mt-8 aspect-[16/9] rounded-sm" style={{ backgroundImage: article.image }} />
+      <div className="mt-8 aspect-[16/9] overflow-hidden rounded-sm">
+        <ArticleCover src={article.couverture ?? article.image} alt={article.titre} />
+      </div>
 
       <div className="mt-10 space-y-6 text-[1.05rem] leading-relaxed">
         {article.corps.map((p: string, i: number) => (
@@ -88,7 +111,6 @@ function ArticlePage() {
         ))}
       </div>
 
-      {/* Commentaires */}
       <section className="mt-12">
         <h2 className="text-2xl">Commentaires (2)</h2>
         <div className="mt-6 space-y-6">
@@ -121,17 +143,21 @@ function ArticlePage() {
         </form>
       </section>
 
-      <section className="mt-14">
-        <h2 className="text-2xl">À lire aussi</h2>
-        <div className="mt-6 grid gap-6 sm:grid-cols-3">
-          {suite.map((a) => (
-            <Link key={a.slug} to="/media/$slug" params={{ slug: a.slug }} className="group">
-              <div className="aspect-[16/10] rounded-sm" style={{ backgroundImage: a.image }} />
-              <p className="mt-3 font-display leading-snug group-hover:text-accent">{a.titre}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {suite.length > 0 && (
+        <section className="mt-14">
+          <h2 className="text-2xl">À lire aussi</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-3">
+            {suite.map((a: PublicArticle) => (
+              <Link key={a.slug} to="/media/$slug" params={{ slug: a.slug }} className="group">
+                <div className="aspect-[16/10] overflow-hidden rounded-sm">
+                  <ArticleCover src={a.couverture ?? a.image} alt={a.titre} />
+                </div>
+                <p className="mt-3 font-display leading-snug group-hover:text-accent">{a.titre}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </article>
   );
 }

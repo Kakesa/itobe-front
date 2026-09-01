@@ -1,4 +1,5 @@
-import { AuteursApi, ArticlesApi, LivresApi } from "./api-client";
+import { AuteursApi, ArticlesApi, LivresApi, fetchAllPages } from "./api-client";
+import { ARTICLE_COVER_FALLBACK, extractCoverSource, resolveMediaUrl } from "./media-url";
 
 export type PublicArticle = {
   slug: string;
@@ -10,6 +11,7 @@ export type PublicArticle = {
   date: string;
   lecture: string;
   image: string;
+  couverture?: string;
   populaire?: boolean;
   corps: string[];
 };
@@ -90,7 +92,11 @@ const normalizeCategory = (value: unknown): string => {
   return "Actualités";
 };
 
-export const normalizePublicArticle = (item: any): PublicArticle => ({
+export const normalizePublicArticle = (item: any): PublicArticle => {
+  const raw = extractCoverSource(item?.couverture ?? item?.image);
+  const couverture = resolveMediaUrl(raw);
+
+  return {
   slug: String(item?.slug ?? item?.["_id"] ?? "article"),
   titre: String(item?.titre ?? "Article"),
   chapo: String(item?.chapo ?? item?.resume ?? item?.contenu ?? ""),
@@ -99,15 +105,14 @@ export const normalizePublicArticle = (item: any): PublicArticle => ({
   auteur: normalizeAuteurSlug(item?.auteur),
   date: readableDate(item?.datePublication ?? item?.date),
   lecture: String(item?.lecture ?? "5 min"),
-  image:
-    typeof item?.couverture === "string" && item.couverture
-      ? item.couverture
-      : "linear-gradient(135deg, oklch(0.62 0.15 48), oklch(0.38 0.06 40))",
+  ...(couverture ? { couverture } : {}),
+  image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(item?.populaire ?? item?.aLaUne ?? false),
   corps: Array.isArray(item?.corps)
     ? item.corps.map((part: unknown) => String(part))
     : [String(item?.contenu ?? item?.chapo ?? "")],
-});
+};
+};
 
 export const normalizePublicLivre = (item: any): PublicLivre => {
   const promoValue =
@@ -166,8 +171,8 @@ export const normalizePublicAuteur = (item: any): PublicAuteur => ({
 
 export async function fetchPublicArticles(): Promise<PublicArticle[]> {
   try {
-    const response = await ArticlesApi.getAll({ page: 1, limit: 200 });
-    return asArray<any>(response).map(normalizePublicArticle);
+    const rows = await fetchAllPages((page, limit) => ArticlesApi.getAll({ page, limit }));
+    return rows.map(normalizePublicArticle);
   } catch {
     return [];
   }

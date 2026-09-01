@@ -11,7 +11,7 @@ import {
   formVersItem,
   type ArticleFormValues,
 } from "@/components/admin/article-editor-form";
-import { categoriesMedia, formatDate, nomAuteur } from "@/lib/data";
+import { categoriesMedia, formatDate, hydratePublicData, nomAuteur } from "@/lib/data";
 import { etatsModeration, transitions, type EtatModeration } from "@/lib/admin-data";
 import { useRole } from "@/hooks/use-role";
 import { useCollection } from "@/lib/admin/store";
@@ -83,6 +83,7 @@ function AdminArticles() {
         notify.cree("Article", String(payload["titre"]));
         notifierSiPublication("article", null, item);
       }
+      await hydratePublicData();
     } catch (error) {
       notify.erreur(
         error instanceof Error ? error.message : "Erreur lors de l'enregistrement de l'article",
@@ -94,14 +95,26 @@ function AdminArticles() {
     setEdition(null);
   };
 
-  const appliquer = (row: Item, cible: EtatModeration, note?: string) => {
+  const appliquer = async (row: Item, cible: EtatModeration, note?: string) => {
     const patch = {
       etat: cible,
       statut: cible === "Publié" ? "Publié" : cible === "En revue" ? "Programmé" : "Brouillon",
+      ...(cible === "Publié" && !row["datePublication"]
+        ? { datePublication: new Date().toISOString() }
+        : {}),
     };
-    modifier(row.id, patch);
-    notify.succes(`« ${String(row["titre"])} » → ${cible}`, { description: note });
-    notifierSiPublication("article", row, { ...row, ...patch });
+
+    try {
+      await ArticlesApi.update(String(row.id), patch);
+      modifier(row.id, patch);
+      await hydratePublicData();
+      notify.succes(`« ${String(row["titre"])} » → ${cible}`, { description: note });
+      notifierSiPublication("article", row, { ...row, ...patch });
+    } catch (error) {
+      notify.erreur(
+        error instanceof Error ? error.message : "Impossible de mettre à jour le statut de l'article",
+      );
+    }
   };
 
   if (mode === "creer" || mode === "editer") {

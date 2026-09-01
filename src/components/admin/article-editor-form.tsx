@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
-import { ImagePlus, Plus, X } from "lucide-react";
+import { ImagePlus, Loader2, Plus, X } from "lucide-react";
 import { auteurs, categoriesMedia, nomAuteur } from "@/lib/data";
 import { notify } from "@/lib/notify";
+import { uploadMediaImage } from "@/lib/upload-media";
 
 export type ArticleFormValues = {
   titre: string;
@@ -52,6 +53,8 @@ export function ArticleEditorForm({
     galerie: initial?.galerie ?? [],
   }));
   const [programmer, setProgrammer] = useState(false);
+  const [uploadCouverture, setUploadCouverture] = useState(false);
+  const [uploadGalerie, setUploadGalerie] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const galerieRef = useRef<HTMLInputElement>(null);
 
@@ -74,10 +77,19 @@ export function ArticleEditorForm({
     onEnregistrer({ ...v, statut });
   };
 
-  const lireFichier = (file: File, cb: (url: string) => void) => {
-    const reader = new FileReader();
-    reader.onload = () => cb(String(reader.result));
-    reader.readAsDataURL(file);
+  const lireFichier = async (file: File, cb: (url: string) => void, onStart?: () => void, onEnd?: () => void) => {
+    onStart?.();
+    try {
+      const url = await uploadMediaImage(file);
+      cb(url);
+      notify.succes("Image téléversée sur Cloudinary");
+    } catch (error) {
+      notify.erreur(
+        error instanceof Error ? error.message : "Impossible de téléverser l'image",
+      );
+    } finally {
+      onEnd?.();
+    }
   };
 
   return (
@@ -234,16 +246,29 @@ export function ArticleEditorForm({
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) lireFichier(f, (url) => set("couverture", url));
+                if (f) {
+                  void lireFichier(
+                    f,
+                    (url) => set("couverture", url),
+                    () => setUploadCouverture(true),
+                    () => setUploadCouverture(false),
+                  );
+                }
+                e.target.value = "";
               }}
             />
             <button
               type="button"
+              disabled={uploadCouverture}
               onClick={() => fileRef.current?.click()}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm hover:bg-secondary"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2.5 text-sm hover:bg-secondary disabled:opacity-60"
             >
-              <ImagePlus className="size-4" />
-              Téléverser
+              {uploadCouverture ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <ImagePlus className="size-4" />
+              )}
+              {uploadCouverture ? "Envoi…" : "Téléverser"}
             </button>
           </div>
           {v.couverture && (
@@ -275,12 +300,20 @@ export function ArticleEditorForm({
             className="hidden"
             onChange={(e) => {
               const files = Array.from(e.target.files ?? []);
-              files.forEach((f) =>
-                lireFichier(f, (url) =>
-                  setV((s) => ({ ...s, galerie: [...s.galerie, url] })),
-                ),
-              );
-              e.target.value = "";
+              if (files.length === 0) return;
+              setUploadGalerie(true);
+              void (async () => {
+                try {
+                  for (const f of files) {
+                    await lireFichier(f, (url) =>
+                      setV((s) => ({ ...s, galerie: [...s.galerie, url] })),
+                    );
+                  }
+                } finally {
+                  setUploadGalerie(false);
+                  e.target.value = "";
+                }
+              })();
             }}
           />
           <button
@@ -432,6 +465,11 @@ export function articleVersForm(row: Record<string, unknown>): ArticleFormValues
 }
 
 export function formVersItem(v: ArticleFormValues): Record<string, unknown> {
+  const nowIso = new Date().toISOString();
+  const datePublication =
+    v.datePublication ||
+    (v.statut === "Publié" ? nowIso : undefined);
+
   return {
     titre: v.titre.trim(),
     chapo: v.resume.trim(),
@@ -451,8 +489,8 @@ export function formVersItem(v: ArticleFormValues): Record<string, unknown> {
     etat: v.statut === "Publié" ? "Publié" : v.statut === "Programmé" ? "En revue" : "Brouillon",
     aLaUne: v.aLaUne,
     populaire: v.aLaUne,
-    datePublication: v.datePublication || undefined,
-    date: v.datePublication?.slice(0, 10) || new Date().toISOString().slice(0, 10),
+    datePublication,
+    date: datePublication?.slice(0, 10) || new Date().toISOString().slice(0, 10),
     lecture: "5 min",
   };
 }
