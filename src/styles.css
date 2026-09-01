@@ -2432,65 +2432,12 @@
   font-style: italic;
 }
 
-/* Blog Média — thème sombre façon Bany Talks */
-.theme-media-blog {
-  --background: #0c0a09;
-  --foreground: #f5f5f4;
-  --muted-foreground: #a8a29e;
-  --border: rgb(255 255 255 / 0.08);
-  --card: #1c1917;
+/* Blog Média — cartes fil & fiche article (structure Bany, thème clair) */
+.article-feed-card {
+  animation: article-feed-in 0.45s ease both;
 }
 
-.theme-media-blog,
-.theme-media-blog body {
-  background: #0c0a09;
-  color: #f5f5f4;
-}
-
-.theme-media-blog .site-header {
-  border-color: rgb(255 255 255 / 0.08);
-  background: rgb(12 10 9 / 0.92);
-}
-
-.theme-media-blog .site-header__logo-text,
-.theme-media-blog .site-header__link:hover,
-.theme-media-blog .site-header__link.is-active {
-  color: #f5f5f4;
-}
-
-.theme-media-blog .site-header__tagline,
-.theme-media-blog .site-header__link {
-  color: #a8a29e;
-}
-
-.theme-media-blog .site-header__nav--mobile {
-  background: #1c1917;
-  border-color: rgb(255 255 255 / 0.08);
-}
-
-.theme-media-blog .site-header a[aria-label="Recherche"],
-.theme-media-blog .site-header button[aria-label="Menu"] {
-  border-color: rgb(255 255 255 / 0.12);
-  color: #a8a29e;
-}
-
-.theme-media-blog .site-header a[aria-label="Recherche"]:hover {
-  color: #f5f5f4;
-}
-
-.media-blog-label {
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #f43f5e;
-  font-size: 0.6875rem;
-  font-weight: 600;
-}
-
-.bany-feed-card {
-  animation: bany-feed-in 0.45s ease both;
-}
-
-@keyframes bany-feed-in {
+@keyframes article-feed-in {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -2502,8 +2449,67 @@
   }
 }
 
-.bg-stone-850 {
-  background-color: #1c1917;
+.prose-blog,
+.article-detail__body .article-body,
+.article-detail__body .rich-editor__preview {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted-foreground);
+}
+
+.prose-blog h2,
+.article-detail__body .article-body h2,
+.article-detail__body .rich-editor__preview h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--foreground);
+}
+
+.prose-blog p,
+.article-detail__body .article-body p,
+.article-detail__body .rich-editor__preview p {
+  margin-bottom: 1rem;
+}
+
+.prose-blog ul,
+.prose-blog ol,
+.article-detail__body .article-body ul,
+.article-detail__body .article-body ol {
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+}
+
+.prose-blog ul,
+.article-detail__body .article-body ul {
+  list-style: disc;
+}
+
+.prose-blog ol,
+.article-detail__body .article-body ol {
+  list-style: decimal;
+}
+
+.prose-blog li,
+.article-detail__body .article-body li {
+  margin-bottom: 0.5rem;
+}
+
+.prose-blog a,
+.article-detail__body .article-body a,
+.article-detail__body .rich-editor__preview a {
+  color: var(--accent);
+}
+
+.prose-blog img,
+.article-detail__body .article-body img,
+.article-detail__body .rich-editor__preview img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 2rem auto;
+  border: 1px solid var(--border);
 }
 
 /* Blog Média — filtres horizontaux */
