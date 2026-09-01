@@ -59,7 +59,9 @@ function Connexion() {
   const navigate = useNavigate();
   const { session, deconnexion } = useSession();
 
-  const effacerErreurChamp = (champ: string) => {
+  type ChampFormulaire = "nom" | "telephone" | "adresse" | "email" | "password" | "confirmation";
+
+  const effacerErreurChamp = (champ: ChampFormulaire) => {
     setErreursChamps((prev) => {
       if (!prev[champ]) return prev;
       const next = { ...prev };
