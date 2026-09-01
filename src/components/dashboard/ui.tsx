@@ -12,7 +12,7 @@ export function KpiCard({
 }: {
   label: string;
   valeur: string | number;
-  hint?: string;
+  hint?: string | undefined;
   icon?: LucideIcon;
   iconClassName?: string;
   className?: string;

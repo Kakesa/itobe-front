@@ -32,7 +32,7 @@ function CoverContent({
   image,
 }: {
   livre: Pick<Livre, "titre" | "sousTitre" | "couleur">;
-  image?: string;
+  image?: string | undefined;
 }) {
   if (image) {
     return (

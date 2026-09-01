@@ -204,18 +204,8 @@
   --sidebar-ring: var(--brand-orange);
 }
 
-/* ——— Admin portails (Média / Édition) ——— */
-.admin-portal--media .admin-portal-sidebar {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--brand-blue) 55%, var(--brand-brown)) 0%,
-    color-mix(in oklab, var(--brand-blue) 38%, var(--brand-brown)) 45%,
-    color-mix(in oklab, var(--brand-brown) 92%, black) 100%
-  );
-  color: white;
-}
-
-.admin-portal--edition .admin-portal-sidebar {
+/* ——— Admin portails : sidebar uniforme (même dégradé pour Média, Édition, Lecteur) ——— */
+.admin-portal-sidebar {
   background: linear-gradient(
     180deg,
     color-mix(in oklab, var(--brand-orange) 65%, var(--brand-brown)) 0%,

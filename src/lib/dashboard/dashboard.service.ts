@@ -391,7 +391,7 @@ export const DashboardService = {
         continuer,
         bibliotheque,
         favoris,
-        derniersAchats: derniersAchats.length > 0 ? derniersAchats : commandesUtilisateur.slice(0, 5).map((c) => ({
+        derniersAchats: derniersAchats.length > 0 ? derniersAchats : commandesUtilisateur.slice(0, 5).map((c: (typeof commandesUtilisateur)[number]) => ({
           slug: c.slug,
           titre: c.titre,
           date: c.date,
