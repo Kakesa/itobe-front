@@ -14,5 +14,12 @@ export async function uploadMediaImage(file: File): Promise<string> {
     throw new ApiError("Réponse de téléversement invalide", 500);
   }
 
+  if (url.startsWith("/uploads/")) {
+    throw new ApiError(
+      "Le serveur n'a pas téléversé l'image sur Cloudinary. Vérifiez CLOUDINARY_* dans .env du backend.",
+      503,
+    );
+  }
+
   return url;
 }

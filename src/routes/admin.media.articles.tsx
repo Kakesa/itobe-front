@@ -9,6 +9,7 @@ import {
   ArticleEditorForm,
   articleVersForm,
   formVersItem,
+  refChampApi,
   type ArticleFormValues,
 } from "@/components/admin/article-editor-form";
 import { categoriesMedia, formatDate, hydratePublicData, nomAuteur } from "@/lib/data";
@@ -68,8 +69,13 @@ function AdminArticles() {
 
     try {
       if (edition) {
-        await ArticlesApi.update(String(edition.id), payload);
-        modifier(edition.id, payload);
+        const updated = await ArticlesApi.update(String(edition.id), payload);
+        const saved = (updated as { data?: Record<string, unknown> })?.data ?? updated;
+        modifier(edition.id, {
+          ...payload,
+          auteur: refChampApi(saved?.["auteur"], ["slug"]) || payload.auteur,
+          categorie: refChampApi(saved?.["categorie"], ["nom", "slug"]) || payload.categorie,
+        });
         notify.modifie("Article", String(payload["titre"]));
         notifierSiPublication("article", edition, { ...edition, ...payload });
       } else {
@@ -78,6 +84,8 @@ function AdminArticles() {
         const item = {
           ...created,
           id: String(created?.id ?? created?._id ?? `${Date.now()}`),
+          auteur: refChampApi(created?.auteur, ["slug"]) || payload.auteur,
+          categorie: refChampApi(created?.categorie, ["nom", "slug"]) || payload.categorie,
         } as Item;
         creer(item);
         notify.cree("Article", String(payload["titre"]));

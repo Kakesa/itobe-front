@@ -39,6 +39,19 @@ const champ =
   "w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm outline-none transition-colors focus:border-accent";
 const label = "mb-1.5 block text-sm font-medium text-foreground";
 
+/** Extrait une chaîne depuis une valeur API (slug, nom ou id). */
+export function refChampApi(value: unknown, cles: string[]): string {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    for (const cle of cles) {
+      const part = obj[cle];
+      if (typeof part === "string" && part.trim()) return part;
+    }
+  }
+  return "";
+}
+
 export function ArticleEditorForm({
   initial,
   onAnnuler,
@@ -449,8 +462,8 @@ export function articleVersForm(row: Record<string, unknown>): ArticleFormValues
     titre: String(row["titre"] ?? ""),
     resume: String(row["resume"] ?? row["chapo"] ?? ""),
     contenu,
-    auteur: String(row["auteur"] ?? auteurs[0]?.slug ?? ""),
-    categorie: String(row["categorie"] ?? "Actualités"),
+    auteur: refChampApi(row["auteur"], ["slug"]) || auteurs[0]?.slug || "",
+    categorie: refChampApi(row["categorie"], ["nom", "slug"]) || "Actualités",
     tags: Array.isArray(row["tags"]) ? row["tags"].join(", ") : String(row["tags"] ?? ""),
     youtube: String(row["youtube"] ?? ""),
     couverture: String(row["couverture"] ?? row["image"] ?? ""),
