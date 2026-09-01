@@ -55,7 +55,7 @@ function Connexion() {
   const [adresse, setAdresse] = useState("");
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState("");
-  const [erreursChamps, setErreursChamps] = useState<Record<string, string>>({});
+  const [erreursChamps, setErreursChamps] = useState<Partial<Record<"nom" | "telephone" | "adresse" | "email" | "password" | "confirmation", string>>>({});
   const navigate = useNavigate();
   const { session, deconnexion } = useSession();
 
