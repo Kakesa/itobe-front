@@ -212,7 +212,7 @@ export function ArticleRichEditor({
 }
 
 /** Affiche le HTML d'un article sur le site public. */
-export function ArticleHtmlBody({ html, fallbackParagraphs }: { html?: string; fallbackParagraphs: string[] }) {
+export function ArticleHtmlBody({ html, fallbackParagraphs }: { html?: string | undefined; fallbackParagraphs: string[] }) {
   const trimmed = html?.trim() ?? "";
   const looksLikeHtml = trimmed.startsWith("<") && trimmed.includes(">");
 
