@@ -133,7 +133,7 @@ export function CrudModule({
       })
       .catch((err) => {
         if (!annule) {
-          notify.error(
+          notify.erreur(
             err instanceof ApiError && err.statusCode === 401
               ? "Reconnectez-vous pour charger tous les livres."
               : "Impossible de charger la liste complète des livres.",
@@ -172,20 +172,20 @@ export function CrudModule({
 
   const preparerPayloadLivre = (valeurs: Record<string, unknown>) => {
     const payload = { ...valeurs };
-    if (!String(payload.resume ?? "").trim()) {
-      payload.resume = "Résumé à compléter.";
+    if (!String(payload["resume"] ?? "").trim()) {
+      payload["resume"] = "Résumé à compléter.";
     }
-    if (!payload.pages || Number(payload.pages) < 1) {
-      payload.pages = 200;
+    if (!payload["pages"] || Number(payload["pages"]) < 1) {
+      payload["pages"] = 200;
     }
-    if (!String(payload.formats ?? "").trim()) {
-      payload.formats = "PDF, EPUB";
+    if (!String(payload["formats"] ?? "").trim()) {
+      payload["formats"] = "PDF, EPUB";
     }
-    if (!payload.promo || Number(payload.promo) <= 0) {
-      delete payload.promo;
+    if (!payload["promo"] || Number(payload["promo"]) <= 0) {
+      delete payload["promo"];
     }
-    if (!payload.prixPapier || Number(payload.prixPapier) <= 0) {
-      delete payload.prixPapier;
+    if (!payload["prixPapier"] || Number(payload["prixPapier"]) <= 0) {
+      delete payload["prixPapier"];
     }
     return payload;
   };

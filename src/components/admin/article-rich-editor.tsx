@@ -108,7 +108,7 @@ export function ArticleRichEditor({
   };
 
   const addLink = () => {
-    const previous = editor.getAttributes("link").href as string | undefined;
+    const previous = editor.getAttributes("link")["href"] as string | undefined;
     const url = window.prompt("URL du lien", previous ?? "https://");
     if (url === null) return;
     if (url === "") {

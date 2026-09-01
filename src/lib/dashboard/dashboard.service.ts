@@ -261,7 +261,7 @@ export const DashboardService = {
       vue,
       series: seriesPourPeriode(periode),
       activites: activites(),
-      commandes: commandes.slice(0, 6).map((c) => ({
+      commandes: commandes.slice(0, 6).map((c: (typeof commandesUtilisateur)[number]) => ({
         id: c.id,
         client: c.client,
         livre: c.livre,
@@ -302,7 +302,7 @@ export const DashboardService = {
       dernieresVentes: commandes
         .filter((c) => c.statut === "Payée")
         .slice(0, 5)
-        .map((c) => ({
+        .map((c: (typeof commandesUtilisateur)[number]) => ({
           id: c.id,
           livre: c.livre,
           client: c.client,
@@ -391,7 +391,7 @@ export const DashboardService = {
         continuer,
         bibliotheque,
         favoris,
-        derniersAchats: derniersAchats.length > 0 ? derniersAchats : commandesUtilisateur.slice(0, 5).map((c) => ({
+        derniersAchats: derniersAchats.length > 0 ? derniersAchats : commandesUtilisateur.slice(0, 5).map((c: (typeof commandesUtilisateur)[number]) => ({
           slug: c.slug,
           titre: c.titre,
           date: c.date,

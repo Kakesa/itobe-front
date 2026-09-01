@@ -301,7 +301,7 @@ export const PanierApi = {
 export const CommandesApi = {
   getMine: (statut?: string) =>
     api.get("/commandes/mes-commandes", statut && statut !== "Toutes" ? { statut } : undefined),
-  getAll: (params?: { page?: number; limit?: number; statut?: string; moyen?: string; q?: string }) =>
+  getAll: (params?: { page?: number; limit?: number; statut?: string | undefined; moyen?: string | undefined; q?: string | undefined }) =>
     api.get("/commandes", params),
   getById: (id: string) => api.get(`/commandes/${id}`),
   updateStatus: (id: string, data: { statut: string; motif?: string }) =>
