@@ -50,8 +50,7 @@ const PORTAL_META: Record<
     label: "Espace lecteur",
     subtitle: "Bibliothèque · Lecture · Achats",
     icon: BookOpen,
-    sidebarClass:
-      "bg-[linear-gradient(180deg,var(--primary),color-mix(in_oklab,var(--terracotta)_38%,var(--primary)))] text-primary-foreground",
+    sidebarClass: "admin-portal-sidebar text-white",
     accentClass: "bg-accent text-accent-foreground",
     badgeClass: "bg-primary-foreground/15 text-primary-foreground/80",
     publicLink: "/edition",
