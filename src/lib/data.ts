@@ -14,6 +14,7 @@ export type Article = {
   /** URL brute de couverture (http, data URL ou /uploads). */
   couverture?: string;
   populaire?: boolean;
+  commentairesCount?: number;
   /** Corps HTML ou texte complet (distinct du résumé / chapô). */
   contenu?: string;
   youtube?: string;

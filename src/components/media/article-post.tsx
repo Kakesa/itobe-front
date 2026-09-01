@@ -1,33 +1,35 @@
-import { useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  Globe,
-  MessageCircle,
-  Repeat2,
-  Send,
-  ThumbsUp,
-} from "lucide-react";
+import { Heart, MessageCircle, MoreHorizontal, Share2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { ArticleCover } from "@/components/article-cover";
 import type { Article, Auteur } from "@/lib/data";
-import { formatRelativeTime } from "@/lib/relative-time";
+import { formatRelativeTimeAgo } from "@/lib/relative-time";
 import { resolveMediaUrl } from "@/lib/media-url";
 
-function Initiales({ nom }: { nom: string }) {
-  const initiales = nom
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((m) => m[0]?.toUpperCase())
-    .join("");
+const LIKED_KEY = "itobe-liked-articles";
 
-  return (
-    <span className="grid size-12 shrink-0 place-items-center rounded-full bg-[#0a66c2] text-sm font-semibold text-white">
-      {initiales || "?"}
-    </span>
-  );
+function readLikedSlugs(): Set<string> {
+  try {
+    const raw = localStorage.getItem(LIKED_KEY);
+    if (!raw) return new Set();
+    const parsed = JSON.parse(raw) as unknown;
+    return new Set(Array.isArray(parsed) ? parsed.map(String) : []);
+  } catch {
+    return new Set();
+  }
 }
 
-function AuthorAvatar({ auteur, nomFallback }: { auteur?: Auteur | null; nomFallback: string }) {
+function persistLikedSlugs(slugs: Set<string>) {
+  localStorage.setItem(LIKED_KEY, JSON.stringify([...slugs]));
+}
+
+function AuthorAvatar({
+  auteur,
+  nomFallback,
+}: {
+  auteur?: Auteur | null;
+  nomFallback: string;
+}) {
   const nom = auteur?.nom ?? nomFallback;
   const photo = resolveMediaUrl(auteur?.photo);
 
@@ -36,245 +38,227 @@ function AuthorAvatar({ auteur, nomFallback }: { auteur?: Auteur | null; nomFall
       <img
         src={photo}
         alt={nom}
-        className="size-12 shrink-0 rounded-full object-cover"
+        className="size-10 shrink-0 rounded-full object-cover"
       />
     );
   }
 
-  return <Initiales nom={nom} />;
-}
-
-function PostHeader({
-  auteur,
-  categorie,
-  date,
-  lecture,
-  suivi,
-  onSuivi,
-  linkAuthor = true,
-}: {
-  auteur?: Auteur | null;
-  categorie: string;
-  date: string;
-  lecture: string;
-  suivi?: boolean;
-  onSuivi?: () => void;
-  linkAuthor?: boolean;
-}) {
-  const nom = auteur?.nom ?? "Rédaction Itobe";
-  const role = auteur?.role ?? `${categorie} · Itobe Média`;
-
-  const avatar = <AuthorAvatar auteur={auteur} nomFallback={nom} />;
-  const nameEl = linkAuthor && auteur ? (
-    <Link to="/auteurs/$slug" params={{ slug: auteur.slug }} className="hover:text-[#0a66c2] hover:underline">
-      {nom}
-    </Link>
-  ) : (
-    nom
-  );
+  const initiales = nom
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((m) => m[0]?.toUpperCase())
+    .join("");
 
   return (
-    <div className="flex items-start gap-3 px-4 pt-4">
-      {linkAuthor && auteur ? (
-        <Link to="/auteurs/$slug" params={{ slug: auteur.slug }} aria-label={nom}>
-          {avatar}
-        </Link>
-      ) : (
-        avatar
-      )}
-
-      <div className="min-w-0 flex-1 pt-0.5">
-        <p className="truncate text-[15px] font-semibold leading-tight text-foreground">
-          {nameEl}
-        </p>
-        <p className="truncate text-xs leading-snug text-muted-foreground">{role}</p>
-        <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
-          <span>{formatRelativeTime(date)}</span>
-          <span>·</span>
-          <span>{lecture}</span>
-          <span>·</span>
-          <Globe className="size-3" aria-hidden />
-        </p>
-      </div>
-
-      {onSuivi && (
-        <button
-          type="button"
-          onClick={onSuivi}
-          className={`shrink-0 rounded-full border px-4 py-1 text-sm font-semibold transition-colors ${
-            suivi
-              ? "border-border text-muted-foreground hover:bg-secondary"
-              : "border-[#0a66c2] text-[#0a66c2] hover:bg-[#0a66c2]/5"
-          }`}
-        >
-          {suivi ? "Suivi ✓" : "+ Suivre"}
-        </button>
-      )}
-    </div>
-  );
-}
-
-function PostPreviewText({
-  titre,
-  chapo,
-  maxLength = 280,
-  onExpand,
-}: {
-  titre: string;
-  chapo: string;
-  maxLength?: number;
-  onExpand?: () => void;
-}) {
-  const [expanded, setExpanded] = useState(false);
-  const full = `${titre}\n\n${chapo}`.trim();
-  const needsTruncate = full.length > maxLength && !expanded;
-
-  const handleExpand = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setExpanded(true);
-    onExpand?.();
-  };
-
-  return (
-    <div className="space-y-2 px-4 py-3 text-[15px] leading-relaxed text-foreground">
-      <p className="font-semibold">{titre}</p>
-      {needsTruncate ? (
-        <p className="whitespace-pre-line">
-          {chapo.slice(0, maxLength - titre.length - 4).trim()}…{" "}
-          <button
-            type="button"
-            onClick={handleExpand}
-            className="font-semibold text-muted-foreground hover:text-[#0a66c2] hover:underline"
-          >
-            plus
-          </button>
-        </p>
-      ) : (
-        <p className="whitespace-pre-line text-muted-foreground">{chapo}</p>
-      )}
-    </div>
-  );
-}
-
-function ReactionSummary({ jaimes, commentCount, partages }: { jaimes: number; commentCount: number; partages: number }) {
-  return (
-    <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-4 py-2 text-xs text-muted-foreground">
-      <div className="flex min-w-0 items-center gap-1.5">
-        <span className="flex shrink-0 -space-x-1">
-          <span className="grid size-[18px] place-items-center rounded-full bg-[#0a66c2] text-[10px] text-white ring-2 ring-card">
-            👍
-          </span>
-          <span className="grid size-[18px] place-items-center rounded-full bg-[#df704d] text-[10px] text-white ring-2 ring-card">
-            ❤️
-          </span>
-          <span className="grid size-[18px] place-items-center rounded-full bg-[#7fc15e] text-[10px] text-white ring-2 ring-card">
-            👏
-          </span>
-        </span>
-        <span className="truncate">{jaimes.toLocaleString("fr-FR")}</span>
-      </div>
-      <div className="flex shrink-0 gap-2 sm:gap-3">
-        <span className="whitespace-nowrap">{commentCount} com.</span>
-        <span className="whitespace-nowrap">{partages} part.</span>
-      </div>
-    </div>
-  );
-}
-
-function ActionBar({
-  aime,
-  onAime,
-  onComment,
-  commentHref,
-}: {
-  aime: boolean;
-  onAime: () => void;
-  onComment?: () => void;
-  commentHref?: string;
-}) {
-  const btn =
-    "flex flex-1 flex-col items-center justify-center gap-0.5 rounded-md py-2 text-[11px] font-semibold text-muted-foreground transition-colors hover:bg-secondary sm:flex-row sm:gap-2 sm:py-3 sm:text-sm";
-
-  return (
-    <div className="border-t border-border px-1 py-1 sm:px-2">
-      <div className="flex">
-        <button
-          type="button"
-          onClick={onAime}
-          className={`${btn} ${aime ? "text-[#0a66c2]" : ""}`}
-        >
-          <ThumbsUp className={`size-5 shrink-0 ${aime ? "fill-current" : ""}`} />
-          <span className="truncate">{aime ? "Vous aimez" : "J'aime"}</span>
-        </button>
-
-        {commentHref ? (
-          <a href={commentHref} className={btn}>
-            <MessageCircle className="size-5 shrink-0" />
-            <span className="truncate">Commenter</span>
-          </a>
-        ) : (
-          <button type="button" onClick={onComment} className={btn}>
-            <MessageCircle className="size-5 shrink-0" />
-            <span className="truncate">Commenter</span>
-          </button>
-        )}
-
-        <button type="button" className={btn}>
-          <Repeat2 className="size-5 shrink-0" />
-          <span className="truncate max-[380px]:hidden">Republier</span>
-        </button>
-
-        <button type="button" className={btn}>
-          <Send className="size-5 shrink-0" />
-          <span className="truncate">Envoyer</span>
-        </button>
-      </div>
-    </div>
+    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-stone-800 text-xs font-semibold text-stone-300">
+      {initiales || "I"}
+    </span>
   );
 }
 
 type ArticlePostCardProps = {
   article: Article;
   auteur?: Auteur | null;
+  featured?: boolean;
+  index?: number;
 };
 
-/** Carte fil d'actualités façon LinkedIn (liste /media). */
-export function ArticlePostCard({ article, auteur }: ArticlePostCardProps) {
-  const [aime, setAime] = useState(false);
-  const jaimes = 128 + (aime ? 1 : 0);
-  const commentCount = 2;
+/** Carte fil d'actualités façon Bany Talks (LinkedIn-style). */
+export function ArticlePostCard({
+  article,
+  auteur,
+  featured = false,
+  index = 0,
+}: ArticlePostCardProps) {
+  const auteurLabel = auteur?.nom ?? "Itobe Média";
+  const auteurRole = auteur?.role ?? "Rédaction Itobe Média";
+  const relTime = formatRelativeTimeAgo(article.date);
+  const commentaires = article.commentairesCount ?? 0;
+
+  const [liked, setLiked] = useState(() => readLikedSlugs().has(article.slug));
+  const [likeCount, setLikeCount] = useState(liked ? 1 : 0);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const isLiked = readLikedSlugs().has(article.slug);
+    setLiked(isLiked);
+    setLikeCount(isLiked ? 1 : 0);
+  }, [article.slug]);
+
+  const toggleLike = useCallback(() => {
+    const slugs = readLikedSlugs();
+    if (slugs.has(article.slug)) {
+      slugs.delete(article.slug);
+      setLiked(false);
+      setLikeCount(0);
+    } else {
+      slugs.add(article.slug);
+      setLiked(true);
+      setLikeCount(1);
+    }
+    persistLikedSlugs(slugs);
+  }, [article.slug]);
+
+  const share = useCallback(async () => {
+    const url = `${window.location.origin}/media/${article.slug}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: article.titre, text: article.chapo, url });
+      } else {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 1800);
+      }
+    } catch {
+      /* annulé ou indisponible */
+    }
+  }, [article.chapo, article.slug, article.titre]);
 
   return (
-    <article className="overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
-      <Link to="/media/$slug" params={{ slug: article.slug }} className="block">
-        <PostHeader
-          auteur={auteur}
-          categorie={article.categorie}
-          date={article.date}
-          lecture={article.lecture}
-          linkAuthor={false}
-        />
+    <article
+      className={`bany-feed-card overflow-hidden border border-white/5 bg-stone-900 ${
+        featured ? "ring-1 ring-rose-500/20" : ""
+      }`}
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <div className="flex items-start gap-3 px-4 pb-2 pt-3">
+        <Link
+          to="/media/$slug"
+          params={{ slug: article.slug }}
+          className="shrink-0 overflow-hidden rounded-full"
+          aria-label={auteurLabel}
+        >
+          <AuthorAvatar auteur={auteur} nomFallback={auteurLabel} />
+        </Link>
 
-        <PostPreviewText titre={article.titre} chapo={article.chapo} />
-
-        <div className="mx-0 overflow-hidden">
-          <div className="aspect-[1.91/1] w-full">
-            <ArticleCover src={article.couverture ?? article.image} alt={article.titre} />
+        <div className="min-w-0 flex-1">
+          <Link
+            to="/media/$slug"
+            params={{ slug: article.slug }}
+            className="truncate text-[15px] font-semibold text-stone-100 hover:underline"
+          >
+            {auteurLabel}
+          </Link>
+          <p className="mt-0.5 truncate text-[11px] leading-snug text-stone-500">{auteurRole}</p>
+          <div className="mt-1 flex flex-wrap items-center gap-1 text-xs text-stone-500">
+            <span className="text-stone-400">{article.categorie}</span>
+            {relTime && (
+              <>
+                <span>·</span>
+                <span>{relTime}</span>
+              </>
+            )}
           </div>
-          <p className="border-t border-border bg-secondary/30 px-4 py-2 text-xs text-muted-foreground">
-            {article.categorie} · {article.lecture} de lecture
-          </p>
         </div>
+
+        <Link
+          to="/media/$slug"
+          params={{ slug: article.slug }}
+          className="rounded-full p-2 text-stone-500 transition-colors hover:bg-white/5"
+          aria-label="Voir l'article"
+        >
+          <MoreHorizontal className="size-5" />
+        </Link>
+      </div>
+
+      {article.chapo && (
+        <Link
+          to="/media/$slug"
+          params={{ slug: article.slug }}
+          className="block w-full px-4 pb-3 text-left"
+        >
+          <p className="line-clamp-4 text-[15px] leading-relaxed text-stone-300">{article.chapo}</p>
+        </Link>
+      )}
+
+      <Link
+        to="/media/$slug"
+        params={{ slug: article.slug }}
+        className="relative block aspect-video w-full overflow-hidden bg-stone-850"
+      >
+        <ArticleCover
+          src={article.couverture ?? article.image}
+          alt={article.titre}
+          className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
       </Link>
 
-      <ReactionSummary jaimes={jaimes} commentCount={commentCount} partages={12} />
+      <Link
+        to="/media/$slug"
+        params={{ slug: article.slug }}
+        className="flex w-full items-center gap-3 border-t border-white/5 bg-[#161616] px-4 py-3 text-left transition-colors hover:bg-[#1a1a1a]"
+      >
+        <div className="min-w-0 flex-1 space-y-0.5">
+          <p className="text-[11px] font-body uppercase tracking-wide text-stone-600">Itobe Média</p>
+          <p className="line-clamp-2 text-[15px] font-semibold leading-snug text-stone-100">
+            {article.titre}
+          </p>
+          {article.chapo && (
+            <p className="line-clamp-1 text-[13px] text-stone-500">{article.chapo}</p>
+          )}
+        </div>
+        <span className="shrink-0 rounded-md bg-white/10 px-3 py-2 text-[13px] font-semibold text-stone-200">
+          Lire
+        </span>
+      </Link>
 
-      <ActionBar
-        aime={aime}
-        onAime={() => setAime((v) => !v)}
-        commentHref={`/media/${article.slug}#commentaires`}
-      />
+      {(likeCount > 0 || commentaires > 0) && (
+        <div className="flex items-center justify-between gap-3 border-t border-white/5 px-4 py-2.5 text-[13px] text-stone-500">
+          {likeCount > 0 ? (
+            <button
+              type="button"
+              onClick={toggleLike}
+              className="inline-flex cursor-pointer items-center gap-1.5 hover:underline"
+            >
+              <span className="inline-flex size-[18px] items-center justify-center rounded-full bg-rose-500">
+                <Heart className="size-2.5 fill-white text-white" />
+              </span>
+              <span>{likeCount}</span>
+            </button>
+          ) : (
+            <span />
+          )}
+          {commentaires > 0 && (
+            <Link
+              to="/media/$slug"
+              params={{ slug: article.slug }}
+              className="hover:underline"
+            >
+              {commentaires} commentaire{commentaires !== 1 ? "s" : ""}
+            </Link>
+          )}
+        </div>
+      )}
+
+      <div className="mx-1 mb-1 grid grid-cols-3 border-t border-white/5 sm:mx-2">
+        <button
+          type="button"
+          onClick={toggleLike}
+          className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-semibold transition hover:bg-white/5 sm:gap-2 sm:text-sm ${
+            liked ? "text-rose-500" : "text-stone-500"
+          }`}
+        >
+          <Heart className={`size-4 sm:size-[18px] ${liked ? "fill-rose-500" : ""}`} />
+          J&apos;aime
+        </button>
+        <Link
+          to="/media/$slug"
+          params={{ slug: article.slug }}
+          className="flex items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-semibold text-stone-500 transition hover:bg-white/5 sm:gap-2 sm:text-sm"
+        >
+          <MessageCircle className="size-4 sm:size-[18px]" />
+          Commenter
+        </Link>
+        <button
+          type="button"
+          onClick={() => void share()}
+          className="flex cursor-pointer items-center justify-center gap-1.5 rounded-md py-2.5 text-xs font-semibold text-stone-500 transition hover:bg-white/5 sm:gap-2 sm:text-sm"
+        >
+          <Share2 className="size-4 sm:size-[18px]" />
+          {copied ? "Copié" : "Partager"}
+        </button>
+      </div>
     </article>
   );
 }

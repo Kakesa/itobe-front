@@ -23,3 +23,11 @@ export function formatRelativeTime(iso: string): string {
     year: "numeric",
   });
 }
+
+/** Variante « il y a 16 h » pour les fils d’actualités. */
+export function formatRelativeTimeAgo(iso: string): string {
+  const rel = formatRelativeTime(iso);
+  if (!rel) return "";
+  if (rel === "À l'instant") return "À l'instant";
+  return `il y a ${rel}`;
+}

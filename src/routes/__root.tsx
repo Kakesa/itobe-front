@@ -151,6 +151,12 @@ function RootComponent() {
     return () => document.documentElement.classList.remove("theme-edition");
   }, [themeEdition]);
 
+  const themeMediaBlog = pathname === "/media";
+  useEffect(() => {
+    document.documentElement.classList.toggle("theme-media-blog", themeMediaBlog);
+    return () => document.documentElement.classList.remove("theme-media-blog");
+  }, [themeMediaBlog]);
+
   // Accueil / reader / admin = chrome dédié (pas le header public).
   const sansChrome =
     pathname === "/" ||
@@ -171,7 +177,7 @@ function RootComponent() {
               {/* Required: nested routes render here. */}
               <Outlet />
             </main>
-            <SiteFooter />
+            {!themeMediaBlog && <SiteFooter />}
           </div>
         )}
         {/* Système de notification centralisé */}

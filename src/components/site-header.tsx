@@ -3,7 +3,9 @@ import { useMemo, useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
+import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
+import { destinationMonEspace, labelMonEspace } from "@/lib/redirect-navigation";
 
 type Lien = { to: string; label: string; exact?: boolean };
 
@@ -28,9 +30,12 @@ const liensEdition: Lien[] = [
 export function SiteHeader() {
   const portail = usePortailActif();
   const { aDesAchats } = useADesAchats();
-  const { connecte, pret, deconnexion } = useSession();
+  const { connecte, pret, session, deconnexion } = useSession();
+  const { role } = useRole();
   const navigate = useNavigate();
   const [ouvert, setOuvert] = useState(false);
+  const espaceUrl = destinationMonEspace(role);
+  const espaceLabel = labelMonEspace(role);
   const home = portail === "media" ? "/media" : "/edition";
   const titre = portail === "media" ? "Média" : "Maison d'édition";
   const liens = useMemo(() => {
@@ -51,13 +56,21 @@ export function SiteHeader() {
 
   const liensAuthDesktop = pret ? (
     connecte ? (
-      <button
-        type="button"
-        onClick={seDeconnecter}
-        className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
-      >
-        Déconnexion
-      </button>
+      <>
+        <Link
+          to={espaceUrl}
+          className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+        >
+          {espaceLabel}
+        </Link>
+        <button
+          type="button"
+          onClick={seDeconnecter}
+          className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+        >
+          Déconnexion
+        </button>
+      </>
     ) : (
       <>
         <Link
@@ -79,13 +92,27 @@ export function SiteHeader() {
 
   const liensAuthMobile = pret ? (
     connecte ? (
-      <button
-        type="button"
-        onClick={seDeconnecter}
-        className="block w-full py-2 text-left text-sm font-medium"
-      >
-        Déconnexion
-      </button>
+      <>
+        <Link
+          to={espaceUrl}
+          onClick={() => setOuvert(false)}
+          className="block py-2 text-sm font-medium text-primary"
+        >
+          {espaceLabel}
+        </Link>
+        {session && (
+          <p className="pb-1 text-xs text-muted-foreground">
+            {session.prenom} {session.nom} · {session.email}
+          </p>
+        )}
+        <button
+          type="button"
+          onClick={seDeconnecter}
+          className="block w-full py-2 text-left text-sm text-muted-foreground"
+        >
+          Déconnexion
+        </button>
+      </>
     ) : (
       <>
         <Link

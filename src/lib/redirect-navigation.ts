@@ -54,6 +54,20 @@ export function destinationApresConnexion(role: Role): string {
   return "/edition";
 }
 
+/** Espace personnel (back-office ou espace lecteur). */
+export function destinationMonEspace(role: Role): string {
+  if (role === "admin") return "/admin/media";
+  if (role === "editeur") return "/admin/edition";
+  return "/admin";
+}
+
+/** Libellé du bouton « Mon espace » selon le rôle. */
+export function labelMonEspace(role: Role): string {
+  if (role === "admin") return "Espace admin";
+  if (role === "editeur") return "Mon espace éditeur";
+  return "Mon espace";
+}
+
 /** Page Mon profil dans l'espace correspondant au rôle. */
 export function destinationMonProfil(role: Role): "/admin/media/mon-profil" | "/admin/edition/mon-profil" | "/admin/mon-profil" {
   if (role === "admin") return "/admin/media/mon-profil";

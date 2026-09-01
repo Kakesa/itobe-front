@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ArticlePostCard } from "@/components/media/article-post";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,13 +9,13 @@ import { categoriesMedia, getAuteur } from "@/lib/data";
 export const Route = createFileRoute("/media/")({
   head: () => ({
     meta: [
-      { title: "Média — Actualités, articles et interviews | Itobe" },
+      { title: "Blog — Actualités, articles et interviews | Itobe" },
       {
         name: "description",
         content:
-          "Actualités, chroniques, interviews et enquêtes culturelles. Le portail média d'Itobe, mis à jour chaque semaine.",
+          "Analyses, chroniques et entretiens autour du livre, de la culture et des industries créatives.",
       },
-      { property: "og:title", content: "Média — Actualités et articles | Itobe" },
+      { property: "og:title", content: "Blog — Itobe Média" },
       {
         property: "og:description",
         content: "Actualités, chroniques et interviews du portail média Itobe.",
@@ -28,21 +29,16 @@ export const Route = createFileRoute("/media/")({
 
 function FeedSkeleton() {
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <div className="flex gap-3 p-4">
-        <Skeleton className="size-12 rounded-full" />
+    <div className="animate-pulse overflow-hidden border border-white/5 bg-stone-900">
+      <div className="flex items-center gap-3 px-4 pb-2 pt-3">
+        <Skeleton className="size-10 shrink-0 rounded-full bg-stone-850" />
         <div className="flex-1 space-y-2">
-          <Skeleton className="h-4 w-40" />
-          <Skeleton className="h-3 w-56" />
-          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-3 w-28 bg-stone-850" />
+          <Skeleton className="h-2.5 w-40 bg-stone-850" />
         </div>
       </div>
-      <div className="space-y-2 px-4 pb-3">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-5/6" />
-      </div>
-      <Skeleton className="aspect-[1.91/1] w-full rounded-none" />
-      <Skeleton className="mx-4 my-3 h-8 w-full" />
+      <Skeleton className="aspect-video w-full bg-stone-850" />
+      <Skeleton className="h-16 w-full bg-stone-850" />
     </div>
   );
 }
@@ -50,108 +46,168 @@ function FeedSkeleton() {
 function MediaPage() {
   const { articles, loading } = useArticles();
   const [cat, setCat] = useState<string>("Tous");
+  const [query, setQuery] = useState("");
 
-  const liste = useMemo(
-    () => (cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat)),
-    [articles, cat],
-  );
-  const populaires = useMemo(() => articles.filter((a) => a.populaire), [articles]);
+  const liste = useMemo(() => {
+    let items = cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat);
+
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+
+    return items.filter((a) => {
+      const auteurNom = getAuteur(a.auteur)?.nom ?? "";
+      return (
+        a.titre.toLowerCase().includes(q) ||
+        a.chapo.toLowerCase().includes(q) ||
+        a.categorie.toLowerCase().includes(q) ||
+        auteurNom.toLowerCase().includes(q) ||
+        a.tags.some((tag) => tag.toLowerCase().includes(q))
+      );
+    });
+  }, [articles, cat, query]);
+
+  const { une, publications } = useMemo(() => {
+    const featured = liste.filter((a) => a.populaire);
+    const featuredList = featured.length > 0 ? featured : liste.length > 0 ? [liste[0]] : [];
+    const slugs = new Set(featuredList.map((a) => a.slug));
+    const rest = liste.filter((a) => !slugs.has(a.slug));
+    return { une: featuredList, publications: rest };
+  }, [liste]);
+
+  const filterOptions = ["Tous", ...categoriesMedia];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14">
-      <p className="kicker">Portail média</p>
-      <h1 className="mt-3 text-4xl md:text-5xl">Actualités & articles</h1>
-      <p className="mt-4 max-w-xl text-muted-foreground">
-        Enquêtes, chroniques et entretiens autour du livre, de la culture et des industries
-        créatives.
-      </p>
+    <section id="blog-section" className="media-blog-page min-h-screen bg-stone-950 py-10 sm:py-14 lg:py-16">
+      <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
+        <header className="space-y-2">
+          <p className="media-blog-label mb-0">Itobe Média</p>
+          <h1 className="font-display text-3xl font-medium leading-tight text-stone-100 sm:text-4xl">
+            Blog
+          </h1>
+          <p className="max-w-xl text-sm leading-relaxed text-stone-500">
+            Analyses, chroniques et coulisses — le prolongement écrit des conversations Itobe.
+          </p>
+        </header>
 
-      <div className="mt-10 flex flex-wrap gap-2">
-        {["Tous", ...categoriesMedia].map((c) => (
-          <button
-            key={c}
-            type="button"
-            onClick={() => setCat(c)}
-            className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
-              cat === c
-                ? "border-accent bg-accent text-accent-foreground"
-                : "border-border text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
+        <div className="space-y-4">
+          <div className="relative max-w-xl">
+            <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-stone-600" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Rechercher par titre, catégorie, auteur, mot-clé…"
+              className="w-full border-b border-white/10 bg-transparent py-2 pl-7 pr-4 text-sm text-stone-200 placeholder-stone-600 transition focus:border-rose-500/50 focus:outline-none"
+            />
+          </div>
 
-      <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_280px]">
-        <div className="grid gap-8 sm:grid-cols-2">
-          {loading &&
-            Array.from({ length: 4 }).map((_, i) => (
-              <FeedSkeleton key={i} />
-            ))}
-
-          {!loading &&
-            liste.map((a) => (
-              <ArticlePostCard key={a.slug} article={a} auteur={getAuteur(a.auteur)} />
-            ))}
-
-          {!loading && liste.length === 0 && (
-            <p className="text-sm text-muted-foreground sm:col-span-2">
-              Aucun article publié pour le moment.
-            </p>
-          )}
+          <div className="media-blog-filters flex items-center gap-4 overflow-x-auto border-b border-white/5 pb-2">
+            {filterOptions.map((c) => {
+              const active = cat === c;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setCat(c)}
+                  className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm transition ${
+                    active
+                      ? "border-rose-500 text-stone-100"
+                      : "border-transparent text-stone-600 hover:text-stone-400"
+                  }`}
+                >
+                  {c}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <aside>
-          <p className="kicker">Les plus lus</p>
-          <ol className="mt-4 space-y-5">
-            {loading &&
-              Array.from({ length: 3 }).map((_, i) => (
-                <li key={i} className="flex gap-3">
-                  <Skeleton className="h-8 w-6" />
-                  <Skeleton className="h-4 flex-1" />
-                </li>
-              ))}
-            {!loading &&
-              populaires.map((a, i) => (
-                <li key={a.slug} className="flex gap-3">
-                  <span className="font-display text-2xl text-muted-foreground">{i + 1}</span>
-                  <Link
-                    to="/media/$slug"
-                    params={{ slug: a.slug }}
-                    className="text-sm leading-snug hover:text-accent"
-                  >
-                    {a.titre}
-                  </Link>
-                </li>
-              ))}
-          </ol>
+        {loading && (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            <FeedSkeleton />
+            <FeedSkeleton />
+            <FeedSkeleton />
+          </div>
+        )}
 
-          <div className="mt-10 rounded-sm border border-border bg-card p-5">
-            <p className="font-display text-lg">Newsletter</p>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Le meilleur de la rédaction, chaque vendredi.
+        {!loading && liste.length === 0 && (
+          <div className="space-y-2 py-12 text-center">
+            <p className="font-display text-xl text-stone-500">Aucun article trouvé</p>
+            <p className="text-sm text-stone-600">
+              Essayez un autre mot-clé ou une autre catégorie.
             </p>
-            <form
-              className="mt-4 space-y-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                (e.currentTarget as HTMLFormElement).reset();
-              }}
-            >
+          </div>
+        )}
+
+        {!loading && une.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="font-display text-lg font-medium text-stone-100">À la une</h2>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {une.map((a, i) => (
+                <div key={a.slug} className={i === 0 ? "md:col-span-2 lg:col-span-2" : ""}>
+                  <ArticlePostCard
+                    article={a}
+                    auteur={getAuteur(a.auteur)}
+                    featured={i === 0}
+                    index={i}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!loading && publications.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="font-display text-lg font-medium text-stone-100">Publications</h2>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+              {publications.map((a, i) => (
+                <ArticlePostCard
+                  key={a.slug}
+                  article={a}
+                  auteur={getAuteur(a.auteur)}
+                  index={i}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <section className="media-blog-newsletter mx-auto max-w-3xl pt-4 text-center">
+          <p className="media-blog-label mb-4">Newsletter</p>
+          <h2 className="mb-3 font-display text-3xl font-medium leading-tight text-stone-100 sm:text-4xl">
+            Recevez les nouveaux articles
+          </h2>
+          <p className="mx-auto mb-8 max-w-lg text-stone-500">
+            Culture, édition et coulisses d&apos;Itobe — directement dans votre boîte mail.
+          </p>
+          <form
+            className="mx-auto max-w-lg space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              (e.currentTarget as HTMLFormElement).reset();
+            }}
+          >
+            <div className="flex flex-col gap-0 border-b border-white/15 transition focus-within:border-rose-500/50 sm:flex-row">
               <input
                 type="email"
                 required
-                placeholder="votre@email.com"
-                className="w-full rounded-sm border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+                placeholder="Votre adresse email"
+                className="min-w-0 flex-1 bg-transparent px-4 py-4 text-sm text-stone-200 placeholder-stone-600 focus:outline-none"
               />
-              <button className="w-full rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
+              <button
+                type="submit"
+                className="flex shrink-0 cursor-pointer items-center justify-center gap-2 bg-rose-500 px-6 py-4 text-xs font-semibold uppercase tracking-wider text-stone-950 transition hover:bg-rose-400"
+              >
                 S&apos;abonner
               </button>
-            </form>
-          </div>
-        </aside>
+            </div>
+            <p className="text-xs text-stone-600">
+              Pas de spam. Seulement du contenu utile. Désabonnement à tout moment.
+            </p>
+          </form>
+        </section>
       </div>
-    </div>
+    </section>
   );
 }

@@ -13,6 +13,7 @@ export type PublicArticle = {
   image: string;
   couverture?: string;
   populaire?: boolean;
+  commentairesCount?: number;
   corps: string[];
   contenu?: string;
   youtube?: string;
@@ -111,6 +112,9 @@ export const normalizePublicArticle = (item: any): PublicArticle => {
   ...(couverture ? { couverture } : {}),
   image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(item?.populaire ?? item?.aLaUne ?? false),
+  ...(Number(item?.commentairesCount) > 0
+    ? { commentairesCount: Number(item.commentairesCount) }
+    : {}),
   contenu: String(item?.contenu ?? ""),
   corps: Array.isArray(item?.corps) && item.corps.length > 0
     ? item.corps.map((part: unknown) => String(part))

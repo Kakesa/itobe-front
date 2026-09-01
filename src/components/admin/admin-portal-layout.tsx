@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { BookOpen, LayoutDashboard, Menu, Newspaper, X } from "lucide-react";
+import { BookOpen, ExternalLink, LayoutDashboard, Menu, Newspaper, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import type { Role } from "@/lib/admin-data";
 import { useSession } from "@/hooks/use-session";
@@ -32,7 +32,7 @@ const PORTAL_META: Record<
     accentClass: "admin-portal-accent",
     badgeClass: "admin-portal-badge",
     publicLink: "/media",
-    publicLabel: "Voir le portail Média",
+    publicLabel: "Retour au site",
     otherPortal: { to: "/admin/edition", label: "Espace Édition", portal: "edition" },
   },
   edition: {
@@ -43,7 +43,7 @@ const PORTAL_META: Record<
     accentClass: "admin-portal-accent",
     badgeClass: "admin-portal-badge",
     publicLink: "/edition",
-    publicLabel: "Voir le portail Édition",
+    publicLabel: "Retour au site",
     otherPortal: { to: "/admin/media", label: "Espace Média", portal: "media" },
   },
   lecteur: {
@@ -54,7 +54,7 @@ const PORTAL_META: Record<
     accentClass: "bg-accent text-accent-foreground",
     badgeClass: "bg-primary-foreground/15 text-primary-foreground/80",
     publicLink: "/edition",
-    publicLabel: "Retour au catalogue",
+    publicLabel: "Retour au site",
   },
 };
 
@@ -228,14 +228,23 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
               {meta.label}
             </span>
           </div>
-          {role === "admin" && meta.otherPortal && (
+          <div className="ml-auto flex items-center gap-3">
+            {role === "admin" && meta.otherPortal && (
+              <Link
+                to={meta.otherPortal.to}
+                className="text-xs font-medium text-muted-foreground hover:text-foreground"
+              >
+                {meta.otherPortal.label} →
+              </Link>
+            )}
             <Link
-              to={meta.otherPortal.to}
-              className="text-xs font-medium text-muted-foreground hover:text-foreground"
+              to={meta.publicLink}
+              className="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
-              {meta.otherPortal.label} →
+              <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+              {meta.publicLabel}
             </Link>
-          )}
+          </div>
         </header>
 
         {mobileOpen && (

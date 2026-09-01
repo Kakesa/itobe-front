@@ -7,6 +7,8 @@ import { fusionnerPanierApresConnexion } from "@/lib/panier/merge-on-login";
 import { useSession } from "@/hooks/use-session";
 import {
   destinationApresConnexion,
+  destinationMonEspace,
+  labelMonEspace,
   parseRedirectPath,
 } from "@/lib/redirect-navigation";
 import type { Role } from "@/lib/admin-data";
@@ -195,12 +197,18 @@ function Connexion() {
             </button>
           ) : (
             <Link
-              to={destinationApresConnexion(session.role)}
+              to={destinationMonEspace(session.role as Role)}
               className="rounded-sm bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
             >
-              {session.role === "lecteur" ? "Retour au catalogue" : "Ouvrir mon espace"}
+              {labelMonEspace(session.role as Role)}
             </Link>
           )}
+          <Link
+            to={session.role === "lecteur" ? "/edition" : "/media"}
+            className="rounded-sm border border-border px-5 py-2.5 text-sm"
+          >
+            Retour au site
+          </Link>
           <button
             type="button"
             onClick={deconnexion}
