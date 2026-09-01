@@ -212,24 +212,45 @@ export function ArticleRichEditor({
 }
 
 /** Affiche le HTML d'un article sur le site public. */
-export function ArticleHtmlBody({ html, fallbackParagraphs }: { html?: string | undefined; fallbackParagraphs: string[] }) {
+export function ArticleHtmlBody({
+  html,
+  fallbackParagraphs,
+}: {
+  html?: string | undefined;
+  fallbackParagraphs: string[];
+}) {
   const trimmed = html?.trim() ?? "";
-  const looksLikeHtml = trimmed.startsWith("<") && trimmed.includes(">");
+  const paragraphs = fallbackParagraphs.map((p) => p.trim()).filter(Boolean);
 
-  if (looksLikeHtml) {
+  if (trimmed && !richTextIsEmpty(trimmed)) {
+    const looksLikeHtml = trimmed.startsWith("<") && trimmed.includes(">");
+    if (looksLikeHtml) {
+      return (
+        <div
+          className="article-body rich-editor__preview space-y-4 text-[1.05rem] leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: trimmed }}
+        />
+      );
+    }
+
     return (
-      <div
-        className="article-body rich-editor__preview space-y-4 text-[1.05rem] leading-relaxed"
-        dangerouslySetInnerHTML={{ __html: trimmed }}
-      />
+      <div className="space-y-6 text-[1.05rem] leading-relaxed">
+        {trimmed.split(/\n{2,}/).filter(Boolean).map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </div>
     );
   }
 
-  return (
-    <div className="space-y-6 text-[1.05rem] leading-relaxed">
-      {fallbackParagraphs.map((p, i) => (
-        <p key={i}>{p}</p>
-      ))}
-    </div>
-  );
+  if (paragraphs.length > 0) {
+    return (
+      <div className="space-y-6 text-[1.05rem] leading-relaxed">
+        {paragraphs.map((p, i) => (
+          <p key={i}>{p}</p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
 }

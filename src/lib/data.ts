@@ -14,6 +14,10 @@ export type Article = {
   /** URL brute de couverture (http, data URL ou /uploads). */
   couverture?: string;
   populaire?: boolean;
+  /** Corps HTML ou texte complet (distinct du résumé / chapô). */
+  contenu?: string;
+  youtube?: string;
+  galerie?: string[];
   corps: string[];
 };
 
@@ -255,9 +259,14 @@ const articleDepuisAdmin = (row: Record<string, unknown>, index: number): Articl
   lecture: String(row["lecture"] ?? "5 min"),
   ...articleCoverFromRow(row),
   populaire: Boolean(row["populaire"] ?? row["aLaUne"] ?? false),
-  corps: Array.isArray(row["corps"])
+  ...(String(row["contenu"] ?? "").trim() ? { contenu: String(row["contenu"]) } : {}),
+  ...(String(row["youtube"] ?? "").trim() ? { youtube: String(row["youtube"]) } : {}),
+  ...(Array.isArray(row["galerie"]) && row["galerie"].length > 0
+    ? { galerie: row["galerie"].map((src) => String(src)) }
+    : {}),
+  corps: Array.isArray(row["corps"]) && row["corps"].length > 0
     ? row["corps"].map((part) => String(part))
-    : [String(row["contenu"] ?? row["chapo"] ?? "")],
+    : [],
 });
 
 const articlesPubliesAdmin = (): Article[] => {
@@ -294,7 +303,7 @@ const normaliserArticleApi = (entry: any): Article => {
   return {
   slug: String(entry?.slug ?? entry?._id ?? "article"),
   titre: String(entry?.titre ?? "Article"),
-  chapo: String(entry?.chapo ?? entry?.resume ?? entry?.contenu ?? ""),
+  chapo: String(entry?.chapo ?? entry?.resume ?? ""),
   categorie: String(entry?.categorie?.nom ?? entry?.categorie ?? "Actualités"),
   tags: Array.isArray(entry?.tags) ? entry.tags.map((tag: unknown) => String(tag)) : [],
   auteur: String(entry?.auteur?.slug ?? entry?.auteur ?? "espoir-kakesa"),
@@ -303,10 +312,15 @@ const normaliserArticleApi = (entry: any): Article => {
   ...(couverture ? { couverture } : {}),
   image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(entry?.populaire ?? entry?.aLaUne ?? false),
-  corps: Array.isArray(entry?.corps)
+  ...(String(entry?.contenu ?? "").trim() ? { contenu: String(entry.contenu) } : {}),
+  ...(String(entry?.youtube ?? "").trim() ? { youtube: String(entry.youtube).trim() } : {}),
+  ...(Array.isArray(entry?.galerie) && entry.galerie.length > 0
+    ? { galerie: entry.galerie.map((src: unknown) => String(src)) }
+    : {}),
+  corps: Array.isArray(entry?.corps) && entry.corps.length > 0
     ? entry.corps.map((part: unknown) => String(part))
-    : [String(entry?.contenu ?? entry?.chapo ?? "")],
-};
+    : [],
+  };
 };
 
 const normaliserLivreApi = (entry: any): Livre => {

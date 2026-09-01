@@ -15,6 +15,8 @@ export type PublicArticle = {
   populaire?: boolean;
   corps: string[];
   contenu?: string;
+  youtube?: string;
+  galerie?: string[];
 };
 
 export type PublicLivre = {
@@ -100,7 +102,7 @@ export const normalizePublicArticle = (item: any): PublicArticle => {
   return {
   slug: String(item?.slug ?? item?.["_id"] ?? "article"),
   titre: String(item?.titre ?? "Article"),
-  chapo: String(item?.chapo ?? item?.resume ?? item?.contenu ?? ""),
+  chapo: String(item?.chapo ?? item?.resume ?? ""),
   categorie: normalizeCategory(item?.categorie),
   tags: Array.isArray(item?.tags) ? item.tags.map((tag: unknown) => String(tag)) : [],
   auteur: normalizeAuteurSlug(item?.auteur),
@@ -110,9 +112,17 @@ export const normalizePublicArticle = (item: any): PublicArticle => {
   image: couverture ?? ARTICLE_COVER_FALLBACK,
   populaire: Boolean(item?.populaire ?? item?.aLaUne ?? false),
   contenu: String(item?.contenu ?? ""),
-  corps: Array.isArray(item?.corps)
+  corps: Array.isArray(item?.corps) && item.corps.length > 0
     ? item.corps.map((part: unknown) => String(part))
-    : [String(item?.contenu ?? item?.chapo ?? "")],
+    : [],
+  ...(String(item?.youtube ?? "").trim() ? { youtube: String(item.youtube).trim() } : {}),
+  ...(Array.isArray(item?.galerie) && item.galerie.length > 0
+    ? {
+        galerie: item.galerie
+          .map((src: unknown) => resolveMediaUrl(String(src)))
+          .filter(Boolean) as string[],
+      }
+    : {}),
 };
 };
 

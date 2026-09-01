@@ -2418,3 +2418,16 @@
   border: none;
   border-top: 1px solid var(--border);
 }
+
+/* Fiche article — mise en page blog */
+.article-blog__body .article-body,
+.article-blog__body .rich-editor__preview {
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+
+.article-blog__chapo {
+  font-family: var(--font-serif, Georgia, "Times New Roman", serif);
+  font-style: italic;
+}
