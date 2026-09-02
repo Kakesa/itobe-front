@@ -85,6 +85,7 @@ export function CrudModule({
       titre: String(entry["titre"] ?? ""),
       resume: String(entry["resume"] ?? ""),
       pages: Number(entry["pages"] ?? 200),
+      nombreChapitres: Number(entry["nombreChapitres"] ?? entry["chapitres"]?.length ?? 6),
       auteur: String(
         (entry["auteur"] as { slug?: string } | undefined)?.slug ?? entry["auteur"] ?? "",
       ),

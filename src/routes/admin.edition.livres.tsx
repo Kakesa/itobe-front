@@ -96,6 +96,7 @@ function AdminLivres() {
         { nom: "prixPapier", label: "Prix papier ($)", type: "number" },
         { nom: "promo", label: "Prix promo numérique ($)", type: "number" },
         { nom: "pages", label: "Nombre de pages", type: "number" },
+        { nom: "nombreChapitres", label: "Nombre de chapitres", type: "number", defaut: 6, requis: true },
         { nom: "stock", label: "Stock", type: "number" },
         { nom: "disponible", label: "Publier (en vente)", type: "switch", placeholder: "En vente", defaut: true },
       ]}

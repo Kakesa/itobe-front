@@ -13,6 +13,7 @@ export type Article = {
   image: string;
   /** URL brute de couverture (http, data URL ou /uploads). */
   couverture?: string;
+  fichiers?: { pdfUrl?: string; epubUrl?: string };
   populaire?: boolean;
   commentairesCount?: number;
   /** Corps HTML ou texte complet (distinct du résumé / chapô). */
@@ -350,6 +351,14 @@ const normaliserLivreApi = (entry: any): Livre => {
     aLaUne: Boolean(entry?.aLaUne ?? false),
     couleur: String(entry?.couleur ?? "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))"),
     ...(typeof entry?.couverture === "string" ? { couverture: entry.couverture } : {}),
+    ...(entry?.fichiers
+      ? {
+          fichiers: {
+            pdfUrl: String(entry.fichiers.pdfUrl ?? ""),
+            epubUrl: String(entry.fichiers.epubUrl ?? ""),
+          },
+        }
+      : {}),
     apercuPages: Number(entry?.apercuPages ?? 10),
     apercuPourcent: Number(entry?.apercuPourcent ?? 10),
     chapitres: Array.isArray(entry?.chapitres)

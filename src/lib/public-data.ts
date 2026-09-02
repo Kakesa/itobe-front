@@ -12,6 +12,7 @@ export type PublicArticle = {
   lecture: string;
   image: string;
   couverture?: string;
+  fichiers?: { pdfUrl?: string; epubUrl?: string };
   populaire?: boolean;
   commentairesCount?: number;
   corps: string[];
@@ -155,6 +156,14 @@ export const normalizePublicLivre = (item: any): PublicLivre => {
     aLaUne: Boolean(item?.aLaUne ?? false),
     couleur: String(item?.couleur ?? "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))"),
     ...(typeof item?.couverture === "string" ? { couverture: item.couverture } : {}),
+    ...(item?.fichiers
+      ? {
+          fichiers: {
+            pdfUrl: String(item.fichiers.pdfUrl ?? ""),
+            epubUrl: String(item.fichiers.epubUrl ?? ""),
+          },
+        }
+      : {}),
     apercuPages: Number(item?.apercuPages ?? 10),
     apercuPourcent: Number(item?.apercuPourcent ?? 10),
     chapitres: Array.isArray(item?.chapitres)

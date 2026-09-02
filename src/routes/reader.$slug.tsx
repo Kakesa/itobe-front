@@ -95,6 +95,9 @@ function Reader() {
   const chapitreVerrouille = (gratuit: boolean) => !accesComplet && !gratuit;
   const paragraphes = useMemo(() => pageTexte(livre, page), [livre, page]);
   const chapitreCourant = livre.chapitres.find((c) => c.pages.includes(page));
+  const pdfUrl = livre.fichiers?.pdfUrl;
+  const epubUrl = livre.fichiers?.epubUrl;
+  const documentUrl = pdfUrl || epubUrl;
 
   const aller = (p: number) => setPage(Math.min(Math.max(1, p), livre.pages));
 
@@ -244,6 +247,48 @@ function Reader() {
                     </button>
                   </div>
                 </div>
+              ) : documentUrl ? (
+                accesComplet ? (
+                  <div className="space-y-4">
+                    {pdfUrl ? (
+                      <iframe
+                        src={pdfUrl}
+                        title={`Lecture de ${livre.titre}`}
+                        className="h-[75vh] min-h-[560px] w-full rounded-sm border border-border bg-white"
+                      />
+                    ) : (
+                      <div className="rounded-sm border border-border bg-card p-10 text-center">
+                        <h2 className="text-2xl">Votre EPUB est prêt</h2>
+                        <p className="mt-3 text-sm text-muted-foreground">
+                          Téléchargez le document pour le lire avec votre application de lecture.
+                        </p>
+                        <a
+                          href={epubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-6 inline-block rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground"
+                        >
+                          Ouvrir l&apos;EPUB
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="rounded-sm border border-border bg-card p-10 text-center">
+                    <Lock className="mx-auto size-6 text-accent" />
+                    <h2 className="mt-4 text-2xl">Document disponible après achat</h2>
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      Ce livre numérique contient le document téléversé par l&apos;éditeur.
+                    </p>
+                    <Link
+                      to="/edition/$slug"
+                      params={{ slug: livre.slug }}
+                      className="mt-6 inline-block rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground"
+                    >
+                      Acheter le livre
+                    </Link>
+                  </div>
+                )
               ) : (
                 <article
                   key={page}
