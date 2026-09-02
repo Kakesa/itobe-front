@@ -12,7 +12,6 @@ type Lien = { to: string; label: string; exact?: boolean };
 const liensMedia: Lien[] = [
   { to: "/media", label: "Actualités", exact: true },
   { to: "/auteurs", label: "Auteurs" },
-  { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
@@ -21,7 +20,6 @@ const liensEdition: Lien[] = [
   { to: "/edition", label: "Catalogue", exact: true },
   { to: "/auteurs", label: "Auteurs" },
   { to: "/bibliotheque", label: "Bibliothèque" },
-  { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
