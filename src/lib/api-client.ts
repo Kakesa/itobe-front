@@ -201,6 +201,12 @@ export const AuthApi = {
   },
 };
 
+export const UsersApi = {
+  getAll: (params?: { page?: number; limit?: number; role?: string; statut?: string; q?: string }) =>
+    api.get("/users", params),
+  fetchAll: () => fetchAllPages((page, limit) => UsersApi.getAll({ page, limit })),
+};
+
 export const DashboardApi = {
   getStats: () => api.get("/dashboard"),
 };

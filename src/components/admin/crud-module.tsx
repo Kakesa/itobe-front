@@ -5,7 +5,7 @@ import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
-import { ArticlesApi, LivresApi, ApiError } from "@/lib/api-client";
+import { ArticlesApi, LivresApi, UsersApi, ApiError } from "@/lib/api-client";
 import { hydratePublicData } from "@/lib/data";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
@@ -137,6 +137,39 @@ export function CrudModule({
             err instanceof ApiError && err.statusCode === 401
               ? "Reconnectez-vous pour charger tous les livres."
               : "Impossible de charger la liste complète des livres.",
+          );
+        }
+      });
+
+    return () => {
+      annule = true;
+    };
+  }, [collection, definir]);
+
+  useEffect(() => {
+    if (collection !== "utilisateurs") return;
+
+    let annule = false;
+    UsersApi.fetchAll()
+      .then((users) => {
+        if (annule) return;
+        definir(
+          users.map((user: Record<string, unknown>) => ({
+            id: String(user["_id"] ?? ""),
+            nom: `${String(user["prenom"] ?? "")} ${String(user["nom"] ?? "")}`.trim(),
+            email: String(user["email"] ?? ""),
+            role: String(user["role"] ?? "lecteur"),
+            statut: String(user["statut"] ?? "Actif"),
+            inscription: String(user["createdAt"] ?? "").slice(0, 10),
+          })),
+        );
+      })
+      .catch((err) => {
+        if (!annule) {
+          notify.erreur(
+            err instanceof ApiError && err.statusCode === 401
+              ? "Reconnectez-vous pour charger les utilisateurs."
+              : "Impossible de charger les utilisateurs.",
           );
         }
       });
