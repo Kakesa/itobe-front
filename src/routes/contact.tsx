@@ -14,6 +14,7 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact — Itobe Entreprise" },
       { property: "og:description", content: "Rédaction, édition, partenariats et support." },
       { property: "og:url", content: "/contact" },
+      { property: "og:image", content: "/images/a-propos/hero.jpg" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
   }),
@@ -24,11 +25,21 @@ function Contact() {
   const [envoye, setEnvoye] = useState(false);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-14">
-      <p className="kicker">Contact</p>
-      <h1 className="mt-3 text-4xl md:text-5xl">Parlons de votre projet</h1>
+    <div className="contact-page theme-edition">
+      <section className="apropos-page__hero contact-page__hero">
+        <img src="/images/a-propos/hero.jpg" alt="" className="apropos-page__hero-bg" fetchPriority="high" />
+        <div className="apropos-page__hero-overlay" aria-hidden />
+        <div className="apropos-page__hero-content mx-auto max-w-4xl px-4 py-20 text-center md:py-28">
+          <p className="apropos-page__hero-kicker">Contact</p>
+          <h1 className="mt-4 font-display text-4xl leading-tight text-white md:text-5xl lg:text-6xl">
+            Parlons de votre projet.
+            <br />
+            <span className="text-brand-gold">Construisons la suite ensemble.</span>
+          </h1>
+        </div>
+      </section>
 
-      <div className="mt-12 grid gap-12 md:grid-cols-[1fr_280px]">
+      <div className="mx-auto grid max-w-5xl gap-12 px-4 py-14 md:grid-cols-[1fr_280px]">
         <form
           className="space-y-4"
           onSubmit={(e) => {

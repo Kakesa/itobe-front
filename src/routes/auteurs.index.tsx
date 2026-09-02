@@ -23,6 +23,7 @@ export const Route = createFileRoute("/auteurs/")({
       { property: "og:title", content: "Auteurs & journalistes | Itobe" },
       { property: "og:description", content: "Les plumes publiées par Itobe." },
       { property: "og:url", content: "/auteurs" },
+      { property: "og:image", content: "/images/a-propos/hero.jpg" },
     ],
     links: [{ rel: "canonical", href: "/auteurs" }],
   }),
@@ -32,11 +33,21 @@ export const Route = createFileRoute("/auteurs/")({
 function AuteursPage() {
   const { livres } = useLivres();
   return (
-    <div className="theme-edition mx-auto max-w-6xl px-4 py-14">
-      <p className="kicker">Communauté</p>
-      <h1 className="mt-3 font-display text-4xl md:text-5xl">Auteurs & journalistes</h1>
+    <div className="auteurs-page theme-edition">
+      <section className="apropos-page__hero auteurs-page__hero">
+        <img src="/images/a-propos/hero.jpg" alt="" className="apropos-page__hero-bg" fetchPriority="high" />
+        <div className="apropos-page__hero-overlay" aria-hidden />
+        <div className="apropos-page__hero-content mx-auto max-w-4xl px-4 py-20 text-center md:py-28">
+          <p className="apropos-page__hero-kicker">Communauté</p>
+          <h1 className="mt-4 font-display text-4xl leading-tight text-white md:text-5xl lg:text-6xl">
+            Auteurs & journalistes.
+            <br />
+            <span className="text-brand-gold">Les voix qui racontent l&apos;Afrique.</span>
+          </h1>
+        </div>
+      </section>
 
-      <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-2 lg:grid-cols-3">
         {auteurs.map((a) => (
           <Link
             key={a.slug}

@@ -2032,6 +2032,21 @@
   color: color-mix(in oklab, var(--brand-gold) 90%, white);
 }
 
+.contact-page,
+.auteurs-page {
+  background: var(--edition-cream);
+  color: var(--brand-brown);
+  font-family: var(--font-edition);
+}
+
+.contact-page__hero .apropos-page__hero-bg {
+  object-position: center 42%;
+}
+
+.auteurs-page__hero .apropos-page__hero-bg {
+  object-position: center 58%;
+}
+
 .apropos-page__split {
   display: grid;
   gap: 2.5rem;
