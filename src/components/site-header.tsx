@@ -59,14 +59,14 @@ export function SiteHeader() {
       <>
         <Link
           to={espaceUrl}
-          className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
         >
           {espaceLabel}
         </Link>
         <button
           type="button"
           onClick={seDeconnecter}
-          className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
         >
           Déconnexion
         </button>
@@ -75,14 +75,14 @@ export function SiteHeader() {
       <>
         <Link
           to="/connexion"
-          className="hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
         >
           Connexion
         </Link>
         <Link
           to="/connexion"
           search={{ mode: "inscription" }}
-          className="hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
         >
           Inscription
         </Link>
@@ -138,7 +138,7 @@ export function SiteHeader() {
     <header
       className={`site-header sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+      <div className="site-header__inner mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to={home} className="site-header__brand shrink-0">
           <span className="flex items-center gap-2.5">
             <span className="site-header__logo-mark" aria-hidden>
@@ -149,7 +149,7 @@ export function SiteHeader() {
           <span className="site-header__tagline">{titre}</span>
         </Link>
 
-        <nav className="site-header__nav hidden flex-1 items-center justify-center gap-5 lg:flex">
+        <nav className="site-header__nav site-header__nav--desktop hidden flex-1 items-center justify-center lg:flex">
           {liens.map((l) => (
             <Link
               key={l.to + l.label}
@@ -167,7 +167,7 @@ export function SiteHeader() {
           <Link
             to="/recherche"
             aria-label="Recherche"
-            className="grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
+            className="site-header__search grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
           >
             <Search className="size-4" />
           </Link>

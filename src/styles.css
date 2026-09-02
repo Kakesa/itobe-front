@@ -2162,7 +2162,31 @@
   font-family: var(--font-sans);
 }
 
+.site-header__nav--mobile {
+  transform-origin: top;
+  animation: site-header-mobile-menu-in 180ms ease-out both;
+}
+
+@keyframes site-header-mobile-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem) scaleY(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header__nav--mobile {
+    animation: none;
+  }
+}
+
 .site-header__link {
+  position: relative;
   font-family: var(--font-sans);
   font-size: 0.875rem;
   color: var(--muted-foreground);
@@ -2176,6 +2200,59 @@
 
 .site-header__link.is-active {
   font-weight: 500;
+}
+
+/* Sur grand écran, la navigation reprend le traitement direct et lisible
+   des liens du menu mobile : zones de clic généreuses et état actif évident. */
+@media (min-width: 1024px) {
+  .site-header__inner {
+    height: 4.75rem;
+  }
+
+  .site-header__nav--desktop {
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 0.25rem;
+    border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
+    background: color-mix(in oklab, var(--card) 68%, transparent);
+  }
+
+  .site-header__nav--desktop .site-header__link {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    padding: 0 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .site-header__nav--desktop .site-header__link::after {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.35rem;
+    left: 0.75rem;
+    height: 2px;
+    content: "";
+    background: var(--accent);
+    opacity: 0;
+    transform: scaleX(0.45);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .site-header__nav--desktop .site-header__link:hover,
+  .site-header__nav--desktop .site-header__link.is-active {
+    background: color-mix(in oklab, var(--secondary) 72%, transparent);
+    color: var(--foreground);
+  }
+
+  .site-header__nav--desktop .site-header__link.is-active::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .site-header__auth-button,
+  .site-header__search {
+    min-height: 2.5rem;
+  }
 }
 
 /* ------------------------------------------------------------------ */
