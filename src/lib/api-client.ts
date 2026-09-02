@@ -178,6 +178,7 @@ export const AuthApi = {
   },
 
   me: () => api.get("/auth/me"),
+  updateAvatar: (formData: FormData) => api.post("/auth/me/avatar", formData),
   updateProfile: (data: {
     nom?: string;
     prenom?: string;

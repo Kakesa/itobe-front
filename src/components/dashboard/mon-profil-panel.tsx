@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { ShieldCheck, Trash2, X, Check, Loader2 } from "lucide-react";
+import { ShieldCheck, Trash2, X, Check, Loader2, Camera } from "lucide-react";
 import { getLivre, nomAuteur } from "@/lib/data";
 import { useSession } from "@/hooks/use-session";
 import { useRole } from "@/hooks/use-role";
@@ -62,6 +62,10 @@ export function MonProfilPanel() {
   const [adresse, setAdresse] = useState("");
   const [ville, setVille] = useState("Kinshasa");
   const [userRole, setUserRole] = useState(role);
+  const [avatar, setAvatar] = useState("");
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [avatarError, setAvatarError] = useState("");
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // Préférences
   const [newsletter, setNewsletter] = useState(true);
@@ -113,6 +117,7 @@ export function MonProfilPanel() {
           setAdresse(u.adresse || "");
           setVille(u.ville || "Kinshasa");
           setUserRole(u.role || role);
+          setAvatar(u.avatar || "");
 
           if (u.preferences) {
             setNewsletter(u.preferences.newsletter ?? true);
@@ -156,6 +161,35 @@ export function MonProfilPanel() {
 
     chargerProfil();
   }, [role]);
+
+  const changerAvatar = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setAvatarError("Sélectionnez une image.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError("La photo ne doit pas dépasser 5 Mo.");
+      return;
+    }
+
+    setAvatarError("");
+    setAvatarUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("avatar", file);
+      const res = await AuthApi.updateAvatar(formData);
+      setAvatar(res?.data?.avatar || "");
+      setMessageEnregistre("Photo de profil mise à jour.");
+      setTimeout(() => setMessageEnregistre(""), 4000);
+    } catch (err: any) {
+      setAvatarError(err.message || "Impossible de mettre à jour la photo.");
+    } finally {
+      setAvatarUploading(false);
+    }
+  };
 
   // Sauvegarde des informations et préférences
   const enregistrerProfil = async () => {
@@ -270,6 +304,35 @@ export function MonProfilPanel() {
         <div className="space-y-8">
           <section className="rounded-xl border border-border bg-card p-6">
             <h2 className="text-xl">Informations personnelles</h2>
+            <div className="mt-5 flex items-center gap-4">
+              <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-secondary text-xl font-medium text-muted-foreground">
+                {avatar ? (
+                  <img src={avatar} alt="Photo de profil" className="size-full object-cover" />
+                ) : (
+                  `${prenom.charAt(0)}${nom.charAt(0)}`.toUpperCase() || "U"
+                )}
+              </div>
+              <div>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={changerAvatar}
+                />
+                <button
+                  type="button"
+                  disabled={avatarUploading}
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-secondary disabled:opacity-50"
+                >
+                  {avatarUploading ? <Loader2 className="size-4 animate-spin" /> : <Camera className="size-4" />}
+                  {avatarUploading ? "Téléversement..." : "Changer la photo"}
+                </button>
+                <p className="mt-1 text-xs text-muted-foreground">JPG, PNG, WebP ou GIF, 5 Mo maximum.</p>
+                {avatarError && <p className="mt-1 text-xs text-destructive">{avatarError}</p>}
+              </div>
+            </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="block text-sm">
                 <span className="text-xs text-muted-foreground">Nom</span>
