@@ -233,6 +233,12 @@ export const LivresApi = {
   create: (data: any) => api.post("/livres", data),
   update: (id: string, data: any) => api.put(`/livres/${id}`, data),
   delete: (id: string) => api.delete(`/livres/${id}`),
+  uploadFichier: (id: string, format: "pdf" | "epub", file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("format", format);
+    return api.post(`/livres/${id}/fichier`, formData);
+  },
 };
 
 export const AuteursApi = {

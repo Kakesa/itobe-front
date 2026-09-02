@@ -87,6 +87,8 @@ function AdminLivres() {
           type: "image",
           placeholder: "URL de la couverture",
         },
+        { nom: "pdfUrl", label: "Fichier PDF", type: "file" },
+        { nom: "epubUrl", label: "Fichier EPUB", type: "file" },
         { nom: "auteur", label: "Auteur", type: "select", options: auteurs.map((a) => a.slug) },
         { nom: "categorie", label: "Catégorie", type: "select", options: categoriesLivres },
         { nom: "formats", label: "Formats", placeholder: "PDF, EPUB, Papier" },

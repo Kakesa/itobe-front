@@ -27,7 +27,7 @@ export type Colonne = {
 export type Champ = {
   nom: string;
   label: string;
-  type?: "text" | "textarea" | "richtext" | "number" | "select" | "switch" | "date" | "image";
+  type?: "text" | "textarea" | "richtext" | "number" | "select" | "switch" | "date" | "image" | "file";
   options?: string[];
   requis?: boolean;
   placeholder?: string;
@@ -104,6 +104,8 @@ export function CrudModule({
         entry["couleur"] ??
           "linear-gradient(160deg, oklch(0.62 0.15 48), oklch(0.3 0.05 40))",
       ),
+      pdfUrl: String((entry["fichiers"] as { pdfUrl?: string } | undefined)?.pdfUrl ?? ""),
+      epubUrl: String((entry["fichiers"] as { epubUrl?: string } | undefined)?.epubUrl ?? ""),
     }));
   };
 
@@ -383,6 +385,7 @@ export function CrudModule({
           titre={edition.row ? `Modifier ${singulier.toLowerCase()}` : `Nouveau ${singulier.toLowerCase()}`}
           champs={champs}
           valeursInitiales={edition.row ?? {}}
+          fichierLivreId={collection === "livres" ? edition.row?.id : undefined}
           onAnnuler={() => setEdition(null)}
           onEnregistrer={enregistrer}
         />
@@ -419,12 +422,14 @@ function FormulaireDialog({
   valeursInitiales,
   onAnnuler,
   onEnregistrer,
+  fichierLivreId,
 }: {
   titre: string;
   champs: Champ[];
   valeursInitiales: Partial<Item>;
   onAnnuler: () => void;
   onEnregistrer: (v: Record<string, unknown>) => void;
+  fichierLivreId?: string;
 }) {
   const [valeurs, setValeurs] = useState<Record<string, unknown>>(() =>
     Object.fromEntries(
@@ -512,6 +517,13 @@ function FormulaireDialog({
                     id={id}
                     valeur={String(valeurs[c.nom] ?? "")}
                     placeholder={c.placeholder}
+                    onChange={(url) => setValeurs((v) => ({ ...v, [c.nom]: url }))}
+                  />
+                ) : c.type === "file" ? (
+                  <ChampFichier
+                    format={c.nom === "epubUrl" ? "epub" : "pdf"}
+                    valeur={String(valeurs[c.nom] ?? "")}
+                    livreId={fichierLivreId}
                     onChange={(url) => setValeurs((v) => ({ ...v, [c.nom]: url }))}
                   />
                 ) : (
@@ -639,6 +651,60 @@ function ChampImage({
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function ChampFichier({
+  format,
+  valeur,
+  livreId,
+  onChange,
+}: {
+  format: "pdf" | "epub";
+  valeur: string;
+  livreId?: string;
+  onChange: (url: string) => void;
+}) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const extension = format.toUpperCase();
+
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <input
+        ref={fileRef}
+        type="file"
+        accept={format === "pdf" ? "application/pdf,.pdf" : "application/epub+zip,.epub"}
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (!file || !livreId) return;
+          setUploading(true);
+          void LivresApi.uploadFichier(livreId, format, file)
+            .then((response) => {
+              const url = response?.data?.fichiers?.[`${format}Url`];
+              if (typeof url === "string") onChange(url);
+              notify.succes(`Fichier ${extension} téléversé`);
+            })
+            .catch((error) => notify.erreur(error instanceof Error ? error.message : "Échec du téléversement"))
+            .finally(() => {
+              setUploading(false);
+              event.target.value = "";
+            });
+        }}
+      />
+      <button
+        type="button"
+        disabled={!livreId || uploading}
+        onClick={() => fileRef.current?.click()}
+        className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary disabled:opacity-50"
+      >
+        {uploading ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
+        {uploading ? "Envoi..." : `Téléverser ${extension}`}
+      </button>
+      {valeur && <span className="max-w-full truncate text-xs text-muted-foreground">Fichier disponible</span>}
+      {!livreId && <span className="text-xs text-muted-foreground">Enregistrez d’abord le livre.</span>}
     </div>
   );
 }
