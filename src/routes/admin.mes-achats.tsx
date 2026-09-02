@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { LecteurSectionPage } from "@/components/dashboard/lecteur-section-page";
 

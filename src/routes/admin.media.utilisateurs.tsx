@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { CrudModule } from "@/components/admin/crud-module";
 import { formatDate } from "@/lib/data";

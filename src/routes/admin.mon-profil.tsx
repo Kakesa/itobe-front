@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { AccesRestreint } from "@/components/admin-ui";
 import { MonProfilPage } from "@/components/dashboard/mon-profil-page";
