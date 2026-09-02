@@ -2264,8 +2264,7 @@
     transform: scaleX(1);
   }
 
-  .site-header__auth-button,
-  .site-header__search {
+  .site-header__auth-button {
     min-height: 2.5rem;
   }
 }

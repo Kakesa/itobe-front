@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Menu, Search, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
 import { useRole } from "@/hooks/use-role";
@@ -12,7 +12,6 @@ type Lien = { to: string; label: string; exact?: boolean };
 const liensMedia: Lien[] = [
   { to: "/media", label: "Actualités", exact: true },
   { to: "/auteurs", label: "Auteurs" },
-  { to: "/recherche", label: "Recherche" },
   { to: "/premium", label: "Premium" },
   { to: "/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
@@ -164,13 +163,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <Link
-            to="/recherche"
-            aria-label="Recherche"
-            className="site-header__search grid size-9 place-items-center rounded-sm border border-border text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <Search className="size-4" />
-          </Link>
           {liensAuthDesktop}
           <button
             type="button"
