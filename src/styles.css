@@ -2504,11 +2504,170 @@
 }
 
 .rich-editor__preview hr,
-.rich-editor__content hr {
+.rich-editor__content hr,
+.chapter-editor__content hr {
   margin: 1.25rem 0;
   border: none;
   border-top: 1px solid var(--border);
 }
+
+.chapter-editor__content {
+  min-height: 25rem;
+  padding: 1.5rem;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  outline: none;
+}
+
+.chapter-editor__content p.is-editor-empty:first-child::before {
+  color: var(--muted-foreground);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.chapter-editor__content h1 {
+  margin: 1.5rem 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+}
+
+.chapter-editor__content h2 {
+  margin: 1.3rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.chapter-editor__content h3 {
+  margin: 1.15rem 0 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.chapter-editor__content ul,
+.chapter-editor__content ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.chapter-editor__quote,
+.chapter-editor__content blockquote {
+  margin: 1.25rem 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--accent);
+  font-style: italic;
+  color: color-mix(in oklab, var(--foreground) 85%, transparent);
+}
+
+.chapter-editor__code-block,
+.chapter-editor__content pre {
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--secondary) 80%, var(--background));
+  padding: 1rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9rem;
+}
+
+.chapter-editor__inline-code,
+.chapter-editor__content code:not(pre code) {
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--secondary) 85%, var(--background));
+  padding: 0.15rem 0.4rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+
+.chapter-editor__link,
+.chapter-editor__content a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.chapter-editor__image,
+.chapter-editor__content img {
+  margin: 1.25rem 0;
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+/* Rendu du lecteur pour chapitres Tiptap JSON */
+.chapter-reader-body {
+  line-height: 1.85;
+}
+
+.chapter-reader-body h1 {
+  margin: 2rem 0 1rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.chapter-reader-body h2 {
+  margin: 1.75rem 0 0.85rem;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+}
+
+.chapter-reader-body h3 {
+  margin: 1.5rem 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.chapter-reader-body p {
+  margin: 1.15rem 0;
+}
+
+.chapter-reader-body blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--accent);
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.chapter-reader-body ul {
+  list-style-type: disc;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.chapter-reader-body ol {
+  list-style-type: decimal;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.chapter-reader-body pre {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: color-mix(in oklab, var(--secondary) 80%, var(--background));
+  overflow-x: auto;
+  font-family: ui-monospace, monospace;
+}
+
+.chapter-reader-body code:not(pre code) {
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+  background: color-mix(in oklab, var(--secondary) 80%, var(--background));
+  font-family: ui-monospace, monospace;
+}
+
+.chapter-reader-body hr {
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid var(--border);
+}
+
 
 /* Fiche article — mise en page blog */
 .article-blog__body .article-body,

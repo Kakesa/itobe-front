@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { BookOpen, ChevronLeft, ChevronRight, Download, Heart, Star } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
 import { BookCard } from "@/components/book-card";
 import { LivreDetailSkeleton } from "@/components/book-skeletons";
 import { BookCover } from "@/components/book-cover";
@@ -81,8 +81,10 @@ function LivrePage() {
   const [formatChoisi, setFormatChoisi] = useState<FormatAchat>("numerique");
   const [indexCollection, setIndexCollection] = useState(0);
   const { accesComplet, dejaAchete } = useAccesLecture(livre.slug, livre.apercuPages);
-  const { favori, toggleFavori, enregistrerTelechargement, connecte, erreurFavori } =
-    useBibliothequeLivre(livre.slug, livre.pages);
+  const { favori, toggleFavori, connecte, erreurFavori } = useBibliothequeLivre(
+    livre.slug,
+    livre.pages,
+  );
   const accesSansAchat = accesComplet && !dejaAchete;
 
   const handleFavori = async () => {
@@ -177,14 +179,6 @@ function LivrePage() {
                   <Link to="/admin/ma-bibliotheque" className="fiche-livre-v2__preview-btn">
                     Ma bibliothèque
                   </Link>
-                  <button
-                    type="button"
-                    onClick={() => void enregistrerTelechargement()}
-                    className="fiche-livre-v2__preview-btn inline-flex items-center gap-2"
-                  >
-                    <Download className="size-4" />
-                    Télécharger
-                  </button>
                 </div>
               </div>
             ) : accesSansAchat ? (

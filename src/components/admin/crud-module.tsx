@@ -287,6 +287,25 @@ export function CrudModule({
     setEdition(null);
   };
 
+  const confirmerSuppression = async () => {
+    if (!aSupprimer) return;
+
+    const nom = libelle(aSupprimer);
+    try {
+      if (collection === "livres") {
+        await LivresApi.delete(aSupprimer.id);
+        await rechargerLivresAdmin();
+      } else {
+        supprimer(aSupprimer.id);
+      }
+      notify.supprime(singulier, nom);
+    } catch (error) {
+      notify.erreur(messageErreurApi(error));
+    } finally {
+      setASupprimer(null);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-wrap items-center gap-3">
@@ -404,14 +423,7 @@ export function CrudModule({
           setASupprimer(null);
           notify.annule("Suppression annulée");
         }}
-        onConfirmer={() => {
-          if (aSupprimer) {
-            const nom = libelle(aSupprimer);
-            supprimer(aSupprimer.id);
-            notify.supprime(singulier, nom);
-          }
-          setASupprimer(null);
-        }}
+        onConfirmer={() => void confirmerSuppression()}
       />
     </div>
   );

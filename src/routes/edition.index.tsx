@@ -225,13 +225,13 @@ function Catalogue() {
           >
             Catalogue
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-muted-foreground md:mx-0">
+          <div className="mx-auto mt-4 max-w-xl text-muted-foreground md:mx-0">
             {loading ? (
               <Skeleton className="mx-auto h-4 w-72 max-w-full md:mx-0" />
             ) : (
               `${livres.length} ouvrage${livres.length > 1 ? "s" : ""} disponible${livres.length > 1 ? "s" : ""} en PDF, EPUB et papier. Chaque livre propose un aperçu gratuit avant l'achat.`
             )}
-          </p>
+          </div>
         </div>
 
         {loading ? null : promos.length > 0 && (

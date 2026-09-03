@@ -29,7 +29,6 @@ export const Route = createFileRoute("/bibliotheque")({
 const onglets = [
   { id: "achetes", label: "Achetés" },
   { id: "favoris", label: "Favoris" },
-  { id: "telecharges", label: "Téléchargements" },
   { id: "historique", label: "Historique de lecture" },
 ] as const;
 
@@ -41,12 +40,10 @@ function Bibliotheque() {
   const [data, setData] = useState<{
     achetes: string[];
     favoris: string[];
-    telecharges: string[];
     progressions: Record<string, number>;
   }>({
     achetes: [],
     favoris: [],
-    telecharges: [],
     progressions: {},
   });
 
@@ -71,7 +68,6 @@ function Bibliotheque() {
           setData({
             achetes: (res.data.achetes || []).map((l: any) => l.slug),
             favoris: (res.data.favoris || []).map((l: any) => l.slug),
-            telecharges: (res.data.telecharges || []).map((l: any) => l.slug),
             progressions: res.data.progressions || {},
           });
         }
@@ -87,7 +83,7 @@ function Bibliotheque() {
   const slugs =
     onglet === "historique"
       ? Object.keys(data.progressions)
-      : data[onglet as "achetes" | "favoris" | "telecharges"] || [];
+      : data[onglet as "achetes" | "favoris"] || [];
 
   const enCours = Object.entries(data.progressions).slice(0, 2);
 

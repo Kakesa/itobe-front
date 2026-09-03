@@ -1,8 +1,12 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { CrudModule } from "@/components/admin/crud-module";
 import { categoriesLivres, nomAuteur, auteurs } from "@/lib/data";
 import { Statut } from "@/components/admin-ui";
 import { useNotifierAbonnes } from "@/hooks/use-notifier-abonnes";
+import { BookChaptersManager } from "@/components/admin/chapter-editor/BookChaptersManager";
+import { BookOpen } from "lucide-react";
+import type { Item } from "@/lib/admin/seeds";
 
 export const Route = createFileRoute("/admin/edition/livres")({
   component: AdminLivres,
@@ -10,6 +14,22 @@ export const Route = createFileRoute("/admin/edition/livres")({
 
 function AdminLivres() {
   const { notifierSiPublication } = useNotifierAbonnes();
+  const [livreChapitres, setLivreChapitres] = useState<{
+    id: string;
+    slug: string;
+    titre: string;
+    auteur?: any;
+    couverture?: string;
+  } | null>(null);
+
+  if (livreChapitres) {
+    return (
+      <BookChaptersManager
+        livre={livreChapitres}
+        onRetour={() => setLivreChapitres(null)}
+      />
+    );
+  }
 
   return (
     <CrudModule
@@ -20,6 +40,20 @@ function AdminLivres() {
       requis={["admin", "editeur"]}
       clesRecherche={["titre"]}
       filtre={{ cle: "categorie", label: "Catégorie", options: categoriesLivres }}
+      actionsLigne={(row: Item) => [
+        {
+          label: "Chapitres & Rédaction",
+          icon: BookOpen,
+          onClick: () =>
+            setLivreChapitres({
+              id: String(row.id),
+              slug: String(row["slug"] ?? row.id),
+              titre: String(row["titre"] ?? "Livre"),
+              auteur: row["auteur"],
+              couverture: String(row["couverture"] ?? ""),
+            }),
+        },
+      ]}
       onApresEnregistrement={({ avant, apres }) => {
         notifierSiPublication("livre", avant, apres);
       }}

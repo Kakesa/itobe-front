@@ -32,6 +32,26 @@ export function getToken(): string | null {
   return localStorage.getItem(TOKEN_KEY);
 }
 
+export async function fetchProtectedBookDocument(slug: string): Promise<string | null> {
+  const token = getToken();
+  if (!token) throw new ApiError("Connexion requise", 401);
+
+  const response = await fetch(`${API_BASE}/bibliotheque/lecture/${encodeURIComponent(slug)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (response.status === 204) return null;
+  if (!response.ok) throw new ApiError("Document de lecture indisponible", response.status);
+  if (response.headers.get("content-type")?.includes("application/json")) {
+    const payload = await response.json();
+    const url = payload?.data?.url;
+    if (typeof url !== "string" || !url) {
+      throw new ApiError("Document de lecture indisponible", 502);
+    }
+    return url;
+  }
+  return URL.createObjectURL(await response.blob());
+}
+
 export function setTokens(token: string, refreshToken?: string) {
   if (typeof window === "undefined") return;
   localStorage.setItem(TOKEN_KEY, token);
@@ -47,6 +67,37 @@ export function clearTokens() {
 }
 
 async function request<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  return requestWithRefresh<T>(endpoint, options, true);
+}
+
+async function refreshAccessToken(): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+  if (!refreshToken) return false;
+
+  try {
+    const response = await fetch(`${API_BASE}/auth/refresh-token`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+      cache: "no-store",
+    });
+    if (!response.ok) return false;
+    const payload = await response.json().catch(() => ({}));
+    const { token, refreshToken: nextRefreshToken } = readAuthTokensFromResponse(payload);
+    if (!token) return false;
+    setTokens(token, nextRefreshToken || refreshToken);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function requestWithRefresh<T = any>(
+  endpoint: string,
+  options: RequestInit,
+  allowRefresh: boolean,
+): Promise<T> {
   const token = getToken();
   const headers: Record<string, string> = {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -70,6 +121,11 @@ async function request<T = any>(endpoint: string, options: RequestInit = {}): Pr
   }
 
   const data = await response.json().catch(() => ({}));
+
+  if (response.status === 401 && allowRefresh && !endpoint.includes("/auth/refresh-token")) {
+    const refreshed = await refreshAccessToken();
+    if (refreshed) return requestWithRefresh<T>(endpoint, options, false);
+  }
 
   if (!response.ok) {
     throw new ApiError(data.message || "Une erreur est survenue", response.status, data.errors);
@@ -328,4 +384,21 @@ export const CommandesApi = {
     couponCode?: string;
   }) => api.post("/commandes", data),
   cancel: (id: string) => api.post(`/commandes/${id}/cancel`),
+};
+
+export const ChapitresApi = {
+  getByLivre: (livreIdOrSlug: string) =>
+    api.get(`/livres/${encodeURIComponent(livreIdOrSlug)}/chapitres`),
+  getById: (id: string) => api.get(`/chapitres/${id}`),
+  create: (livreIdOrSlug: string, data: any) =>
+    api.post(`/livres/${encodeURIComponent(livreIdOrSlug)}/chapitres`, data),
+  update: (id: string, data: any) => api.put(`/chapitres/${id}`, data),
+  delete: (id: string) => api.delete(`/chapitres/${id}`),
+  reorder: (livreIdOrSlug: string, chapitres: Array<{ id: string; ordre: number }>) =>
+    api.put(`/livres/${encodeURIComponent(livreIdOrSlug)}/chapitres/reordonner`, { chapitres }),
+  createVersion: (id: string, data?: { description?: string }) =>
+    api.post(`/chapitres/${id}/versions`, data || {}),
+  getVersions: (id: string) => api.get(`/chapitres/${id}/versions`),
+  restoreVersion: (id: string, versionId: string) =>
+    api.post(`/chapitres/${id}/versions/${versionId}/restaurer`),
 };

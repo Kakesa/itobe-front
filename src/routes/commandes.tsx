@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AlertTriangle, ArrowLeft, BookOpen, Download, ReceiptText } from "lucide-react";
+import { AlertTriangle, ArrowLeft, BookOpen, ReceiptText } from "lucide-react";
 import { mesCommandes, type MaCommande } from "@/lib/admin-data";
 import { CommandesApi, getToken } from "@/lib/api-client";
 import { formatDate } from "@/lib/data";
@@ -235,14 +235,6 @@ function Commandes() {
                           <BookOpen className="size-4" />
                           Lire maintenant
                         </Link>
-                        <button
-                          type="button"
-                          onClick={() => setMessage(`Téléchargement de « ${c.titre} » lancé.`)}
-                          className="inline-flex items-center gap-2 rounded-sm border border-border px-4 py-2"
-                        >
-                          <Download className="size-4" />
-                          Télécharger ({c.format})
-                        </button>
                       </>
                     )}
 

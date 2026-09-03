@@ -251,8 +251,8 @@ function renduSection(section: SectionId, data: DashboardLecteurPayload): ReactN
                 >
                   <Download className="size-4 text-muted-foreground" />
                   <span className="flex-1">{t.titre}</span>
-                  <Link to="/edition/$slug" params={{ slug: t.slug }} className="text-xs text-accent hover:underline">
-                    Retélécharger
+                  <Link to="/reader/$slug" params={{ slug: t.slug }} className="text-xs text-accent hover:underline">
+                    Lire en ligne
                   </Link>
                 </li>
               ))}
