@@ -4,19 +4,16 @@ import { useState } from "react";
 import { NewsletterApi } from "@/lib/api-client";
 
 const LIENS_MEDIA = [
-  { label: "Actualités", to: "/media" as const },
-  { label: "Culture", to: "/media" as const },
-  { label: "Technologie", to: "/media" as const },
-  { label: "Société", to: "/media" as const },
-  { label: "Analyses", to: "/media" as const },
+  { label: "Articles", to: "/media" as const },
+  { label: "Vidéos", to: "/media/videos" as const },
+  { label: "À propos", to: "/media/a-propos" as const },
+  { label: "Contact", to: "/contact" as const },
 ];
 
 const LIENS_EDITION = [
-  { label: "Nouveautés", to: "/edition" as const },
-  { label: "Essais", to: "/edition" as const },
-  { label: "Poésie", to: "/edition" as const },
-  { label: "Romans", to: "/edition" as const },
-  { label: "Manuscrits", to: "/contact" as const },
+  { label: "Catalogue", to: "/edition" as const },
+  { label: "À propos", to: "/a-propos" as const },
+  { label: "Contact", to: "/contact" as const },
 ];
 
 function IconeX({ className }: { className?: string }) {

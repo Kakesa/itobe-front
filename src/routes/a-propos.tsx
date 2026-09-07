@@ -8,6 +8,9 @@ const IMG = {
   chezItobe: "/images/a-propos/chez-itobe.png",
 } as const;
 
+/** Page À propos — portail Maison d'édition (Itobe Éditions).
+ *  Le portail Média a sa propre page : `/media/a-propos`.
+ */
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
     meta: [

@@ -10,9 +10,9 @@ import { destinationMonEspace, labelMonEspace } from "@/lib/redirect-navigation"
 type Lien = { to: string; label: string; exact?: boolean };
 
 const liensMedia: Lien[] = [
-  { to: "/media", label: "Actualités", exact: true },
-  { to: "/auteurs", label: "Auteurs" },
-  { to: "/a-propos", label: "À propos" },
+  { to: "/media", label: "Articles", exact: true },
+  { to: "/media/videos", label: "Vidéos" },
+  { to: "/media/a-propos", label: "À propos" },
   { to: "/contact", label: "Contact" },
 ];
 

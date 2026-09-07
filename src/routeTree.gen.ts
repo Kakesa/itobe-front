@@ -62,6 +62,8 @@ import { Route as EditionIndexRouteImport } from './routes/edition.index'
 import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
+import { Route as MediaAProposRouteImport } from './routes/media.a-propos'
+import { Route as MediaVideosRouteImport } from './routes/media.videos'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 import { Route as AdminEditionIndexRouteImport } from './routes/admin.edition.index'
 import { Route as AdminEditionAuteursRouteImport } from './routes/admin.edition.auteurs'
@@ -365,6 +367,16 @@ const MediaSlugRoute = MediaSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => MediaRoute,
 } as any)
+const MediaAProposRoute = MediaAProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => MediaRoute,
+} as any)
+const MediaVideosRoute = MediaVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => MediaRoute,
+} as any)
 const ReaderSlugRoute = ReaderSlugRouteImport.update({
   id: '/reader/$slug',
   path: '/reader/$slug',
@@ -610,6 +622,8 @@ export interface FileRoutesByFullPath {
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/media/a-propos': typeof MediaAProposRoute
+  '/media/videos': typeof MediaVideosRoute
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
@@ -696,6 +710,8 @@ export interface FileRoutesByTo {
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/media/a-propos': typeof MediaAProposRoute
+  '/media/videos': typeof MediaVideosRoute
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin': typeof AdminIndexRoute
   '/auteurs': typeof AuteursIndexRoute
@@ -788,6 +804,8 @@ export interface FileRoutesById {
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
   '/media/$slug': typeof MediaSlugRoute
+  '/media/a-propos': typeof MediaAProposRoute
+  '/media/videos': typeof MediaVideosRoute
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
@@ -882,6 +900,8 @@ export interface FileRouteTypes {
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
+    | '/media/a-propos'
+    | '/media/videos'
     | '/reader/$slug'
     | '/admin/'
     | '/auteurs/'
@@ -968,6 +988,8 @@ export interface FileRouteTypes {
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
+    | '/media/a-propos'
+    | '/media/videos'
     | '/reader/$slug'
     | '/admin'
     | '/auteurs'
@@ -1059,6 +1081,8 @@ export interface FileRouteTypes {
     | '/auteurs/$slug'
     | '/edition/$slug'
     | '/media/$slug'
+    | '/media/a-propos'
+    | '/media/videos'
     | '/reader/$slug'
     | '/admin/'
     | '/auteurs/'
@@ -1497,6 +1521,20 @@ declare module '@tanstack/react-router' {
       path: '/$slug'
       fullPath: '/media/$slug'
       preLoaderRoute: typeof MediaSlugRouteImport
+      parentRoute: typeof MediaRoute
+    }
+    '/media/a-propos': {
+      id: '/media/a-propos'
+      path: '/a-propos'
+      fullPath: '/media/a-propos'
+      preLoaderRoute: typeof MediaAProposRouteImport
+      parentRoute: typeof MediaRoute
+    }
+    '/media/videos': {
+      id: '/media/videos'
+      path: '/videos'
+      fullPath: '/media/videos'
+      preLoaderRoute: typeof MediaVideosRouteImport
       parentRoute: typeof MediaRoute
     }
     '/reader/$slug': {
@@ -1953,11 +1991,15 @@ const EditionRouteWithChildren =
 
 interface MediaRouteChildren {
   MediaSlugRoute: typeof MediaSlugRoute
+  MediaAProposRoute: typeof MediaAProposRoute
+  MediaVideosRoute: typeof MediaVideosRoute
   MediaIndexRoute: typeof MediaIndexRoute
 }
 
 const MediaRouteChildren: MediaRouteChildren = {
   MediaSlugRoute: MediaSlugRoute,
+  MediaAProposRoute: MediaAProposRoute,
+  MediaVideosRoute: MediaVideosRoute,
   MediaIndexRoute: MediaIndexRoute,
 }
 

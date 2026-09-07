@@ -19,7 +19,9 @@ export function portailDepuisChemin(pathname: string): Portail | null {
   if (
     pathname.startsWith("/edition") ||
     pathname.startsWith("/bibliotheque") ||
-    pathname.startsWith("/reader")
+    pathname.startsWith("/reader") ||
+    pathname === "/a-propos" ||
+    pathname.startsWith("/a-propos/")
   ) {
     return "edition";
   }

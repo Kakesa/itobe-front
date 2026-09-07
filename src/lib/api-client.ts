@@ -338,6 +338,11 @@ export const NewsletterApi = {
   subscribe: (email: string) => api.post("/newsletter/subscribe", { email }),
 };
 
+export const YoutubeApi = {
+  getVideos: (limit = 24) => api.get("/youtube/videos", { limit }),
+  getStatus: () => api.get("/youtube/status"),
+};
+
 export const BibliothequeApi = {
   getLibrary: () => api.get("/bibliotheque"),
   toggleFavori: (slug: string) => api.post(`/bibliotheque/favoris/${slug}`),

@@ -10,13 +10,13 @@ import { categoriesMedia, getAuteur } from "@/lib/data";
 export const Route = createFileRoute("/media/")({
   head: () => ({
     meta: [
-      { title: "Blog — Actualités, articles et interviews | Itobe" },
+      { title: "Articles — Actualités et chroniques | Itobe" },
       {
         name: "description",
         content:
           "Analyses, chroniques et entretiens autour du livre, de la culture et des industries créatives.",
       },
-      { property: "og:title", content: "Blog — Itobe Média" },
+      { property: "og:title", content: "Articles — Itobe Média" },
       {
         property: "og:description",
         content: "Actualités, chroniques et interviews du portail média Itobe.",
@@ -82,7 +82,7 @@ function MediaPage() {
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
         <header className="space-y-2">
           <p className="kicker mb-0">Itobe Média</p>
-          <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">Blog</h1>
+          <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">Articles</h1>
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
             Analyses, chroniques et coulisses — le prolongement écrit des conversations Itobe.
           </p>
