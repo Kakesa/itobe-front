@@ -20,7 +20,7 @@ import {
 import { getLivre, nomAuteur, pageTexte, fetchLivreBySlug } from "@/lib/data";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
-import { ChapitresApi } from "@/lib/api-client";
+import { ChapitresApi, PagesApi } from "@/lib/api-client";
 import { ChapterJsonBody } from "@/components/reader/ChapterJsonBody";
 
 export const Route = createFileRoute("/reader/$slug")({
@@ -51,6 +51,14 @@ interface DynamicChapitre {
   verrouille?: boolean;
 }
 
+interface ReaderPage {
+  _id: string;
+  titre: string;
+  ordre: number;
+  contenu?: any;
+  verrouille?: boolean;
+}
+
 function Reader() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
@@ -77,7 +85,13 @@ function Reader() {
   const [recherche, setRecherche] = useState("");
   const [dynamicChapitres, setDynamicChapitres] = useState<DynamicChapitre[]>([]);
   const [chapitreIndexActif, setChapitreIndexActif] = useState(0);
+  const [pagesChapitre, setPagesChapitre] = useState<ReaderPage[]>([]);
+  const [pageIndexActif, setPageIndexActif] = useState(0);
+  const [chargementPages, setChargementPages] = useState(false);
   const pageInitAppliquee = useRef(false);
+  /** Si true, après chargement des pages du chapitre on ouvre la dernière. */
+  const ouvrirDernierePageRef = useRef(false);
+  const zoneLectureRef = useRef<HTMLDivElement>(null);
 
   // Chargement des chapitres dynamiques Tiptap depuis l'API MongoDB
   useEffect(() => {
@@ -97,6 +111,52 @@ function Reader() {
       actif = false;
     };
   }, [slug]);
+
+  // Pages éditoriales du chapitre actif (source de vérité si présentes)
+  const chapitreActifId = dynamicChapitres[chapitreIndexActif]?._id;
+
+  useEffect(() => {
+    if (!chapitreActifId) {
+      setPagesChapitre([]);
+      setPageIndexActif(0);
+      return;
+    }
+
+    let actif = true;
+    setChargementPages(true);
+    void PagesApi.getByChapitre(chapitreActifId)
+      .then((res) => {
+        const liste: ReaderPage[] = res?.data ?? res ?? [];
+        if (!actif) return;
+        const pages = Array.isArray(liste) ? liste : [];
+        setPagesChapitre(pages);
+        if (ouvrirDernierePageRef.current && pages.length > 0) {
+          setPageIndexActif(pages.length - 1);
+          ouvrirDernierePageRef.current = false;
+        } else {
+          setPageIndexActif(0);
+        }
+      })
+      .catch(() => {
+        if (actif) {
+          setPagesChapitre([]);
+          setPageIndexActif(0);
+          ouvrirDernierePageRef.current = false;
+        }
+      })
+      .finally(() => {
+        if (actif) setChargementPages(false);
+      });
+
+    return () => {
+      actif = false;
+    };
+  }, [chapitreActifId]);
+
+  // Remonter en haut à chaque changement de page/chapitre
+  useEffect(() => {
+    zoneLectureRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [chapitreIndexActif, pageIndexActif]);
 
   // Reprise de lecture : API si connecté, sinon cache local (aperçu)
   useEffect(() => {
@@ -132,27 +192,82 @@ function Reader() {
   const chapitreVerrouille = (gratuit: boolean) => !accesComplet && !gratuit;
 
   const modeChapitresTiptap = dynamicChapitres.length > 0;
+  /** Nouveau mode : Pages éditoriales présentes → lecture page par page */
+  const modePagesEditoriales = modeChapitresTiptap && pagesChapitre.length > 0;
 
   const chapitreTiptapCourant = modeChapitresTiptap
     ? dynamicChapitres[chapitreIndexActif] || dynamicChapitres[0]
+    : null;
+
+  const pageEditorialeCourante = modePagesEditoriales
+    ? pagesChapitre[pageIndexActif] || pagesChapitre[0]
     : null;
 
   const estChapitreVerrouille =
     chapitreTiptapCourant &&
     !accesComplet &&
     !chapitreTiptapCourant.gratuit &&
-    (chapitreTiptapCourant.verrouille || !chapitreTiptapCourant.contenu);
+    (chapitreTiptapCourant.verrouille ||
+      (modePagesEditoriales
+        ? !pageEditorialeCourante?.contenu
+        : !chapitreTiptapCourant.contenu));
+
+  /** Contenu affiché : Page.contenu si pages, sinon Chapitre.contenu (legacy). */
+  const contenuLecture = modePagesEditoriales
+    ? pageEditorialeCourante?.contenu
+    : chapitreTiptapCourant?.contenu;
 
   const paragraphes = useMemo(() => pageTexte(livre, page), [livre, page]);
   const chapitreCourantLegacy = livre.chapitres?.find((c) => c.pages?.includes(page));
 
   const allerPage = (p: number) => setPage(Math.min(Math.max(1, p), livre.pages));
 
-  const allerChapitreTiptap = (index: number) => {
+  const allerChapitreTiptap = (index: number, options?: { dernierePage?: boolean }) => {
     const idx = Math.max(0, Math.min(index, dynamicChapitres.length - 1));
+    ouvrirDernierePageRef.current = Boolean(options?.dernierePage);
     setChapitreIndexActif(idx);
     setSommaire(false);
   };
+
+  const allerPageEditoriale = (index: number) => {
+    const idx = Math.max(0, Math.min(index, pagesChapitre.length - 1));
+    setPageIndexActif(idx);
+    setSommaire(false);
+  };
+
+  const allerPrecedentTiptap = () => {
+    if (modePagesEditoriales) {
+      if (pageIndexActif > 0) {
+        allerPageEditoriale(pageIndexActif - 1);
+        return;
+      }
+      if (chapitreIndexActif > 0) {
+        allerChapitreTiptap(chapitreIndexActif - 1, { dernierePage: true });
+      }
+      return;
+    }
+    allerChapitreTiptap(chapitreIndexActif - 1);
+  };
+
+  const allerSuivantTiptap = () => {
+    if (modePagesEditoriales) {
+      if (pageIndexActif < pagesChapitre.length - 1) {
+        allerPageEditoriale(pageIndexActif + 1);
+        return;
+      }
+      if (chapitreIndexActif < dynamicChapitres.length - 1) {
+        allerChapitreTiptap(chapitreIndexActif + 1);
+      }
+      return;
+    }
+    allerChapitreTiptap(chapitreIndexActif + 1);
+  };
+
+  const debutNavigationTiptap =
+    chapitreIndexActif === 0 && (!modePagesEditoriales || pageIndexActif === 0);
+  const finNavigationTiptap =
+    chapitreIndexActif === dynamicChapitres.length - 1 &&
+    (!modePagesEditoriales || pageIndexActif === pagesChapitre.length - 1);
 
   const handleFavori = async () => {
     if (!connecte) {
@@ -165,6 +280,11 @@ function Reader() {
   const titreChapitreAffiche = modeChapitresTiptap
     ? chapitreTiptapCourant?.titre ?? `Chapitre ${chapitreIndexActif + 1}`
     : chapitreCourantLegacy?.titre ?? "Introduction";
+
+  const sousTitrePage =
+    modePagesEditoriales && pageEditorialeCourante
+      ? `${pageEditorialeCourante.titre || `Page ${pageEditorialeCourante.ordre}`} · ${titreChapitreAffiche}`
+      : titreChapitreAffiche;
 
   return (
     <div className={sombre ? "dark" : ""}>
@@ -190,7 +310,7 @@ function Reader() {
           <div className="min-w-0 flex-1 text-center">
             <p className="truncate font-display text-sm font-semibold">{livre.titre}</p>
             <p className="truncate text-[0.7rem] text-muted-foreground">
-              {titreChapitreAffiche}
+              {sousTitrePage}
             </p>
           </div>
 
@@ -268,6 +388,25 @@ function Reader() {
                               <Unlock className="size-3.5 shrink-0 text-accent" />
                             ) : null}
                           </button>
+                          {estActif && modePagesEditoriales && (
+                            <ul className="ml-3 mt-1 space-y-0.5 border-l border-border pl-2">
+                              {pagesChapitre.map((p, pIdx) => (
+                                <li key={p._id}>
+                                  <button
+                                    type="button"
+                                    onClick={() => allerPageEditoriale(pIdx)}
+                                    className={`w-full truncate rounded-md px-2 py-1.5 text-left text-[0.7rem] transition ${
+                                      pIdx === pageIndexActif
+                                        ? "bg-primary/10 text-primary font-semibold"
+                                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                                    }`}
+                                  >
+                                    {p.titre || `Page ${p.ordre}`}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </li>
                       );
                     })}
@@ -318,9 +457,9 @@ function Reader() {
           )}
 
           {/* Zone de lecture centrale */}
-          <div className="flex-1 px-4 py-8 overflow-y-auto">
+          <div ref={zoneLectureRef} className="flex-1 px-4 py-8 overflow-y-auto">
             <div className="mx-auto max-w-2xl">
-              {/* Cas 1 : Chapitres Tiptap JSON */}
+              {/* Cas 1 : Chapitres Tiptap JSON (+ Pages éditoriales si présentes) */}
               {modeChapitresTiptap ? (
                 estChapitreVerrouille ? (
                   <div className="rounded-2xl border border-border bg-card p-10 text-center shadow-xs">
@@ -346,21 +485,40 @@ function Reader() {
                       </button>
                     </div>
                   </div>
+                ) : chargementPages ? (
+                  <div className="py-16 text-center text-sm text-muted-foreground">
+                    Chargement du contenu…
+                  </div>
                 ) : (
-                  <article className="animate-reader-page space-y-6">
+                  <article
+                    key={
+                      modePagesEditoriales
+                        ? pageEditorialeCourante?._id
+                        : chapitreTiptapCourant?._id
+                    }
+                    className="animate-reader-page space-y-6"
+                  >
                     <div className="border-b border-border pb-4 mb-6 text-center">
                       <span className="text-xs uppercase font-semibold text-accent tracking-wider">
                         Chapitre {chapitreTiptapCourant?.ordre}
+                        {modePagesEditoriales
+                          ? ` · Page ${pageIndexActif + 1}/${pagesChapitre.length}`
+                          : ""}
                       </span>
                       <h1 className="font-display text-2xl sm:text-3xl font-bold mt-1 text-foreground">
-                        {chapitreTiptapCourant?.titre}
+                        {modePagesEditoriales
+                          ? pageEditorialeCourante?.titre ||
+                            `Page ${pageEditorialeCourante?.ordre ?? pageIndexActif + 1}`
+                          : chapitreTiptapCourant?.titre}
                       </h1>
+                      {modePagesEditoriales && (
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {chapitreTiptapCourant?.titre}
+                        </p>
+                      )}
                     </div>
 
-                    <ChapterJsonBody
-                      content={chapitreTiptapCourant?.contenu}
-                      taillePolice={taille}
-                    />
+                    <ChapterJsonBody content={contenuLecture} taillePolice={taille} />
 
                     <div className="pt-8 border-t border-border text-center text-xs text-muted-foreground">
                       {nomAuteur(livre.auteur)} — {livre.titre}
@@ -424,28 +582,34 @@ function Reader() {
             {modeChapitresTiptap ? (
               <>
                 <button
-                  onClick={() => allerChapitreTiptap(chapitreIndexActif - 1)}
-                  disabled={chapitreIndexActif === 0}
+                  onClick={allerPrecedentTiptap}
+                  disabled={debutNavigationTiptap}
                   className="grid size-9 place-items-center rounded-full border border-border disabled:opacity-30 hover:bg-secondary"
-                  aria-label="Chapitre précédent"
+                  aria-label={modePagesEditoriales ? "Page précédente" : "Chapitre précédent"}
                 >
                   <ChevronLeft className="size-4" />
                 </button>
 
                 <div className="flex-1 text-center">
                   <p className="text-xs font-semibold text-foreground">
-                    Chapitre {chapitreIndexActif + 1} sur {dynamicChapitres.length}
+                    {modePagesEditoriales
+                      ? `Page ${pageIndexActif + 1} / ${pagesChapitre.length}`
+                      : `Chapitre ${chapitreIndexActif + 1} sur ${dynamicChapitres.length}`}
                   </p>
                   <p className="text-[0.7rem] text-muted-foreground">
+                    {modePagesEditoriales
+                      ? `Chapitre ${chapitreIndexActif + 1}/${dynamicChapitres.length}`
+                      : null}
+                    {modePagesEditoriales ? " · " : ""}
                     {accesComplet ? "Accès complet" : "Aperçu lecteur"}
                   </p>
                 </div>
 
                 <button
-                  onClick={() => allerChapitreTiptap(chapitreIndexActif + 1)}
-                  disabled={chapitreIndexActif === dynamicChapitres.length - 1}
+                  onClick={allerSuivantTiptap}
+                  disabled={finNavigationTiptap}
                   className="grid size-9 place-items-center rounded-full border border-border disabled:opacity-30 hover:bg-secondary"
-                  aria-label="Chapitre suivant"
+                  aria-label={modePagesEditoriales ? "Page suivante" : "Chapitre suivant"}
                 >
                   <ChevronRight className="size-4" />
                 </button>
