@@ -387,12 +387,14 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
             <PageRichEditor
               key={pageActiveId}
               pageId={pageActiveId}
+              chapitreId={chapitreCourant._id}
               chapitreTitre={chapitreCourant.titre}
               onRetour={() => {
                 setPageActiveId(null);
                 setVue("pages");
                 void chargerCompteursPages(chapitres);
               }}
+              onChangerPage={(id) => setPageActiveId(id)}
               onPageMiseAJour={() => {
                 void chargerCompteursPages(chapitres);
               }}

@@ -1,5 +1,12 @@
-import { useEffect, useState } from "react";
-import { ArrowLeft, FileText, Sparkles } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  List,
+  Sparkles,
+} from "lucide-react";
 import { PagesApi } from "@/lib/api-client";
 import { notify } from "@/lib/notify";
 import { usePageAutosave } from "@/hooks/use-page-autosave";
@@ -9,30 +16,50 @@ import type { PageItem } from "./ChapterPagesManager";
 
 interface PageRichEditorProps {
   pageId: string;
+  chapitreId: string;
   chapitreTitre: string;
   onRetour: () => void;
+  /** Navigation vers une autre page du même chapitre */
+  onChangerPage: (pageId: string) => void;
   onPageMiseAJour?: (page: PageItem) => void;
 }
 
 /**
- * Éditeur de contenu d'une Page éditoriale (Tiptap) avec autosave.
+ * Éditeur de contenu d'une Page éditoriale (Tiptap) avec autosave
+ * et navigation Page précédente / Liste / Page suivante.
  */
 export function PageRichEditor({
   pageId,
+  chapitreId,
   chapitreTitre,
   onRetour,
+  onChangerPage,
   onPageMiseAJour,
 }: PageRichEditorProps) {
   const [chargement, setChargement] = useState(true);
   const [page, setPage] = useState<PageItem | null>(null);
+  const [pagesDuChapitre, setPagesDuChapitre] = useState<PageItem[]>([]);
+
+  const chargerSommairePages = useCallback(async () => {
+    try {
+      const res = await PagesApi.getByChapitre(chapitreId);
+      const liste: PageItem[] = res?.data ?? res ?? [];
+      setPagesDuChapitre(liste);
+    } catch {
+      // Le sommaire est secondaire : l'édition reste possible
+    }
+  }, [chapitreId]);
 
   useEffect(() => {
     let annule = false;
     (async () => {
       setChargement(true);
       try {
-        const res = await PagesApi.getById(pageId);
-        const data: PageItem = res?.data ?? res;
+        const [pageRes] = await Promise.all([
+          PagesApi.getById(pageId),
+          chargerSommairePages(),
+        ]);
+        const data: PageItem = pageRes?.data ?? pageRes;
         if (!annule) setPage(data);
       } catch (error: any) {
         if (!annule) {
@@ -47,7 +74,7 @@ export function PageRichEditor({
       annule = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageId]);
+  }, [pageId, chapitreId, chargerSommairePages]);
 
   if (chargement || !page) {
     return (
@@ -61,31 +88,42 @@ export function PageRichEditor({
     <PageRichEditorLoaded
       key={page._id}
       page={page}
+      pagesDuChapitre={pagesDuChapitre}
       chapitreTitre={chapitreTitre}
       onRetour={onRetour}
+      onChangerPage={onChangerPage}
       onPageMiseAJour={(maj) => {
         setPage((prev) => ({ ...(prev ?? maj), ...maj }));
         onPageMiseAJour?.(maj);
       }}
+      onPagesMisesAJour={setPagesDuChapitre}
     />
   );
 }
 
 function PageRichEditorLoaded({
   page,
+  pagesDuChapitre,
   chapitreTitre,
   onRetour,
+  onChangerPage,
   onPageMiseAJour,
+  onPagesMisesAJour,
 }: {
   page: PageItem;
+  pagesDuChapitre: PageItem[];
   chapitreTitre: string;
   onRetour: () => void;
+  onChangerPage: (pageId: string) => void;
   onPageMiseAJour?: (page: PageItem) => void;
+  onPagesMisesAJour: (pages: PageItem[]) => void;
 }) {
   const [titre, setTitre] = useState(page.titre || `Page ${page.ordre}`);
   const [contenu, setContenu] = useState<any>(page.contenu || { type: "doc", content: [] });
   const [modalConflit, setModalConflit] = useState(false);
   const [revisionAffichee, setRevisionAffichee] = useState(page.revision ?? 1);
+  const [menuPagesOuvert, setMenuPagesOuvert] = useState(false);
+  const [navigationEnCours, setNavigationEnCours] = useState(false);
 
   const {
     status,
@@ -110,8 +148,48 @@ function PageRichEditorLoaded({
       if (pageMaj.titre !== undefined) setTitre(pageMaj.titre || `Page ${page.ordre}`);
       if (pageMaj.contenu !== undefined) setContenu(pageMaj.contenu);
       onPageMiseAJour?.(pageMaj);
+      onPagesMisesAJour(
+        pagesDuChapitre.map((p) => (p._id === pageMaj._id ? { ...p, ...pageMaj } : p)),
+      );
     },
   });
+
+  const indexCourant = useMemo(() => {
+    const idx = pagesDuChapitre.findIndex((p) => p._id === page._id);
+    return idx >= 0 ? idx : Math.max(0, (page.ordre || 1) - 1);
+  }, [page._id, page.ordre, pagesDuChapitre]);
+
+  const pagePrecedente = indexCourant > 0 ? pagesDuChapitre[indexCourant - 1] : null;
+  const pageSuivante =
+    indexCourant >= 0 && indexCourant < pagesDuChapitre.length - 1
+      ? pagesDuChapitre[indexCourant + 1]
+      : null;
+
+  const totalPages = pagesDuChapitre.length || 1;
+  const numeroAffiche = pagesDuChapitre.length > 0 ? indexCourant + 1 : page.ordre;
+
+  const naviguerVers = async (cibleId: string | null | undefined) => {
+    if (!cibleId || cibleId === page._id || navigationEnCours) return;
+    setNavigationEnCours(true);
+    setMenuPagesOuvert(false);
+    try {
+      await saveNow();
+      onChangerPage(cibleId);
+    } finally {
+      setNavigationEnCours(false);
+    }
+  };
+
+  const retourListe = async () => {
+    if (navigationEnCours) return;
+    setNavigationEnCours(true);
+    try {
+      await saveNow();
+      onRetour();
+    } finally {
+      setNavigationEnCours(false);
+    }
+  };
 
   const handleTitreChange = (nouveauTitre: string) => {
     setTitre(nouveauTitre);
@@ -168,11 +246,91 @@ function PageRichEditorLoaded({
         </div>
       )}
 
+      {/* Navigation pages */}
+      <div className="relative flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card p-2.5">
+        <button
+          type="button"
+          disabled={!pagePrecedente || navigationEnCours}
+          onClick={() => void naviguerVers(pagePrecedente?._id)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium hover:bg-secondary transition disabled:opacity-35 disabled:pointer-events-none"
+        >
+          <ChevronLeft className="size-4" />
+          Page précédente
+        </button>
+
+        <div className="relative">
+          <button
+            type="button"
+            disabled={navigationEnCours}
+            onClick={() => setMenuPagesOuvert((o) => !o)}
+            className="inline-flex items-center gap-2 rounded-lg bg-secondary/80 px-3 py-2 text-xs font-semibold hover:bg-secondary transition"
+          >
+            <List className="size-3.5" />
+            Liste des pages
+            <span className="font-normal text-muted-foreground">
+              ({numeroAffiche}/{totalPages})
+            </span>
+          </button>
+
+          {menuPagesOuvert && (
+            <>
+              <button
+                type="button"
+                className="fixed inset-0 z-10 cursor-default"
+                aria-label="Fermer le menu"
+                onClick={() => setMenuPagesOuvert(false)}
+              />
+              <div className="absolute left-1/2 top-full z-20 mt-2 w-64 -translate-x-1/2 rounded-xl border border-border bg-card p-2 shadow-lg">
+                <button
+                  type="button"
+                  onClick={() => void retourListe()}
+                  className="mb-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs font-medium text-accent hover:bg-accent/10"
+                >
+                  <ArrowLeft className="size-3.5" />
+                  Retour au gestionnaire
+                </button>
+                <div className="max-h-56 overflow-y-auto space-y-0.5">
+                  {pagesDuChapitre.map((p) => {
+                    const active = p._id === page._id;
+                    return (
+                      <button
+                        key={p._id}
+                        type="button"
+                        disabled={active || navigationEnCours}
+                        onClick={() => void naviguerVers(p._id)}
+                        className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs transition ${
+                          active
+                            ? "bg-primary text-primary-foreground"
+                            : "hover:bg-secondary text-foreground"
+                        }`}
+                      >
+                        <span className="font-bold opacity-70">#{p.ordre}</span>
+                        <span className="truncate">{p.titre || `Page ${p.ordre}`}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        <button
+          type="button"
+          disabled={!pageSuivante || navigationEnCours}
+          onClick={() => void naviguerVers(pageSuivante?._id)}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium hover:bg-secondary transition disabled:opacity-35 disabled:pointer-events-none"
+        >
+          Page suivante
+          <ChevronRight className="size-4" />
+        </button>
+      </div>
+
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4">
         <div className="flex items-start gap-3 min-w-0">
           <button
             type="button"
-            onClick={onRetour}
+            onClick={() => void retourListe()}
             className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-lg border border-border hover:bg-secondary text-muted-foreground transition"
             title="Retour aux pages"
           >
@@ -194,7 +352,7 @@ function PageRichEditorLoaded({
           </div>
         </div>
         <div className="text-xs text-muted-foreground">
-          Page {page.ordre} · v{revisionAffichee}
+          Page {numeroAffiche}/{totalPages} · v{revisionAffichee}
           {status === "saving" ? " · autosave…" : null}
         </div>
       </div>
