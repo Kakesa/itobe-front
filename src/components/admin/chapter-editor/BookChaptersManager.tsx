@@ -124,7 +124,7 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
       const cree = res?.data ?? res;
       setChapitres((prev) => [...prev, cree]);
       setChapitreActifId(cree._id);
-      setCompteursPages((prev) => ({ ...prev, [cree._id]: 0 }));
+      setCompteursPages((prev) => ({ ...prev, [cree._id]: 1 }));
       setChapitreRecemmentCree(cree);
       setVue("succes-chapitre");
       notify.succes("Chapitre créé avec succès");
@@ -358,8 +358,8 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
               <div>
                 <h3 className="font-display text-2xl text-foreground">Chapitre créé avec succès</h3>
                 <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
-                  Votre chapitre « {chapitreRecemmentCree.titre} » est prêt. Commencez maintenant à
-                  créer ses pages.
+                  Votre chapitre « {chapitreRecemmentCree.titre} » est prêt, avec une première page
+                  créée automatiquement. Continuez à rédiger ou ajoutez d’autres pages.
                 </p>
               </div>
               <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
@@ -369,7 +369,7 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90 transition"
                 >
                   <FileText className="size-4" />
-                  Créer les pages
+                  Gérer les pages
                 </button>
                 <button
                   type="button"
