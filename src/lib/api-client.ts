@@ -128,7 +128,11 @@ async function requestWithRefresh<T = any>(
   }
 
   if (!response.ok) {
-    throw new ApiError(data.message || "Une erreur est survenue", response.status, data.errors);
+    throw new ApiError(
+      data.message || "Une erreur est survenue",
+      response.status,
+      data.errors ?? data.details,
+    );
   }
 
   return data;
@@ -401,4 +405,20 @@ export const ChapitresApi = {
   getVersions: (id: string) => api.get(`/chapitres/${id}/versions`),
   restoreVersion: (id: string, versionId: string) =>
     api.post(`/chapitres/${id}/versions/${versionId}/restaurer`),
+};
+
+/** Pages éditoriales (Livre → Chapitre → Page → blocs Tiptap) */
+export const PagesApi = {
+  getByChapitre: (chapitreId: string) =>
+    api.get(`/chapitres/${encodeURIComponent(chapitreId)}/pages`),
+  getById: (id: string) => api.get(`/pages/${id}`),
+  create: (chapitreId: string, data: { titre?: string; ordre?: number; contenu?: unknown }) =>
+    api.post(`/chapitres/${encodeURIComponent(chapitreId)}/pages`, data),
+  update: (
+    id: string,
+    data: { titre?: string; contenu?: unknown; ordre?: number; revision?: number },
+  ) => api.put(`/pages/${id}`, data),
+  delete: (id: string) => api.delete(`/pages/${id}`),
+  reorder: (chapitreId: string, pages: Array<{ id: string; ordre: number }>) =>
+    api.put(`/chapitres/${encodeURIComponent(chapitreId)}/pages/reordonner`, { pages }),
 };

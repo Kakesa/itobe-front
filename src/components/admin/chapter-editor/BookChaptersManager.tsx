@@ -1,11 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
 import {
-  AlertCircle,
   ArrowDown,
   ArrowLeft,
   ArrowUp,
   BookOpen,
-  CheckCircle2,
   FileText,
   History,
   Lock,
@@ -14,12 +12,14 @@ import {
   Unlock,
   Sparkles,
 } from "lucide-react";
-import { ChapitresApi } from "@/lib/api-client";
+import { ChapitresApi, PagesApi } from "@/lib/api-client";
 import { notify } from "@/lib/notify";
 import { useChapterAutosave } from "@/hooks/use-chapter-autosave";
 import { ChapterRichEditor } from "./ChapterRichEditor";
 import { ChapterConflictDialog } from "./ChapterConflictDialog";
 import { ChapterVersionDrawer } from "./ChapterVersionDrawer";
+import { ChapterPagesManager, type PageItem } from "./ChapterPagesManager";
+import { PageRichEditor } from "./PageRichEditor";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 
 interface ChapterItem {
@@ -29,6 +29,7 @@ interface ChapterItem {
   ordre: number;
   statut: "Brouillon" | "En revue" | "Publié" | "Archivé";
   gratuit: boolean;
+  /** @deprecated LEGACY — plage numérique, ne plus utiliser pour les Pages éditoriales */
   pages?: number[];
   revision: number;
   tempsLecture?: string;
@@ -48,13 +49,34 @@ interface BookChaptersManagerProps {
   onRetour: () => void;
 }
 
+type VuePrincipale = "chapitre" | "pages" | "page" | "succes-chapitre";
+
 export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProps) {
   const [chapitres, setChapitres] = useState<ChapterItem[]>([]);
   const [chargement, setChargement] = useState(true);
   const [chapitreActifId, setChapitreActifId] = useState<string | null>(null);
   const [tiroirVersionsOuvert, setTiroirVersionsOuvert] = useState(false);
-  const [modalConflitOuvert, setModalConflitOuvert] = useState(false);
   const [chapitreASupprimer, setChapitreASupprimer] = useState<ChapterItem | null>(null);
+  const [vue, setVue] = useState<VuePrincipale>("chapitre");
+  const [chapitreRecemmentCree, setChapitreRecemmentCree] = useState<ChapterItem | null>(null);
+  const [pageActiveId, setPageActiveId] = useState<string | null>(null);
+  /** Nombre de pages éditoriales par chapitre (source de vérité = collection Page). */
+  const [compteursPages, setCompteursPages] = useState<Record<string, number>>({});
+
+  const chargerCompteursPages = async (liste: ChapterItem[]) => {
+    const entrees = await Promise.all(
+      liste.map(async (chap) => {
+        try {
+          const res = await PagesApi.getByChapitre(chap._id);
+          const pages = res?.data ?? res ?? [];
+          return [chap._id, Array.isArray(pages) ? pages.length : 0] as const;
+        } catch {
+          return [chap._id, 0] as const;
+        }
+      }),
+    );
+    setCompteursPages(Object.fromEntries(entrees));
+  };
 
   const chargerChapitres = async () => {
     setChargement(true);
@@ -65,6 +87,7 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
       if (liste.length > 0 && !chapitreActifId) {
         setChapitreActifId(liste[0]._id);
       }
+      void chargerCompteursPages(liste);
     } catch (error: any) {
       notify.erreur(error?.message || "Impossible de charger les chapitres");
     } finally {
@@ -101,10 +124,25 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
       const cree = res?.data ?? res;
       setChapitres((prev) => [...prev, cree]);
       setChapitreActifId(cree._id);
-      notify.succes(`Chapitre créé : « ${cree.titre} »`);
+      setCompteursPages((prev) => ({ ...prev, [cree._id]: 0 }));
+      setChapitreRecemmentCree(cree);
+      setVue("succes-chapitre");
+      notify.succes("Chapitre créé avec succès");
     } catch (error: any) {
       notify.erreur(error?.message || "Impossible de créer le chapitre");
     }
+  };
+
+  const ouvrirGestionPages = (chapitreId?: string) => {
+    if (chapitreId) setChapitreActifId(chapitreId);
+    setChapitreRecemmentCree(null);
+    setPageActiveId(null);
+    setVue("pages");
+  };
+
+  const ouvrirEditeurPage = (page: PageItem) => {
+    setPageActiveId(page._id);
+    setVue("page");
   };
 
   const deplacerChapitre = async (index: number, direction: "up" | "down") => {
@@ -115,14 +153,13 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
     const [element] = copie.splice(index, 1);
     copie.splice(cibleIndex, 0, element);
 
-    // Mettre à jour les numéros d'ordre
     const ordonnes = copie.map((c, i) => ({ ...c, ordre: i + 1 }));
     setChapitres(ordonnes);
 
     try {
       await ChapitresApi.reorder(
         livre.id || livre.slug,
-        ordonnes.map((c) => ({ id: c._id, ordre: c.ordre }))
+        ordonnes.map((c) => ({ id: c._id, ordre: c.ordre })),
       );
     } catch (error: any) {
       notify.erreur(error?.message || "Erreur lors de la réorganisation");
@@ -137,8 +174,14 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
       notify.supprime("Chapitre", chapitreASupprimer.titre);
       const restantes = chapitres.filter((c) => c._id !== chapitreASupprimer._id);
       setChapitres(restantes);
+      setCompteursPages((prev) => {
+        const next = { ...prev };
+        delete next[chapitreASupprimer._id];
+        return next;
+      });
       if (chapitreActifId === chapitreASupprimer._id) {
         setChapitreActifId(restantes[0]?._id || null);
+        setVue("chapitre");
       }
       setChapitreASupprimer(null);
     } catch (error: any) {
@@ -146,9 +189,12 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
     }
   };
 
+  const handleEditerPage = (page: PageItem) => {
+    ouvrirEditeurPage(page);
+  };
+
   return (
     <div className="space-y-6">
-      {/* En-tête avec retour */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
         <div className="flex items-center gap-3">
           <button
@@ -165,7 +211,7 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
                 Édition numérique
               </span>
               <span className="text-muted-foreground">/</span>
-              <span className="text-xs text-muted-foreground">Chapitres & Contenu Tiptap</span>
+              <span className="text-xs text-muted-foreground">Livre → Chapitre → Page</span>
             </div>
             <h2 className="font-display text-2xl text-foreground">{livre.titre}</h2>
           </div>
@@ -180,9 +226,7 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
         </button>
       </div>
 
-      {/* Contenu principal en 2 colonnes */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Colonne latérale gauche : Liste des chapitres */}
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between px-1">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -193,10 +237,15 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
           <div className="space-y-2 max-h-[calc(100vh-280px)] overflow-y-auto pr-1">
             {chapitres.map((chap, idx) => {
               const actif = chap._id === chapitreActifId;
+              const nbPages = compteursPages[chap._id];
               return (
                 <div
                   key={chap._id}
-                  onClick={() => setChapitreActifId(chap._id)}
+                  onClick={() => {
+                    setChapitreActifId(chap._id);
+                    setVue("chapitre");
+                    setChapitreRecemmentCree(null);
+                  }}
                   className={`group relative flex items-center justify-between gap-2 p-3 rounded-xl border transition-all cursor-pointer ${
                     actif
                       ? "border-accent bg-accent/10 shadow-xs"
@@ -236,10 +285,17 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
 
                       <span>·</span>
                       <span>v{chap.revision}</span>
+                      {typeof nbPages === "number" && (
+                        <>
+                          <span>·</span>
+                          <span>
+                            {nbPages} page{nbPages !== 1 ? "s" : ""}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
 
-                  {/* Boutons d'ordre & suppression */}
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       type="button"
@@ -293,33 +349,92 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
           </div>
         </div>
 
-        {/* Colonne centrale : Éditeur du chapitre sélectionné */}
         <div className="lg:col-span-8">
-          {chapitreCourant ? (
+          {vue === "succes-chapitre" && chapitreRecemmentCree ? (
+            <div className="rounded-2xl border border-accent/30 bg-card p-8 text-center space-y-4 shadow-xs">
+              <div className="mx-auto grid size-14 place-items-center rounded-full bg-accent/15 text-accent">
+                <BookOpen className="size-7" />
+              </div>
+              <div>
+                <h3 className="font-display text-2xl text-foreground">Chapitre créé avec succès</h3>
+                <p className="mt-2 text-sm text-muted-foreground max-w-md mx-auto">
+                  Votre chapitre « {chapitreRecemmentCree.titre} » est prêt. Commencez maintenant à
+                  créer ses pages.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => ouvrirGestionPages(chapitreRecemmentCree._id)}
+                  className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+                >
+                  <FileText className="size-4" />
+                  Créer les pages
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setChapitreRecemmentCree(null);
+                    setVue("chapitre");
+                  }}
+                  className="inline-flex items-center gap-2 rounded-xl border border-border px-5 py-2.5 text-sm font-medium hover:bg-secondary transition"
+                >
+                  Retour aux chapitres
+                </button>
+              </div>
+            </div>
+          ) : chapitreCourant && vue === "page" && pageActiveId ? (
+            <PageRichEditor
+              key={pageActiveId}
+              pageId={pageActiveId}
+              chapitreTitre={chapitreCourant.titre}
+              onRetour={() => {
+                setPageActiveId(null);
+                setVue("pages");
+                void chargerCompteursPages(chapitres);
+              }}
+              onPageMiseAJour={() => {
+                void chargerCompteursPages(chapitres);
+              }}
+            />
+          ) : chapitreCourant && vue === "pages" ? (
+            <ChapterPagesManager
+              key={chapitreCourant._id}
+              chapitreId={chapitreCourant._id}
+              chapitreTitre={chapitreCourant.titre}
+              onRetour={() => {
+                setVue("chapitre");
+                void chargerCompteursPages(chapitres);
+              }}
+              onEditerPage={handleEditerPage}
+            />
+          ) : chapitreCourant ? (
             <ChapterEditorPanel
               key={chapitreCourant._id}
               chapitre={chapitreCourant}
               livreIdOrSlug={livre.id || livre.slug}
+              nbPagesEditoriales={compteursPages[chapitreCourant._id] ?? 0}
               onChapitreMisAJour={(maj) => {
                 setChapitres((prev) =>
-                  prev.map((c) => (c._id === maj._id ? { ...c, ...maj } : c))
+                  prev.map((c) => (c._id === maj._id ? { ...c, ...maj } : c)),
                 );
               }}
               onOuvrirVersions={() => setTiroirVersionsOuvert(true)}
+              onGererPages={() => ouvrirGestionPages(chapitreCourant._id)}
             />
           ) : (
             <div className="p-12 text-center rounded-2xl border border-border bg-card">
               <BookOpen className="size-10 mx-auto text-muted-foreground stroke-1 mb-3" />
               <h3 className="font-display text-lg">Sélectionnez un chapitre</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Choisissez un chapitre dans le sommaire à gauche pour modifier son contenu.
+                Choisissez un chapitre dans le sommaire à gauche pour gérer ses pages et son
+                contenu.
               </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Tiroir d'historique des versions */}
       {chapitreCourant && (
         <ChapterVersionDrawer
           ouvert={tiroirVersionsOuvert}
@@ -327,19 +442,18 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
           chapterId={chapitreCourant._id}
           onVersionRestauree={(restaure) => {
             setChapitres((prev) =>
-              prev.map((c) => (c._id === restaure._id ? { ...c, ...restaure } : c))
+              prev.map((c) => (c._id === restaure._id ? { ...c, ...restaure } : c)),
             );
           }}
         />
       )}
 
-      {/* Dialogue de confirmation de suppression */}
       <ConfirmDialog
         ouvert={!!chapitreASupprimer}
         titre="Supprimer le chapitre ?"
         message={
           chapitreASupprimer
-            ? `« ${chapitreASupprimer.titre} » et tout son historique de versions seront définitivement supprimés.`
+            ? `« ${chapitreASupprimer.titre} », ses pages éditoriales et tout son historique seront définitivement supprimés.`
             : ""
         }
         onAnnuler={() => setChapitreASupprimer(null)}
@@ -349,19 +463,20 @@ export function BookChaptersManager({ livre, onRetour }: BookChaptersManagerProp
   );
 }
 
-/**
- * Sous-composant gérant la rédaction et l'autosave d'un chapitre spécifique
- */
 function ChapterEditorPanel({
   chapitre,
   livreIdOrSlug,
+  nbPagesEditoriales,
   onChapitreMisAJour,
   onOuvrirVersions,
+  onGererPages,
 }: {
   chapitre: ChapterItem;
   livreIdOrSlug: string;
+  nbPagesEditoriales: number;
   onChapitreMisAJour: (maj: ChapterItem) => void;
   onOuvrirVersions: () => void;
+  onGererPages: () => void;
 }) {
   const [titre, setTitre] = useState(chapitre.titre);
   const [statut, setStatut] = useState(chapitre.statut);
@@ -412,14 +527,11 @@ function ChapterEditorPanel({
 
   return (
     <div className="space-y-4">
-      {/* Alerte Brouillon Local détecté */}
       {localDraft && (
         <div className="flex items-center justify-between gap-3 p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-200">
           <div className="flex items-center gap-2.5 text-xs">
             <Sparkles className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
-            <span>
-              Un brouillon local plus récent a été récupéré après rechargement.
-            </span>
+            <span>Un brouillon local plus récent a été récupéré après rechargement.</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -440,85 +552,91 @@ function ChapterEditorPanel({
         </div>
       )}
 
-      {/* Barre de métadonnées du chapitre */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex-1 min-w-[240px]">
-            <label className="text-[0.7rem] uppercase font-semibold text-muted-foreground block mb-1">
-              Titre du chapitre
-            </label>
-            <input
-              type="text"
-              value={titre}
-              onChange={(e) => handleTitreChange(e.target.value)}
-              placeholder="Titre du chapitre…"
-              className="w-full text-lg font-semibold bg-transparent border-b border-border focus:border-accent outline-none pb-1"
-            />
-          </div>
+      <div className="rounded-xl border border-accent/25 bg-accent/5 p-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-accent">
+            Pages éditoriales
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {nbPagesEditoriales > 0
+              ? `${nbPagesEditoriales} page${nbPagesEditoriales > 1 ? "s" : ""} — source de vérité du contenu.`
+              : "Aucune page encore. Créez les pages de ce chapitre pour y rédiger le contenu."}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onGererPages}
+          className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+        >
+          <FileText className="size-4" />
+          {nbPagesEditoriales > 0 ? "Gérer les pages" : "Créer les pages"}
+        </button>
+      </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Sélecteur de statut */}
-            <div>
-              <label className="text-[0.7rem] uppercase font-semibold text-muted-foreground block mb-1">
-                Statut
-              </label>
-              <select
-                value={statut}
-                onChange={(e) => handleStatutChange(e.target.value as ChapterItem["statut"])}
-                className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium"
-              >
-                <option value="Brouillon">Brouillon</option>
-                <option value="En revue">En revue</option>
-                <option value="Publié">Publié</option>
-                <option value="Archivé">Archivé</option>
-              </select>
-            </div>
-
-            {/* Switch Gratuit / Payant */}
-            <div>
-              <label className="text-[0.7rem] uppercase font-semibold text-muted-foreground block mb-1">
-                Accès
-              </label>
-              <button
-                type="button"
-                onClick={() => handleGratuitChange(!gratuit)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
-                  gratuit
-                    ? "border-accent/30 bg-accent/15 text-accent"
-                    : "border-border bg-background text-muted-foreground"
-                }`}
-              >
-                {gratuit ? <Unlock className="size-3.5" /> : <Lock className="size-3.5" />}
-                {gratuit ? "Aperçu gratuit" : "Payant (verrouillé)"}
-              </button>
-            </div>
-
-            {/* Bouton Historique des versions */}
-            <div className="self-end">
-              <button
-                type="button"
-                onClick={onOuvrirVersions}
-                className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary transition"
-              >
-                <History className="size-3.5" /> Versions (v{chapitre.revision})
-              </button>
-            </div>
-          </div>
+      <div className="rounded-xl border border-border bg-card p-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="min-w-0 flex-1 space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Métadonnées du chapitre
+          </p>
+          <input
+            type="text"
+            value={titre}
+            onChange={(e) => handleTitreChange(e.target.value)}
+            className="w-full max-w-xl bg-transparent font-display text-lg outline-none border-b border-transparent focus:border-accent"
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            value={statut}
+            onChange={(e) => handleStatutChange(e.target.value as ChapterItem["statut"])}
+            className="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium"
+          >
+            <option value="Brouillon">Brouillon</option>
+            <option value="En revue">En revue</option>
+            <option value="Publié">Publié</option>
+            <option value="Archivé">Archivé</option>
+          </select>
+          <button
+            type="button"
+            onClick={() => handleGratuitChange(!gratuit)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition ${
+              gratuit
+                ? "border-accent/30 bg-accent/15 text-accent"
+                : "border-border bg-background text-muted-foreground"
+            }`}
+          >
+            {gratuit ? <Unlock className="size-3.5" /> : <Lock className="size-3.5" />}
+            {gratuit ? "Gratuit" : "Payant"}
+          </button>
+          <button
+            type="button"
+            onClick={onOuvrirVersions}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-secondary transition"
+          >
+            <History className="size-3.5" /> v{chapitre.revision}
+          </button>
         </div>
       </div>
 
-      {/* Éditeur Tiptap JSON */}
-      <ChapterRichEditor
-        initialContent={chapitre.contenu}
-        onChange={handleContenuChange}
-        status={status}
-        lastSavedAt={lastSavedAt}
-        errorMessage={errorMessage}
-        onSaveNow={saveNow}
-        onOpenConflictModal={() => setModalConflit(true)}
-      />
+      <div className="rounded-xl border border-dashed border-border bg-card/60 p-3">
+        <p className="text-[0.7rem] uppercase font-semibold text-muted-foreground mb-2">
+          Contenu chapitre (legacy — transition)
+        </p>
+        <p className="text-xs text-muted-foreground mb-3">
+          Conservé temporairement pour compatibilité. Le contenu éditorial cible vit dans{" "}
+          <strong>Page.contenu</strong>.
+        </p>
+        <ChapterRichEditor
+          initialContent={chapitre.contenu}
+          onChange={handleContenuChange}
+          status={status}
+          lastSavedAt={lastSavedAt}
+          errorMessage={errorMessage}
+          onSaveNow={saveNow}
+          onOpenConflictModal={() => setModalConflit(true)}
+        />
+      </div>
 
-      {/* Modale de conflit si 409 */}
       <ChapterConflictDialog
         ouvert={modalConflit || status === "conflict"}
         onFermer={() => setModalConflit(false)}
