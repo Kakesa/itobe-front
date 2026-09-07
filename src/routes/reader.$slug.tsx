@@ -227,7 +227,7 @@ function Reader() {
         <div className="flex flex-1">
           {/* Sommaire / Table des matières */}
           {sommaire && (
-            <aside className="w-80 shrink-0 border-r border-border bg-card p-4 overflow-y-auto">
+            <aside className="sticky top-14 z-20 h-[calc(100vh-3.5rem)] w-80 shrink-0 overflow-y-auto border-r border-border bg-card p-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <input
