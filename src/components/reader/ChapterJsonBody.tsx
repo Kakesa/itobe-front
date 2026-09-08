@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useState } from "react";
 import { X } from "lucide-react";
+import { resolveFootnoteMarker } from "@/components/editor/footnote-ref";
 
 interface TiptapMark {
   type: string;
@@ -23,11 +24,11 @@ interface ChapterJsonBodyProps {
 }
 
 function FootnoteMarker({
-  number,
+  marker,
   text,
   book,
 }: {
-  number: number;
+  marker: string;
   text: string;
   book: boolean;
 }) {
@@ -53,10 +54,10 @@ function FootnoteMarker({
           e.stopPropagation();
           setOpen(true);
         }}
-        aria-label={`Voir la référence ${number}`}
-        title={text ? `Référence ${number}` : undefined}
+        aria-label={`Voir la référence ${marker}`}
+        title={text ? `Référence ${marker}` : undefined}
       >
-        {number}
+        {marker}
       </button>
       {open && (
         <div
@@ -72,7 +73,7 @@ function FootnoteMarker({
             onClick={(e) => e.stopPropagation()}
           >
             <header className="footnote-panel__header">
-              <h2 id={titleId}>Référence {number}</h2>
+              <h2 id={titleId}>Référence {marker}</h2>
               <button
                 type="button"
                 className="footnote-panel__close"
@@ -153,7 +154,7 @@ function renderNode(
     return (
       <FootnoteMarker
         key={node.attrs?.id || index}
-        number={Number(node.attrs?.number) || 1}
+        marker={resolveFootnoteMarker(node.attrs || {})}
         text={String(node.attrs?.text || "")}
         book={variant === "book"}
       />

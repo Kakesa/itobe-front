@@ -162,14 +162,19 @@ export function ChapterRichEditor({
 
   const openFootnoteDialog = () => {
     setFootnoteDraft({
-      number: nextFootnoteNumber(editor.state.doc),
+      marker: nextFootnoteMarker(editor.state.doc),
       text: "",
     });
   };
 
   const confirmFootnote = () => {
     if (!footnoteDraft) return;
+    const marker = footnoteDraft.marker.trim();
     const text = footnoteDraft.text.trim();
+    if (!marker) {
+      notify.erreur("Indiquez un marqueur (chiffre ou caractère spécial)");
+      return;
+    }
     if (!text) {
       notify.erreur("Saisissez le texte de la référence");
       return;
@@ -178,7 +183,7 @@ export function ChapterRichEditor({
       .chain()
       .focus()
       .insertFootnoteRef({
-        number: footnoteDraft.number,
+        marker,
         text,
       })
       .run();
@@ -448,12 +453,41 @@ export function ChapterRichEditor({
         >
           <div className="w-full max-w-lg rounded-xl border border-border bg-card p-5 shadow-lg">
             <h2 id="footnote-dialog-title" className="font-display text-lg font-semibold">
-              Référence n°{footnoteDraft.number}
+              Nouvelle référence
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Placez le curseur après le mot, puis saisissez l’explication affichée au clic dans le
-              lecteur.
+              Placez le curseur après le mot. Le marqueur peut être un chiffre (1, 2) ou un
+              caractère spécial (*, †, ‡, ²…).
             </p>
+
+            <label className="mt-4 block text-xs font-medium text-muted-foreground" htmlFor="footnote-marker">
+              Marqueur
+            </label>
+            <div className="mt-1.5 flex flex-wrap items-center gap-2">
+              <input
+                id="footnote-marker"
+                value={footnoteDraft.marker}
+                onChange={(e) => setFootnoteDraft({ ...footnoteDraft, marker: e.target.value })}
+                maxLength={8}
+                className="w-20 rounded-lg border border-border bg-background px-3 py-2 text-center text-sm outline-none focus:border-accent"
+                aria-label="Marqueur de la référence"
+              />
+              {["1", "2", "3", "*", "†", "‡", "§", "²", "ª"].map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setFootnoteDraft({ ...footnoteDraft, marker: m })}
+                  className={`min-w-8 rounded-md border px-2 py-1.5 text-sm transition ${
+                    footnoteDraft.marker === m
+                      ? "border-accent bg-accent/15 text-accent"
+                      : "border-border hover:bg-secondary"
+                  }`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+
             <label className="mt-4 block text-xs font-medium text-muted-foreground" htmlFor="footnote-text">
               Texte de la référence
             </label>
@@ -479,7 +513,7 @@ export function ChapterRichEditor({
                 onClick={confirmFootnote}
                 className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
               >
-                Insérer ⁿ{footnoteDraft.number}
+                Insérer {footnoteDraft.marker.trim() || "…"}
               </button>
             </div>
           </div>
