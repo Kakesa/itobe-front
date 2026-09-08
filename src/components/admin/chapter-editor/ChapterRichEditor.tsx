@@ -28,8 +28,15 @@ import {
   Underline as UnderlineIcon,
 } from "lucide-react";
 import { notify } from "@/lib/notify";
+import {
+  looksLikePdfHtml,
+  looksLikePdfWrappedText,
+  normalizePastedPlainText,
+  pastedTextToParagraphHtml,
+} from "@/lib/normalize-pasted-text";
 import { uploadMediaImage } from "@/lib/upload-media";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
+import { DOMParser as ProseMirrorDOMParser } from "@tiptap/pm/model";
 
 interface ChapterRichEditorProps {
   initialContent: any;
@@ -78,6 +85,33 @@ export function ChapterRichEditor({
     editorProps: {
       attributes: {
         class: "chapter-editor__content min-h-[500px] p-6 focus:outline-none text-[1.1rem] leading-relaxed",
+      },
+      // Texte brut : rejoindre les wraps PDF en vrais paragraphes
+      transformPastedText(text) {
+        return normalizePastedPlainText(text);
+      },
+      // HTML (Acrobat, Edge, etc.) : souvent 1 <p> par ligne → on repasse par le texte brut
+      handlePaste(view, event) {
+        const clipboard = event.clipboardData;
+        if (!clipboard) return false;
+
+        const plain = clipboard.getData("text/plain") || "";
+        const html = clipboard.getData("text/html") || "";
+        if (!plain.trim()) return false;
+
+        if (!looksLikePdfWrappedText(plain) && !looksLikePdfHtml(html)) {
+          return false;
+        }
+
+        event.preventDefault();
+        const normalized = normalizePastedPlainText(plain);
+        if (!normalized) return true;
+
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = pastedTextToParagraphHtml(normalized);
+        const slice = ProseMirrorDOMParser.fromSchema(view.state.schema).parseSlice(wrapper);
+        view.dispatch(view.state.tr.replaceSelection(slice).scrollIntoView());
+        return true;
       },
     },
     onUpdate: ({ editor: ed }) => {
