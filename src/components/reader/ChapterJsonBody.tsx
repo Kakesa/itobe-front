@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useId, useState } from "react";
+import { X } from "lucide-react";
 
 interface TiptapMark {
   type: string;
@@ -19,6 +20,76 @@ interface ChapterJsonBodyProps {
   taillePolice?: number;
   /** Mode livre ouvert : pas de classes Tailwind qui cassent le CSS typographique */
   variant?: "default" | "book";
+}
+
+function FootnoteMarker({
+  number,
+  text,
+  book,
+}: {
+  number: number;
+  text: string;
+  book: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const titleId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  return (
+    <>
+      <button
+        type="button"
+        className="footnote-ref"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setOpen(true);
+        }}
+        aria-label={`Voir la référence ${number}`}
+        title={text ? `Référence ${number}` : undefined}
+      >
+        {number}
+      </button>
+      {open && (
+        <div
+          className="footnote-overlay"
+          role="presentation"
+          onClick={() => setOpen(false)}
+        >
+          <aside
+            className={`footnote-panel ${book ? "footnote-panel--book" : ""}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <header className="footnote-panel__header">
+              <h2 id={titleId}>Référence {number}</h2>
+              <button
+                type="button"
+                className="footnote-panel__close"
+                onClick={() => setOpen(false)}
+                aria-label="Fermer"
+              >
+                <X className="size-4" />
+              </button>
+            </header>
+            <div className="footnote-panel__body">
+              {text.trim() ? text : "Aucune description pour cette référence."}
+            </div>
+          </aside>
+        </div>
+      )}
+    </>
+  );
 }
 
 function renderTextWithMarks(text: string, marks?: TiptapMark[]): React.ReactNode {
@@ -76,6 +147,17 @@ function renderNode(
 
   if (node.type === "hardBreak") {
     return <br key={index} />;
+  }
+
+  if (node.type === "footnoteRef") {
+    return (
+      <FootnoteMarker
+        key={node.attrs?.id || index}
+        number={Number(node.attrs?.number) || 1}
+        text={String(node.attrs?.text || "")}
+        book={variant === "book"}
+      />
+    );
   }
 
   const children = node.content?.map((child, i) => renderNode(child, i, variant));
@@ -162,7 +244,12 @@ function renderNode(
 
     case "codeBlock":
       return (
-        <pre key={index} className={book ? undefined : "my-5 overflow-x-auto rounded-xl bg-secondary/80 p-4 font-mono text-sm"}>
+        <pre
+          key={index}
+          className={
+            book ? undefined : "my-5 overflow-x-auto rounded-xl bg-secondary/80 p-4 font-mono text-sm"
+          }
+        >
           <code>{children}</code>
         </pre>
       );
@@ -177,7 +264,11 @@ function renderNode(
             src={node.attrs?.src}
             alt={node.attrs?.alt || ""}
             title={node.attrs?.title}
-            className={book ? undefined : "rounded-xl border border-border max-w-full h-auto mx-auto shadow-sm"}
+            className={
+              book
+                ? undefined
+                : "rounded-xl border border-border max-w-full h-auto mx-auto shadow-sm"
+            }
           />
           {node.attrs?.alt && <figcaption>{node.attrs.alt}</figcaption>}
         </figure>

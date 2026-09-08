@@ -2969,6 +2969,105 @@
   border-radius: 0.5rem;
 }
 
+.chapter-editor__content .footnote-ref,
+.footnote-ref {
+  display: inline;
+  margin: 0 0.05em;
+  padding: 0 0.15em;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 0.72em;
+  font-weight: 700;
+  line-height: 0;
+  vertical-align: super;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.chapter-editor__content .footnote-ref:hover,
+.footnote-ref:hover {
+  text-decoration: underline;
+}
+
+.footnote-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+  background: color-mix(in oklab, black 45%, transparent);
+}
+
+@media (min-width: 640px) {
+  .footnote-overlay {
+    align-items: center;
+  }
+}
+
+.footnote-panel {
+  width: min(32rem, 100%);
+  max-height: min(70dvh, 28rem);
+  overflow: auto;
+  border-radius: 1rem 1rem 0.75rem 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 18px 50px color-mix(in oklab, black 25%, transparent);
+}
+
+.footnote-panel--book {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  background: #faf8f4;
+  border-color: color-mix(in oklab, var(--brand-brown) 18%, transparent);
+}
+
+.dark .footnote-panel--book {
+  background: #221f1c;
+}
+
+.footnote-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem 0.65rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.footnote-panel__header h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.footnote-panel__close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-foreground);
+}
+
+.footnote-panel__close:hover {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+.footnote-panel__body {
+  padding: 1rem 1.1rem 1.25rem;
+  font-size: 0.98rem;
+  line-height: 1.65;
+  text-align: justify;
+  white-space: pre-wrap;
+}
+
 /* Rendu du lecteur — livre ouvert (2 pages éditoriales côte à côte) */
 .reader-surface {
   background: #f3f1ec;

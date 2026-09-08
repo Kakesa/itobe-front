@@ -25,6 +25,7 @@ import {
   Quote,
   RotateCcw,
   Save,
+  Superscript,
   Underline as UnderlineIcon,
 } from "lucide-react";
 import { notify } from "@/lib/notify";
@@ -37,6 +38,7 @@ import {
 import { uploadMediaImage } from "@/lib/upload-media";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
 import { DOMParser as ProseMirrorDOMParser } from "@tiptap/pm/model";
+import { FootnoteRef, nextFootnoteMarker } from "@/components/editor/footnote-ref";
 
 interface ChapterRichEditorProps {
   initialContent: any;
@@ -64,6 +66,10 @@ export function ChapterRichEditor({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [motsCount, setMotsCount] = useState(0);
+  const [footnoteDraft, setFootnoteDraft] = useState<{
+    marker: string;
+    text: string;
+  } | null>(null);
 
   const editor = useEditor({
     editable: !readOnly,
@@ -80,6 +86,7 @@ export function ChapterRichEditor({
       }),
       Image.configure({ HTMLAttributes: { class: "chapter-editor__image" } }),
       Placeholder.configure({ placeholder }),
+      FootnoteRef,
     ],
     content: initialContent || { type: "doc", content: [] },
     editorProps: {
@@ -151,6 +158,31 @@ export function ChapterRichEditor({
       return;
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  };
+
+  const openFootnoteDialog = () => {
+    setFootnoteDraft({
+      number: nextFootnoteNumber(editor.state.doc),
+      text: "",
+    });
+  };
+
+  const confirmFootnote = () => {
+    if (!footnoteDraft) return;
+    const text = footnoteDraft.text.trim();
+    if (!text) {
+      notify.erreur("Saisissez le texte de la référence");
+      return;
+    }
+    editor
+      .chain()
+      .focus()
+      .insertFootnoteRef({
+        number: footnoteDraft.number,
+        text,
+      })
+      .run();
+    setFootnoteDraft(null);
   };
 
   const insertImage = async (file: File) => {
@@ -360,6 +392,14 @@ export function ChapterRichEditor({
         <button
           type="button"
           className={btn(false)}
+          onClick={openFootnoteDialog}
+          title="Insérer une référence (note)"
+        >
+          <Superscript className="size-4" />
+        </button>
+        <button
+          type="button"
+          className={btn(false)}
           onClick={() => imageInputRef.current?.click()}
           title="Insérer une image"
         >
@@ -398,6 +438,53 @@ export function ChapterRichEditor({
       <div className="flex-1 bg-background">
         <EditorContent editor={editor} />
       </div>
+
+      {footnoteDraft && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="footnote-dialog-title"
+        >
+          <div className="w-full max-w-lg rounded-xl border border-border bg-card p-5 shadow-lg">
+            <h2 id="footnote-dialog-title" className="font-display text-lg font-semibold">
+              Référence n°{footnoteDraft.number}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Placez le curseur après le mot, puis saisissez l’explication affichée au clic dans le
+              lecteur.
+            </p>
+            <label className="mt-4 block text-xs font-medium text-muted-foreground" htmlFor="footnote-text">
+              Texte de la référence
+            </label>
+            <textarea
+              id="footnote-text"
+              autoFocus
+              rows={6}
+              value={footnoteDraft.text}
+              onChange={(e) => setFootnoteDraft({ ...footnoteDraft, text: e.target.value })}
+              placeholder="Ex. : En Kikongo, le prénom Atumba…"
+              className="mt-1.5 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-accent"
+            />
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setFootnoteDraft(null)}
+                className="rounded-lg border border-border px-3 py-2 text-sm hover:bg-secondary"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                onClick={confirmFootnote}
+                className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-accent-foreground hover:bg-accent/90"
+              >
+                Insérer ⁿ{footnoteDraft.number}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
