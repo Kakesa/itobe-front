@@ -484,6 +484,8 @@ function ChapterEditorPanel({
   const [statut, setStatut] = useState(chapitre.statut);
   const [gratuit, setGratuit] = useState(chapitre.gratuit);
   const [modalConflit, setModalConflit] = useState(false);
+  const [afficherLegacy, setAfficherLegacy] = useState(false);
+  const [importEnCours, setImportEnCours] = useState(false);
 
   const {
     status,
@@ -527,6 +529,36 @@ function ChapterEditorPanel({
     notifyChange(titre, nouveauJson, statut, gratuit);
   };
 
+  const importerLegacyVersPage1 = async () => {
+    if (!chapitre.contenu || importEnCours) return;
+    const ok = window.confirm(
+      "Cela remplacera le contenu actuel de la page 1 par l’ancien contenu du chapitre (avec ses références). Continuer ?",
+    );
+    if (!ok) return;
+    setImportEnCours(true);
+    try {
+      const res = await PagesApi.getByChapitre(chapitre._id);
+      const pages: PageItem[] = res?.data ?? res ?? [];
+      const page1 = [...pages].sort((a, b) => a.ordre - b.ordre)[0];
+      if (!page1?._id) {
+        notify.erreur("Aucune page trouvée. Créez d'abord une page.");
+        return;
+      }
+      await PagesApi.update(page1._id, {
+        contenu: chapitre.contenu,
+        revision: page1.revision ?? 1,
+      });
+      notify.succes(
+        "Contenu (avec références) importé dans la page 1. Ouvrez les pages pour vérifier, puis le lecteur.",
+      );
+      onGererPages();
+    } catch (error: any) {
+      notify.erreur(error?.message || "Impossible d'importer vers la page 1");
+    } finally {
+      setImportEnCours(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {localDraft && (
@@ -561,7 +593,7 @@ function ChapterEditorPanel({
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
             {nbPagesEditoriales > 0
-              ? `${nbPagesEditoriales} page${nbPagesEditoriales > 1 ? "s" : ""} — source de vérité du contenu.`
+              ? `${nbPagesEditoriales} page${nbPagesEditoriales > 1 ? "s" : ""} — c’est ce contenu que le lecteur affiche (y compris les références ¹ * †).`
               : "Aucune page encore. Créez les pages de ce chapitre pour y rédiger le contenu."}
           </p>
         </div>
@@ -571,9 +603,37 @@ function ChapterEditorPanel({
           className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-xs hover:bg-primary/90 transition"
         >
           <FileText className="size-4" />
-          {nbPagesEditoriales > 0 ? "Gérer les pages" : "Créer les pages"}
+          {nbPagesEditoriales > 0 ? "Éditer les pages" : "Créer les pages"}
         </button>
       </div>
+
+      {nbPagesEditoriales > 0 && (
+        <div className="rounded-xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-amber-950 dark:text-amber-100">
+          <p className="font-semibold">Les références doivent être ajoutées dans les pages</p>
+          <p className="mt-1 text-xs leading-relaxed opacity-90">
+            Le lecteur n’affiche pas l’ancien « contenu chapitre ». Si vous avez mis des notes
+            (¹, *, †…) ici en bas, importez-les vers la page 1, ou rouvrez{" "}
+            <strong>Éditer les pages</strong> et réinsérez-les avec le bouton exposant.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => void importerLegacyVersPage1()}
+              disabled={importEnCours}
+              className="rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-800 disabled:opacity-60"
+            >
+              {importEnCours ? "Import…" : "Importer ce contenu → page 1"}
+            </button>
+            <button
+              type="button"
+              onClick={onGererPages}
+              className="rounded-lg border border-amber-700/40 px-3 py-1.5 text-xs font-medium hover:bg-amber-500/15"
+            >
+              Ouvrir les pages
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="rounded-xl border border-border bg-card p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0 flex-1 space-y-2">
@@ -620,24 +680,51 @@ function ChapterEditorPanel({
         </div>
       </div>
 
-      <div className="rounded-xl border border-dashed border-border bg-card/60 p-3">
-        <p className="text-[0.7rem] uppercase font-semibold text-muted-foreground mb-2">
-          Contenu chapitre (legacy — transition)
-        </p>
-        <p className="text-xs text-muted-foreground mb-3">
-          Conservé temporairement pour compatibilité. Le contenu éditorial cible vit dans{" "}
-          <strong>Page.contenu</strong>.
-        </p>
-        <ChapterRichEditor
-          initialContent={chapitre.contenu}
-          onChange={handleContenuChange}
-          status={status}
-          lastSavedAt={lastSavedAt}
-          errorMessage={errorMessage}
-          onSaveNow={saveNow}
-          onOpenConflictModal={() => setModalConflit(true)}
-        />
-      </div>
+      {nbPagesEditoriales > 0 ? (
+        <div className="rounded-xl border border-dashed border-border bg-muted/20 p-4">
+          <button
+            type="button"
+            onClick={() => setAfficherLegacy((v) => !v)}
+            className="text-xs font-medium text-muted-foreground hover:text-foreground"
+          >
+            {afficherLegacy
+              ? "Masquer l’ancien éditeur chapitre"
+              : "Afficher l’ancien éditeur chapitre (non lu par le lecteur)"}
+          </button>
+          {afficherLegacy && (
+            <div className="mt-3">
+              <p className="mb-3 text-xs text-muted-foreground">
+                Ce contenu n’apparaît pas dans le lecteur tant que des pages existent. Préférez{" "}
+                <strong>Éditer les pages</strong>.
+              </p>
+              <ChapterRichEditor
+                initialContent={chapitre.contenu}
+                onChange={handleContenuChange}
+                status={status}
+                lastSavedAt={lastSavedAt}
+                errorMessage={errorMessage}
+                onSaveNow={saveNow}
+                onOpenConflictModal={() => setModalConflit(true)}
+              />
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-border bg-card/60 p-3">
+          <p className="text-[0.7rem] uppercase font-semibold text-muted-foreground mb-2">
+            Contenu chapitre (en attendant les pages)
+          </p>
+          <ChapterRichEditor
+            initialContent={chapitre.contenu}
+            onChange={handleContenuChange}
+            status={status}
+            lastSavedAt={lastSavedAt}
+            errorMessage={errorMessage}
+            onSaveNow={saveNow}
+            onOpenConflictModal={() => setModalConflit(true)}
+          />
+        </div>
+      )}
 
       <ChapterConflictDialog
         ouvert={modalConflit || status === "conflict"}

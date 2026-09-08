@@ -1,4 +1,5 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useId, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import { resolveFootnoteMarker } from "@/components/editor/footnote-ref";
 
@@ -16,21 +17,58 @@ interface TiptapNode {
 }
 
 interface ChapterJsonBodyProps {
-  content: TiptapNode | Record<string, any> | null | undefined;
+  content: TiptapNode | Record<string, any> | string | null | undefined;
   className?: string;
   taillePolice?: number;
   /** Mode livre ouvert : pas de classes Tailwind qui cassent le CSS typographique */
   variant?: "default" | "book";
 }
 
+type FootnoteItem = { id: string; marker: string; text: string };
+
+function collectFootnotes(node: TiptapNode | null | undefined, out: FootnoteItem[] = []): FootnoteItem[] {
+  if (!node) return out;
+  if (node.type === "footnoteRef") {
+    out.push({
+      id: String(node.attrs?.id || `fn-${out.length + 1}`),
+      marker: resolveFootnoteMarker(node.attrs || {}),
+      text: String(node.attrs?.text || ""),
+    });
+  }
+  node.content?.forEach((child) => collectFootnotes(child, out));
+  return out;
+}
+
+function normalizeDoc(content: ChapterJsonBodyProps["content"]): TiptapNode | null {
+  if (!content) return null;
+  if (typeof content === "string") {
+    try {
+      const parsed = JSON.parse(content) as TiptapNode;
+      return normalizeDoc(parsed);
+    } catch {
+      return {
+        type: "doc",
+        content: [{ type: "paragraph", content: [{ type: "text", text: content }] }],
+      };
+    }
+  }
+  if (content.type === "doc") return content as TiptapNode;
+  if (Array.isArray((content as TiptapNode).content)) {
+    return { type: "doc", content: (content as TiptapNode).content };
+  }
+  return { type: "doc", content: [] };
+}
+
 function FootnoteMarker({
   marker,
   text,
   book,
+  noteId,
 }: {
   marker: string;
   text: string;
   book: boolean;
+  noteId: string;
 }) {
   const [open, setOpen] = useState(false);
   const titleId = useId();
@@ -44,11 +82,47 @@ function FootnoteMarker({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  const panel =
+    open && typeof document !== "undefined"
+      ? createPortal(
+          <div
+            className="footnote-overlay"
+            role="presentation"
+            onClick={() => setOpen(false)}
+          >
+            <aside
+              className={`footnote-panel ${book ? "footnote-panel--book" : ""}`}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={titleId}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <header className="footnote-panel__header">
+                <h2 id={titleId}>Référence {marker}</h2>
+                <button
+                  type="button"
+                  className="footnote-panel__close"
+                  onClick={() => setOpen(false)}
+                  aria-label="Fermer"
+                >
+                  <X className="size-4" />
+                </button>
+              </header>
+              <div className="footnote-panel__body">
+                {text.trim() ? text : "Aucune description pour cette référence."}
+              </div>
+            </aside>
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
     <>
       <button
         type="button"
         className="footnote-ref"
+        id={`footnote-call-${noteId}`}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -59,36 +133,7 @@ function FootnoteMarker({
       >
         {marker}
       </button>
-      {open && (
-        <div
-          className="footnote-overlay"
-          role="presentation"
-          onClick={() => setOpen(false)}
-        >
-          <aside
-            className={`footnote-panel ${book ? "footnote-panel--book" : ""}`}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={titleId}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <header className="footnote-panel__header">
-              <h2 id={titleId}>Référence {marker}</h2>
-              <button
-                type="button"
-                className="footnote-panel__close"
-                onClick={() => setOpen(false)}
-                aria-label="Fermer"
-              >
-                <X className="size-4" />
-              </button>
-            </header>
-            <div className="footnote-panel__body">
-              {text.trim() ? text : "Aucune description pour cette référence."}
-            </div>
-          </aside>
-        </div>
-      )}
+      {panel}
     </>
   );
 }
@@ -151,10 +196,13 @@ function renderNode(
   }
 
   if (node.type === "footnoteRef") {
+    const marker = resolveFootnoteMarker(node.attrs || {});
+    const id = String(node.attrs?.id || `fn-${index}`);
     return (
       <FootnoteMarker
-        key={node.attrs?.id || index}
-        marker={resolveFootnoteMarker(node.attrs || {})}
+        key={id}
+        noteId={id}
+        marker={marker}
         text={String(node.attrs?.text || "")}
         book={variant === "book"}
       />
@@ -286,9 +334,10 @@ export function ChapterJsonBody({
   taillePolice = 18,
   variant = "default",
 }: ChapterJsonBodyProps) {
-  if (!content) return null;
+  const doc = useMemo(() => normalizeDoc(content), [content]);
+  const footnotes = useMemo(() => (doc ? collectFootnotes(doc) : []), [doc]);
 
-  const doc = content.type === "doc" ? (content as TiptapNode) : { type: "doc", content: [] };
+  if (!doc) return null;
 
   return (
     <div
@@ -297,6 +346,22 @@ export function ChapterJsonBody({
       data-variant={variant}
     >
       {renderNode(doc, 0, variant)}
+
+      {footnotes.length > 0 && (
+        <section className="footnote-list" aria-label="Notes et références">
+          <h2 className="footnote-list__title">Notes</h2>
+          <ol className="footnote-list__items">
+            {footnotes.map((fn) => (
+              <li key={fn.id} id={`footnote-note-${fn.id}`}>
+                <span className="footnote-list__marker">{fn.marker}</span>
+                <span className="footnote-list__text">
+                  {fn.text.trim() || "—"}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
     </div>
   );
 }

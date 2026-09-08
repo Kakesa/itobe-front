@@ -1,4 +1,6 @@
 import { Node, mergeAttributes } from "@tiptap/core";
+import { ReactNodeViewRenderer, NodeViewWrapper } from "@tiptap/react";
+import type { ReactNodeViewProps } from "@tiptap/react";
 
 export type FootnoteRefAttrs = {
   id: string;
@@ -56,6 +58,21 @@ export function nextFootnoteNumber(doc: Parameters<typeof nextFootnoteMarker>[0]
   return Number(nextFootnoteMarker(doc)) || 1;
 }
 
+function FootnoteRefNodeView({ node }: ReactNodeViewProps) {
+  const marker = resolveFootnoteMarker(node.attrs);
+  const text = String(node.attrs.text || "");
+  return (
+    <NodeViewWrapper
+      as="sup"
+      className="footnote-ref"
+      data-footnote-ref=""
+      title={text || `Référence ${marker}`}
+    >
+      {marker}
+    </NodeViewWrapper>
+  );
+}
+
 /**
  * Note de référence inline (exposant cliquable).
  * Le marqueur peut être un chiffre ou un caractère spécial.
@@ -86,7 +103,6 @@ export const FootnoteRef = Node.create({
           "data-footnote-marker": resolveFootnoteMarker(attrs),
         }),
       },
-      // Ancien attribut : toujours lu pour compatibilité
       number: {
         default: null,
         parseHTML: (el) => {
@@ -119,6 +135,10 @@ export const FootnoteRef = Node.create({
       }),
       resolveFootnoteMarker(node.attrs),
     ];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(FootnoteRefNodeView);
   },
 
   addCommands() {

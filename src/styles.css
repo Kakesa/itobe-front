@@ -2971,24 +2971,74 @@
 
 .chapter-editor__content .footnote-ref,
 .footnote-ref {
-  display: inline;
-  margin: 0 0.05em;
-  padding: 0 0.15em;
+  display: inline-block;
+  margin: 0 0.12em;
+  padding: 0 0.2em;
   border: none;
-  background: transparent;
+  border-radius: 0.2em;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
   color: var(--accent);
   font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 0.72em;
+  font-size: 0.78em;
   font-weight: 700;
-  line-height: 0;
+  line-height: 1.1;
   vertical-align: super;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
+  z-index: 1;
 }
 
 .chapter-editor__content .footnote-ref:hover,
 .footnote-ref:hover {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
   text-decoration: underline;
+}
+
+.footnote-list {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid color-mix(in oklab, var(--brand-brown) 18%, transparent);
+  text-indent: 0 !important;
+  text-align: left !important;
+  column-span: all;
+}
+
+.footnote-list__title {
+  margin: 0 0 0.75rem !important;
+  font-size: 0.95em !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left !important;
+  color: var(--accent);
+}
+
+.footnote-list__items {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.footnote-list__items li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.55rem;
+  margin: 0 0 0.65rem !important;
+  text-indent: 0 !important;
+  text-align: justify;
+  font-size: 0.88em;
+  line-height: 1.5;
+}
+
+.footnote-list__marker {
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 1.25em;
+}
+
+.footnote-list__text {
+  white-space: pre-wrap;
 }
 
 .footnote-overlay {
