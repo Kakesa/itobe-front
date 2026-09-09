@@ -22,6 +22,11 @@ interface ChapterJsonBodyProps {
   taillePolice?: number;
   /** Mode livre ouvert : pas de classes Tailwind qui cassent le CSS typographique */
   variant?: "default" | "book";
+  /**
+   * Registre partagé des titres déjà vus (ex. double page).
+   * Les occurrences suivantes d’un même titre sont affichées en gris.
+   */
+  seenTitles?: Set<string>;
 }
 
 type FootnoteItem = { id: string; marker: string; text: string };
@@ -138,6 +143,25 @@ function FootnoteMarker({
   );
 }
 
+function extractPlainText(node: TiptapNode | null | undefined): string {
+  if (!node) return "";
+  if (node.text) return node.text;
+  return (node.content || []).map(extractPlainText).join("");
+}
+
+function normalizeTitleKey(raw: string): string {
+  return raw.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+/** @returns true si le titre a déjà été vu (→ afficher en gris). */
+export function claimRepeatedTitle(seenTitles: Set<string>, raw: string): boolean {
+  const key = normalizeTitleKey(raw);
+  if (!key) return false;
+  if (seenTitles.has(key)) return true;
+  seenTitles.add(key);
+  return false;
+}
+
 function renderTextWithMarks(text: string, marks?: TiptapMark[]): React.ReactNode {
   if (!marks || marks.length === 0) {
     return text;
@@ -180,6 +204,7 @@ function renderNode(
   node: TiptapNode,
   index: number,
   variant: "default" | "book",
+  seenTitles: Set<string>,
 ): React.ReactNode {
   if (!node) return null;
 
@@ -209,7 +234,9 @@ function renderNode(
     );
   }
 
-  const children = node.content?.map((child, i) => renderNode(child, i, variant));
+  const children = node.content?.map((child, i) =>
+    renderNode(child, i, variant, seenTitles),
+  );
   const book = variant === "book";
 
   switch (node.type) {
@@ -225,38 +252,25 @@ function renderNode(
 
     case "heading": {
       const level = node.attrs?.level || 1;
+      const repeated = claimRepeatedTitle(seenTitles, extractPlainText(node));
+      const repeatClass = repeated ? "reader-heading--repeat" : undefined;
       if (book) {
-        if (level === 1) return <h1 key={index}>{children}</h1>;
-        if (level === 2) return <h2 key={index}>{children}</h2>;
-        return <h3 key={index}>{children}</h3>;
+        if (level === 1) return <h1 key={index} className={repeatClass}>{children}</h1>;
+        if (level === 2) return <h2 key={index} className={repeatClass}>{children}</h2>;
+        return <h3 key={index} className={repeatClass}>{children}</h3>;
       }
-      if (level === 1) {
-        return (
-          <h1
-            key={index}
-            className="mt-8 mb-4 font-display text-2xl sm:text-3xl font-bold text-foreground"
-          >
-            {children}
-          </h1>
-        );
-      }
-      if (level === 2) {
-        return (
-          <h2
-            key={index}
-            className="mt-6 mb-3 font-display text-xl sm:text-2xl font-bold text-foreground"
-          >
-            {children}
-          </h2>
-        );
-      }
+      const base =
+        level === 1
+          ? "mt-8 mb-4 font-display text-2xl sm:text-3xl font-bold"
+          : level === 2
+            ? "mt-6 mb-3 font-display text-xl sm:text-2xl font-bold"
+            : "mt-5 mb-2 font-display text-lg sm:text-xl font-semibold";
+      const color = repeated ? "text-muted-foreground" : "text-foreground";
+      const Tag = level === 1 ? "h1" : level === 2 ? "h2" : "h3";
       return (
-        <h3
-          key={index}
-          className="mt-5 mb-2 font-display text-lg sm:text-xl font-semibold text-foreground"
-        >
+        <Tag key={index} className={`${base} ${color} ${repeatClass ?? ""}`.trim()}>
           {children}
-        </h3>
+        </Tag>
       );
     }
 
@@ -333,9 +347,11 @@ export function ChapterJsonBody({
   className = "",
   taillePolice = 18,
   variant = "default",
+  seenTitles,
 }: ChapterJsonBodyProps) {
   const doc = useMemo(() => normalizeDoc(content), [content]);
   const footnotes = useMemo(() => (doc ? collectFootnotes(doc) : []), [doc]);
+  const titlesRegistry = seenTitles ?? new Set<string>();
 
   if (!doc) return null;
 
@@ -345,7 +361,7 @@ export function ChapterJsonBody({
       style={{ fontSize: `${taillePolice}px` }}
       data-variant={variant}
     >
-      {renderNode(doc, 0, variant)}
+      {renderNode(doc, 0, variant, titlesRegistry)}
 
       {footnotes.length > 0 && (
         <section className="footnote-list" aria-label="Notes et références">

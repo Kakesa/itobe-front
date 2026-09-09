@@ -3196,6 +3196,23 @@
   color: var(--foreground);
 }
 
+.reader-book__meta h1.reader-heading--repeat,
+.reader-book__page h1.reader-heading--repeat,
+.reader-book__page h2.reader-heading--repeat,
+.reader-book__page h3.reader-heading--repeat,
+.chapter-reader-body .reader-heading--repeat {
+  color: #9a948c !important;
+  font-weight: 600;
+}
+
+.dark .reader-book__meta h1.reader-heading--repeat,
+.dark .reader-book__page h1.reader-heading--repeat,
+.dark .reader-book__page h2.reader-heading--repeat,
+.dark .reader-book__page h3.reader-heading--repeat,
+.dark .chapter-reader-body .reader-heading--repeat {
+  color: #8a8580 !important;
+}
+
 .reader-book__page {
   flex: 1 1 auto;
   width: 100%;

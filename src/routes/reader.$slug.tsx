@@ -21,7 +21,7 @@ import { getLivre, pageTexte, fetchLivreBySlug } from "@/lib/data";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 import { ChapitresApi, PagesApi } from "@/lib/api-client";
-import { ChapterJsonBody } from "@/components/reader/ChapterJsonBody";
+import { ChapterJsonBody, claimRepeatedTitle } from "@/components/reader/ChapterJsonBody";
 
 export const Route = createFileRoute("/reader/$slug")({
   loader: async ({ params }) => {
@@ -539,14 +539,28 @@ function Reader() {
                   >
                     {modePagesEditoriales ? (
                       <div className="reader-book__open">
+                        {(() => {
+                          const titresVus = new Set<string>();
+                          const titreGauche =
+                            pageGauche?.titre ||
+                            `Page ${pageGauche?.ordre ?? indexPageGauche + 1}`;
+                          const titreDroite = pageDroite
+                            ? pageDroite.titre ||
+                              `Page ${pageDroite.ordre ?? indexPageGauche + 2}`
+                            : "";
+                          const metaGaucheRepeat = claimRepeatedTitle(titresVus, titreGauche);
+                          const metaDroiteRepeat = pageDroite
+                            ? claimRepeatedTitle(titresVus, titreDroite)
+                            : false;
+                          return (
+                            <>
                         <section className="reader-book__folio reader-book__folio--left">
                           <header className="reader-book__meta">
                             <span>
                               Chapitre {chapitreTiptapCourant?.ordre} · Page {indexPageGauche + 1}
                             </span>
-                            <h1>
-                              {pageGauche?.titre ||
-                                `Page ${pageGauche?.ordre ?? indexPageGauche + 1}`}
+                            <h1 className={metaGaucheRepeat ? "reader-heading--repeat" : undefined}>
+                              {titreGauche}
                             </h1>
                           </header>
                           <ChapterJsonBody
@@ -554,6 +568,7 @@ function Reader() {
                             taillePolice={taille}
                             variant="book"
                             className="reader-book__page"
+                            seenTitles={titresVus}
                           />
                         </section>
                         {pageDroite ? (
@@ -563,9 +578,12 @@ function Reader() {
                                 Chapitre {chapitreTiptapCourant?.ordre} · Page{" "}
                                 {indexPageGauche + 2}
                               </span>
-                              <h1>
-                                {pageDroite.titre ||
-                                  `Page ${pageDroite.ordre ?? indexPageGauche + 2}`}
+                              <h1
+                                className={
+                                  metaDroiteRepeat ? "reader-heading--repeat" : undefined
+                                }
+                              >
+                                {titreDroite}
                               </h1>
                             </header>
                             <ChapterJsonBody
@@ -573,6 +591,7 @@ function Reader() {
                               taillePolice={taille}
                               variant="book"
                               className="reader-book__page"
+                              seenTitles={titresVus}
                             />
                           </section>
                         ) : doublePage ? (
@@ -581,6 +600,9 @@ function Reader() {
                             aria-hidden
                           />
                         ) : null}
+                            </>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <>
