@@ -3120,7 +3120,7 @@
 
 /* Rendu du lecteur — livre ouvert (2 pages éditoriales côte à côte) */
 .reader-surface {
-  background: #f3f1ec;
+  background: #ffffff;
 }
 
 .dark .reader-surface {
@@ -3168,7 +3168,11 @@
 }
 
 .reader-book__folio--blank {
-  background: color-mix(in oklab, var(--brand-brown) 3%, transparent);
+  background: color-mix(in oklab, black 3%, transparent);
+}
+
+.dark .reader-book__folio--blank {
+  background: color-mix(in oklab, white 4%, transparent);
 }
 
 .reader-book__meta {
