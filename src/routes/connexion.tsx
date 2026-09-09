@@ -20,7 +20,7 @@ import {
   inscriptionSchema,
   normaliserTelephoneRdc,
 } from "@/lib/inscription-validation";
-import { BookOpen, Newspaper, Shield } from "lucide-react";
+import { BookOpen, Eye, EyeOff, Newspaper, Shield } from "lucide-react";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -52,6 +52,8 @@ function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
+  const [voirMotDePasse, setVoirMotDePasse] = useState(false);
+  const [voirConfirmation, setVoirConfirmation] = useState(false);
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
   const [adresse, setAdresse] = useState("");
@@ -76,6 +78,8 @@ function Connexion() {
     setMode(m);
     setErreur("");
     setErreursChamps({});
+    setVoirMotDePasse(false);
+    setVoirConfirmation(false);
   };
 
   useEffect(() => {
@@ -372,18 +376,28 @@ function Connexion() {
                   </Link>
                 )}
               </div>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  effacerErreurChamp("password");
-                }}
-                placeholder="••••••••"
-                autoComplete={mode === "connexion" ? "current-password" : "new-password"}
-                aria-invalid={Boolean(erreursChamps.password)}
-                className={classeChamp(Boolean(erreursChamps.password))}
-              />
+              <div className="relative mt-1">
+                <input
+                  type={voirMotDePasse ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    effacerErreurChamp("password");
+                  }}
+                  placeholder="••••••••"
+                  autoComplete={mode === "connexion" ? "current-password" : "new-password"}
+                  aria-invalid={Boolean(erreursChamps.password)}
+                  className={`${classeChamp(Boolean(erreursChamps.password))} !mt-0 pr-11`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVoirMotDePasse((v) => !v)}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  aria-label={voirMotDePasse ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                >
+                  {voirMotDePasse ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+              </div>
               {erreursChamps.password && (
                 <p className="mt-1 text-xs text-destructive">{erreursChamps.password}</p>
               )}
@@ -395,18 +409,36 @@ function Connexion() {
             {mode === "inscription" && (
               <label className="block text-sm">
                 <span className="text-xs text-muted-foreground">Confirmer le mot de passe</span>
-                <input
-                  type="password"
-                  value={confirmation}
-                  onChange={(e) => {
-                    setConfirmation(e.target.value);
-                    effacerErreurChamp("confirmation");
-                  }}
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                  aria-invalid={Boolean(erreursChamps.confirmation)}
-                  className={classeChamp(Boolean(erreursChamps.confirmation))}
-                />
+                <div className="relative mt-1">
+                  <input
+                    type={voirConfirmation ? "text" : "password"}
+                    value={confirmation}
+                    onChange={(e) => {
+                      setConfirmation(e.target.value);
+                      effacerErreurChamp("confirmation");
+                    }}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    aria-invalid={Boolean(erreursChamps.confirmation)}
+                    className={`${classeChamp(Boolean(erreursChamps.confirmation))} !mt-0 pr-11`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVoirConfirmation((v) => !v)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    aria-label={
+                      voirConfirmation
+                        ? "Masquer la confirmation"
+                        : "Afficher la confirmation"
+                    }
+                  >
+                    {voirConfirmation ? (
+                      <EyeOff className="size-4" />
+                    ) : (
+                      <Eye className="size-4" />
+                    )}
+                  </button>
+                </div>
                 {erreursChamps.confirmation && (
                   <p className="mt-1 text-xs text-destructive">{erreursChamps.confirmation}</p>
                 )}

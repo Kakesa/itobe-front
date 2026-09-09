@@ -37,7 +37,7 @@ import {
 } from "@/lib/normalize-pasted-text";
 import { uploadMediaImage } from "@/lib/upload-media";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
-import { DOMParser as ProseMirrorDOMParser } from "@tiptap/pm/model";
+import { DOMParser as ProseMirrorDOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import { FootnoteRef, nextFootnoteMarker } from "@/components/editor/footnote-ref";
 
 interface ChapterRichEditorProps {
@@ -158,6 +158,52 @@ export function ChapterRichEditor({
       return;
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  };
+
+  /** Citation sur la sélection (ou nouveau bloc au curseur), pas tout le paragraphe. */
+  const appliquerCitation = () => {
+    if (editor.isActive("blockquote")) {
+      editor.chain().focus().toggleBlockquote().run();
+      return;
+    }
+
+    const { state } = editor;
+    const { from, to, empty } = state.selection;
+    const blockquoteType = state.schema.nodes["blockquote"];
+    const paragraphType = state.schema.nodes["paragraph"];
+    if (!blockquoteType || !paragraphType) return;
+
+    if (!empty) {
+      editor
+        .chain()
+        .focus()
+        .command(({ tr, dispatch, state: s }) => {
+          if (!dispatch) return true;
+          const slice = s.doc.slice(from, to);
+          let inner = slice.content;
+          const first = inner.firstChild;
+          const isInlineOnly = !first || !first.isBlock;
+          if (isInlineOnly || slice.openStart > 0) {
+            inner = Fragment.from(paragraphType.create(null, slice.content));
+          }
+          const blockquote = blockquoteType.create(null, inner);
+          tr.replaceRange(from, to, new Slice(Fragment.from(blockquote), 0, 0));
+          dispatch(tr.scrollIntoView());
+          return true;
+        })
+        .run();
+      return;
+    }
+
+    // Curseur seul : insère une citation vide à l’endroit du pointeur
+    editor
+      .chain()
+      .focus()
+      .insertContent({
+        type: "blockquote",
+        content: [{ type: "paragraph" }],
+      })
+      .run();
   };
 
   const openFootnoteDialog = () => {
@@ -362,8 +408,8 @@ export function ChapterRichEditor({
         <button
           type="button"
           className={btn(editor.isActive("blockquote"))}
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          title="Citation"
+          onClick={appliquerCitation}
+          title="Citation (sélection ou curseur)"
         >
           <Quote className="size-4" />
         </button>
