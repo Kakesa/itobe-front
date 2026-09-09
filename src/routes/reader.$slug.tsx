@@ -21,7 +21,7 @@ import { getLivre, pageTexte, fetchLivreBySlug } from "@/lib/data";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 import { ChapitresApi, PagesApi } from "@/lib/api-client";
-import { ChapterJsonBody, claimRepeatedTitle } from "@/components/reader/ChapterJsonBody";
+import { ChapterJsonBody } from "@/components/reader/ChapterJsonBody";
 
 export const Route = createFileRoute("/reader/$slug")({
   loader: async ({ params }) => {
@@ -541,74 +541,51 @@ function Reader() {
                       <div className="reader-book__open">
                         {(() => {
                           const titresVus = new Set<string>();
-                          const titreGauche =
-                            pageGauche?.titre ||
-                            `Page ${pageGauche?.ordre ?? indexPageGauche + 1}`;
-                          const titreDroite = pageDroite
-                            ? pageDroite.titre ||
-                              `Page ${pageDroite.ordre ?? indexPageGauche + 2}`
-                            : "";
-                          const metaGaucheRepeat = claimRepeatedTitle(titresVus, titreGauche);
-                          const metaDroiteRepeat = pageDroite
-                            ? claimRepeatedTitle(titresVus, titreDroite)
-                            : false;
+                          const labelChapitre =
+                            chapitreTiptapCourant?.titre?.trim() ||
+                            `Chapitre ${chapitreTiptapCourant?.ordre ?? chapitreIndexActif + 1}`;
                           return (
                             <>
-                        <section className="reader-book__folio reader-book__folio--left">
-                          <header className="reader-book__meta">
-                            <span>
-                              Chapitre {chapitreTiptapCourant?.ordre} · Page {indexPageGauche + 1}
-                            </span>
-                            <h1 className={metaGaucheRepeat ? "reader-heading--repeat" : undefined}>
-                              {titreGauche}
-                            </h1>
-                          </header>
-                          <ChapterJsonBody
-                            content={pageGauche?.contenu}
-                            taillePolice={taille}
-                            variant="book"
-                            className="reader-book__page"
-                            seenTitles={titresVus}
-                          />
-                        </section>
-                        {pageDroite ? (
-                          <section className="reader-book__folio reader-book__folio--right">
-                            <header className="reader-book__meta">
-                              <span>
-                                Chapitre {chapitreTiptapCourant?.ordre} · Page{" "}
-                                {indexPageGauche + 2}
-                              </span>
-                              <h1
-                                className={
-                                  metaDroiteRepeat ? "reader-heading--repeat" : undefined
-                                }
-                              >
-                                {titreDroite}
-                              </h1>
-                            </header>
-                            <ChapterJsonBody
-                              content={pageDroite.contenu}
-                              taillePolice={taille}
-                              variant="book"
-                              className="reader-book__page"
-                              seenTitles={titresVus}
-                            />
-                          </section>
-                        ) : doublePage ? (
-                          <section
-                            className="reader-book__folio reader-book__folio--right reader-book__folio--blank"
-                            aria-hidden
-                          />
-                        ) : null}
+                              <section className="reader-book__folio reader-book__folio--left">
+                                <header className="reader-book__running reader-book__running--left">
+                                  {labelChapitre}
+                                </header>
+                                <ChapterJsonBody
+                                  content={pageGauche?.contenu}
+                                  taillePolice={taille}
+                                  variant="book"
+                                  className="reader-book__page"
+                                  seenTitles={titresVus}
+                                />
+                              </section>
+                              {pageDroite ? (
+                                <section className="reader-book__folio reader-book__folio--right">
+                                  <header className="reader-book__running reader-book__running--right">
+                                    {livre.titre}
+                                  </header>
+                                  <ChapterJsonBody
+                                    content={pageDroite.contenu}
+                                    taillePolice={taille}
+                                    variant="book"
+                                    className="reader-book__page"
+                                    seenTitles={titresVus}
+                                  />
+                                </section>
+                              ) : doublePage ? (
+                                <section
+                                  className="reader-book__folio reader-book__folio--right reader-book__folio--blank"
+                                  aria-hidden
+                                />
+                              ) : null}
                             </>
                           );
                         })()}
                       </div>
                     ) : (
                       <>
-                        <header className="reader-book__meta shrink-0">
-                          <span>Chapitre {chapitreTiptapCourant?.ordre}</span>
-                          <h1>{chapitreTiptapCourant?.titre}</h1>
+                        <header className="reader-book__running reader-book__running--left">
+                          {chapitreTiptapCourant?.titre?.trim() ||
+                            `Chapitre ${chapitreTiptapCourant?.ordre ?? chapitreIndexActif + 1}`}
                         </header>
                         <ChapterJsonBody
                           content={contenuLecture}
@@ -664,9 +641,8 @@ function Reader() {
                           : undefined
                       }
                     >
-                      <header className="reader-book__meta shrink-0">
-                        <span>{chapitreCourantLegacy?.titre || "Lecture"}</span>
-                        <h1>Page {page}</h1>
+                      <header className="reader-book__running reader-book__running--left">
+                        {chapitreCourantLegacy?.titre || `Chapitre`}
                       </header>
                       <div className="reader-book__page flex-1">
                         {paragraphes.map((p, i) => (
@@ -676,9 +652,8 @@ function Reader() {
                     </section>
                     {doublePage && page < livre.pages ? (
                       <section className="reader-book__folio reader-book__folio--right">
-                        <header className="reader-book__meta shrink-0">
-                          <span>{chapitreCourantLegacy?.titre || "Lecture"}</span>
-                          <h1>Page {page + 1}</h1>
+                        <header className="reader-book__running reader-book__running--right">
+                          {livre.titre}
                         </header>
                         <div className="reader-book__page flex-1">
                           {paragraphesDroite.map((p, i) => (
