@@ -36,11 +36,15 @@ function Accueil() {
       />
 
       <div className="relative z-10 w-full max-w-5xl">
-        <header className="mb-10 text-center">
-          <p className="font-display text-4xl tracking-tight md:text-5xl">
-            Itobe<span className="text-accent">.</span>
-          </p>
-          <p className="mt-3 text-sm text-muted-foreground md:text-base">
+        <header className="mb-10 flex flex-col items-center gap-0 text-center">
+          <img
+            src="/images/itobe-entreprises-logo.png"
+            alt="ITOBE Entreprises"
+            className="block h-20 w-auto object-contain md:h-28"
+            width={263}
+            height={144}
+          />
+          <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-base">
             Deux univers · une plateforme
           </p>
         </header>
