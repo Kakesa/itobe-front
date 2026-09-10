@@ -6,25 +6,12 @@ import { usePortailActif } from "@/hooks/use-portail";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
 import { destinationMonEspace, labelMonEspace } from "@/lib/redirect-navigation";
+import { useI18n, type Locale } from "@/i18n";
 
 type Lien = { to: string; label: string; exact?: boolean };
 
-const liensMedia: Lien[] = [
-  { to: "/media", label: "Articles", exact: true },
-  { to: "/media/videos", label: "Vidéos" },
-  { to: "/media/a-propos", label: "À propos" },
-  { to: "/contact", label: "Contact" },
-];
-
-const liensEdition: Lien[] = [
-  { to: "/edition", label: "Catalogue", exact: true },
-  { to: "/auteurs", label: "Auteurs" },
-  { to: "/bibliotheque", label: "Bibliothèque" },
-  { to: "/a-propos", label: "À propos" },
-  { to: "/contact", label: "Contact" },
-];
-
 export function SiteHeader() {
+  const { locale, setLocale, t } = useI18n();
   const portail = usePortailActif();
   const { aDesAchats } = useADesAchats();
   const { connecte, pret, session, deconnexion } = useSession();
@@ -34,14 +21,28 @@ export function SiteHeader() {
   const espaceUrl = destinationMonEspace(role);
   const espaceLabel = labelMonEspace(role);
   const home = portail === "media" ? "/media" : "/edition";
-  const titre = portail === "media" ? "Média" : "Maison d'édition";
+  const titre = portail === "media" ? t.nav.media.tagline : t.nav.edition.tagline;
   const liens = useMemo(() => {
-    const base = portail === "media" ? liensMedia : liensEdition;
+    const base: Lien[] =
+      portail === "media"
+        ? [
+            { to: "/media", label: t.nav.media.articles, exact: true },
+            { to: "/media/videos", label: t.nav.media.videos },
+            { to: "/media/a-propos", label: t.nav.media.aPropos },
+            { to: "/contact", label: t.nav.media.contact },
+          ]
+        : [
+            { to: "/edition", label: t.nav.edition.catalogue, exact: true },
+            { to: "/auteurs", label: t.nav.edition.auteurs },
+            { to: "/bibliotheque", label: t.nav.edition.bibliotheque },
+            { to: "/a-propos", label: t.nav.edition.aPropos },
+            { to: "/contact", label: t.nav.edition.contact },
+          ];
     if (portail === "edition" && !aDesAchats) {
       return base.filter((l) => l.to !== "/bibliotheque");
     }
     return base;
-  }, [portail, aDesAchats]);
+  }, [portail, aDesAchats, t]);
   const accent =
     portail === "media" ? "border-b-brand-blue" : "border-b-brand-orange";
 
@@ -50,6 +51,30 @@ export function SiteHeader() {
     setOuvert(false);
     void navigate({ to: portail === "media" ? "/media" : "/edition" });
   };
+
+  const LanguageSwitch = ({ className = "" }: { className?: string }) => (
+    <div
+      className={`inline-flex items-center rounded-sm border border-border p-0.5 text-xs font-semibold ${className}`}
+      role="group"
+      aria-label={t.common.language}
+    >
+      {(["fr", "en"] as Locale[]).map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLocale(code)}
+          className={`rounded-sm px-2 py-1 transition ${
+            locale === code
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+          aria-pressed={locale === code}
+        >
+          {code === "fr" ? t.common.langFr : t.common.langEn}
+        </button>
+      ))}
+    </div>
+  );
 
   const liensAuthDesktop = pret ? (
     connecte ? (
@@ -65,7 +90,7 @@ export function SiteHeader() {
           onClick={seDeconnecter}
           className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
         >
-          Déconnexion
+          {t.nav.auth.deconnexion}
         </button>
       </>
     ) : (
@@ -74,14 +99,14 @@ export function SiteHeader() {
           to="/connexion"
           className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
         >
-          Connexion
+          {t.nav.auth.connexion}
         </Link>
         <Link
           to="/connexion"
           search={{ mode: "inscription" }}
           className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
         >
-          Inscription
+          {t.nav.auth.inscription}
         </Link>
       </>
     )
@@ -107,7 +132,7 @@ export function SiteHeader() {
           onClick={seDeconnecter}
           className="block w-full py-2 text-left text-sm text-muted-foreground"
         >
-          Déconnexion
+          {t.nav.auth.deconnexion}
         </button>
       </>
     ) : (
@@ -117,7 +142,7 @@ export function SiteHeader() {
           onClick={() => setOuvert(false)}
           className="block py-2 text-sm font-medium"
         >
-          Connexion
+          {t.nav.auth.connexion}
         </Link>
         <Link
           to="/connexion"
@@ -125,7 +150,7 @@ export function SiteHeader() {
           onClick={() => setOuvert(false)}
           className="block py-2 text-sm text-muted-foreground"
         >
-          Inscription
+          {t.nav.auth.inscription}
         </Link>
       </>
     )
@@ -161,6 +186,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <LanguageSwitch className="hidden sm:inline-flex" />
           {liensAuthDesktop}
           <button
             type="button"
@@ -188,13 +214,18 @@ export function SiteHeader() {
             </Link>
           ))}
           <div className="my-2 border-t border-border" />
+          <div className="flex items-center justify-between py-2">
+            <span className="text-xs text-muted-foreground">{t.common.language}</span>
+            <LanguageSwitch />
+          </div>
+          <div className="my-2 border-t border-border" />
           {liensAuthMobile}
           <Link
             to={portail === "media" ? "/edition" : "/media"}
             onClick={() => setOuvert(false)}
             className="block py-2 text-sm text-muted-foreground"
           >
-            {portail === "media" ? "Maison d'édition" : "Portail Média"}
+            {portail === "media" ? t.nav.switchToEdition : t.nav.switchToMedia}
           </Link>
         </nav>
       )}

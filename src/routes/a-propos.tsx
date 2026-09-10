@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { BookOpen, Globe2, Sparkles } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 /** Visuels repris de itobeeditions.com */
 const IMG = {
@@ -34,34 +36,40 @@ export const Route = createFileRoute("/a-propos")({
   component: APropos,
 });
 
-const piliersVision = [
-  {
-    icon: BookOpen,
-    image: "/images/a-propos/pillar-literature.jpg",
-    alt: "Illustration Itobe — De même que",
-    titre: "La littérature africaine au-delà de l'apprentissage",
-    texte:
-      "L'objectif est de montrer au monde que l'Afrique n'est pas qu'un continent d'histoires à méditer, mais aussi un réservoir infini de récits à savourer, qui peuvent rivaliser avec ceux de n'importe quelle autre culture.",
-  },
-  {
-    icon: Globe2,
-    image: "/images/a-propos/pillar-dialogue.png",
-    alt: "Illustration Itobe — Au lieu de",
-    titre: "Le dialogue universel par les récits locaux",
-    texte:
-      "Chaque récit devient un point de départ pour un dialogue interculturel, nous rappelant que, malgré nos différences géographiques ou sociales, nous partageons des émotions, des peurs et des aspirations communes.",
-  },
-  {
-    icon: Sparkles,
-    image: "/images/a-propos/pillar-imaginaire.jpg",
-    alt: "Illustration Itobe — En somme",
-    titre: "Façonner l'imaginaire collectif et changer les perspectives",
-    texte:
-      "La littérature africaine peut inverser cette tendance en proposant de nouvelles images, de nouveaux héros et de nouvelles perspectives.",
-  },
-];
-
 function APropos() {
+  const { locale, t } = useI18n();
+  const a = t.editionAbout;
+
+  useEffect(() => {
+    document.title = a.metaTitle;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", a.metaDescription);
+  }, [a.metaTitle, a.metaDescription, locale]);
+
+  const piliersVision = [
+    {
+      icon: BookOpen,
+      image: "/images/a-propos/pillar-literature.jpg",
+      alt: a.pillars.literature.alt,
+      titre: a.pillars.literature.title,
+      texte: a.pillars.literature.text,
+    },
+    {
+      icon: Globe2,
+      image: "/images/a-propos/pillar-dialogue.png",
+      alt: a.pillars.dialogue.alt,
+      titre: a.pillars.dialogue.title,
+      texte: a.pillars.dialogue.text,
+    },
+    {
+      icon: Sparkles,
+      image: "/images/a-propos/pillar-imaginaire.jpg",
+      alt: a.pillars.imaginaire.alt,
+      titre: a.pillars.imaginaire.title,
+      texte: a.pillars.imaginaire.text,
+    },
+  ];
+
   return (
     <div className="apropos-page theme-edition">
       <section className="apropos-page__hero">
@@ -73,50 +81,45 @@ function APropos() {
         />
         <div className="apropos-page__hero-overlay" aria-hidden />
         <div className="apropos-page__hero-content mx-auto max-w-4xl px-4 py-20 text-center md:py-28">
-          <p className="apropos-page__hero-kicker">Notre maison</p>
+          <p className="apropos-page__hero-kicker">{a.heroKicker}</p>
           <h1 className="mt-4 font-display text-4xl leading-tight text-white md:text-5xl lg:text-6xl">
-            Lis l&apos;Afrique.
+            {a.heroLine1}
             <br />
-            <span className="text-brand-gold">Change le monde.</span>
+            <span className="text-brand-gold">{a.heroLine2}</span>
           </h1>
         </div>
       </section>
 
       <section className="apropos-page__split mx-auto max-w-6xl px-4 py-16 md:py-20">
         <div className="apropos-page__split-text">
-          <h2 className="font-display text-2xl md:text-3xl">Notre mission</h2>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-            Valoriser les talents littéraires africains et propulser leurs récits pour qu&apos;ils
-            deviennent une source d&apos;inspiration pour le monde entier.
-          </p>
+          <h2 className="font-display text-2xl md:text-3xl">{a.missionTitle}</h2>
+          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{a.missionText}</p>
           <blockquote className="apropos-page__quote mt-10">
-            &laquo;&nbsp;Faire de l&apos;Afrique le cœur de la narration mondiale.&nbsp;&raquo;
+            &laquo;&nbsp;{a.missionQuote}&nbsp;&raquo;
           </blockquote>
         </div>
         <figure className="apropos-page__figure">
           <img
             src={IMG.mission}
-            alt="Illustration Itobe Éditions"
+            alt={a.missionImageAlt}
             className="apropos-page__figure-img"
             loading="lazy"
           />
-          <figcaption className="apropos-page__figure-cap">
-            Chaque voix africaine mérite d&apos;être lue et partagée.
-          </figcaption>
+          <figcaption className="apropos-page__figure-cap">{a.missionCaption}</figcaption>
         </figure>
       </section>
 
       <section className="apropos-page__band mx-auto max-w-6xl px-4 pb-16 md:pb-20">
         <div className="max-w-3xl">
-          <h2 className="font-display text-2xl md:text-3xl">Notre vision</h2>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Nous croyons que chaque récit africain peut façonner l&apos;imaginaire collectif,
-            dévoiler de nouvelles perspectives et stimuler un dialogue universel.
-          </p>
+          <h2 className="font-display text-2xl md:text-3xl">{a.visionTitle}</h2>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{a.visionIntro}</p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           {piliersVision.map((p) => (
-            <article key={p.titre} className="apropos-page__pillar overflow-hidden rounded-lg border border-brand-brown/12 bg-card shadow-soft">
+            <article
+              key={p.titre}
+              className="apropos-page__pillar overflow-hidden rounded-lg border border-brand-brown/12 bg-card shadow-soft"
+            >
               <div className="apropos-page__pillar-media">
                 <img src={p.image} alt={p.alt} className="size-full object-cover" loading="lazy" />
               </div>
@@ -137,37 +140,32 @@ function APropos() {
           <figure className="apropos-page__feature-media">
             <img
               src={IMG.chezItobe}
-              alt="Visuel Itobe Éditions — Beyond the Pages"
+              alt={a.featureImageAlt}
               className="size-full object-cover"
               loading="lazy"
             />
           </figure>
           <div className="apropos-page__feature-body">
-            <h2 className="font-display text-2xl md:text-3xl">Chez Itobe Éditions</h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Nous sommes convaincus que la littérature africaine est le prochain grand mouvement
-              littéraire mondial. Chaque histoire africaine a le droit d&apos;être racontée et de
-              briller sur la scène internationale, non seulement comme un héritage de notre passé,
-              mais comme un puissant catalyseur de notre avenir.
-            </p>
+            <h2 className="font-display text-2xl md:text-3xl">{a.chezTitle}</h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{a.chezText}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/edition"
                 className="rounded-sm bg-brand-orange px-5 py-3 text-sm font-medium text-white hover:opacity-90"
               >
-                Voir le catalogue
+                {a.ctaCatalogue}
               </Link>
               <Link
                 to="/auteurs"
                 className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
               >
-                Nos auteurs
+                {a.ctaAuteurs}
               </Link>
               <Link
                 to="/contact"
                 className="rounded-sm border border-border px-5 py-3 text-sm font-medium hover:bg-secondary"
               >
-                Nous contacter
+                {a.ctaContact}
               </Link>
             </div>
           </div>

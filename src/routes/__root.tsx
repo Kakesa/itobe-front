@@ -18,6 +18,7 @@ import { usePortailActif } from "../hooks/use-portail";
 import { cn } from "../lib/utils";
 import { Toaster } from "../components/ui/sonner";
 import { AdminDataProvider } from "../lib/admin/store";
+import { LocaleProvider } from "../i18n";
 
 function NotFoundComponent() {
   return (
@@ -159,24 +160,26 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AdminDataProvider>
-        {sansChrome ? (
-          <div className={cn(themeEdition && "theme-edition")}>
-            <Outlet />
-          </div>
-        ) : (
-          <div className={cn("flex min-h-screen flex-col", themeEdition && "theme-edition")}>
-            <SiteHeader />
-            <main className="flex-1">
-              {/* Required: nested routes render here. */}
+      <LocaleProvider>
+        <AdminDataProvider>
+          {sansChrome ? (
+            <div className={cn(themeEdition && "theme-edition")}>
               <Outlet />
-            </main>
-            <SiteFooter />
-          </div>
-        )}
-        {/* Système de notification centralisé */}
-        <Toaster position="top-right" richColors closeButton />
-      </AdminDataProvider>
+            </div>
+          ) : (
+            <div className={cn("flex min-h-screen flex-col", themeEdition && "theme-edition")}>
+              <SiteHeader />
+              <main className="flex-1">
+                {/* Required: nested routes render here. */}
+                <Outlet />
+              </main>
+              <SiteFooter />
+            </div>
+          )}
+          {/* Système de notification centralisé */}
+          <Toaster position="top-right" richColors closeButton />
+        </AdminDataProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   );
 }
