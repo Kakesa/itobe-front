@@ -1,20 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Facebook, Instagram, Linkedin } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { NewsletterApi } from "@/lib/api-client";
-
-const LIENS_MEDIA = [
-  { label: "Articles", to: "/media" as const },
-  { label: "Vidéos", to: "/media/videos" as const },
-  { label: "À propos", to: "/media/a-propos" as const },
-  { label: "Contact", to: "/contact" as const },
-];
-
-const LIENS_EDITION = [
-  { label: "Catalogue", to: "/edition" as const },
-  { label: "À propos", to: "/a-propos" as const },
-  { label: "Contact", to: "/contact" as const },
-];
+import { useI18n } from "@/i18n";
 
 function IconeX({ className }: { className?: string }) {
   return (
@@ -25,9 +13,29 @@ function IconeX({ className }: { className?: string }) {
 }
 
 export function SiteFooter() {
+  const { t } = useI18n();
   const [email, setEmail] = useState("");
   const [newsletterMsg, setNewsletterMsg] = useState<{ ok: boolean; texte: string } | null>(null);
   const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  const liensMedia = useMemo(
+    () => [
+      { label: t.nav.media.articles, to: "/media" as const },
+      { label: t.nav.media.videos, to: "/media/videos" as const },
+      { label: t.nav.media.aPropos, to: "/media/a-propos" as const },
+      { label: t.nav.media.contact, to: "/contact" as const },
+    ],
+    [t],
+  );
+
+  const liensEdition = useMemo(
+    () => [
+      { label: t.nav.edition.catalogue, to: "/edition" as const },
+      { label: t.nav.edition.aPropos, to: "/a-propos" as const },
+      { label: t.nav.edition.contact, to: "/contact" as const },
+    ],
+    [t],
+  );
 
   const inscrireNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,12 +46,12 @@ export function SiteFooter() {
     setNewsletterLoading(true);
     try {
       await NewsletterApi.subscribe(valeur);
-      setNewsletterMsg({ ok: true, texte: "Inscription enregistrée. Merci !" });
+      setNewsletterMsg({ ok: true, texte: t.footer.subscribeSuccess });
       setEmail("");
     } catch (err: unknown) {
       setNewsletterMsg({
         ok: false,
-        texte: err instanceof Error ? err.message : "Impossible de s'inscrire pour le moment.",
+        texte: err instanceof Error ? err.message : t.footer.subscribeError,
       });
     } finally {
       setNewsletterLoading(false);
@@ -54,7 +62,6 @@ export function SiteFooter() {
     <footer className="site-footer mt-24">
       <div className="site-footer__inner mx-auto max-w-6xl px-4 py-16 md:py-20">
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
-          {/* Colonne marque */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
               <span className="site-footer__logo-mark" aria-hidden>
@@ -62,25 +69,21 @@ export function SiteFooter() {
               </span>
               <span className="font-display text-2xl tracking-[0.08em] text-white">ITOBE</span>
             </div>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">
-              La voix de l&apos;Afrique contemporaine. Espace d&apos;idées, de création littéraire et
-              de diffusion du savoir panafricain pour le monde entier.
-            </p>
+            <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">{t.footer.blurb}</p>
             <Link
               to="/"
               className="site-footer__link mt-5 inline-flex items-center gap-1.5 text-white/72 hover:text-white"
             >
               <ArrowLeft className="size-3.5 shrink-0" aria-hidden />
-              Retour aux portails
+              {t.footer.backToPortals}
             </Link>
           </div>
 
-          {/* Média */}
           <div>
-            <p className="site-footer__heading">Média</p>
+            <p className="site-footer__heading">{t.footer.headingMedia}</p>
             <ul className="mt-5 space-y-2.5">
-              {LIENS_MEDIA.map((l) => (
-                <li key={l.label}>
+              {liensMedia.map((l) => (
+                <li key={l.to + l.label}>
                   <Link to={l.to} className="site-footer__link">
                     {l.label}
                   </Link>
@@ -89,12 +92,11 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Édition */}
           <div>
-            <p className="site-footer__heading">Édition</p>
+            <p className="site-footer__heading">{t.footer.headingEdition}</p>
             <ul className="mt-5 space-y-2.5">
-              {LIENS_EDITION.map((l) => (
-                <li key={l.label}>
+              {liensEdition.map((l) => (
+                <li key={l.to + l.label}>
                   <Link to={l.to} className="site-footer__link">
                     {l.label}
                   </Link>
@@ -103,20 +105,17 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Newsletter */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-display text-lg text-white">Newsletter</p>
-            <p className="mt-3 text-sm leading-relaxed text-white/70">
-              Inscrivez-vous pour recevoir nos publications hebdomadaires et lancements de livres.
-            </p>
+            <p className="font-display text-lg text-white">{t.footer.newsletterTitle}</p>
+            <p className="mt-3 text-sm leading-relaxed text-white/70">{t.footer.newsletterText}</p>
             <form onSubmit={inscrireNewsletter} className="mt-5 flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="votre.email@domaine.com"
-                aria-label="Adresse e-mail"
+                placeholder={t.footer.emailPlaceholder}
+                aria-label={t.footer.emailAria}
                 className="site-footer__input min-w-0 flex-1 px-4 py-2.5 text-sm outline-none"
               />
               <button
@@ -124,7 +123,7 @@ export function SiteFooter() {
                 disabled={newsletterLoading}
                 className="site-footer__cta shrink-0 px-5 py-2.5 text-sm font-semibold disabled:opacity-60"
               >
-                {newsletterLoading ? "…" : "S'inscrire"}
+                {newsletterLoading ? "…" : t.footer.subscribe}
               </button>
             </form>
             {newsletterMsg && (
@@ -141,9 +140,7 @@ export function SiteFooter() {
 
       <div className="site-footer__bar border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-white/45 sm:flex-row">
-          <p className="text-center sm:text-left">
-            © 2026 ITOBE Entreprise. Tous droits réservés. Conçu avec fierté et exigence.
-          </p>
+          <p className="text-center sm:text-left">{t.footer.copyright}</p>
           <div className="flex items-center gap-3">
             {[
               { label: "X (Twitter)", href: "https://x.com", Icon: IconeX },

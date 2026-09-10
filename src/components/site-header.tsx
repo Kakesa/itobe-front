@@ -5,7 +5,7 @@ import { useADesAchats } from "@/hooks/use-a-des-achats";
 import { usePortailActif } from "@/hooks/use-portail";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
-import { destinationMonEspace, labelMonEspace } from "@/lib/redirect-navigation";
+import { destinationMonEspace } from "@/lib/redirect-navigation";
 import { useI18n, type Locale } from "@/i18n";
 
 type Lien = { to: string; label: string; exact?: boolean };
@@ -19,7 +19,12 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const [ouvert, setOuvert] = useState(false);
   const espaceUrl = destinationMonEspace(role);
-  const espaceLabel = labelMonEspace(role);
+  const espaceLabel =
+    role === "admin"
+      ? t.nav.auth.espaceAdmin
+      : role === "editeur"
+        ? t.nav.auth.espaceEditeur
+        : t.nav.auth.monEspace;
   const home = portail === "media" ? "/media" : "/edition";
   const titre = portail === "media" ? t.nav.media.tagline : t.nav.edition.tagline;
   const liens = useMemo(() => {
@@ -191,7 +196,7 @@ export function SiteHeader() {
           <button
             type="button"
             className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
-            aria-label="Menu"
+            aria-label={t.common.menu}
             onClick={() => setOuvert((v) => !v)}
           >
             {ouvert ? <X className="size-4" /> : <Menu className="size-4" />}

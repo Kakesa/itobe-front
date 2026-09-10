@@ -9,6 +9,7 @@ export type Dictionary = {
     language: string;
     langFr: string;
     langEn: string;
+    menu: string;
   };
   nav: {
     edition: {
@@ -30,9 +31,26 @@ export type Dictionary = {
       connexion: string;
       inscription: string;
       deconnexion: string;
+      monEspace: string;
+      espaceAdmin: string;
+      espaceEditeur: string;
     };
     switchToEdition: string;
     switchToMedia: string;
+  };
+  footer: {
+    blurb: string;
+    backToPortals: string;
+    headingMedia: string;
+    headingEdition: string;
+    newsletterTitle: string;
+    newsletterText: string;
+    emailPlaceholder: string;
+    emailAria: string;
+    subscribe: string;
+    subscribeSuccess: string;
+    subscribeError: string;
+    copyright: string;
   };
   editionAbout: {
     metaTitle: string;

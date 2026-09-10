@@ -5,6 +5,7 @@ const fr: Dictionary = {
     language: "Langue",
     langFr: "FR",
     langEn: "EN",
+    menu: "Menu",
   },
   nav: {
     edition: {
@@ -26,9 +27,28 @@ const fr: Dictionary = {
       connexion: "Connexion",
       inscription: "Inscription",
       deconnexion: "Déconnexion",
+      monEspace: "Mon espace",
+      espaceAdmin: "Espace admin",
+      espaceEditeur: "Mon espace éditeur",
     },
     switchToEdition: "Maison d'édition",
     switchToMedia: "Portail Média",
+  },
+  footer: {
+    blurb:
+      "La voix de l'Afrique contemporaine. Espace d'idées, de création littéraire et de diffusion du savoir panafricain pour le monde entier.",
+    backToPortals: "Retour aux portails",
+    headingMedia: "Média",
+    headingEdition: "Édition",
+    newsletterTitle: "Newsletter",
+    newsletterText:
+      "Inscrivez-vous pour recevoir nos publications hebdomadaires et lancements de livres.",
+    emailPlaceholder: "votre.email@domaine.com",
+    emailAria: "Adresse e-mail",
+    subscribe: "S'inscrire",
+    subscribeSuccess: "Inscription enregistrée. Merci !",
+    subscribeError: "Impossible de s'inscrire pour le moment.",
+    copyright: "© 2026 ITOBE Entreprise. Tous droits réservés. Conçu avec fierté et exigence.",
   },
   editionAbout: {
     metaTitle: "Notre maison — Itobe Éditions",
