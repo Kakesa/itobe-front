@@ -204,15 +204,21 @@
   --sidebar-ring: var(--brand-orange);
 }
 
-/* ——— Admin portails : sidebar uniforme (même dégradé pour Média, Édition, Lecteur) ——— */
+/* ——— Admin portails : sidebar en couleur pleine (unie) par portail ——— */
 .admin-portal-sidebar {
-  background: linear-gradient(
-    180deg,
-    color-mix(in oklab, var(--brand-orange) 65%, var(--brand-brown)) 0%,
-    color-mix(in oklab, var(--brand-orange) 42%, var(--brand-brown)) 42%,
-    color-mix(in oklab, var(--brand-brown) 95%, black) 100%
-  );
   color: white;
+}
+
+.admin-portal--media .admin-portal-sidebar {
+  background: color-mix(in oklab, var(--brand-blue) 72%, black);
+}
+
+.admin-portal--edition .admin-portal-sidebar {
+  background: color-mix(in oklab, var(--brand-orange) 78%, black);
+}
+
+.admin-portal--lecteur .admin-portal-sidebar {
+  background: var(--brand-brown);
 }
 
 .admin-portal--media .admin-portal-accent {
