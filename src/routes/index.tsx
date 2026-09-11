@@ -22,8 +22,7 @@ export const Route = createFileRoute("/")({
   component: Accueil,
 });
 
-const IMG_MEDIA =
-  "https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=1200&q=80";
+const IMG_MEDIA = "/images/neno-logo.jpg";
 const IMG_EDITION =
   "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=1200&q=80";
 
@@ -54,13 +53,12 @@ function Accueil() {
             to="/media"
             className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
           >
-            <div className="relative aspect-[16/11] overflow-hidden">
+            <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-white">
               <img
                 src={IMG_MEDIA}
-                alt="Presse et actualités"
-                className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="Logo NENO"
+                className="max-h-[85%] w-auto max-w-[90%] object-contain transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/20 to-transparent" />
               <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-background/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
                 <Newspaper className="size-3.5" />
                 Portail

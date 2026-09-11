@@ -163,17 +163,27 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
+      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-transparent ${accent}`}
     >
       <div className="site-header__inner mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to={home} className="site-header__brand shrink-0">
-          <span className="flex items-center gap-2.5">
-            <span className="site-header__logo-mark" aria-hidden>
-              I
-            </span>
-            <span className="site-header__logo-text">ITOBE</span>
-          </span>
-          <span className="site-header__tagline">{titre}</span>
+          {portail === "media" ? (
+            <img
+              src="/images/neno-logo.png"
+              alt="NENO"
+              className="site-header__neno"
+            />
+          ) : (
+            <>
+              <span className="flex items-center gap-2.5">
+                <span className="site-header__logo-mark" aria-hidden>
+                  I
+                </span>
+                <span className="site-header__logo-text">ITOBE</span>
+              </span>
+              <span className="site-header__tagline">{titre}</span>
+            </>
+          )}
         </Link>
 
         <nav className="site-header__nav site-header__nav--desktop hidden flex-1 items-center justify-center lg:flex">

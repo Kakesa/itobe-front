@@ -2506,6 +2506,22 @@
 /* Header site — typo alignée sur le footer                            */
 /* ------------------------------------------------------------------ */
 
+.site-header__neno {
+  display: block;
+  height: 2.6rem;
+  width: auto;
+  max-width: 8.75rem;
+  object-fit: contain;
+  background: transparent;
+}
+
+@media (min-width: 1024px) {
+  .site-header__neno {
+    height: 3.15rem;
+    max-width: 10.5rem;
+  }
+}
+
 .site-header__logo-mark {
   display: grid;
   place-items: center;
