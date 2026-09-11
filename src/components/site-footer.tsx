@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useMemo, useState } from "react";
 import { NewsletterApi } from "@/lib/api-client";
+import { usePortailActif } from "@/hooks/use-portail";
 import { useI18n } from "@/i18n";
 
 function IconeX({ className }: { className?: string }) {
@@ -14,6 +15,8 @@ function IconeX({ className }: { className?: string }) {
 
 export function SiteFooter() {
   const { t } = useI18n();
+  const portail = usePortailActif();
+  const estMedia = portail === "media";
   const [email, setEmail] = useState("");
   const [newsletterMsg, setNewsletterMsg] = useState<{ ok: boolean; texte: string } | null>(null);
   const [newsletterLoading, setNewsletterLoading] = useState(false);
@@ -61,15 +64,25 @@ export function SiteFooter() {
   return (
     <footer className="site-footer mt-24">
       <div className="site-footer__inner mx-auto max-w-6xl px-4 py-16 md:py-20">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
-              <img
-                src="/images/itobe-lynx-mark.png"
-                alt=""
-                className="site-footer__logo-mark"
-              />
-              <span className="font-display text-2xl tracking-[0.08em] text-white">ITOBE</span>
+              {estMedia ? (
+                <img
+                  src="/images/neno-logo.png"
+                  alt="NENO"
+                  className="site-footer__logo-neno"
+                />
+              ) : (
+                <>
+                  <img
+                    src="/images/itobe-lynx-mark.png"
+                    alt=""
+                    className="site-footer__logo-mark"
+                  />
+                  <span className="font-display text-2xl tracking-[0.08em] text-white">ITOBE</span>
+                </>
+              )}
             </div>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">{t.footer.blurb}</p>
             <Link
@@ -82,22 +95,11 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <p className="site-footer__heading">{t.footer.headingMedia}</p>
+            <p className="site-footer__heading">
+              {estMedia ? t.footer.headingMedia : t.footer.headingEdition}
+            </p>
             <ul className="mt-5 space-y-2.5">
-              {liensMedia.map((l) => (
-                <li key={l.to + l.label}>
-                  <Link to={l.to} className="site-footer__link">
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="site-footer__heading">{t.footer.headingEdition}</p>
-            <ul className="mt-5 space-y-2.5">
-              {liensEdition.map((l) => (
+              {(estMedia ? liensMedia : liensEdition).map((l) => (
                 <li key={l.to + l.label}>
                   <Link to={l.to} className="site-footer__link">
                     {l.label}

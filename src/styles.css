@@ -2672,6 +2672,15 @@
   filter: brightness(0) invert(1);
 }
 
+.site-footer__logo-neno {
+  display: block;
+  height: 2.75rem;
+  width: auto;
+  max-width: 10rem;
+  object-fit: contain;
+  background: transparent;
+}
+
 .site-footer__heading {
   font-family: var(--font-display, Georgia, serif);
   font-size: 1.125rem;
