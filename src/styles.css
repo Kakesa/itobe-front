@@ -2412,8 +2412,26 @@
   font-family: var(--font-edition);
 }
 
-.contact-page__hero .apropos-page__hero-bg {
-  object-position: center 42%;
+.contact-page__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.contact-page__social {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  background: var(--card);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.contact-page__social:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
 .auteurs-page__hero .apropos-page__hero-bg {

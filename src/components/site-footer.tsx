@@ -5,10 +5,10 @@ import { NewsletterApi } from "@/lib/api-client";
 import { usePortailActif } from "@/hooks/use-portail";
 import { useI18n } from "@/i18n";
 
-function IconeX({ className }: { className?: string }) {
+function IconeTikTok({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" aria-hidden className={className} fill="currentColor">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.76-.3 2.89 2.89 0 0 1 2.88-2.9c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05 6.34 6.34 0 0 0-6.33 6.33A6.34 6.34 0 0 0 10.34 22a6.34 6.34 0 0 0 6.33-6.33V8.73a8.18 8.18 0 0 0 4.77 1.52V6.79a4.84 4.84 0 0 1-1.85-.1z" />
     </svg>
   );
 }
@@ -147,7 +147,7 @@ export function SiteFooter() {
           <p className="text-center sm:text-left">{t.footer.copyright}</p>
           <div className="flex items-center gap-3">
             {[
-              { label: "X (Twitter)", href: "https://x.com", Icon: IconeX },
+              { label: "TikTok", href: "https://www.tiktok.com", Icon: IconeTikTok },
               { label: "Facebook", href: "https://facebook.com", Icon: Facebook },
               { label: "Instagram", href: "https://instagram.com", Icon: Instagram },
               { label: "LinkedIn", href: "https://linkedin.com", Icon: Linkedin },

@@ -10,17 +10,17 @@ const IMG = {
 export const Route = createFileRoute("/media/a-propos")({
   head: () => ({
     meta: [
-      { title: "À propos — Itobe Média" },
+      { title: "À propos — Neno" },
       {
         name: "description",
         content:
-          "Itobe Média : analyses, chroniques et entretiens pour éclairer la culture, la société et les idées africaines contemporaines.",
+          "Neno est un voyage à travers les histoires remarquables de l’Afrique, les personnes qui ont façonné sa culture et les créations qui continuent d’influencer le continent et le monde.",
       },
-      { property: "og:title", content: "À propos — Itobe Média" },
+      { property: "og:title", content: "À propos — Neno" },
       {
         property: "og:description",
         content:
-          "Un média panafricain d’idées : enquêtes, culture, débats et interviews.",
+          "Nous explorons l’Afrique à travers son histoire, sa littérature, son cinéma, ses innovations, sa musique et son art.",
       },
       { property: "og:url", content: "/media/a-propos" },
       { property: "og:image", content: IMG.hero },
@@ -64,17 +64,12 @@ function AProposMedia() {
         />
         <div className="media-about__hero-veil" aria-hidden />
         <div className="media-about__hero-inner">
-          <p className="media-about__brand">Itobe Média</p>
+          <p className="media-about__brand">Neno</p>
           <h1 className="media-about__title">
-            Informer.
-            <br />
-            Éclairer.
-            <br />
-            Faire dialoguer.
+            À propos
           </h1>
           <p className="media-about__lead">
-            Analyses, chroniques et entretiens autour de la culture et des idées africaines
-            contemporaines.
+            Un voyage à travers les histoires remarquables de l’Afrique.
           </p>
           <Link to="/media" className="media-about__cta">
             Lire le blog
@@ -86,22 +81,27 @@ function AProposMedia() {
       {/* Mission : texte éditorial à gauche, citation en grand à droite */}
       <section className="media-about__mission">
         <div className="media-about__mission-copy">
-          <p className="media-about__eyebrow">Mission</p>
-          <h2 className="media-about__heading">
-            Une information exigeante sur l&apos;Afrique qui pense et crée
-          </h2>
+          <p className="media-about__eyebrow">À propos</p>
+          <h2 className="media-about__heading">Neno</h2>
           <p className="media-about__body">
-            Nous produisons des récits journalistiques sur la culture, l&apos;innovation et la
-            société — pour un public curieux, connecté au monde, et fatigué du bruit.
+            Neno est un voyage à travers les histoires remarquables de l’Afrique, les personnes qui
+            ont façonné sa culture et les créations qui continuent d’influencer la manière dont le
+            continent se perçoit et dont le monde le regarde.
           </p>
           <p className="media-about__body">
-            Profondeur plutôt que viralité. Contexte plutôt que sensationnel. Des voix multiples
-            plutôt qu&apos;une seule narration.
+            Nous explorons l’Afrique à travers son histoire, sa littérature, son cinéma, ses
+            innovations, ses révolutions, sa musique, son art et celles et ceux qui les font vivre.
+          </p>
+          <p className="media-about__body">
+            À travers des conversations, des reportages, des témoignages et des découvertes, nous
+            voulons rendre la culture africaine plus accessible, mieux comprise et, surtout, plus
+            captivante à explorer.
           </p>
         </div>
         <aside className="media-about__mission-aside">
           <blockquote className="media-about__quote">
-            Raconter l&apos;Afrique qui pense, crée et transforme.
+            Rendre la culture africaine plus accessible, mieux comprise et plus captivante à
+            explorer.
           </blockquote>
         </aside>
       </section>
@@ -110,7 +110,7 @@ function AProposMedia() {
       <figure className="media-about__bleed">
         <img
           src={IMG.mission}
-          alt="Univers éditorial Itobe Média"
+          alt="Univers éditorial Neno"
           className="media-about__bleed-img"
           loading="lazy"
         />
@@ -150,13 +150,13 @@ function AProposMedia() {
         />
         <div className="media-about__close-veil" aria-hidden />
         <div className="media-about__close-inner">
-          <p className="media-about__eyebrow media-about__eyebrow--light">Chez Itobe Média</p>
+          <p className="media-about__eyebrow media-about__eyebrow--light">Chez Neno</p>
           <h2 className="media-about__close-title">
-            Le prolongement écrit des conversations Itobe
+            La culture africaine, à explorer
           </h2>
           <p className="media-about__close-text">
-            La maison d&apos;édition porte les livres ; le portail Média porte le rythme du débat,
-            des interviews et des chroniques.
+            Conversations, reportages, témoignages et découvertes — pour rendre l’Afrique plus
+            accessible, mieux comprise et plus captivante.
           </p>
           <div className="media-about__close-actions">
             <Link to="/media" className="media-about__cta media-about__cta--solid">

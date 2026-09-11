@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -14,32 +15,44 @@ export const Route = createFileRoute("/contact")({
       { property: "og:title", content: "Contact — Itobe Entreprise" },
       { property: "og:description", content: "Rédaction, édition, partenariats et support." },
       { property: "og:url", content: "/contact" },
-      { property: "og:image", content: "/images/a-propos/hero.jpg" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
   }),
   component: Contact,
 });
 
+function IconeTikTok({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className={className} fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.76-.3 2.89 2.89 0 0 1 2.88-2.9c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05 6.34 6.34 0 0 0-6.33 6.33A6.34 6.34 0 0 0 10.34 22a6.34 6.34 0 0 0 6.33-6.33V8.73a8.18 8.18 0 0 0 4.77 1.52V6.79a4.84 4.84 0 0 1-1.85-.1z" />
+    </svg>
+  );
+}
+
+const reseaux = [
+  { label: "TikTok", href: "https://www.tiktok.com", Icon: IconeTikTok },
+  { label: "Facebook", href: "https://facebook.com", Icon: Facebook },
+  { label: "Instagram", href: "https://instagram.com", Icon: Instagram },
+  { label: "LinkedIn", href: "https://linkedin.com", Icon: Linkedin },
+  { label: "YouTube", href: "https://youtube.com", Icon: Youtube },
+] as const;
+
 function Contact() {
   const [envoye, setEnvoye] = useState(false);
 
   return (
     <div className="contact-page theme-edition">
-      <section className="apropos-page__hero contact-page__hero">
-        <img src="/images/a-propos/hero.jpg" alt="" className="apropos-page__hero-bg" fetchPriority="high" />
-        <div className="apropos-page__hero-overlay" aria-hidden />
-        <div className="apropos-page__hero-content mx-auto max-w-4xl px-4 py-20 text-center md:py-28">
-          <p className="apropos-page__hero-kicker">Contact</p>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-white md:text-5xl lg:text-6xl">
-            Parlons de votre projet.
-            <br />
-            <span className="text-brand-gold">Construisons la suite ensemble.</span>
-          </h1>
-        </div>
-      </section>
+      <div className="mx-auto max-w-5xl px-4 pt-12 md:pt-16">
+        <p className="kicker mb-0">Contact</p>
+        <h1 className="mt-3 font-display text-4xl leading-tight md:text-5xl">
+          Parlons de votre projet.
+        </h1>
+        <p className="mt-3 max-w-xl text-muted-foreground">
+        Pour toute demande commerciale, partenariat, presse, interview, podcast, événement, intervention ou autre demande concernant Neno, contactez-nous à l'adresse suivante :
+        </p>
+      </div>
 
-      <div className="mx-auto grid max-w-5xl gap-12 px-4 py-14 md:grid-cols-[1fr_280px]">
+      <div className="mx-auto grid max-w-5xl gap-12 px-4 py-12 md:grid-cols-[1fr_280px] md:py-14">
         <form
           className="space-y-4"
           onSubmit={(e) => {
@@ -99,6 +112,23 @@ function Contact() {
           <div className="flex gap-3">
             <Phone className="size-4 shrink-0 text-accent" />
             <p className="text-muted-foreground">+243 000 000 000</p>
+          </div>
+          <div>
+            <p className="font-display">Réseaux sociaux</p>
+            <div className="contact-page__socials mt-3">
+              {reseaux.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="contact-page__social"
+                >
+                  <Icon className="size-4" />
+                </a>
+              ))}
+            </div>
           </div>
           <div className="rounded-sm border border-border bg-card p-4">
             <p className="font-display">Horaires</p>
