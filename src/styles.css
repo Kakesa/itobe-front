@@ -2523,16 +2523,12 @@
 }
 
 .site-header__logo-mark {
-  display: grid;
-  place-items: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  background: var(--brand-gold);
-  color: var(--brand-brown);
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  line-height: 1;
+  display: block;
+  width: 2.15rem;
+  height: 2.15rem;
+  object-fit: contain;
+  background: transparent;
+  mix-blend-mode: multiply;
 }
 
 .site-header__logo-text {
@@ -2553,7 +2549,7 @@
 .site-header__tagline {
   display: block;
   margin-top: 0.2rem;
-  padding-left: 2.25rem;
+  padding-left: 2.775rem;
   font-family: var(--font-sans);
   font-size: 0.625rem;
   font-weight: 500;
@@ -2668,16 +2664,12 @@
 }
 
 .site-footer__logo-mark {
-  display: grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  background: var(--brand-gold);
-  color: var(--brand-brown);
-  font-family: var(--font-display, Georgia, serif);
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1;
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  background: transparent;
+  filter: brightness(0) invert(1);
 }
 
 .site-footer__heading {

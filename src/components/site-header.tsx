@@ -163,7 +163,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-transparent ${accent}`}
+      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
     >
       <div className="site-header__inner mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to={home} className="site-header__brand shrink-0">
@@ -176,9 +176,11 @@ export function SiteHeader() {
           ) : (
             <>
               <span className="flex items-center gap-2.5">
-                <span className="site-header__logo-mark" aria-hidden>
-                  I
-                </span>
+                <img
+                  src="/images/itobe-lynx-mark.png"
+                  alt=""
+                  className="site-header__logo-mark"
+                />
                 <span className="site-header__logo-text">ITOBE</span>
               </span>
               <span className="site-header__tagline">{titre}</span>

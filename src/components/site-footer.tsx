@@ -64,9 +64,11 @@ export function SiteFooter() {
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
-              <span className="site-footer__logo-mark" aria-hidden>
-                I
-              </span>
+              <img
+                src="/images/itobe-lynx-mark.png"
+                alt=""
+                className="site-footer__logo-mark"
+              />
               <span className="font-display text-2xl tracking-[0.08em] text-white">ITOBE</span>
             </div>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">{t.footer.blurb}</p>
