@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 const IMG = {
   hero: "/images/a-propos/hero.jpg",
@@ -30,31 +32,24 @@ export const Route = createFileRoute("/media/a-propos")({
   component: AProposMedia,
 });
 
-const formats = [
-  {
-    num: "01",
-    titre: "Analyses & chroniques",
-    texte:
-      "Articles de fond et décryptages sur la culture, l’économie et la société — pour comprendre sans simplifier.",
-  },
-  {
-    num: "02",
-    titre: "Entretiens & voix",
-    texte:
-      "Auteurs, artistes, entrepreneurs et penseurs : la parole à celles et ceux qui font bouger l’Afrique et sa diaspora.",
-  },
-  {
-    num: "03",
-    titre: "Débats & lectures",
-    texte:
-      "Idées croisées, critiques et conversations qui nourrissent le débat public africain et international.",
-  },
-];
-
 function AProposMedia() {
+  const { locale, t } = useI18n();
+  const a = t.mediaAbout;
+
+  useEffect(() => {
+    document.title = a.metaTitle;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", a.metaDescription);
+  }, [a.metaTitle, a.metaDescription, locale]);
+
+  const formats = [
+    { num: "01", ...a.formats.analyses },
+    { num: "02", ...a.formats.entretiens },
+    { num: "03", ...a.formats.debats },
+  ];
+
   return (
     <div className="media-about">
-      {/* Hero : une composition — marque, titre, phrase, CTA */}
       <section className="media-about__hero">
         <img
           src={IMG.hero}
@@ -65,65 +60,42 @@ function AProposMedia() {
         <div className="media-about__hero-veil" aria-hidden />
         <div className="media-about__hero-inner">
           <p className="media-about__brand">Neno</p>
-          <h1 className="media-about__title">
-            À propos
-          </h1>
-          <p className="media-about__lead">
-            Un voyage à travers les histoires remarquables de l’Afrique.
-          </p>
+          <h1 className="media-about__title">{a.heroTitle}</h1>
+          <p className="media-about__lead">{a.heroLead}</p>
           <Link to="/media" className="media-about__cta">
-            Lire le blog
+            {a.ctaBlog}
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
       </section>
 
-      {/* Mission : texte éditorial à gauche, citation en grand à droite */}
       <section className="media-about__mission">
         <div className="media-about__mission-copy">
-          <p className="media-about__eyebrow">À propos</p>
-          <h2 className="media-about__heading">Neno</h2>
-          <p className="media-about__body">
-            Neno est un voyage à travers les histoires remarquables de l’Afrique, les personnes qui
-            ont façonné sa culture et les créations qui continuent d’influencer la manière dont le
-            continent se perçoit et dont le monde le regarde.
-          </p>
-          <p className="media-about__body">
-            Nous explorons l’Afrique à travers son histoire, sa littérature, son cinéma, ses
-            innovations, ses révolutions, sa musique, son art et celles et ceux qui les font vivre.
-          </p>
-          <p className="media-about__body">
-            À travers des conversations, des reportages, des témoignages et des découvertes, nous
-            voulons rendre la culture africaine plus accessible, mieux comprise et, surtout, plus
-            captivante à explorer.
-          </p>
+          <p className="media-about__eyebrow">{a.eyebrow}</p>
+          <h2 className="media-about__heading">{a.heading}</h2>
+          <p className="media-about__body">{a.p1}</p>
+          <p className="media-about__body">{a.p2}</p>
+          <p className="media-about__body">{a.p3}</p>
         </div>
         <aside className="media-about__mission-aside">
-          <blockquote className="media-about__quote">
-            Rendre la culture africaine plus accessible, mieux comprise et plus captivante à
-            explorer.
-          </blockquote>
+          <blockquote className="media-about__quote">{a.quote}</blockquote>
         </aside>
       </section>
 
-      {/* Visuel plein largeur — ancre visuelle réelle */}
       <figure className="media-about__bleed">
         <img
           src={IMG.mission}
-          alt="Univers éditorial Neno"
+          alt={a.bleedAlt}
           className="media-about__bleed-img"
           loading="lazy"
         />
-        <figcaption className="media-about__bleed-cap">
-          Des récits pour élargir le regard — au rythme de l&apos;actualité et des conversations.
-        </figcaption>
+        <figcaption className="media-about__bleed-cap">{a.bleedCap}</figcaption>
       </figure>
 
-      {/* Formats : liste numérotée verticale, pas de cartes */}
       <section className="media-about__formats">
         <header className="media-about__formats-head">
-          <p className="media-about__eyebrow">Ce que nous publions</p>
-          <h2 className="media-about__heading">Trois formats, une même exigence</h2>
+          <p className="media-about__eyebrow">{a.formatsEyebrow}</p>
+          <h2 className="media-about__heading">{a.formatsTitle}</h2>
         </header>
         <ol className="media-about__format-list">
           {formats.map((f) => (
@@ -140,33 +112,22 @@ function AProposMedia() {
         </ol>
       </section>
 
-      {/* Clôture : image en fond + texte + actions */}
       <section className="media-about__close">
-        <img
-          src={IMG.formats}
-          alt=""
-          className="media-about__close-img"
-          loading="lazy"
-        />
+        <img src={IMG.formats} alt="" className="media-about__close-img" loading="lazy" />
         <div className="media-about__close-veil" aria-hidden />
         <div className="media-about__close-inner">
-          <p className="media-about__eyebrow media-about__eyebrow--light">Chez Neno</p>
-          <h2 className="media-about__close-title">
-            La culture africaine, à explorer
-          </h2>
-          <p className="media-about__close-text">
-            Conversations, reportages, témoignages et découvertes — pour rendre l’Afrique plus
-            accessible, mieux comprise et plus captivante.
-          </p>
+          <p className="media-about__eyebrow media-about__eyebrow--light">{a.closeEyebrow}</p>
+          <h2 className="media-about__close-title">{a.closeTitle}</h2>
+          <p className="media-about__close-text">{a.closeText}</p>
           <div className="media-about__close-actions">
             <Link to="/media" className="media-about__cta media-about__cta--solid">
-              Explorer les articles
+              {a.ctaArticles}
             </Link>
             <Link to="/contact" className="media-about__cta-ghost">
-              Nous écrire
+              {a.ctaWrite}
             </Link>
             <Link to="/a-propos" className="media-about__cta-ghost">
-              Maison d&apos;édition
+              {a.ctaEdition}
             </Link>
           </div>
         </div>

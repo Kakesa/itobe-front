@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -162,7 +163,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-40 border-b-2 border-border bg-background/90 backdrop-blur ${accent}`}
+      className={`site-header sticky top-0 z-40 border-b-2 ${accent}`}
     >
       <div className="site-header__inner mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
         <Link to={home} className="site-header__brand shrink-0">
@@ -210,7 +211,7 @@ export function SiteHeader() {
       </div>
 
       {ouvert && (
-        <nav className="site-header__nav site-header__nav--mobile border-t border-border bg-card px-4 py-3 lg:hidden">
+        <nav className="site-header__nav site-header__nav--mobile border-t px-4 py-3 lg:hidden">
           {liens.map((l) => (
             <Link
               key={l.to + l.label}

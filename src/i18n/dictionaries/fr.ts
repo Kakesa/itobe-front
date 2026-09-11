@@ -93,6 +93,75 @@ const fr: Dictionary = {
     featureImageAlt: "Visuel Itobe Éditions — Beyond the Pages",
     missionImageAlt: "Illustration Itobe Éditions",
   },
+  contact: {
+    metaTitle: "Contact — Itobe Entreprise",
+    metaDescription:
+      "Contactez la rédaction ou le service édition d'Itobe : proposition d'article, manuscrit, partenariat ou support lecteur.",
+    ogDescription: "Rédaction, édition, partenariats et support.",
+    kicker: "Contact",
+    title: "Parlons de votre projet.",
+    intro:
+      "Pour toute demande commerciale, partenariat, presse, interview, podcast, événement, intervention ou autre demande concernant Neno, contactez-nous à l'adresse suivante :",
+    namePlaceholder: "Nom complet",
+    emailPlaceholder: "Adresse e-mail",
+    sujets: {
+      redaction: "Rédaction",
+      manuscrit: "Proposer un manuscrit",
+      partenariat: "Partenariat",
+      support: "Support lecteur",
+    },
+    messagePlaceholder: "Votre message…",
+    submit: "Envoyer le message",
+    success: "Merci, votre message a bien été enregistré.",
+    socials: "Réseaux sociaux",
+    hoursTitle: "Horaires",
+    hours: "Lundi – vendredi, 8h – 17h",
+  },
+  mediaAbout: {
+    metaTitle: "À propos — Neno",
+    metaDescription:
+      "Neno est un voyage à travers les histoires remarquables de l’Afrique, les personnes qui ont façonné sa culture et les créations qui continuent d’influencer le continent et le monde.",
+    ogDescription:
+      "Nous explorons l’Afrique à travers son histoire, sa littérature, son cinéma, ses innovations, sa musique et son art.",
+    heroTitle: "À propos",
+    heroLead: "Un voyage à travers les histoires remarquables de l’Afrique.",
+    ctaBlog: "Lire le blog",
+    eyebrow: "À propos",
+    heading: "Neno",
+    p1: "Neno est un voyage à travers les histoires remarquables de l’Afrique, les personnes qui ont façonné sa culture et les créations qui continuent d’influencer la manière dont le continent se perçoit et dont le monde le regarde.",
+    p2: "Nous explorons l’Afrique à travers son histoire, sa littérature, son cinéma, ses innovations, ses révolutions, sa musique, son art et celles et ceux qui les font vivre.",
+    p3: "À travers des conversations, des reportages, des témoignages et des découvertes, nous voulons rendre la culture africaine plus accessible, mieux comprise et, surtout, plus captivante à explorer.",
+    quote:
+      "Rendre la culture africaine plus accessible, mieux comprise et plus captivante à explorer.",
+    bleedAlt: "Univers éditorial Neno",
+    bleedCap: "Des récits pour élargir le regard — au rythme de l'actualité et des conversations.",
+    formatsEyebrow: "Ce que nous publions",
+    formatsTitle: "Trois formats, une même exigence",
+    formats: {
+      analyses: {
+        titre: "Analyses & chroniques",
+        texte:
+          "Articles de fond et décryptages sur la culture, l’économie et la société — pour comprendre sans simplifier.",
+      },
+      entretiens: {
+        titre: "Entretiens & voix",
+        texte:
+          "Auteurs, artistes, entrepreneurs et penseurs : la parole à celles et ceux qui font bouger l’Afrique et sa diaspora.",
+      },
+      debats: {
+        titre: "Débats & lectures",
+        texte:
+          "Idées croisées, critiques et conversations qui nourrissent le débat public africain et international.",
+      },
+    },
+    closeEyebrow: "Chez Neno",
+    closeTitle: "La culture africaine, à explorer",
+    closeText:
+      "Conversations, reportages, témoignages et découvertes — pour rendre l’Afrique plus accessible, mieux comprise et plus captivante.",
+    ctaArticles: "Explorer les articles",
+    ctaWrite: "Nous écrire",
+    ctaEdition: "Maison d'édition",
+  },
 };
 
 export default fr;

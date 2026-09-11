@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -38,18 +39,29 @@ const reseaux = [
 ] as const;
 
 function Contact() {
+  const { locale, t } = useI18n();
+  const c = t.contact;
   const [envoye, setEnvoye] = useState(false);
+
+  useEffect(() => {
+    document.title = c.metaTitle;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", c.metaDescription);
+  }, [c.metaTitle, c.metaDescription, locale]);
+
+  const sujets = [
+    { key: "redaction", label: c.sujets.redaction },
+    { key: "manuscrit", label: c.sujets.manuscrit },
+    { key: "partenariat", label: c.sujets.partenariat },
+    { key: "support", label: c.sujets.support },
+  ] as const;
 
   return (
     <div className="contact-page theme-edition">
       <div className="mx-auto max-w-5xl px-4 pt-12 md:pt-16">
-        <p className="kicker mb-0">Contact</p>
-        <h1 className="mt-3 font-display text-4xl leading-tight md:text-5xl">
-          Parlons de votre projet.
-        </h1>
-        <p className="mt-3 max-w-xl text-muted-foreground">
-        Pour toute demande commerciale, partenariat, presse, interview, podcast, événement, intervention ou autre demande concernant Neno, contactez-nous à l'adresse suivante :
-        </p>
+        <p className="kicker mb-0">{c.kicker}</p>
+        <h1 className="mt-3 font-display text-4xl leading-tight md:text-5xl">{c.title}</h1>
+        <p className="mt-3 max-w-xl text-muted-foreground">{c.intro}</p>
       </div>
 
       <div className="mx-auto grid max-w-5xl gap-12 px-4 py-12 md:grid-cols-[1fr_280px] md:py-14">
@@ -64,36 +76,36 @@ function Contact() {
           <div className="grid gap-4 sm:grid-cols-2">
             <input
               required
-              placeholder="Nom complet"
+              placeholder={c.namePlaceholder}
               className="rounded-sm border border-border bg-card px-3 py-3 text-sm outline-none focus:border-accent"
             />
             <input
               required
               type="email"
-              placeholder="Adresse e-mail"
+              placeholder={c.emailPlaceholder}
               className="rounded-sm border border-border bg-card px-3 py-3 text-sm outline-none focus:border-accent"
             />
           </div>
           <select
             className="w-full rounded-sm border border-border bg-card px-3 py-3 text-sm outline-none focus:border-accent"
-            defaultValue="Rédaction"
+            defaultValue="redaction"
           >
-            {["Rédaction", "Proposer un manuscrit", "Partenariat", "Support lecteur"].map((s) => (
-              <option key={s}>{s}</option>
+            {sujets.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
             ))}
           </select>
           <textarea
             required
             rows={6}
-            placeholder="Votre message…"
+            placeholder={c.messagePlaceholder}
             className="w-full rounded-sm border border-border bg-card px-3 py-3 text-sm outline-none focus:border-accent"
           />
           <button className="rounded-sm bg-accent px-5 py-3 text-sm font-medium text-accent-foreground">
-            Envoyer le message
+            {c.submit}
           </button>
-          {envoye && (
-            <p className="text-sm text-accent">Merci, votre message a bien été enregistré.</p>
-          )}
+          {envoye && <p className="text-sm text-accent">{c.success}</p>}
         </form>
 
         <aside className="space-y-6 text-sm">
@@ -114,7 +126,7 @@ function Contact() {
             <p className="text-muted-foreground">+243 000 000 000</p>
           </div>
           <div>
-            <p className="font-display">Réseaux sociaux</p>
+            <p className="font-display">{c.socials}</p>
             <div className="contact-page__socials mt-3">
               {reseaux.map(({ label, href, Icon }) => (
                 <a
@@ -131,8 +143,8 @@ function Contact() {
             </div>
           </div>
           <div className="rounded-sm border border-border bg-card p-4">
-            <p className="font-display">Horaires</p>
-            <p className="mt-2 text-muted-foreground">Lundi – vendredi, 8h – 17h</p>
+            <p className="font-display">{c.hoursTitle}</p>
+            <p className="mt-2 text-muted-foreground">{c.hours}</p>
           </div>
         </aside>
       </div>

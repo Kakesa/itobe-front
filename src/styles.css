@@ -2527,8 +2527,14 @@
 }
 
 /* ------------------------------------------------------------------ */
-/* Header site — typo alignée sur le footer                            */
+/* Header site — fond noir                                             */
 /* ------------------------------------------------------------------ */
+
+.site-header {
+  background: #000;
+  color: #fff;
+  border-bottom-color: rgb(255 255 255 / 0.12);
+}
 
 .site-header__neno {
   display: block;
@@ -2553,7 +2559,7 @@
   max-width: 12.5rem;
   object-fit: contain;
   background: transparent;
-  filter: brightness(0);
+  filter: brightness(0) invert(1);
 }
 
 @media (min-width: 1024px) {
@@ -2597,6 +2603,8 @@
 .site-header__nav--mobile {
   transform-origin: top;
   animation: site-header-mobile-menu-in 180ms ease-out both;
+  background: #000;
+  border-color: rgb(255 255 255 / 0.12);
 }
 
 @keyframes site-header-mobile-menu-in {
@@ -2621,13 +2629,13 @@
   position: relative;
   font-family: var(--font-sans);
   font-size: 0.875rem;
-  color: var(--muted-foreground);
+  color: rgb(255 255 255 / 0.72);
   transition: color 0.2s;
 }
 
 .site-header__link:hover,
 .site-header__link.is-active {
-  color: var(--foreground);
+  color: #fff;
 }
 
 .site-header__link.is-active {
@@ -2645,8 +2653,8 @@
     justify-content: center;
     gap: 0.125rem;
     padding: 0.25rem;
-    border: 1px solid color-mix(in oklab, var(--border) 88%, transparent);
-    background: color-mix(in oklab, var(--card) 68%, transparent);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 0.06);
   }
 
   .site-header__nav--desktop .site-header__link {
@@ -2654,7 +2662,7 @@
     min-height: 2.5rem;
     align-items: center;
     padding: 0 0.75rem;
-    color: var(--muted-foreground);
+    color: rgb(255 255 255 / 0.72);
   }
 
   .site-header__nav--desktop .site-header__link::after {
@@ -2672,8 +2680,8 @@
 
   .site-header__nav--desktop .site-header__link:hover,
   .site-header__nav--desktop .site-header__link.is-active {
-    background: color-mix(in oklab, var(--secondary) 72%, transparent);
-    color: var(--foreground);
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
   }
 
   .site-header__nav--desktop .site-header__link.is-active::after {
@@ -2686,12 +2694,41 @@
   }
 }
 
+.site-header .text-muted-foreground {
+  color: rgb(255 255 255 / 0.62);
+}
+
+.site-header .text-foreground {
+  color: #fff;
+}
+
+.site-header .text-primary {
+  color: #fff;
+}
+
+.site-header .border-border {
+  border-color: rgb(255 255 255 / 0.22);
+}
+
+.site-header .hover\:bg-secondary:hover {
+  background: rgb(255 255 255 / 0.1);
+}
+
+.site-header .bg-primary {
+  background: #fff;
+  color: #000;
+}
+
+.site-header .text-primary-foreground {
+  color: #000;
+}
+
 /* ------------------------------------------------------------------ */
 /* Footer site (mockup ITOBE)                                          */
 /* ------------------------------------------------------------------ */
 
 .site-footer {
-  background: var(--brand-brown);
+  background: #000;
   color: #fafaf9;
 }
 
