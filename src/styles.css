@@ -2540,13 +2540,21 @@
   }
 }
 
-.site-header__logo-mark {
+.site-header__edition-logo {
   display: block;
-  width: 2.15rem;
-  height: 2.15rem;
+  height: 2.6rem;
+  width: auto;
+  max-width: 12.5rem;
   object-fit: contain;
   background: transparent;
-  mix-blend-mode: multiply;
+  filter: brightness(0);
+}
+
+@media (min-width: 1024px) {
+  .site-header__edition-logo {
+    height: 3.25rem;
+    max-width: 15rem;
+  }
 }
 
 .site-header__logo-text {
@@ -2681,13 +2689,13 @@
   color: #fafaf9;
 }
 
-.site-footer__logo-mark {
+.site-footer__edition-logo {
   display: block;
-  width: 2.5rem;
-  height: 2.5rem;
+  height: 3.5rem;
+  width: auto;
+  max-width: 16rem;
   object-fit: contain;
   background: transparent;
-  filter: brightness(0) invert(1);
 }
 
 .site-footer__logo-neno {

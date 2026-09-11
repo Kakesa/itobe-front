@@ -26,7 +26,6 @@ export function SiteHeader() {
         ? t.nav.auth.espaceEditeur
         : t.nav.auth.monEspace;
   const home = portail === "media" ? "/media" : "/edition";
-  const titre = portail === "media" ? t.nav.media.tagline : t.nav.edition.tagline;
   const liens = useMemo(() => {
     const base: Lien[] =
       portail === "media"
@@ -174,17 +173,11 @@ export function SiteHeader() {
               className="site-header__neno"
             />
           ) : (
-            <>
-              <span className="flex items-center gap-2.5">
-                <img
-                  src="/images/itobe-lynx-mark.png"
-                  alt=""
-                  className="site-header__logo-mark"
-                />
-                <span className="site-header__logo-text">ITOBE</span>
-              </span>
-              <span className="site-header__tagline">{titre}</span>
-            </>
+            <img
+              src="/images/itobe-editions-logo.png"
+              alt="Itobe Éditions"
+              className="site-header__edition-logo"
+            />
           )}
         </Link>
 

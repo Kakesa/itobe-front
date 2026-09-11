@@ -102,8 +102,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Onest:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap",
       },
-      { rel: "icon", href: "/images/itobe-lynx-mark.png", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/images/itobe-lynx-mark.png" },
+      { rel: "icon", href: "/favicon.png?v=3", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/favicon.png?v=3" },
     ],
     scripts: [
       {
@@ -149,6 +149,11 @@ function RootComponent() {
 
   useEffect(() => {
     document.documentElement.classList.toggle("theme-edition", themeEdition);
+    const href = "/favicon.png?v=3";
+    document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((link) => {
+      link.href = href;
+      if (link.rel === "icon") link.type = "image/png";
+    });
     return () => document.documentElement.classList.remove("theme-edition");
   }, [themeEdition]);
 

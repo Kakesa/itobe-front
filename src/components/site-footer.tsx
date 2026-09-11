@@ -74,14 +74,11 @@ export function SiteFooter() {
                   className="site-footer__logo-neno"
                 />
               ) : (
-                <>
-                  <img
-                    src="/images/itobe-lynx-mark.png"
-                    alt=""
-                    className="site-footer__logo-mark"
-                  />
-                  <span className="font-display text-2xl tracking-[0.08em] text-white">ITOBE</span>
-                </>
+                <img
+                  src="/images/itobe-editions-logo.png"
+                  alt="Itobe Éditions"
+                  className="site-footer__edition-logo"
+                />
               )}
             </div>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">{t.footer.blurb}</p>
