@@ -53,11 +53,11 @@ function Accueil() {
             to="/media"
             className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
           >
-            <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-white">
+            <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
                 src={IMG_MEDIA}
                 alt="Logo NENO"
-                className="max-h-[85%] w-auto max-w-[90%] object-contain transition-transform duration-700 group-hover:scale-105"
+                className="max-h-[85%] w-auto max-w-[90%] object-contain mix-blend-screen [filter:invert(1)_hue-rotate(180deg)] transition-transform duration-700 group-hover:scale-105"
               />
               <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-background/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
                 <Newspaper className="size-3.5" />
