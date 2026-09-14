@@ -138,9 +138,6 @@ export type Dictionary = {
     cta: string;
     heroBadge: string;
     heroLearnMore: string;
-    coversTitle: string;
-    coversNouveautes: string;
-    coversUne: string;
     pagesLabel: string;
     publishedLabel: string;
     prevBook: string;

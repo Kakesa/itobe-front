@@ -3691,10 +3691,6 @@
 /* Hero édition — livres en couverture (esprit Calmann-Lévy)           */
 /* ------------------------------------------------------------------ */
 
-.edition-cover-block {
-  background: var(--edition-cream);
-}
-
 .edition-cover-hero {
   position: relative;
   overflow: hidden;
@@ -3859,83 +3855,6 @@
 .edition-cover-hero__dot.is-active {
   background: #fff;
   transform: scale(1.15);
-}
-
-.edition-covers-rail {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 2.25rem 1.25rem 0.5rem;
-}
-
-.edition-covers-rail__head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.edition-covers-rail__title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-}
-
-.edition-covers-rail__tabs {
-  display: flex;
-  gap: 1.1rem;
-}
-
-.edition-covers-rail__tab {
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: var(--muted-foreground);
-  border-bottom: 2px solid transparent;
-  padding-bottom: 0.2rem;
-}
-
-.edition-covers-rail__tab.is-active {
-  color: var(--foreground);
-  border-bottom-color: var(--brand-orange);
-  font-weight: 600;
-}
-
-.edition-covers-rail__track {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(9.5rem, 11.5rem);
-  gap: 1.35rem;
-  overflow-x: auto;
-  padding: 0.35rem 0 1.5rem;
-  scrollbar-width: thin;
-}
-
-.edition-covers-rail__item {
-  min-width: 0;
-  text-decoration: none;
-  color: inherit;
-}
-
-.edition-covers-rail__item.is-current .book-realistic__body {
-  outline: 2px solid var(--brand-orange);
-  outline-offset: 4px;
-}
-
-.edition-covers-rail__item-title {
-  margin: 0.7rem 0 0;
-  font-family: var(--font-display);
-  font-size: 0.92rem;
-  line-height: 1.25;
-}
-
-.edition-covers-rail__item-author {
-  margin: 0.2rem 0 0;
-  font-size: 0.75rem;
-  color: var(--muted-foreground);
 }
 
 @media (prefers-reduced-motion: reduce) {
