@@ -34,7 +34,7 @@ export function AuthorAvatar({ auteur, nom, size = "md", className = "" }: Autho
   const shell = `shrink-0 overflow-hidden rounded-full object-cover ${sizeClass[size]} ${className}`.trim();
 
   if (photo) {
-    return <img src={photo} alt={label} className={`block ${shell}`} />;
+    return <img key={photo} src={photo} alt={label} className={`block ${shell}`} />;
   }
 
   return (

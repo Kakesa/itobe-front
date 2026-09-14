@@ -5,8 +5,9 @@ import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
-import { ArticlesApi, LivresApi, UsersApi, ApiError } from "@/lib/api-client";
+import { ArticlesApi, AuteursApi, LivresApi, UsersApi, ApiError } from "@/lib/api-client";
 import { hydratePublicData } from "@/lib/data";
+import { resolveMediaUrl } from "@/lib/media-url";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
@@ -33,6 +34,45 @@ export type Champ = {
   placeholder?: string;
   defaut?: boolean | string | number;
 };
+
+const ADMIN_STORAGE_KEY = "itobe.admin.data.v5";
+
+function lireAuteursAdminLocaux(): Item[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const brut = window.localStorage.getItem(ADMIN_STORAGE_KEY);
+    if (!brut) return [];
+    const parsed = JSON.parse(brut) as { auteurs?: Item[] };
+    return Array.isArray(parsed.auteurs) ? parsed.auteurs : [];
+  } catch {
+    return [];
+  }
+}
+
+function fusionnerPhotosAuteursLocales(remote: Item[], locaux: Item[]): Item[] {
+  return remote.map((r) => {
+    const slug = String(r["slug"] ?? "");
+    const nom = String(r["nom"] ?? "").trim().toLowerCase();
+    const loc = locaux.find((l) => {
+      const slugLocal = String(l["slug"] ?? "");
+      const nomLocal = String(l["nom"] ?? "").trim().toLowerCase();
+      return (
+        (slug && (slugLocal === slug || l.id === slug)) ||
+        (nom && nomLocal === nom)
+      );
+    });
+    const photoLocale = resolveMediaUrl(loc?.["photo"]);
+    const photoDistante = resolveMediaUrl(r["photo"]);
+    if (
+      photoLocale &&
+      photoLocale !== photoDistante &&
+      !photoLocale.includes("images.unsplash.com")
+    ) {
+      return { ...r, photo: photoLocale };
+    }
+    return r;
+  });
+}
 
 export function CrudModule({
   titre,
@@ -119,10 +159,44 @@ export function CrudModule({
     return [];
   };
 
+  const mapperAuteursAdmin = (payload: unknown): Item[] => {
+    const raw = Array.isArray(payload) ? payload : normaliserValeurApi(payload);
+    return raw.map((entry: Record<string, unknown>) => {
+      const photo = resolveMediaUrl(entry["photo"] ?? entry["image"]);
+      return {
+        id: String(entry["_id"] ?? entry["slug"] ?? ""),
+        slug: String(entry["slug"] ?? ""),
+        nom: String(entry["nom"] ?? ""),
+        role: String(entry["role"] ?? ""),
+        ville: String(entry["ville"] ?? ""),
+        bio: String(entry["bio"] ?? ""),
+        ...(photo ? { photo } : {}),
+        ventes: Number(entry["ventes"] ?? 0),
+      };
+    });
+  };
+
   const rechargerLivresAdmin = async () => {
     const raw = await LivresApi.fetchAllAdmin();
     definir(mapperLivresAdmin(raw));
     await hydratePublicData();
+  };
+
+  const rechargerAuteursAdmin = async () => {
+    const raw = await AuteursApi.fetchAll();
+    definir(mapperAuteursAdmin(raw));
+    await hydratePublicData();
+  };
+
+  const preparerPayloadAuteur = (valeurs: Record<string, unknown>) => {
+    const photo = resolveMediaUrl(valeurs["photo"]);
+    return {
+      nom: String(valeurs["nom"] ?? "").trim(),
+      role: String(valeurs["role"] ?? "").trim(),
+      ville: String(valeurs["ville"] ?? "").trim(),
+      bio: String(valeurs["bio"] ?? ""),
+      photo: photo ?? "",
+    };
   };
 
   useEffect(() => {
@@ -143,6 +217,59 @@ export function CrudModule({
           );
         }
       });
+
+    return () => {
+      annule = true;
+    };
+  }, [collection, definir]);
+
+  useEffect(() => {
+    if (collection !== "auteurs") return;
+
+    let annule = false;
+    const locaux = lireAuteursAdminLocaux();
+
+    void (async () => {
+      try {
+        const raw = await AuteursApi.fetchAll();
+        if (annule) return;
+        const remote = mapperAuteursAdmin(raw);
+        const merged = fusionnerPhotosAuteursLocales(remote, locaux);
+        definir(merged);
+
+        const aSynchroniser = merged.filter((item) => {
+          const orig = remote.find((r) => r.id === item.id);
+          return Boolean(item["photo"] && orig && String(item["photo"]) !== String(orig["photo"] ?? ""));
+        });
+
+        for (const item of aSynchroniser) {
+          if (annule) return;
+          await AuteursApi.update(String(item.id), {
+            nom: String(item["nom"] ?? "").trim(),
+            role: String(item["role"] ?? "").trim(),
+            ville: String(item["ville"] ?? "").trim(),
+            bio: String(item["bio"] ?? ""),
+            photo: resolveMediaUrl(item["photo"]) ?? "",
+          });
+        }
+
+        if (annule) return;
+        if (aSynchroniser.length > 0) {
+          await rechargerAuteursAdmin();
+          notify.succes("Les nouvelles photos d’auteurs ont été enregistrées sur le serveur.");
+        } else {
+          await hydratePublicData();
+        }
+      } catch (err) {
+        if (!annule) {
+          notify.erreur(
+            err instanceof ApiError && err.statusCode === 401
+              ? "Reconnectez-vous pour charger les auteurs."
+              : "Impossible de charger les auteurs depuis le serveur.",
+          );
+        }
+      }
+    })();
 
     return () => {
       annule = true;
@@ -273,11 +400,36 @@ export function CrudModule({
         return;
       }
 
+      if (collection === "auteurs") {
+        const payload = preparerPayloadAuteur(valeurs);
+        if (edition?.row) {
+          await AuteursApi.update(String(edition.row.id), payload);
+          await rechargerAuteursAdmin();
+          const apres = { ...edition.row, ...payload } as Item;
+          notify.modifie(singulier, String(valeurs["nom"] ?? edition.row.id));
+          onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
+          setEdition(null);
+          return;
+        }
+
+        const response = await AuteursApi.create(payload);
+        const item = normaliserReponseApi(response);
+        await rechargerAuteursAdmin();
+        notify.cree(singulier, libelle(item));
+        onApresEnregistrement?.({ avant: null, apres: item, creation: true });
+        setEdition(null);
+        return;
+      }
+
       if (edition?.row) {
         modifier(edition.row.id, valeurs);
         const apres = { ...edition.row, ...valeurs } as Item;
         notify.modifie(singulier, String(valeurs["titre"] ?? valeurs["nom"] ?? edition.row.id));
         onApresEnregistrement?.({ avant: edition.row, apres, creation: false });
+      } else {
+        const item = creer(valeurs as Omit<Item, "id"> & { id?: string });
+        notify.cree(singulier, libelle(item));
+        onApresEnregistrement?.({ avant: null, apres: item, creation: true });
       }
     } catch (error) {
       notify.erreur(messageErreurApi(error));
@@ -295,6 +447,9 @@ export function CrudModule({
       if (collection === "livres") {
         await LivresApi.delete(aSupprimer.id);
         await rechargerLivresAdmin();
+      } else if (collection === "auteurs") {
+        await AuteursApi.delete(aSupprimer.id);
+        await rechargerAuteursAdmin();
       } else {
         supprimer(aSupprimer.id);
       }

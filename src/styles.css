@@ -70,7 +70,7 @@
 :root {
   /* ——— Palette principale ITOBE ——— */
   --brand-orange: #739bd0;
-  --brand-gold: #ffd37d;
+  --brand-gold: #e9803b;
   --brand-brown: #383030;
   --brand-blue: #70a2e1;
   /* Palette alignée sur itobeeditions.com (Elementor kit) */
@@ -1681,7 +1681,6 @@
   place-items: center;
   width: 4.5rem;
   height: 4.5rem;
-  overflow: hidden;
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
@@ -1689,12 +1688,6 @@
   background: white;
   border-radius: 999px;
   box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--edition-ink) 20%, transparent);
-}
-
-.fiche-livre-v2__author-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
 .fiche-livre-v2__author-box-title {
@@ -1811,18 +1804,9 @@
   height: 11rem;
   border-radius: 999px;
   object-fit: cover;
-  overflow: hidden;
   box-shadow:
     0 0 0 4px color-mix(in oklab, var(--brand-gold) 45%, white),
     0 12px 32px -8px color-mix(in oklab, var(--brand-brown) 25%, transparent);
-}
-
-span.auteur-fiche__photo {
-  display: grid;
-  place-items: center;
-  background: color-mix(in oklab, var(--brand-gold) 15%, var(--edition-cream));
-  font-family: var(--font-display);
-  color: var(--brand-gold);
 }
 
 @media (min-width: 768px) {
@@ -3809,9 +3793,6 @@ span.auteur-fiche__photo {
 }
 
 .edition-cover-hero__author {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.7rem;
   margin: 0.75rem 0 0;
   font-size: 1.05rem;
   color: rgb(255 255 255 / 0.86);

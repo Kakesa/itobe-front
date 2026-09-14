@@ -304,6 +304,7 @@ export const LivresApi = {
 export const AuteursApi = {
   getAll: (params?: { page?: number; limit?: number; q?: string }) =>
     api.get("/auteurs", params),
+  fetchAll: () => fetchAllPages((page, limit) => AuteursApi.getAll({ page, limit })),
   getBySlug: (slug: string) => api.get(`/auteurs/${slug}`),
   getMyProfile: () => api.get("/auteurs/me/profile"),
   updateMyBio: (bio: string) => api.patch("/auteurs/me/bio", { bio }),

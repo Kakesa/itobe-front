@@ -330,8 +330,16 @@ function memoriserAuteurPeuple(raw: unknown) {
   if (!raw || typeof raw !== "object" || !("nom" in raw || "photo" in raw || "slug" in raw)) return;
   const auteur = normaliserAuteurApi(raw);
   const idx = auteurs.findIndex((a) => a.slug === auteur.slug);
-  if (idx >= 0) auteurs[idx] = { ...auteurs[idx], ...auteur };
-  else auteurs.push(auteur);
+  if (idx >= 0) {
+    const precedent = auteurs[idx];
+    auteurs[idx] = {
+      ...precedent,
+      ...auteur,
+      ...(auteur.photo ? { photo: auteur.photo } : precedent.photo ? { photo: precedent.photo } : {}),
+    };
+  } else {
+    auteurs.push(auteur);
+  }
 }
 
 const normaliserLivreApi = (entry: any): Livre => {
@@ -406,20 +414,22 @@ export const hydratePublicData = async () => {
     const [articlesApi, livresApi, auteursApi] = await Promise.all([
       fetchAllPages((page, limit) => ArticlesApi.getAll({ page, limit })),
       LivresApi.fetchAll(),
-      fetchAllPages((page, limit) => AuteursApi.getAll({ page, limit })),
+      AuteursApi.fetchAll(),
     ]);
 
     const articlesLive = normaliserValeurApi(articlesApi).map(normaliserArticleApi);
     const livresLive = (Array.isArray(livresApi) ? livresApi : normaliserValeurApi(livresApi)).map(
       normaliserLivreApi,
     );
-    const auteursLive = normaliserValeurApi(auteursApi).map(normaliserAuteurApi);
+    const auteursLive = (Array.isArray(auteursApi) ? auteursApi : normaliserValeurApi(auteursApi)).map(
+      normaliserAuteurApi,
+    );
 
     articles = [...articlesLive, ...articlesPubliesAdmin()].filter(
       (article, index, arr) => arr.findIndex((entry) => entry.slug === article.slug) === index,
     );
     livres = livresLive;
-    auteurs = auteursLive.length > 0 ? auteursLive : auteursSeed;
+    auteurs = auteursLive;
     window.dispatchEvent(new Event(PUBLIC_DATA_EVENT));
   } catch {
     /* API indisponible : catalogue livres vide */

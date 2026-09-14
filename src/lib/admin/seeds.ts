@@ -1,5 +1,5 @@
 // Jeux de données initiaux pour les modules du back-office (front mock).
-import { articles, auteurs, categoriesLivres, categoriesMedia } from "@/lib/data";
+import { articles, categoriesLivres, categoriesMedia } from "@/lib/data";
 import { commandes } from "@/lib/admin-data";
 
 export type Item = Record<string, unknown> & { id: string };
@@ -20,15 +20,8 @@ export const seedArticles: Item[] = articles.map((a, i) => ({
 /** Livres admin : chargés depuis l'API (MongoDB), pas de mock. */
 export const seedLivres: Item[] = [];
 
-export const seedAuteurs: Item[] = auteurs.map((a) => ({
-  id: a.slug,
-  nom: a.nom,
-  role: a.role,
-  ville: a.ville,
-  bio: a.bio,
-  ventes: a.ventes,
-  ...(a.photo ? { photo: a.photo } : {}),
-}));
+/** Auteurs admin : chargés depuis l'API (MongoDB), pas de mock Unsplash. */
+export const seedAuteurs: Item[] = [];
 
 export const seedCategoriesMedia: Item[] = categoriesMedia.map((c) => ({
   id: c.toLowerCase(),

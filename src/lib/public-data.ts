@@ -217,8 +217,8 @@ export async function fetchPublicLivres(): Promise<PublicLivre[]> {
 
 export async function fetchPublicAuteurs(): Promise<PublicAuteur[]> {
   try {
-    const response = await AuteursApi.getAll({ page: 1, limit: 200 });
-    return asArray<any>(response).map(normalizePublicAuteur);
+    const rows = await AuteursApi.fetchAll();
+    return rows.map(normalizePublicAuteur);
   } catch {
     return [];
   }
