@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { stripHtml } from "@/components/admin/article-rich-editor";
 import { BookCover } from "@/components/book-cover";
 import { useI18n } from "@/i18n";
 import type { Livre } from "@/lib/data";
@@ -44,6 +45,7 @@ function HeroCopy({
   pagesLabel: string;
   cta: string;
 }) {
+  const lead = stripHtml(livre.resume ?? "");
   return (
     <>
       <p className="edition-cover-hero__badge">{badge}</p>
@@ -54,9 +56,9 @@ function HeroCopy({
         {publishedLabel} : {formatParution(livre.publication, locale)}
         {livre.pages ? ` · ${livre.pages} ${pagesLabel}` : ""}
       </p>
-      {livre.resume ? (
+      {lead ? (
         <p className="edition-cover-hero__lead">
-          {livre.resume.length > 180 ? `${livre.resume.slice(0, 177).trim()}…` : livre.resume}
+          {lead.length > 180 ? `${lead.slice(0, 177).trim()}…` : lead}
         </p>
       ) : null}
       <Link to="/edition/$slug" params={{ slug: livre.slug }} className="edition-cover-hero__cta">
