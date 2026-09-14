@@ -1,10 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookCard } from "@/components/book-card";
 import { CatalogueLivresSkeleton } from "@/components/book-skeletons";
+import { EditionCoverHero } from "@/components/edition/cover-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLivres } from "@/hooks/use-livres";
 import { categoriesLivres } from "@/lib/data";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/edition/")({
   head: () => ({
@@ -26,9 +28,6 @@ export const Route = createFileRoute("/edition/")({
   }),
   component: Catalogue,
 });
-
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1800&q=80";
 
 const selectFiltreClass =
   "mt-2 w-full rounded-sm border border-border bg-background px-3 py-2.5 text-sm";
@@ -158,10 +157,18 @@ function FiltresCatalogue({
 }
 
 function Catalogue() {
+  const { locale, t } = useI18n();
+  const h = t.editionHome;
   const { livres, loading } = useLivres();
   const [cat, setCat] = useState("Toutes");
   const [format, setFormat] = useState("Tous");
   const [tri, setTri] = useState("recent");
+
+  useEffect(() => {
+    document.title = h.metaTitle;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", h.metaDescription);
+  }, [h.metaTitle, h.metaDescription, locale]);
 
   const liste = useMemo(() => {
     let l = [...livres];
@@ -178,43 +185,7 @@ function Catalogue() {
 
   return (
     <div>
-      {/* Hero façon maison d'édition institutionnelle */}
-      <section className="relative flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden md:min-h-[85vh]">
-        <img
-          src={HERO_IMG}
-          alt=""
-          className="absolute inset-0 size-full object-cover object-center animate-[edition-hero-zoom_18s_ease-out_forwards]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/30" />
-
-        <div className="relative z-10 flex w-full max-w-4xl flex-col items-center justify-center px-4 py-8 text-center sm:px-6 md:px-12 md:py-28">
-          <p
-            className="font-display text-2xl tracking-tight text-white md:text-3xl animate-hero-in"
-            style={{ animationDelay: "0.15s" }}
-          >
-            Itobe<span className="text-[var(--edition-orange)]">.</span>
-          </p>
-          <h1
-            className="mx-auto mt-4 max-w-3xl font-display text-3xl leading-[1.12] text-white sm:mt-5 sm:text-4xl md:text-6xl lg:text-7xl animate-hero-in"
-            style={{ animationDelay: "0.3s" }}
-          >
-            Un monde de lecture, d&apos;édition et de découverte
-          </h1>
-          <p
-            className="mx-auto mt-4 max-w-xl text-base text-white/75 sm:mt-5 md:text-lg animate-hero-in"
-            style={{ animationDelay: "0.45s" }}
-          >
-            Faire de l&apos;Afrique le cœur de la narration mondiale — romans, essais et jeunesse.
-          </p>
-          <a
-            href="#catalogue"
-            className="mt-8 inline-flex items-center rounded-sm bg-[var(--edition-orange)] px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-[#d4480f] hover:-translate-y-0.5 sm:mt-9 animate-hero-in"
-            style={{ animationDelay: "0.6s" }}
-          >
-            Découvrir le catalogue
-          </a>
-        </div>
-      </section>
+      <EditionCoverHero livres={livres} loading={loading} />
 
       <div id="catalogue" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-14">
         <div className="text-center md:text-left">

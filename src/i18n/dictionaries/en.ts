@@ -161,6 +161,24 @@ const en: Dictionary = {
     ctaWrite: "Write to us",
     ctaEdition: "Publishing house",
   },
+  editionHome: {
+    metaTitle: "Publishing house — Itobe",
+    metaDescription:
+      "Novels, essays, poetry, and children's books. Explore the Itobe catalogue in PDF, EPUB, and print, with a free preview before purchase.",
+    ogDescription: "Novels, essays, poetry, and children's books in PDF, EPUB, and print.",
+    title: "A world of reading, publishing, and discovery",
+    lead: "Making Africa the heart of global storytelling — novels, essays, and children's books.",
+    cta: "Explore the catalogue",
+    heroBadge: "New release",
+    heroLearnMore: "Learn more",
+    coversTitle: "Featured covers",
+    coversNouveautes: "New releases",
+    coversUne: "Spotlight",
+    pagesLabel: "pages",
+    publishedLabel: "Published",
+    prevBook: "Previous book",
+    nextBook: "Next book",
+  },
 };
 
 export default en;

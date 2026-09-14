@@ -129,4 +129,21 @@ export type Dictionary = {
     ctaWrite: string;
     ctaEdition: string;
   };
+  editionHome: {
+    metaTitle: string;
+    metaDescription: string;
+    ogDescription: string;
+    title: string;
+    lead: string;
+    cta: string;
+    heroBadge: string;
+    heroLearnMore: string;
+    coversTitle: string;
+    coversNouveautes: string;
+    coversUne: string;
+    pagesLabel: string;
+    publishedLabel: string;
+    prevBook: string;
+    nextBook: string;
+  };
 };

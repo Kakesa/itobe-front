@@ -162,6 +162,24 @@ const fr: Dictionary = {
     ctaWrite: "Nous écrire",
     ctaEdition: "Maison d'édition",
   },
+  editionHome: {
+    metaTitle: "Maison d'édition — Itobe",
+    metaDescription:
+      "Romans, essais, poésie et jeunesse. Découvrez le catalogue des éditions Itobe en PDF, EPUB et papier, avec aperçu gratuit avant achat.",
+    ogDescription: "Romans, essais, poésie et jeunesse en PDF, EPUB et papier.",
+    title: "Un monde de lecture, d'édition et de découverte",
+    lead: "Faire de l'Afrique le cœur de la narration mondiale — romans, essais et jeunesse.",
+    cta: "Découvrir le catalogue",
+    heroBadge: "Nouveauté",
+    heroLearnMore: "En savoir plus",
+    coversTitle: "Les livres en couverture",
+    coversNouveautes: "Nouveautés",
+    coversUne: "À la une",
+    pagesLabel: "pages",
+    publishedLabel: "Parution",
+    prevBook: "Livre précédent",
+    nextBook: "Livre suivant",
+  },
 };
 
 export default fr;
