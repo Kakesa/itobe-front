@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { AuteursApi } from "@/lib/api-client";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { hydratePublicData } from "@/lib/data";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 type FicheAuteur = {
   slug: string;
   nom: string;
   role: string;
   bio: string;
+  photo?: string;
 };
 
 export function MonProfilAuteurSection() {
@@ -30,6 +33,7 @@ export function MonProfilAuteurSection() {
           nom: String(a.nom ?? ""),
           role: String(a.role ?? ""),
           bio: String(a.bio ?? ""),
+          ...(resolveMediaUrl(a.photo) ? { photo: resolveMediaUrl(a.photo) } : {}),
         });
         setBio(String(a.bio ?? ""));
       } catch {
@@ -78,11 +82,14 @@ export function MonProfilAuteurSection() {
   return (
     <section className="rounded-xl border border-brand-gold/25 bg-card p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-xl">Ma fiche auteur</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {fiche.nom} · {fiche.role}
-          </p>
+        <div className="flex items-start gap-3">
+          <AuthorAvatar auteur={fiche} />
+          <div>
+            <h2 className="text-xl">Ma fiche auteur</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {fiche.nom} · {fiche.role}
+            </p>
+          </div>
         </div>
         <Link
           to="/auteurs/$slug"

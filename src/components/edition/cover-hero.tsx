@@ -2,10 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { stripHtml } from "@/components/admin/article-rich-editor";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCover } from "@/components/book-cover";
 import { useI18n } from "@/i18n";
 import type { Livre } from "@/lib/data";
-import { nomAuteur } from "@/lib/data";
+import { getAuteur, nomAuteur } from "@/lib/data";
 
 type CoverHeroProps = {
   livres: Livre[];
@@ -45,13 +46,17 @@ function HeroCopy({
   pagesLabel: string;
   cta: string;
 }) {
+  const auteur = getAuteur(livre.auteur);
   const lead = stripHtml(livre.resume ?? "");
   return (
     <>
       <p className="edition-cover-hero__badge">{badge}</p>
       <p className="edition-cover-hero__genre">{livre.categorie}</p>
       <h1 className="edition-cover-hero__title">{livre.titre}</h1>
-      <p className="edition-cover-hero__author">{nomAuteur(livre.auteur)}</p>
+      <p className="edition-cover-hero__author">
+        <AuthorAvatar auteur={auteur} nom={nomAuteur(livre.auteur)} size="sm" />
+        {nomAuteur(livre.auteur)}
+      </p>
       <p className="edition-cover-hero__meta">
         {publishedLabel} : {formatParution(livre.publication, locale)}
         {livre.pages ? ` · ${livre.pages} ${pagesLabel}` : ""}

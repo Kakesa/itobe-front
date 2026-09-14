@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCard } from "@/components/book-card";
-import { articles, auteurs } from "@/lib/data";
+import { useAuteurs } from "@/hooks/use-auteurs";
 import { useLivres } from "@/hooks/use-livres";
+import { articles } from "@/lib/data";
 
 export const Route = createFileRoute("/recherche")({
   head: () => ({
@@ -25,6 +27,7 @@ export const Route = createFileRoute("/recherche")({
 
 function Recherche() {
   const { livres } = useLivres();
+  const { auteurs } = useAuteurs();
   const [q, setQ] = useState("");
   const [type, setType] = useState("tout");
   const term = q.trim().toLowerCase();
@@ -148,15 +151,18 @@ function Recherche() {
           <h2 className="text-2xl">Auteurs</h2>
           <ul className="mt-4 divide-y divide-border">
             {resAuteurs.map((a) => (
-              <li key={a.slug} className="py-4">
-                <Link
-                  to="/auteurs/$slug"
-                  params={{ slug: a.slug }}
-                  className="font-display text-lg hover:text-accent"
-                >
-                  {a.nom}
-                </Link>
-                <p className="text-sm text-muted-foreground">{a.role}</p>
+              <li key={a.slug} className="flex items-center gap-3 py-4">
+                <AuthorAvatar auteur={a} />
+                <div>
+                  <Link
+                    to="/auteurs/$slug"
+                    params={{ slug: a.slug }}
+                    className="font-display text-lg hover:text-accent"
+                  >
+                    {a.nom}
+                  </Link>
+                  <p className="text-sm text-muted-foreground">{a.role}</p>
+                </div>
               </li>
             ))}
           </ul>

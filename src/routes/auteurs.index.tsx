@@ -1,15 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { auteurs } from "@/lib/data";
+import { AuthorAvatar } from "@/components/author-avatar";
+import { useAuteurs } from "@/hooks/use-auteurs";
 import { useLivres } from "@/hooks/use-livres";
-
-function initiales(nom: string) {
-  return nom
-    .split(" ")
-    .map((m) => m[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 export const Route = createFileRoute("/auteurs/")({
   head: () => ({
@@ -32,6 +24,7 @@ export const Route = createFileRoute("/auteurs/")({
 
 function AuteursPage() {
   const { livres } = useLivres();
+  const { auteurs } = useAuteurs();
   return (
     <div className="auteurs-page theme-edition">
       <section className="apropos-page__hero auteurs-page__hero">
@@ -55,17 +48,7 @@ function AuteursPage() {
             params={{ slug: a.slug }}
             className="group rounded-sm border border-border bg-card p-6 transition-shadow hover:shadow-md"
           >
-            {a.photo ? (
-              <img
-                src={a.photo}
-                alt=""
-                className="size-16 rounded-full object-cover ring-2 ring-brand-gold/40"
-              />
-            ) : (
-              <div className="grid size-16 place-items-center rounded-full bg-brand-gold/15 font-display text-xl text-brand-brown">
-                {initiales(a.nom)}
-              </div>
-            )}
+            <AuthorAvatar auteur={a} size="lg" className="ring-2 ring-brand-gold/40" />
             <p className="mt-4 font-display text-xl group-hover:text-brand-gold">{a.nom}</p>
             <p className="text-sm text-muted-foreground">{a.role}</p>
             <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">

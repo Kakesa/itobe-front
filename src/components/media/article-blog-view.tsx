@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Clock, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { useState } from "react";
 import { ArticleCover } from "@/components/article-cover";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { ArticleHtmlBody, richTextIsEmpty } from "@/components/admin/article-rich-editor";
 import { ArticleSocialBar } from "@/components/media/article-social-bar";
 import type { Auteur } from "@/lib/data";
@@ -93,8 +94,8 @@ export function ArticleBlogView({ article, auteur, prev, next }: ArticleBlogView
       )}
 
       <div className="mb-12 flex flex-wrap items-start gap-5 text-sm text-muted-foreground">
-        <span className="inline-flex max-w-xl items-start gap-2">
-          <UserRound className="mt-0.5 size-4 shrink-0" aria-hidden />
+        <span className="inline-flex max-w-xl items-center gap-3">
+          <AuthorAvatar auteur={auteur} nom={nomAuteur} />
           <span>
             {auteur ? (
               <Link

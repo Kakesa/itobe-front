@@ -299,6 +299,7 @@ const normaliserValeurApi = (payload: unknown): any[] => {
 };
 
 const normaliserArticleApi = (entry: any): Article => {
+  memoriserAuteurPeuple(entry?.auteur);
   const raw = extractCoverSource(entry?.couverture ?? entry?.image);
   const couverture = resolveMediaUrl(raw);
 
@@ -325,7 +326,16 @@ const normaliserArticleApi = (entry: any): Article => {
   };
 };
 
+function memoriserAuteurPeuple(raw: unknown) {
+  if (!raw || typeof raw !== "object" || !("nom" in raw || "photo" in raw || "slug" in raw)) return;
+  const auteur = normaliserAuteurApi(raw);
+  const idx = auteurs.findIndex((a) => a.slug === auteur.slug);
+  if (idx >= 0) auteurs[idx] = { ...auteurs[idx], ...auteur };
+  else auteurs.push(auteur);
+}
+
 const normaliserLivreApi = (entry: any): Livre => {
+  memoriserAuteurPeuple(entry?.auteur);
   const promoValue =
     entry?.promo !== undefined && entry?.promo !== null && Number(entry.promo) > 0 ? Number(entry.promo) : undefined;
 
@@ -371,20 +381,23 @@ const normaliserLivreApi = (entry: any): Livre => {
   };
 };
 
-const normaliserAuteurApi = (entry: any): Auteur => ({
+const normaliserAuteurApi = (entry: any): Auteur => {
+  const photo = resolveMediaUrl(entry?.photo ?? entry?.image ?? entry?.avatar);
+  return {
   slug: String(entry?.slug ?? entry?._id ?? "auteur"),
   nom: String(entry?.nom ?? "Auteur"),
   role: String(entry?.role ?? "Auteur"),
   bio: String(entry?.bio ?? entry?.biographie ?? ""),
   ville: String(entry?.ville ?? ""),
-  ...(typeof entry?.photo === "string" && entry.photo ? { photo: entry.photo } : {}),
+  ...(photo ? { photo } : {}),
   reseaux: Array.isArray(entry?.reseaux)
     ? entry.reseaux.map((item: any) => ({ label: String(item?.label ?? "Link"), url: String(item?.url ?? "#") }))
     : [],
   ventes: Number(entry?.ventes ?? 0),
   lectures: Number(entry?.lectures ?? 0),
   telechargements: Number(entry?.telechargements ?? 0),
-});
+};
+};
 
 export const hydratePublicData = async () => {
   if (typeof window === "undefined") return;

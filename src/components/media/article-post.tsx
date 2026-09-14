@@ -1,40 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 import { ArticleCover } from "@/components/article-cover";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { ArticleSocialBar } from "@/components/media/article-social-bar";
 import type { Article, Auteur } from "@/lib/data";
 import { formatRelativeTimeAgo } from "@/lib/relative-time";
-import { resolveMediaUrl } from "@/lib/media-url";
-
-function AuthorAvatar({
-  auteur,
-  nomFallback,
-}: {
-  auteur?: Auteur | null;
-  nomFallback: string;
-}) {
-  const nom = auteur?.nom ?? nomFallback;
-  const photo = resolveMediaUrl(auteur?.photo);
-
-  if (photo) {
-    return (
-      <img src={photo} alt={nom} className="size-10 shrink-0 rounded-full object-cover" />
-    );
-  }
-
-  const initiales = nom
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((m) => m[0]?.toUpperCase())
-    .join("");
-
-  return (
-    <span className="grid size-10 shrink-0 place-items-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-      {initiales || "I"}
-    </span>
-  );
-}
 
 type ArticlePostCardProps = {
   article: Article;
@@ -68,7 +38,7 @@ export function ArticlePostCard({
           className="shrink-0 overflow-hidden rounded-full"
           aria-label={auteurLabel}
         >
-          <AuthorAvatar auteur={auteur} nomFallback={auteurLabel} />
+          <AuthorAvatar auteur={auteur} nom={auteurLabel} />
         </Link>
 
         <div className="min-w-0 flex-1">

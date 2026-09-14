@@ -11,6 +11,20 @@ export const Route = createFileRoute("/admin/edition/auteurs")({
       requis={["admin", "editeur"]}
       clesRecherche={["nom", "ville"]}
       colonnes={[
+        {
+          cle: "photo",
+          label: "Photo",
+          rendu: (r) =>
+            r["photo"] ? (
+              <img
+                src={String(r["photo"])}
+                alt=""
+                className="size-10 rounded-full object-cover"
+              />
+            ) : (
+              "—"
+            ),
+        },
         { cle: "nom", label: "Nom" },
         { cle: "role", label: "Rôle", classe: "text-muted-foreground" },
         { cle: "ville", label: "Ville", classe: "text-muted-foreground" },
@@ -24,7 +38,7 @@ export const Route = createFileRoute("/admin/edition/auteurs")({
         { nom: "nom", label: "Nom", requis: true },
         { nom: "role", label: "Rôle", placeholder: "Romancière" },
         { nom: "ville", label: "Ville" },
-        { nom: "photo", label: "Photo (URL)", placeholder: "https://…" },
+        { nom: "photo", label: "Photo", type: "image", placeholder: "https://…" },
         { nom: "bio", label: "Biographie détaillée", type: "textarea" },
       ]}
     />

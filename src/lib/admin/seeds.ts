@@ -27,6 +27,7 @@ export const seedAuteurs: Item[] = auteurs.map((a) => ({
   ville: a.ville,
   bio: a.bio,
   ventes: a.ventes,
+  ...(a.photo ? { photo: a.photo } : {}),
 }));
 
 export const seedCategoriesMedia: Item[] = categoriesMedia.map((c) => ({

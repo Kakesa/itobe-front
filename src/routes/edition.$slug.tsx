@@ -1,11 +1,13 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { BookOpen, ChevronLeft, ChevronRight, Heart, Star } from "lucide-react";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCard } from "@/components/book-card";
 import { LivreDetailSkeleton } from "@/components/book-skeletons";
 import { BookCover } from "@/components/book-cover";
 import { ArticleHtmlBody, stripHtml } from "@/components/admin/article-rich-editor";
 import { useAccesLecture } from "@/hooks/use-acces-lecture";
+import { useAuteurs } from "@/hooks/use-auteurs";
 import { useBibliothequeLivre } from "@/hooks/use-bibliotheque-livre";
 import { formatDate, fetchLivreBySlug, getAuteur, getLivre, livres, nomAuteur } from "@/lib/data";
 import { prixLivreFormat } from "@/lib/livre-prix";
@@ -76,7 +78,8 @@ function Etoiles({ note }: { note: number }) {
 function LivrePage() {
   const { livre } = Route.useLoaderData();
   const navigate = useNavigate();
-  const auteur = getAuteur(livre.auteur);
+  const { auteurs } = useAuteurs();
+  const auteur = auteurs.find((a) => a.slug === livre.auteur) ?? getAuteur(livre.auteur);
   const [onglet, setOnglet] = useState<OngletContenu>("synopsis");
   const [formatChoisi, setFormatChoisi] = useState<FormatAchat>("numerique");
   const [indexCollection, setIndexCollection] = useState(0);
@@ -109,14 +112,6 @@ function LivrePage() {
   const peutReculer = indexCollection > 0;
   const peutAvancer = indexCollection + 4 < collection.length;
 
-  const initialesAuteur =
-    auteur?.nom
-      .split(" ")
-      .map((m) => m[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() ?? "IT";
-
   return (
     <div className="fiche-livre-v2">
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-10">
@@ -139,6 +134,7 @@ function LivrePage() {
 
             {auteur && (
               <p className="fiche-livre-v2__author">
+                <AuthorAvatar auteur={auteur} size="sm" className="fiche-livre-v2__author-inline" />
                 Par{" "}
                 <Link to="/auteurs/$slug" params={{ slug: auteur.slug }}>
                   {auteur.nom}
@@ -356,7 +352,7 @@ function LivrePage() {
         {/* Auteur */}
         {auteur && (
           <section className="fiche-livre-v2__author-box">
-            <div className="fiche-livre-v2__author-avatar">{initialesAuteur}</div>
+            <AuthorAvatar auteur={auteur} size="lg" className="fiche-livre-v2__author-avatar" />
             <div>
               <h2 className="fiche-livre-v2__author-box-title">À propos de l&apos;auteur : {auteur.nom}</h2>
               <p className="mt-3 text-sm leading-relaxed text-[var(--edition-brown)]/85">{auteur.bio}</p>

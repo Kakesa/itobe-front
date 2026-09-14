@@ -2,9 +2,15 @@ const API_ORIGIN = (
   import.meta.env["VITE_API_URL"] || "http://localhost:5000/api/v1"
 ).replace(/\/api\/v1\/?$/, "");
 
-/** Extrait l'URL brute depuis une valeur couverture / image / css url(). */
-export function extractCoverSource(value?: string | null): string | undefined {
-  const raw = value?.trim();
+/** Extrait l'URL brute depuis une valeur couverture / image / css url() / objet Cloudinary. */
+export function extractCoverSource(value?: unknown): string | undefined {
+  if (value == null) return undefined;
+  if (typeof value === "object") {
+    const rec = value as Record<string, unknown>;
+    return extractCoverSource(rec["url"] ?? rec["secure_url"] ?? rec["src"] ?? rec["photo"]);
+  }
+  if (typeof value !== "string") return undefined;
+  const raw = value.trim();
   if (!raw || raw.startsWith("linear-gradient")) return undefined;
   if (raw.startsWith("url(")) {
     return raw.slice(4, -1).replace(/^["']|["']$/g, "");
@@ -13,7 +19,7 @@ export function extractCoverSource(value?: string | null): string | undefined {
 }
 
 /** Résout une URL média (absolue, data URL ou chemin /uploads backend). */
-export function resolveMediaUrl(value?: string | null): string | undefined {
+export function resolveMediaUrl(value?: unknown): string | undefined {
   const raw = extractCoverSource(value);
   if (!raw) return undefined;
   if (raw.startsWith("data:") || raw.startsWith("http://") || raw.startsWith("https://")) {

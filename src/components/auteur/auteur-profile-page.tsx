@@ -1,18 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { MapPin } from "lucide-react";
+import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCard } from "@/components/book-card";
 import type { Livre } from "@/lib/data";
 import { formatDate } from "@/lib/data";
 import type { PublicArticle, PublicAuteur, PublicLivre } from "@/lib/public-data";
-
-function initiales(nom: string) {
-  return nom
-    .split(" ")
-    .map((m) => m[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 function paragraphesBio(bio: string) {
   return bio
@@ -43,18 +35,7 @@ export function AuteurProfilePage({ auteur, livres, articles }: Props) {
 
         <header className="auteur-fiche__hero">
           <div className="auteur-fiche__portrait">
-            {auteur.photo ? (
-              <img
-                src={auteur.photo}
-                alt={auteur.nom}
-                className="auteur-fiche__photo"
-                loading="eager"
-              />
-            ) : (
-              <div className="auteur-fiche__avatar-fallback" aria-hidden>
-                {initiales(auteur.nom)}
-              </div>
-            )}
+            <AuthorAvatar auteur={auteur} size="xl" className="auteur-fiche__photo" />
           </div>
           <div className="auteur-fiche__intro">
             <p className="auteur-fiche__kicker">{auteur.role}</p>

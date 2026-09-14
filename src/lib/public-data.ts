@@ -176,13 +176,15 @@ export const normalizePublicLivre = (item: any): PublicLivre => {
   };
 };
 
-export const normalizePublicAuteur = (item: any): PublicAuteur => ({
+export const normalizePublicAuteur = (item: any): PublicAuteur => {
+  const photo = resolveMediaUrl(item?.photo ?? item?.image ?? item?.avatar);
+  return {
   slug: String(item?.slug ?? item?._id ?? "auteur"),
   nom: String(item?.nom ?? "Auteur"),
   role: String(item?.role ?? "Auteur"),
   bio: String(item?.bio ?? item?.biographie ?? ""),
   ville: String(item?.ville ?? ""),
-  ...(typeof item?.photo === "string" && item.photo ? { photo: item.photo } : {}),
+  ...(photo ? { photo } : {}),
   reseaux: Array.isArray(item?.reseaux)
     ? item.reseaux.map((network: any) => ({
         label: String(network?.label ?? "Link"),
@@ -192,7 +194,8 @@ export const normalizePublicAuteur = (item: any): PublicAuteur => ({
   ventes: Number(item?.ventes ?? 0),
   lectures: Number(item?.lectures ?? 0),
   telechargements: Number(item?.telechargements ?? 0),
-});
+};
+};
 
 export async function fetchPublicArticles(): Promise<PublicArticle[]> {
   try {
