@@ -137,13 +137,17 @@
   --secondary-foreground: var(--brand-brown);
   --muted: #f7f7f7;
   --muted-foreground: color-mix(in srgb, var(--brand-brown) 74%, transparent);
-  --accent: var(--brand-orange);
-  --accent-foreground: #ffffff;
+  --accent: var(--brand-gold);
+  --accent-foreground: #211c1c;
   --ochre: var(--brand-gold);
   --ochre-foreground: var(--brand-brown);
-  --terracotta: var(--brand-orange);
+  --terracotta: var(--brand-gold);
   --border: color-mix(in srgb, var(--brand-brown) 14%, transparent);
-  --ring: var(--brand-orange);
+  --ring: var(--brand-gold);
+  --edition-orange: var(--brand-gold);
+  --chart-1: var(--brand-gold);
+  --sidebar-primary: var(--brand-gold);
+  --sidebar-ring: var(--brand-gold);
   --ink: #211c1c;
   --paper: #fdfaf4;
   font-family: var(--font-edition);
@@ -213,7 +217,7 @@
 }
 
 .admin-portal--edition .admin-portal-sidebar {
-  background: color-mix(in oklab, var(--brand-orange) 78%, black);
+  background: color-mix(in oklab, var(--brand-gold) 42%, #211c1c);
 }
 
 .admin-portal--lecteur .admin-portal-sidebar {
@@ -231,13 +235,13 @@
 }
 
 .admin-portal--edition .admin-portal-accent {
-  background: var(--brand-orange);
-  color: white;
+  background: var(--brand-gold);
+  color: #211c1c;
 }
 
 .admin-portal--edition .admin-portal-badge {
-  background: color-mix(in oklab, var(--brand-orange) 25%, transparent);
-  color: color-mix(in oklab, var(--brand-gold) 75%, white);
+  background: color-mix(in oklab, var(--brand-gold) 28%, transparent);
+  color: color-mix(in oklab, var(--brand-brown) 70%, var(--brand-gold));
 }
 
 .admin-portal--media .admin-portal-header {
@@ -246,7 +250,7 @@
 }
 
 .admin-portal--edition .admin-portal-header {
-  border-color: color-mix(in oklab, var(--brand-orange) 20%, transparent);
+  border-color: color-mix(in oklab, var(--brand-gold) 35%, transparent);
   background: color-mix(in oklab, var(--brand-gold) 18%, white);
 }
 
@@ -1765,7 +1769,7 @@
 }
 
 .auteur-fiche__crumb a:hover {
-  color: var(--brand-orange);
+  color: var(--brand-gold);
 }
 
 .auteur-fiche__hero {
@@ -1815,11 +1819,11 @@
   width: 11rem;
   height: 11rem;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--brand-orange) 15%, var(--edition-cream));
+  background: color-mix(in oklab, var(--brand-gold) 15%, var(--edition-cream));
   font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 600;
-  color: var(--brand-orange);
+  color: var(--brand-gold);
   box-shadow: 0 12px 32px -8px color-mix(in oklab, var(--brand-brown) 20%, transparent);
 }
 
@@ -1828,7 +1832,7 @@
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--brand-orange);
+  color: var(--brand-gold);
 }
 
 .auteur-fiche__name {
@@ -1871,8 +1875,8 @@
 }
 
 .auteur-fiche__reseau-link:hover {
-  border-color: var(--brand-orange);
-  color: var(--brand-orange);
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
   background: color-mix(in oklab, var(--brand-gold) 25%, white);
 }
 
@@ -1930,7 +1934,7 @@
 }
 
 .auteur-fiche__article-title:hover {
-  color: var(--brand-orange);
+  color: var(--brand-gold);
 }
 
 .auteur-fiche__article-chapo {
@@ -1961,8 +1965,8 @@
   padding: 0.75rem 1.25rem;
   font-size: 0.82rem;
   font-weight: 600;
-  color: white;
-  background: var(--brand-orange);
+  color: #211c1c;
+  background: var(--brand-gold);
   border-radius: 0.35rem;
   transition: opacity 0.2s;
 }
@@ -2472,7 +2476,7 @@
 }
 
 .apropos-page__quote {
-  border-left: 3px solid var(--brand-orange);
+  border-left: 3px solid var(--brand-gold);
   padding-left: 1.25rem;
   font-family: var(--font-display);
   font-size: clamp(1.15rem, 2.5vw, 1.45rem);
@@ -3821,8 +3825,8 @@
 }
 
 .edition-cover-hero__cta:hover {
-  background: var(--brand-orange);
-  color: #fff;
+  background: var(--brand-gold);
+  color: #211c1c;
   transform: translateY(-1px);
 }
 

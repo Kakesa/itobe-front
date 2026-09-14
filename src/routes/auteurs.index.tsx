@@ -62,11 +62,11 @@ function AuteursPage() {
                 className="size-16 rounded-full object-cover ring-2 ring-brand-gold/40"
               />
             ) : (
-              <div className="grid size-16 place-items-center rounded-full bg-brand-orange/15 font-display text-xl text-brand-orange">
+              <div className="grid size-16 place-items-center rounded-full bg-brand-gold/15 font-display text-xl text-brand-brown">
                 {initiales(a.nom)}
               </div>
             )}
-            <p className="mt-4 font-display text-xl group-hover:text-brand-orange">{a.nom}</p>
+            <p className="mt-4 font-display text-xl group-hover:text-brand-gold">{a.nom}</p>
             <p className="text-sm text-muted-foreground">{a.role}</p>
             <p className="mt-3 line-clamp-3 text-sm text-muted-foreground">
               {a.bio.replace(/\n+/g, " ")}

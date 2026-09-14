@@ -25,7 +25,7 @@ const EDITEUR_KPIS = [
   {
     label: "Livres publiés",
     icon: BookOpen,
-    iconClassName: "bg-brand-orange/20 text-brand-orange",
+    iconClassName: "bg-brand-gold/20 text-brand-brown",
     valeur: (data: DashboardEditeurPayload) => data.publies,
   },
   {
@@ -67,7 +67,7 @@ const EDITEUR_KPIS = [
   {
     label: "Dernières ventes",
     icon: TrendingUp,
-    iconClassName: "bg-brand-orange/15 text-brand-orange",
+    iconClassName: "bg-brand-gold/15 text-brand-brown",
     valeur: (data: DashboardEditeurPayload) => data.dernieresVentes.length,
     hint: "sur la période",
   },

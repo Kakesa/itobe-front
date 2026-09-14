@@ -76,7 +76,7 @@ export function MonProfilAuteurSection() {
   if (!fiche) return null;
 
   return (
-    <section className="rounded-xl border border-brand-orange/25 bg-card p-6">
+    <section className="rounded-xl border border-brand-gold/25 bg-card p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-xl">Ma fiche auteur</h2>
@@ -87,7 +87,7 @@ export function MonProfilAuteurSection() {
         <Link
           to="/auteurs/$slug"
           params={{ slug: fiche.slug }}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-orange hover:underline"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-gold hover:underline"
         >
           Voir la fiche publique
           <ExternalLink className="size-3.5" />
@@ -104,7 +104,7 @@ export function MonProfilAuteurSection() {
           value={bio}
           onChange={(e) => setBio(e.target.value)}
           placeholder="Présentez votre parcours, vos thèmes d'écriture, vos publications…"
-          className="mt-2 w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed outline-none focus:border-brand-orange"
+          className="mt-2 w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed outline-none focus:border-brand-gold"
         />
       </label>
 
@@ -113,13 +113,13 @@ export function MonProfilAuteurSection() {
           type="button"
           onClick={() => void enregistrerBio()}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-sm bg-brand-orange px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-sm bg-brand-gold px-4 py-2 text-sm font-medium text-brand-brown hover:opacity-90 disabled:opacity-60"
         >
           {saving && <Loader2 className="size-4 animate-spin" />}
           Enregistrer la biographie
         </button>
         {message && (
-          <p className={`text-xs ${message.includes("Impossible") ? "text-destructive" : "text-brand-orange"}`}>
+          <p className={`text-xs ${message.includes("Impossible") ? "text-destructive" : "text-brand-gold"}`}>
             {message}
           </p>
         )}

@@ -49,7 +49,7 @@ export function SiteHeader() {
     return base;
   }, [portail, aDesAchats, t]);
   const accent =
-    portail === "media" ? "border-b-brand-blue" : "border-b-brand-orange";
+    portail === "media" ? "border-b-brand-blue" : "border-b-brand-gold";
 
   const seDeconnecter = () => {
     deconnexion();

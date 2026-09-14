@@ -124,7 +124,7 @@ function APropos() {
                 <img src={p.image} alt={p.alt} className="size-full object-cover" loading="lazy" />
               </div>
               <div className="p-6">
-                <span className="grid size-10 place-items-center rounded-lg bg-brand-gold/35 text-brand-orange">
+                <span className="grid size-10 place-items-center rounded-lg bg-brand-gold/35 text-brand-brown">
                   <p.icon className="size-5" strokeWidth={1.75} />
                 </span>
                 <h3 className="mt-4 font-display text-lg leading-snug">{p.titre}</h3>
@@ -151,7 +151,7 @@ function APropos() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/edition"
-                className="rounded-sm bg-brand-orange px-5 py-3 text-sm font-medium text-white hover:opacity-90"
+                className="rounded-sm bg-brand-gold px-5 py-3 text-sm font-medium text-brand-brown hover:opacity-90"
               >
                 {a.ctaCatalogue}
               </Link>

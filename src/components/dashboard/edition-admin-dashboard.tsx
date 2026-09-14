@@ -38,7 +38,7 @@ const EDITION_KPIS = [
   {
     label: "Livres",
     icon: BookOpen,
-    iconClassName: "bg-brand-orange/20 text-brand-orange",
+    iconClassName: "bg-brand-gold/20 text-brand-brown",
     valeur: (vue: VueEnsemble) => vue.edition.livres,
   },
   {
@@ -62,7 +62,7 @@ const EDITION_KPIS = [
   {
     label: "Revenus ce mois",
     icon: DollarSign,
-    iconClassName: "bg-brand-orange/15 text-brand-orange",
+    iconClassName: "bg-brand-gold/15 text-brand-brown",
     valeur: (vue: VueEnsemble) => money(vue.paiements.revenusMois),
   },
   {
@@ -109,7 +109,7 @@ function EditionAdminFullDashboard() {
     <div className="space-y-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-orange">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-gold">
             Maison d&apos;édition
           </p>
           <h1 className="mt-1 font-display text-3xl md:text-4xl">Dashboard Édition</h1>
@@ -143,7 +143,7 @@ function EditionAdminFullDashboard() {
       <SectionCard
         titre="Dernières commandes"
         action={
-          <Link to="/admin/edition/commandes" className="text-xs text-brand-orange hover:underline">
+          <Link to="/admin/edition/commandes" className="text-xs text-brand-brown hover:underline">
             Tout voir
           </Link>
         }
@@ -177,7 +177,7 @@ function EditionAdminFullDashboard() {
       <div className="flex flex-wrap gap-3">
         <Link
           to="/admin/edition/livres"
-          className="rounded-sm bg-brand-orange px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
+          className="rounded-sm bg-brand-gold px-4 py-2.5 text-sm font-medium text-brand-brown hover:opacity-90"
         >
           Gérer le catalogue
         </Link>
