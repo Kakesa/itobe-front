@@ -104,12 +104,14 @@ export function BookCover({
             <span className="book-realistic__corner book-realistic__corner--br" aria-hidden />
           </div>
 
-          <div className="book-realistic__fore-edge" aria-hidden>
-            <span className="book-realistic__fore-highlight" />
-          </div>
-          <div className="book-realistic__pages-top" aria-hidden />
-          <div className="book-realistic__pages-bottom" aria-hidden>
-            <span className="book-realistic__pages-layer" />
+          <div className="book-realistic__paper" aria-hidden>
+            <div className="book-realistic__fore-edge">
+              <span className="book-realistic__fore-highlight" />
+            </div>
+            <div className="book-realistic__pages-top" />
+            <div className="book-realistic__pages-bottom">
+              <span className="book-realistic__pages-layer" />
+            </div>
           </div>
         </div>
         <div className="book-realistic__shadow" aria-hidden />
