@@ -27,14 +27,14 @@ const fr = {
     title: "Des histoires",
     titleEm: "sans frontières.",
     lead: "Un cinéma audacieux et humain, enraciné en Afrique, conçu pour le monde.",
-    heroAlt: "Une femme contemplant le paysage des Virunga à l'aube",
+    heroAlt: "Silhouettes d'une équipe de tournage au crépuscule",
     sectionLabel: "Tout commence ici",
     sectionTitle: "Des histoires",
     sectionTitleEm: "ensemble.",
     sectionBody:
       "De la première idée à l'ultime plan, nous construisons des récits honnêtes et ambitieux avec celles et ceux qui les vivent.",
     explore: "Découvrir nos œuvres",
-    crewAlt: "Une équipe de tournage préparant une scène en extérieur",
+    crewAlt: "Une caméra de cinéma guidée sur un chariot de travelling",
   },
   work: {
     kicker: "Prochainement",
@@ -48,7 +48,8 @@ const fr = {
     titleEm: "plus loin.",
     intro:
       "Itobe Productions est une société de production audiovisuelle basée en République démocratique du Congo, dédiée au développement d’histoires africaines pour le cinéma, la télévision et l’ensemble des formats audiovisuels.",
-    crewAlt: "Une équipe de tournage réunie autour d'une caméra",
+    crewAlt: "Une équipe filmant au coucher du soleil",
+    setAlt: "Caméra de cinéma installée sur un travelling, sur un plateau en extérieur",
     cta: "Apportez-nous l'histoire que vous ne pouvez pas taire.",
     talk: "Parlons-en",
   },
@@ -151,14 +152,14 @@ const en: typeof fr = {
     title: "Stories",
     titleEm: "without borders.",
     lead: "Bold, human cinema rooted in Africa and made for the world.",
-    heroAlt: "A woman overlooking the Virunga landscape at dawn",
+    heroAlt: "Silhouettes of a film crew at dusk",
     sectionLabel: "The work begins here",
     sectionTitle: "Stories made",
     sectionTitleEm: "together.",
     sectionBody:
       "From the first idea to the final frame, we build honest, ambitious stories with the people who live them.",
     explore: "Explore our work",
-    crewAlt: "Film crew preparing a scene outdoors",
+    crewAlt: "A cinema camera guided on a dolly",
   },
   work: {
     kicker: "Coming soon",
@@ -172,7 +173,8 @@ const en: typeof fr = {
     titleEm: "further.",
     intro:
       "Itobe Productions is an audiovisual production company based in the Democratic Republic of the Congo, dedicated to developing African stories for film, television, and all forms of audiovisual storytelling.",
-    crewAlt: "A film crew collaborating around a cinema camera",
+    crewAlt: "A film crew shooting at sunset",
+    setAlt: "Cinema camera set on a slider on an outdoor film set",
     cta: "Bring us the story you cannot leave untold.",
     talk: "Talk to us",
   },

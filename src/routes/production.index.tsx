@@ -33,7 +33,7 @@ function ProductionHome() {
     <div>
       <section className="relative h-svh min-h-svh overflow-hidden bg-footer text-hero-foreground">
         <img
-          src="/images/production/hero-volcanic-dawn.jpg"
+          src="/images/production/hero-crew-dusk.jpg"
           alt={t.home.heroAlt}
           width={1920}
           height={1088}
@@ -62,7 +62,7 @@ function ProductionHome() {
           <Reveal>
             <div className="relative aspect-4/3 overflow-hidden bg-muted">
               <img
-                src="/images/production/about-film-crew.jpg"
+                src="/images/production/set-camera-cart.jpg"
                 alt={t.home.crewAlt}
                 width={1600}
                 height={1067}

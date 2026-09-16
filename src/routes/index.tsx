@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 
 const IMG_MEDIA = "/images/neno-logo.jpg";
 const IMG_EDITION = "/images/itobe-editions-logo.png";
-const IMG_PRODUCTION = "/images/production/hero-volcanic-dawn.jpg";
+const IMG_PRODUCTION = "/images/production/hero-crew-dusk.jpg";
 
 function Accueil() {
   return (

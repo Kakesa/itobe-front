@@ -27,7 +27,7 @@ function AboutPage() {
     <div className="page-shell">
       <section className="relative min-h-svh overflow-hidden bg-footer text-hero-foreground">
         <img
-          src="/images/production/about-film-crew.jpg"
+          src="/images/production/about-sunset-field.jpg"
           alt={t.about.crewAlt}
           width={1600}
           height={1067}
@@ -49,6 +49,21 @@ function AboutPage() {
           </h1>
           <p className="prod-reveal mt-6 max-w-lg text-sm leading-7 text-hero-muted md:mt-8">{t.about.intro}</p>
         </div>
+      </section>
+
+      <section className="bg-background">
+        <Reveal>
+          <div className="relative aspect-[16/8] overflow-hidden md:aspect-[21/9]">
+            <img
+              src="/images/production/set-camera-slider.jpg"
+              alt={t.about.setAlt}
+              width={1600}
+              height={1067}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </Reveal>
       </section>
 
       <section className="mx-auto max-w-screen-2xl px-5 py-28 md:px-10 md:py-40 lg:px-14">
