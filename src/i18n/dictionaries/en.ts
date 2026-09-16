@@ -115,6 +115,14 @@ const en: Dictionary = {
     socials: "Social media",
     hoursTitle: "Hours",
     hours: "Monday – Friday, 8am – 5pm",
+    mediaTitle: "Contact us",
+    mediaNotice:
+      "For any commercial inquiry, partnership, press, interview, podcast, event, speaking request, or other request about Neno, please use the form below.",
+    mediaName: "Name",
+    mediaEmail: "Email",
+    mediaMessage: "Message",
+    mediaSend: "Send",
+    mediaError: "Sending failed. Please try again in a moment.",
   },
   mediaAbout: {
     metaTitle: "About — Neno",

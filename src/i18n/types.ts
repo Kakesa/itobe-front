@@ -99,6 +99,13 @@ export type Dictionary = {
     socials: string;
     hoursTitle: string;
     hours: string;
+    mediaTitle: string;
+    mediaNotice: string;
+    mediaName: string;
+    mediaEmail: string;
+    mediaMessage: string;
+    mediaSend: string;
+    mediaError: string;
   };
   mediaAbout: {
     metaTitle: string;

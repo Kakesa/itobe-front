@@ -116,6 +116,14 @@ const fr: Dictionary = {
     socials: "Réseaux sociaux",
     hoursTitle: "Horaires",
     hours: "Lundi – vendredi, 8h – 17h",
+    mediaTitle: "Contactez-nous",
+    mediaNotice:
+      "Pour toute demande commerciale, partenariat, presse, interview, podcast, événement, intervention ou autre demande concernant Neno, utilisez le formulaire ci-dessous.",
+    mediaName: "Nom",
+    mediaEmail: "E-mail",
+    mediaMessage: "Message",
+    mediaSend: "Envoyer",
+    mediaError: "L'envoi a échoué. Réessayez dans un instant.",
   },
   mediaAbout: {
     metaTitle: "À propos — Neno",

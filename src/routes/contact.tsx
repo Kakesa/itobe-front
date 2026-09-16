@@ -3,6 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { useI18n } from "@/i18n";
+import { usePortailActif } from "@/hooks/use-portail";
+import { ContactApi } from "@/lib/api-client";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -39,6 +41,103 @@ const reseaux = [
 ] as const;
 
 function Contact() {
+  const portail = usePortailActif();
+  if (portail === "media") return <MediaContact />;
+  return <EditionContact />;
+}
+
+function MediaContact() {
+  const { locale, t } = useI18n();
+  const c = t.contact;
+  const [nom, setNom] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [envoi, setEnvoi] = useState(false);
+  const [statut, setStatut] = useState<{ ok: boolean; texte: string } | null>(null);
+
+  useEffect(() => {
+    document.title = c.metaTitle;
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute("content", c.metaDescription);
+  }, [c.metaTitle, c.metaDescription, locale]);
+
+  const envoyer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatut(null);
+    setEnvoi(true);
+    try {
+      await ContactApi.send({
+        name: nom.trim(),
+        email: email.trim(),
+        subject: "Contact Neno",
+        message: message.trim(),
+      });
+      setStatut({ ok: true, texte: c.success });
+      setNom("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      setStatut({ ok: false, texte: c.mediaError });
+    } finally {
+      setEnvoi(false);
+    }
+  };
+
+  return (
+    <div className="media-contact">
+      <div className="media-contact__inner">
+        <h1 className="media-contact__title">{c.mediaTitle}</h1>
+        <p className="media-contact__notice">{c.mediaNotice}</p>
+        <form className="media-contact__form" onSubmit={envoyer}>
+          <input
+            required
+            name="name"
+            autoComplete="name"
+            value={nom}
+            onChange={(e) => setNom(e.target.value)}
+            placeholder={c.mediaName}
+            aria-label={c.mediaName}
+            className="media-contact__field"
+          />
+          <input
+            required
+            type="email"
+            name="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={c.mediaEmail}
+            aria-label={c.mediaEmail}
+            className="media-contact__field"
+          />
+          <textarea
+            required
+            name="message"
+            rows={6}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder={c.mediaMessage}
+            aria-label={c.mediaMessage}
+            className="media-contact__field media-contact__message"
+          />
+          <button type="submit" disabled={envoi} className="media-contact__submit">
+            {envoi ? "…" : c.mediaSend}
+          </button>
+          {statut && (
+            <p
+              className={`media-contact__status ${statut.ok ? "media-contact__status--ok" : "media-contact__status--err"}`}
+              role="status"
+            >
+              {statut.texte}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function EditionContact() {
   const { locale, t } = useI18n();
   const c = t.contact;
   const [envoye, setEnvoye] = useState(false);

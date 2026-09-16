@@ -2402,6 +2402,123 @@ main:has(.media-about) + .site-footer {
   color: color-mix(in oklab, var(--brand-gold) 90%, white);
 }
 
+body:has(.media-contact),
+main:has(.media-contact) {
+  background: #000;
+}
+
+main:has(.media-contact) {
+  display: flex;
+  flex-direction: column;
+}
+
+main:has(.media-contact) + .site-footer {
+  margin-top: 0;
+}
+
+.media-contact {
+  flex: 1;
+  background: #000;
+  color: #fff;
+  padding: clamp(3.5rem, 8vw, 5.5rem) 1.25rem 4.5rem;
+}
+
+.media-contact__inner {
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.media-contact__title {
+  margin: 0 0 2.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 3.2vw, 2.15rem);
+  font-weight: 600;
+  font-style: italic;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #fff;
+}
+
+.media-contact__notice {
+  margin: 0 0 1.15rem;
+  padding: 1.15rem 1.2rem;
+  border: 1px solid rgb(255 255 255 / 0.42);
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: #fff;
+}
+
+.media-contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.media-contact__field {
+  width: 100%;
+  margin: 0;
+  padding: 0.82rem 0.95rem;
+  border: 0;
+  border-radius: 2px;
+  background: #fff;
+  color: #111;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.media-contact__field::placeholder {
+  color: #9aa0a6;
+}
+
+.media-contact__field:focus {
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 0.28);
+}
+
+.media-contact__message {
+  min-height: 8.5rem;
+  resize: vertical;
+}
+
+.media-contact__submit {
+  width: 100%;
+  margin-top: 0.1rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  border-radius: 6px;
+  background: #737373;
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.media-contact__submit:hover:not(:disabled) {
+  background: #848484;
+}
+
+.media-contact__submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.media-contact__status {
+  margin: 0.15rem 0 0;
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.media-contact__status--ok {
+  color: #d4d4d4;
+}
+
+.media-contact__status--err {
+  color: #fca5a5;
+}
+
 .contact-page,
 .auteurs-page {
   background: var(--edition-cream);
