@@ -2252,22 +2252,12 @@ main:has(.media-about) + .site-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: media-about-rise 0.9s ease-out both;
-}
-
-@keyframes media-about-rise {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
 }
 
 .media-about__brand {
   margin: 0;
+  display: flex;
+  justify-content: center;
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -2277,6 +2267,9 @@ main:has(.media-about) + .site-footer {
 
 .media-about__title {
   margin: 1rem 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
   font-family: var(--font-display);
   font-size: clamp(2.75rem, 7vw, 4.75rem);
   font-weight: 500;
@@ -2286,17 +2279,68 @@ main:has(.media-about) + .site-footer {
   text-align: center;
 }
 
+.media-about__char-wrap {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.media-about__char {
+  display: inline-block;
+  animation: media-about-char-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.media-about__char-space {
+  display: inline-block;
+  width: 0.28em;
+}
+
+@keyframes media-about-char-up {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 .media-about__lead {
   margin: 1.35rem 0 0;
   max-width: 38rem;
   font-size: 1.05rem;
-  line-height: 1.55;
+  line-height: 1.7;
   color: color-mix(in oklab, white 82%, transparent);
   text-align: center;
 }
 
 .media-about__lead + .media-about__lead {
   margin-top: 0.9rem;
+}
+
+.media-about__word {
+  position: relative;
+  display: inline-block;
+  margin-right: 0.28em;
+}
+
+.media-about__word-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 1;
+  animation: media-about-unmask 0.65s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes media-about-unmask {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
 
 .media-about__cta {
@@ -2311,6 +2355,18 @@ main:has(.media-about) + .site-footer {
   font-weight: 600;
   text-decoration: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  animation: media-about-cta-in 0.6s 2.9s ease both;
+}
+
+@keyframes media-about-cta-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.6rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .media-about__cta:hover {
@@ -2319,8 +2375,14 @@ main:has(.media-about) + .site-footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .media-about__hero-inner {
+  .media-about__char,
+  .media-about__word-mask,
+  .media-about__cta {
     animation: none;
+  }
+
+  .media-about__word-mask {
+    display: none;
   }
 }
 
