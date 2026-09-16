@@ -123,7 +123,8 @@ const en: Dictionary = {
     ogDescription:
       "We explore Africa through its history, literature, cinema, innovations, music, and art.",
     heroTitle: "About",
-    heroLead: "A journey through the remarkable stories of Africa.",
+    heroLead:
+      "We explore Africa through its history, literature, cinema, innovations, revolutions, music, art, and the people who bring them to life.",
     ctaBlog: "Read the blog",
     eyebrow: "About",
     heading: "Neno",
