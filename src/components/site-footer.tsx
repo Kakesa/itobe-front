@@ -85,7 +85,7 @@ export function SiteFooter() {
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/75">{t.footer.blurb}</p>
             <Link
               to="/"
-              className="site-footer__link mt-5 inline-flex items-center gap-1.5 text-white/72 hover:text-white"
+              className="mt-6 inline-flex items-center gap-2 border border-white/25 px-3.5 py-2 text-xs font-semibold uppercase tracking-wide text-white transition hover:border-white/50 hover:bg-white/10"
             >
               <ArrowLeft className="size-3.5 shrink-0" aria-hidden />
               {t.footer.backToPortals}

@@ -12,11 +12,20 @@ export function ProductionFooter() {
           <Link to="/production" className="font-display text-6xl uppercase tracking-brand sm:text-8xl">
             Itobe
           </Link>
-          <p className="max-w-sm text-sm leading-7 text-footer-muted md:justify-self-end">
-            {t.footer.tagline}
-            <br />
-            {t.footer.places}
-          </p>
+          <div className="md:justify-self-end">
+            <p className="max-w-sm text-sm leading-7 text-footer-muted">
+              {t.footer.tagline}
+              <br />
+              {t.footer.places}
+            </p>
+            <Link
+              to="/"
+              className="mt-6 inline-flex items-center gap-2 border border-footer-border px-3.5 py-2 text-xs font-semibold uppercase tracking-brand text-footer-foreground transition hover:border-footer-foreground/40"
+            >
+              <ArrowLeft className="size-3.5 shrink-0" aria-hidden />
+              {t.nav.backToPortals}
+            </Link>
+          </div>
         </div>
         <div className="grid gap-10 pt-10 text-xs uppercase md:grid-cols-3">
           <nav className="flex flex-wrap gap-x-7 gap-y-3" aria-label={t.nav.footer}>
@@ -38,13 +47,7 @@ export function ProductionFooter() {
               </a>
             ))}
           </div>
-          <div className="flex flex-col gap-3 text-footer-muted md:items-end">
-            <Link to="/" className="inline-flex items-center gap-1.5 normal-case">
-              <ArrowLeft className="size-3" />
-              {t.nav.backToPortals}
-            </Link>
-            <p>© {new Date().getFullYear()} Itobe Production</p>
-          </div>
+          <p className="text-footer-muted md:text-right">© {new Date().getFullYear()} Itobe Production</p>
         </div>
       </div>
     </footer>
