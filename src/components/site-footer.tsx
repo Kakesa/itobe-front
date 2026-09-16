@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useMemo, useState } from "react";

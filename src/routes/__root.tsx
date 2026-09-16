@@ -100,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Onest:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Italiana&family=Manrope:wght@300;400;500;600&family=Onest:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap",
       },
       { rel: "icon", href: "/favicon.png?v=3", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png?v=3" },
@@ -147,28 +147,35 @@ function RootComponent() {
     pathname.startsWith("/bibliotheque") ||
     pathname.startsWith("/reader");
 
+  const themeProduction = pathname.startsWith("/production");
+
   useEffect(() => {
     document.documentElement.classList.toggle("theme-edition", themeEdition);
+    document.documentElement.classList.toggle("theme-production", themeProduction);
     const href = "/favicon.png?v=3";
     document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]').forEach((link) => {
       link.href = href;
       if (link.rel === "icon") link.type = "image/png";
     });
-    return () => document.documentElement.classList.remove("theme-edition");
-  }, [themeEdition]);
+    return () => {
+      document.documentElement.classList.remove("theme-edition");
+      document.documentElement.classList.remove("theme-production");
+    };
+  }, [themeEdition, themeProduction]);
 
-  // Accueil / reader / admin = chrome dédié (pas le header public).
+  // Accueil / reader / admin / production = chrome dédié (pas le header public).
   const sansChrome =
     pathname === "/" ||
     pathname.startsWith("/reader") ||
-    pathname.startsWith("/admin");
+    pathname.startsWith("/admin") ||
+    themeProduction;
 
   return (
     <QueryClientProvider client={queryClient}>
       <LocaleProvider>
         <AdminDataProvider>
           {sansChrome ? (
-            <div className={cn(themeEdition && "theme-edition")}>
+            <div className={cn(themeEdition && "theme-edition", themeProduction && "theme-production")}>
               <Outlet />
             </div>
           ) : (

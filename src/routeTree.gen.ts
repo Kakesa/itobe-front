@@ -21,6 +21,7 @@ import { Route as MediaRouteImport } from './routes/media'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as PanierRouteImport } from './routes/panier'
 import { Route as PremiumRouteImport } from './routes/premium'
+import { Route as ProductionRouteImport } from './routes/production'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as ReinitialiserMotDePasseRouteImport } from './routes/reinitialiser-mot-de-passe'
@@ -64,6 +65,10 @@ import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as MediaAProposRouteImport } from './routes/media.a-propos'
 import { Route as MediaVideosRouteImport } from './routes/media.videos'
+import { Route as ProductionIndexRouteImport } from './routes/production.index'
+import { Route as ProductionAboutRouteImport } from './routes/production.about'
+import { Route as ProductionContactRouteImport } from './routes/production.contact'
+import { Route as ProductionWorkRouteImport } from './routes/production.work'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
 import { Route as AdminEditionIndexRouteImport } from './routes/admin.edition.index'
 import { Route as AdminEditionAuteursRouteImport } from './routes/admin.edition.auteurs'
@@ -95,6 +100,8 @@ import { Route as AdminNewsletterIndexRouteImport } from './routes/admin.newslet
 import { Route as AdminNewsletterAbonnesRouteImport } from './routes/admin.newsletter.abonnes'
 import { Route as AdminNewsletterCampagnesRouteImport } from './routes/admin.newsletter.campagnes'
 import { Route as AdminNewsletterTemplatesRouteImport } from './routes/admin.newsletter.templates'
+import { Route as ProductionWorkIndexRouteImport } from './routes/production.work.index'
+import { Route as ProductionWorkSlugRouteImport } from './routes/production.work.$slug'
 import { Route as AdminMediaNewsletterIndexRouteImport } from './routes/admin.media.newsletter.index'
 import { Route as AdminMediaNewsletterAbonnesRouteImport } from './routes/admin.media.newsletter.abonnes'
 import { Route as AdminMediaNewsletterCampagnesRouteImport } from './routes/admin.media.newsletter.campagnes'
@@ -160,6 +167,11 @@ const PanierRoute = PanierRouteImport.update({
 const PremiumRoute = PremiumRouteImport.update({
   id: '/premium',
   path: '/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductionRoute = ProductionRouteImport.update({
+  id: '/production',
+  path: '/production',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfilRoute = ProfilRouteImport.update({
@@ -377,6 +389,26 @@ const MediaVideosRoute = MediaVideosRouteImport.update({
   path: '/videos',
   getParentRoute: () => MediaRoute,
 } as any)
+const ProductionIndexRoute = ProductionIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProductionRoute,
+} as any)
+const ProductionAboutRoute = ProductionAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => ProductionRoute,
+} as any)
+const ProductionContactRoute = ProductionContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => ProductionRoute,
+} as any)
+const ProductionWorkRoute = ProductionWorkRouteImport.update({
+  id: '/work',
+  path: '/work',
+  getParentRoute: () => ProductionRoute,
+} as any)
 const ReaderSlugRoute = ReaderSlugRouteImport.update({
   id: '/reader/$slug',
   path: '/reader/$slug',
@@ -535,6 +567,16 @@ const AdminNewsletterTemplatesRoute =
     path: '/templates',
     getParentRoute: () => AdminNewsletterRoute,
   } as any)
+const ProductionWorkIndexRoute = ProductionWorkIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProductionWorkRoute,
+} as any)
+const ProductionWorkSlugRoute = ProductionWorkSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ProductionWorkRoute,
+} as any)
 const AdminMediaNewsletterIndexRoute =
   AdminMediaNewsletterIndexRouteImport.update({
     id: '/',
@@ -585,6 +627,7 @@ export interface FileRoutesByFullPath {
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
+  '/production': typeof ProductionRouteWithChildren
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
@@ -624,11 +667,15 @@ export interface FileRoutesByFullPath {
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
+  '/production/about': typeof ProductionAboutRoute
+  '/production/contact': typeof ProductionContactRoute
+  '/production/work': typeof ProductionWorkRouteWithChildren
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/production/': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -656,9 +703,11 @@ export interface FileRoutesByFullPath {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/production/work/$slug': typeof ProductionWorkSlugRoute
   '/admin/edition/': typeof AdminEditionIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/production/work/': typeof ProductionWorkIndexRoute
   '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
   '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
   '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
@@ -712,11 +761,14 @@ export interface FileRoutesByTo {
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
+  '/production/about': typeof ProductionAboutRoute
+  '/production/contact': typeof ProductionContactRoute
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin': typeof AdminIndexRoute
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
   '/media': typeof MediaIndexRoute
+  '/production': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -743,9 +795,11 @@ export interface FileRoutesByTo {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/production/work/$slug': typeof ProductionWorkSlugRoute
   '/admin/edition': typeof AdminEditionIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/newsletter': typeof AdminNewsletterIndexRoute
+  '/production/work': typeof ProductionWorkIndexRoute
   '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
   '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
   '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
@@ -767,6 +821,7 @@ export interface FileRoutesById {
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
   '/premium': typeof PremiumRoute
+  '/production': typeof ProductionRouteWithChildren
   '/profil': typeof ProfilRoute
   '/recherche': typeof RechercheRoute
   '/reinitialiser-mot-de-passe': typeof ReinitialiserMotDePasseRoute
@@ -806,11 +861,15 @@ export interface FileRoutesById {
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
+  '/production/about': typeof ProductionAboutRoute
+  '/production/contact': typeof ProductionContactRoute
+  '/production/work': typeof ProductionWorkRouteWithChildren
   '/reader/$slug': typeof ReaderSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
   '/media/': typeof MediaIndexRoute
+  '/production/': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -838,9 +897,11 @@ export interface FileRoutesById {
   '/admin/newsletter/abonnes': typeof AdminNewsletterAbonnesRoute
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
+  '/production/work/$slug': typeof ProductionWorkSlugRoute
   '/admin/edition/': typeof AdminEditionIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
+  '/production/work/': typeof ProductionWorkIndexRoute
   '/admin/media/newsletter/abonnes': typeof AdminMediaNewsletterAbonnesRoute
   '/admin/media/newsletter/campagnes': typeof AdminMediaNewsletterCampagnesRoute
   '/admin/media/newsletter/templates': typeof AdminMediaNewsletterTemplatesRoute
@@ -863,6 +924,7 @@ export interface FileRouteTypes {
     | '/mot-de-passe-oublie'
     | '/panier'
     | '/premium'
+    | '/production'
     | '/profil'
     | '/recherche'
     | '/reinitialiser-mot-de-passe'
@@ -902,11 +964,15 @@ export interface FileRouteTypes {
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
+    | '/production/about'
+    | '/production/contact'
+    | '/production/work'
     | '/reader/$slug'
     | '/admin/'
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/production/'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -934,9 +1000,11 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/production/work/$slug'
     | '/admin/edition/'
     | '/admin/media/'
     | '/admin/newsletter/'
+    | '/production/work/'
     | '/admin/media/newsletter/abonnes'
     | '/admin/media/newsletter/campagnes'
     | '/admin/media/newsletter/templates'
@@ -990,11 +1058,14 @@ export interface FileRouteTypes {
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
+    | '/production/about'
+    | '/production/contact'
     | '/reader/$slug'
     | '/admin'
     | '/auteurs'
     | '/edition'
     | '/media'
+    | '/production'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -1021,9 +1092,11 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/production/work/$slug'
     | '/admin/edition'
     | '/admin/media'
     | '/admin/newsletter'
+    | '/production/work'
     | '/admin/media/newsletter/abonnes'
     | '/admin/media/newsletter/campagnes'
     | '/admin/media/newsletter/templates'
@@ -1044,6 +1117,7 @@ export interface FileRouteTypes {
     | '/mot-de-passe-oublie'
     | '/panier'
     | '/premium'
+    | '/production'
     | '/profil'
     | '/recherche'
     | '/reinitialiser-mot-de-passe'
@@ -1083,11 +1157,15 @@ export interface FileRouteTypes {
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
+    | '/production/about'
+    | '/production/contact'
+    | '/production/work'
     | '/reader/$slug'
     | '/admin/'
     | '/auteurs/'
     | '/edition/'
     | '/media/'
+    | '/production/'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -1115,9 +1193,11 @@ export interface FileRouteTypes {
     | '/admin/newsletter/abonnes'
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
+    | '/production/work/$slug'
     | '/admin/edition/'
     | '/admin/media/'
     | '/admin/newsletter/'
+    | '/production/work/'
     | '/admin/media/newsletter/abonnes'
     | '/admin/media/newsletter/campagnes'
     | '/admin/media/newsletter/templates'
@@ -1139,6 +1219,7 @@ export interface RootRouteChildren {
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   PanierRoute: typeof PanierRoute
   PremiumRoute: typeof PremiumRoute
+  ProductionRoute: typeof ProductionRouteWithChildren
   ProfilRoute: typeof ProfilRoute
   RechercheRoute: typeof RechercheRoute
   ReinitialiserMotDePasseRoute: typeof ReinitialiserMotDePasseRoute
@@ -1234,6 +1315,13 @@ declare module '@tanstack/react-router' {
       path: '/premium'
       fullPath: '/premium'
       preLoaderRoute: typeof PremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/production': {
+      id: '/production'
+      path: '/production'
+      fullPath: '/production'
+      preLoaderRoute: typeof ProductionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profil': {
@@ -1537,6 +1625,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MediaVideosRouteImport
       parentRoute: typeof MediaRoute
     }
+    '/production/': {
+      id: '/production/'
+      path: '/'
+      fullPath: '/production/'
+      preLoaderRoute: typeof ProductionIndexRouteImport
+      parentRoute: typeof ProductionRoute
+    }
+    '/production/about': {
+      id: '/production/about'
+      path: '/about'
+      fullPath: '/production/about'
+      preLoaderRoute: typeof ProductionAboutRouteImport
+      parentRoute: typeof ProductionRoute
+    }
+    '/production/contact': {
+      id: '/production/contact'
+      path: '/contact'
+      fullPath: '/production/contact'
+      preLoaderRoute: typeof ProductionContactRouteImport
+      parentRoute: typeof ProductionRoute
+    }
+    '/production/work': {
+      id: '/production/work'
+      path: '/work'
+      fullPath: '/production/work'
+      preLoaderRoute: typeof ProductionWorkRouteImport
+      parentRoute: typeof ProductionRoute
+    }
     '/reader/$slug': {
       id: '/reader/$slug'
       path: '/reader/$slug'
@@ -1753,6 +1869,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/newsletter/templates'
       preLoaderRoute: typeof AdminNewsletterTemplatesRouteImport
       parentRoute: typeof AdminNewsletterRoute
+    }
+    '/production/work/': {
+      id: '/production/work/'
+      path: '/'
+      fullPath: '/production/work/'
+      preLoaderRoute: typeof ProductionWorkIndexRouteImport
+      parentRoute: typeof ProductionWorkRoute
+    }
+    '/production/work/$slug': {
+      id: '/production/work/$slug'
+      path: '/$slug'
+      fullPath: '/production/work/$slug'
+      preLoaderRoute: typeof ProductionWorkSlugRouteImport
+      parentRoute: typeof ProductionWorkRoute
     }
     '/admin/media/newsletter/': {
       id: '/admin/media/newsletter/'
@@ -2005,6 +2135,38 @@ const MediaRouteChildren: MediaRouteChildren = {
 
 const MediaRouteWithChildren = MediaRoute._addFileChildren(MediaRouteChildren)
 
+interface ProductionWorkRouteChildren {
+  ProductionWorkSlugRoute: typeof ProductionWorkSlugRoute
+  ProductionWorkIndexRoute: typeof ProductionWorkIndexRoute
+}
+
+const ProductionWorkRouteChildren: ProductionWorkRouteChildren = {
+  ProductionWorkSlugRoute: ProductionWorkSlugRoute,
+  ProductionWorkIndexRoute: ProductionWorkIndexRoute,
+}
+
+const ProductionWorkRouteWithChildren = ProductionWorkRoute._addFileChildren(
+  ProductionWorkRouteChildren,
+)
+
+interface ProductionRouteChildren {
+  ProductionAboutRoute: typeof ProductionAboutRoute
+  ProductionContactRoute: typeof ProductionContactRoute
+  ProductionWorkRoute: typeof ProductionWorkRouteWithChildren
+  ProductionIndexRoute: typeof ProductionIndexRoute
+}
+
+const ProductionRouteChildren: ProductionRouteChildren = {
+  ProductionAboutRoute: ProductionAboutRoute,
+  ProductionContactRoute: ProductionContactRoute,
+  ProductionWorkRoute: ProductionWorkRouteWithChildren,
+  ProductionIndexRoute: ProductionIndexRoute,
+}
+
+const ProductionRouteWithChildren = ProductionRoute._addFileChildren(
+  ProductionRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
@@ -2018,6 +2180,7 @@ const rootRouteChildren: RootRouteChildren = {
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   PanierRoute: PanierRoute,
   PremiumRoute: PremiumRoute,
+  ProductionRoute: ProductionRouteWithChildren,
   ProfilRoute: ProfilRoute,
   RechercheRoute: RechercheRoute,
   ReinitialiserMotDePasseRoute: ReinitialiserMotDePasseRoute,

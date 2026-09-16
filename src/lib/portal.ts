@@ -1,11 +1,11 @@
 const STORAGE_KEY = "itobe-portail";
 
-export type Portail = "media" | "edition";
+export type Portail = "media" | "edition" | "production";
 
 export function lirePortail(): Portail {
   if (typeof window === "undefined") return "media";
   const v = window.sessionStorage.getItem(STORAGE_KEY);
-  return v === "edition" || v === "media" ? v : "media";
+  return v === "edition" || v === "media" || v === "production" ? v : "media";
 }
 
 export function ecrirePortail(portail: Portail) {
@@ -16,6 +16,7 @@ export function ecrirePortail(portail: Portail) {
 /** Déduit le portail depuis l'URL, ou conserve le dernier portail visité. */
 export function portailDepuisChemin(pathname: string): Portail | null {
   if (pathname.startsWith("/media")) return "media";
+  if (pathname.startsWith("/production")) return "production";
   if (
     pathname.startsWith("/edition") ||
     pathname.startsWith("/bibliotheque") ||

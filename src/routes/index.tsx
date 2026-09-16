@@ -1,20 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, BookOpen, Newspaper } from "lucide-react";
+import { ArrowUpRight, BookOpen, Clapperboard, Newspaper } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Itobe — Média & maison d'édition numérique" },
+      { title: "Itobe — Média, édition & production" },
       {
         name: "description",
         content:
-          "Choisissez votre portail : Média pour l'actualité et les articles, ou Maison d'édition pour le catalogue et la lecture en ligne.",
+          "Choisissez votre portail : Média, Maison d'édition ou Production — trois univers, une plateforme Itobe.",
       },
-      { property: "og:title", content: "Itobe — Média & maison d'édition numérique" },
+      { property: "og:title", content: "Itobe — Média, édition & production" },
       {
         property: "og:description",
-        content: "Deux portails, un écosystème : Média et Maison d'édition.",
+        content: "Trois portails, un écosystème : Média, Maison d'édition et Production.",
       },
       { property: "og:url", content: "/" },
     ],
@@ -25,6 +25,7 @@ export const Route = createFileRoute("/")({
 
 const IMG_MEDIA = "/images/neno-logo.jpg";
 const IMG_EDITION = "/images/itobe-editions-logo.png";
+const IMG_PRODUCTION = "/images/production/hero-volcanic-dawn.jpg";
 
 function Accueil() {
   return (
@@ -34,7 +35,7 @@ function Accueil() {
         className="pointer-events-none absolute inset-0 paper-grain opacity-60"
       />
 
-      <div className="relative z-10 w-full max-w-5xl">
+      <div className="relative z-10 w-full max-w-6xl">
         <header className="mb-10 flex flex-col items-center gap-0 text-center">
           <img
             src="/images/itobe-entreprises-logo.png"
@@ -44,11 +45,11 @@ function Accueil() {
             height={144}
           />
           <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-base">
-            Deux univers · une plateforme
+            Trois univers · une plateforme
           </p>
         </header>
 
-        <main className="grid gap-5 md:grid-cols-2 md:gap-6">
+        <main className="grid gap-5 md:grid-cols-3 md:gap-6">
           <Link
             to="/media"
             className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
@@ -100,6 +101,35 @@ function Accueil() {
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#ea5312]">
                 Entrer dans l&apos;édition
+                <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </span>
+            </div>
+          </Link>
+
+          <Link
+            to="/production"
+            className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-[#f3efe6] shadow-soft transition-transform duration-300 hover:-translate-y-1"
+          >
+            <div className="relative aspect-[16/11] overflow-hidden bg-[#1a1612]">
+              <img
+                src={IMG_PRODUCTION}
+                alt="Itobe Production"
+                className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-none bg-[#f3efe6]/95 px-2.5 py-1 text-xs font-medium uppercase tracking-brand text-[#241f1a] backdrop-blur-sm">
+                <Clapperboard className="size-3.5" />
+                Portail
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col p-6 md:p-7">
+              <h1 className="font-display text-3xl leading-tight text-[#241f1a] md:text-4xl">
+                Production
+              </h1>
+              <p className="mt-3 text-sm text-[#241f1a]/75 md:text-base">
+                Films, séries et documentaires — un cinéma enraciné en Afrique.
+              </p>
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-brand text-[#8f7a55]">
+                Entrer dans la production
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
             </div>

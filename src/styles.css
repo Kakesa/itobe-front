@@ -63,6 +63,14 @@
   --color-brand-gold: var(--brand-gold);
   --color-brand-brown: var(--brand-brown);
   --color-brand-blue: var(--brand-blue);
+  --color-footer: var(--footer);
+  --color-footer-foreground: var(--footer-foreground);
+  --color-footer-muted: var(--footer-muted);
+  --color-footer-border: var(--footer-border);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-surface-inverse: var(--surface-inverse);
+  --color-surface-inverse-foreground: var(--surface-inverse-foreground);
   --shadow-book: 0 18px 40px -18px color-mix(in oklab, var(--ink) 45%, transparent);
   --shadow-soft: 0 2px 10px -4px color-mix(in oklab, var(--ink) 22%, transparent);
 }
@@ -123,6 +131,17 @@
   --sidebar-accent-foreground: #211c1c;
   --sidebar-border: color-mix(in srgb, var(--brand-brown) 12%, transparent);
   --sidebar-ring: var(--brand-orange);
+  --footer: oklch(0.105 0.007 70);
+  --footer-foreground: oklch(0.93 0.009 84);
+  --footer-muted: oklch(0.72 0.009 82);
+  --footer-border: oklch(0.35 0.007 74);
+  --hero-foreground: oklch(0.97 0.007 84);
+  --hero-muted: oklch(0.82 0.01 82);
+  --surface-inverse: oklch(0.14 0.008 72);
+  --surface-inverse-foreground: oklch(0.94 0.009 84);
+  --hero-overlay: oklch(0.09 0.01 70 / 0.42);
+  --project-overlay: oklch(0.08 0.01 70 / 0.84);
+  --project-hero-overlay: linear-gradient(to top, oklch(0.07 0.01 70 / 0.88), oklch(0.07 0.01 70 / 0.12) 70%);
 }
 
 /* Thème renforcé Maison d'édition (itobeeditions.com) */
@@ -165,6 +184,90 @@
 .theme-edition .kicker {
   color: var(--edition-orange);
   letter-spacing: 0.2px;
+}
+
+/* Portail Production — style Itobe Production (Italiana / Manrope) */
+.theme-production {
+  --background: oklch(0.94 0.009 84);
+  --foreground: oklch(0.14 0.008 72);
+  --card: oklch(0.94 0.009 84);
+  --card-foreground: oklch(0.14 0.008 72);
+  --popover: oklch(0.94 0.009 84);
+  --popover-foreground: oklch(0.14 0.008 72);
+  --primary: oklch(0.14 0.008 72);
+  --primary-foreground: oklch(0.94 0.009 84);
+  --secondary: oklch(0.87 0.011 76);
+  --secondary-foreground: oklch(0.14 0.008 72);
+  --muted: oklch(0.86 0.01 76);
+  --muted-foreground: oklch(0.43 0.012 70);
+  --accent: oklch(0.58 0.061 68);
+  --accent-foreground: oklch(0.96 0.006 84);
+  --border: oklch(0.71 0.012 74 / 0.5);
+  --input: oklch(0.65 0.012 74);
+  --ring: oklch(0.58 0.061 68);
+  --font-display: "Italiana", serif;
+  --font-sans: "Manrope", sans-serif;
+  color-scheme: light;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+
+.theme-production h1,
+.theme-production h2,
+.theme-production h3,
+.theme-production .font-display {
+  font-family: "Italiana", serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.theme-production a {
+  transition: opacity 250ms ease;
+}
+
+.theme-production a:hover {
+  opacity: 0.72;
+}
+
+.theme-production em {
+  font-style: italic;
+}
+
+@keyframes prod-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes prod-line {
+  from {
+    transform: translateY(115%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.theme-production .prod-reveal {
+  animation: prod-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.theme-production .prod-line {
+  animation: prod-line 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-production .prod-reveal,
+  .theme-production .prod-line {
+    animation: none;
+  }
 }
 
 .dark {
@@ -287,6 +390,80 @@
   text-transform: uppercase;
   font-weight: 600;
   color: var(--color-accent);
+}
+
+@utility tracking-brand {
+  letter-spacing: 0.16em;
+}
+
+@utility page-shell {
+  min-height: 100vh;
+}
+
+@utility section-label {
+  font-size: 0.68rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility bg-hero-overlay {
+  background: var(--hero-overlay);
+}
+
+@utility bg-project-overlay {
+  background: var(--project-overlay);
+}
+
+@utility bg-project-hero-overlay {
+  background: var(--project-hero-overlay);
+}
+
+@utility nav-link {
+  position: relative;
+  padding-bottom: 0.35rem;
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 350ms ease;
+  }
+  &:hover::after,
+  &.is-active::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@utility form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  & input,
+  & textarea {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    text-transform: none;
+    outline: none;
+    transition: border-color 250ms ease;
+    resize: vertical;
+  }
+  & input:focus,
+  & textarea:focus {
+    border-color: var(--color-foreground);
+  }
 }
 
 @utility paper-grain {
