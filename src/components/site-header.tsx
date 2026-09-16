@@ -7,6 +7,7 @@ import { usePortailActif } from "@/hooks/use-portail";
 import { useRole } from "@/hooks/use-role";
 import { useSession } from "@/hooks/use-session";
 import { destinationMonEspace } from "@/lib/redirect-navigation";
+import { cn } from "@/lib/utils";
 import { useI18n, type Locale } from "@/i18n";
 
 type Lien = { to: string; label: string; exact?: boolean };
@@ -14,6 +15,7 @@ type Lien = { to: string; label: string; exact?: boolean };
 export function SiteHeader() {
   const { locale, setLocale, t } = useI18n();
   const portail = usePortailActif();
+  const estMedia = portail === "media";
   const { aDesAchats } = useADesAchats();
   const { connecte, pret, session, deconnexion } = useSession();
   const { role } = useRole();
@@ -26,57 +28,64 @@ export function SiteHeader() {
       : role === "editeur"
         ? t.nav.auth.espaceEditeur
         : t.nav.auth.monEspace;
-  const home = portail === "media" ? "/media" : "/edition";
+  const home = estMedia ? "/media" : "/edition";
   const liens = useMemo(() => {
-    const base: Lien[] =
-      portail === "media"
-        ? [
-            { to: "/media", label: t.nav.media.articles, exact: true },
-            { to: "/media/videos", label: t.nav.media.videos },
-            { to: "/media/a-propos", label: t.nav.media.aPropos },
-            { to: "/contact", label: t.nav.media.contact },
-          ]
-        : [
-            { to: "/edition", label: t.nav.edition.catalogue, exact: true },
-            { to: "/auteurs", label: t.nav.edition.auteurs },
-            { to: "/bibliotheque", label: t.nav.edition.bibliotheque },
-            { to: "/a-propos", label: t.nav.edition.aPropos },
-            { to: "/contact", label: t.nav.edition.contact },
-          ];
-    if (portail === "edition" && !aDesAchats) {
+    const base: Lien[] = estMedia
+      ? [
+          { to: "/media", label: t.nav.media.articles, exact: true },
+          { to: "/media/videos", label: t.nav.media.videos },
+          { to: "/media/a-propos", label: t.nav.media.aPropos },
+          { to: "/contact", label: t.nav.media.contact },
+        ]
+      : [
+          { to: "/edition", label: t.nav.edition.catalogue, exact: true },
+          { to: "/auteurs", label: t.nav.edition.auteurs },
+          { to: "/bibliotheque", label: t.nav.edition.bibliotheque },
+          { to: "/a-propos", label: t.nav.edition.aPropos },
+          { to: "/contact", label: t.nav.edition.contact },
+        ];
+    if (!estMedia && !aDesAchats) {
       return base.filter((l) => l.to !== "/bibliotheque");
     }
     return base;
-  }, [portail, aDesAchats, t]);
-  const accent =
-    portail === "media" ? "border-b-brand-blue" : "border-b-brand-gold";
+  }, [estMedia, aDesAchats, t]);
 
   const seDeconnecter = () => {
     deconnexion();
     setOuvert(false);
-    void navigate({ to: portail === "media" ? "/media" : "/edition" });
+    void navigate({ to: estMedia ? "/media" : "/edition" });
   };
 
-  const LanguageSwitch = ({ className = "" }: { className?: string }) => (
+  const LanguageSwitch = ({ boxed = false, className = "" }: { boxed?: boolean; className?: string }) => (
     <div
-      className={`inline-flex items-center rounded-sm border border-border p-0.5 text-xs font-semibold ${className}`}
+      className={cn(
+        "inline-flex items-center text-xs font-semibold",
+        boxed ? "rounded-sm border border-border p-0.5" : "site-header__lang gap-1",
+        className,
+      )}
       role="group"
       aria-label={t.common.language}
     >
-      {(["fr", "en"] as Locale[]).map((code) => (
-        <button
-          key={code}
-          type="button"
-          onClick={() => setLocale(code)}
-          className={`rounded-sm px-2 py-1 transition ${
-            locale === code
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-          aria-pressed={locale === code}
-        >
-          {code === "fr" ? t.common.langFr : t.common.langEn}
-        </button>
+      {(["fr", "en"] as Locale[]).map((code, i) => (
+        <span key={code} className="inline-flex items-center gap-1">
+          {i > 0 && !boxed ? <span className="site-header__lang-sep">/</span> : null}
+          <button
+            type="button"
+            onClick={() => setLocale(code)}
+            className={
+              boxed
+                ? `rounded-sm px-2 py-1 transition ${
+                    locale === code
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`
+                : cn("site-header__lang-btn", locale === code && "is-active")
+            }
+            aria-pressed={locale === code}
+          >
+            {code === "fr" ? t.common.langFr : t.common.langEn}
+          </button>
+        </span>
       ))}
     </div>
   );
@@ -86,14 +95,22 @@ export function SiteHeader() {
       <>
         <Link
           to={espaceUrl}
-          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          className={
+            estMedia
+              ? "site-header__text-link hidden sm:inline-flex"
+              : "site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          }
         >
           {espaceLabel}
         </Link>
         <button
           type="button"
           onClick={seDeconnecter}
-          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          className={
+            estMedia
+              ? "site-header__text-link hidden sm:inline-flex"
+              : "site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          }
         >
           {t.nav.auth.deconnexion}
         </button>
@@ -102,17 +119,23 @@ export function SiteHeader() {
       <>
         <Link
           to="/connexion"
-          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          className={
+            estMedia
+              ? "site-header__text-link hidden sm:inline-flex"
+              : "site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          }
         >
           {t.nav.auth.connexion}
         </Link>
-        <Link
-          to="/connexion"
-          search={{ mode: "inscription" }}
-          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
-        >
-          {t.nav.auth.inscription}
-        </Link>
+        {!estMedia ? (
+          <Link
+            to="/connexion"
+            search={{ mode: "inscription" }}
+            className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          >
+            {t.nav.auth.inscription}
+          </Link>
+        ) : null}
       </>
     )
   ) : null;
@@ -163,16 +186,22 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`site-header sticky top-0 z-40 border-b-2 ${accent}`}
+      className={cn(
+        "site-header sticky top-0 z-40",
+        estMedia ? "site-header--media" : "site-header--edition border-b-2 border-b-brand-gold",
+      )}
     >
-      <div className="site-header__inner mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
+      <div
+        className={cn(
+          "site-header__inner mx-auto flex items-center",
+          estMedia
+            ? "h-[4.5rem] max-w-none gap-6 px-5 lg:h-20 lg:px-10"
+            : "h-16 max-w-6xl gap-4 px-4",
+        )}
+      >
         <Link to={home} className="site-header__brand shrink-0">
-          {portail === "media" ? (
-            <img
-              src="/images/neno-logo.png"
-              alt="NENO"
-              className="site-header__neno"
-            />
+          {estMedia ? (
+            <img src="/images/neno-logo.png" alt="NENO" className="site-header__neno" />
           ) : (
             <img
               src="/images/itobe-editions-logo.png"
@@ -182,7 +211,12 @@ export function SiteHeader() {
           )}
         </Link>
 
-        <nav className="site-header__nav site-header__nav--desktop hidden flex-1 items-center justify-center lg:flex">
+        <nav
+          className={cn(
+            "site-header__nav site-header__nav--desktop hidden lg:flex",
+            estMedia ? "ml-auto items-center" : "flex-1 items-center justify-center",
+          )}
+        >
           {liens.map((l) => (
             <Link
               key={l.to + l.label}
@@ -196,22 +230,31 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
-          <LanguageSwitch className="hidden sm:inline-flex" />
+        <div className={cn("flex items-center", estMedia ? "gap-4" : "ml-auto gap-2")}>
+          <LanguageSwitch boxed={!estMedia} className="hidden sm:inline-flex" />
           {liensAuthDesktop}
           <button
             type="button"
-            className="grid size-9 place-items-center rounded-sm border border-border lg:hidden"
+            className={
+              estMedia
+                ? "grid size-10 place-items-center lg:hidden"
+                : "grid size-9 place-items-center rounded-sm border border-border lg:hidden"
+            }
             aria-label={t.common.menu}
             onClick={() => setOuvert((v) => !v)}
           >
-            {ouvert ? <X className="size-4" /> : <Menu className="size-4" />}
+            {ouvert ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>
 
       {ouvert && (
-        <nav className="site-header__nav site-header__nav--mobile border-t px-4 py-3 lg:hidden">
+        <nav
+          className={cn(
+            "site-header__nav site-header__nav--mobile lg:hidden",
+            estMedia ? "site-header__nav--mobile-media px-5 py-6" : "border-t px-4 py-3",
+          )}
+        >
           {liens.map((l) => (
             <Link
               key={l.to + l.label}
@@ -227,16 +270,16 @@ export function SiteHeader() {
           <div className="my-2 border-t border-border" />
           <div className="flex items-center justify-between py-2">
             <span className="text-xs text-muted-foreground">{t.common.language}</span>
-            <LanguageSwitch />
+            <LanguageSwitch boxed={!estMedia} />
           </div>
           <div className="my-2 border-t border-border" />
           {liensAuthMobile}
           <Link
-            to={portail === "media" ? "/edition" : "/media"}
+            to={estMedia ? "/edition" : "/media"}
             onClick={() => setOuvert(false)}
             className="block py-2 text-sm text-muted-foreground"
           >
-            {portail === "media" ? t.nav.switchToEdition : t.nav.switchToMedia}
+            {estMedia ? t.nav.switchToEdition : t.nav.switchToMedia}
           </Link>
         </nav>
       )}

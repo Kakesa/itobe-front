@@ -119,7 +119,8 @@ function AProposMedia() {
     const update = () => {
       raf = 0;
       const rect = track.getBoundingClientRect();
-      const header = 64;
+      const headerEl = document.querySelector(".site-header");
+      const header = headerEl instanceof HTMLElement ? headerEl.offsetHeight : 72;
       const stickyH = Math.max(1, window.innerHeight - header);
       const range = Math.max(1, track.offsetHeight - stickyH);
       const scrolled = header - rect.top;

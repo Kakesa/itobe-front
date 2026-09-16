@@ -2233,13 +2233,20 @@ main:has(.media-about) + .site-footer {
 
 .media-about__hero {
   position: sticky;
-  top: 4rem;
-  height: calc(100svh - 4rem);
+  top: 4.5rem;
+  height: calc(100svh - 4.5rem);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   background: #000;
+}
+
+@media (min-width: 1024px) {
+  .media-about__hero {
+    top: 5rem;
+    height: calc(100svh - 5rem);
+  }
 }
 
 .media-about__hero-inner {
@@ -2371,7 +2378,7 @@ main:has(.media-about) + .site-footer {
     position: relative;
     top: 0;
     height: auto;
-    min-height: calc(100svh - 4rem);
+    min-height: calc(100svh - 4.5rem);
   }
 
   .media-about__char {
@@ -2644,6 +2651,10 @@ main:has(.media-contact) + .site-footer {
   border-bottom-color: rgb(255 255 255 / 0.12);
 }
 
+.site-header--media {
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
 .site-header__neno {
   display: block;
   height: 2.6rem;
@@ -2715,6 +2726,13 @@ main:has(.media-contact) + .site-footer {
   border-color: rgb(255 255 255 / 0.12);
 }
 
+.site-header__nav--mobile-media .site-header__link {
+  font-size: 1.35rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding-block: 0.65rem;
+}
+
 @keyframes site-header-mobile-menu-in {
   from {
     opacity: 0;
@@ -2750,14 +2768,70 @@ main:has(.media-contact) + .site-footer {
   font-weight: 500;
 }
 
-/* Sur grand écran, la navigation reprend le traitement direct et lisible
-   des liens du menu mobile : zones de clic généreuses et état actif évident. */
+.site-header--media .site-header__nav--desktop {
+  gap: 1.75rem;
+}
+
+.site-header--media .site-header__nav--desktop .site-header__link {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+}
+
+.site-header--media .site-header__nav--desktop .site-header__link:hover,
+.site-header--media .site-header__nav--desktop .site-header__link.is-active {
+  color: #fff;
+  background: none;
+  font-weight: 600;
+}
+
+.site-header--media .site-header__nav--desktop .site-header__link.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.45rem;
+  height: 1px;
+  background: #fff;
+}
+
+.site-header__lang-btn {
+  color: rgb(255 255 255 / 0.45);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.site-header__lang-btn:hover,
+.site-header__lang-btn.is-active {
+  color: #fff;
+}
+
+.site-header__lang-sep {
+  color: rgb(255 255 255 / 0.28);
+}
+
+.site-header__text-link {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+  transition: color 0.2s;
+}
+
+.site-header__text-link:hover {
+  color: #fff;
+}
+
 @media (min-width: 1024px) {
-  .site-header__inner {
+  .site-header--edition .site-header__inner {
     height: 4.75rem;
   }
 
-  .site-header__nav--desktop {
+  .site-header--edition .site-header__nav--desktop {
     justify-content: center;
     gap: 0.125rem;
     padding: 0.25rem;
@@ -2765,7 +2839,7 @@ main:has(.media-contact) + .site-footer {
     background: rgb(255 255 255 / 0.06);
   }
 
-  .site-header__nav--desktop .site-header__link {
+  .site-header--edition .site-header__nav--desktop .site-header__link {
     display: inline-flex;
     min-height: 2.5rem;
     align-items: center;
@@ -2773,7 +2847,7 @@ main:has(.media-contact) + .site-footer {
     color: rgb(255 255 255 / 0.72);
   }
 
-  .site-header__nav--desktop .site-header__link::after {
+  .site-header--edition .site-header__nav--desktop .site-header__link::after {
     position: absolute;
     right: 0.75rem;
     bottom: 0.35rem;
@@ -2786,18 +2860,18 @@ main:has(.media-contact) + .site-footer {
     transition: opacity 0.2s, transform 0.2s;
   }
 
-  .site-header__nav--desktop .site-header__link:hover,
-  .site-header__nav--desktop .site-header__link.is-active {
+  .site-header--edition .site-header__nav--desktop .site-header__link:hover,
+  .site-header--edition .site-header__nav--desktop .site-header__link.is-active {
     background: rgb(255 255 255 / 0.1);
     color: #fff;
   }
 
-  .site-header__nav--desktop .site-header__link.is-active::after {
+  .site-header--edition .site-header__nav--desktop .site-header__link.is-active::after {
     opacity: 1;
     transform: scaleX(1);
   }
 
-  .site-header__auth-button {
+  .site-header--edition .site-header__auth-button {
     min-height: 2.5rem;
   }
 }
