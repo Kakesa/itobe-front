@@ -340,7 +340,8 @@ export const NewsletterApi = {
 };
 
 export const YoutubeApi = {
-  getVideos: (limit = 24) => api.get("/youtube/videos", { limit }),
+  getVideos: (limit = 50, playlist?: string) =>
+    api.get("/youtube/videos", playlist ? { limit, playlist } : { limit }),
   getStatus: () => api.get("/youtube/status"),
 };
 

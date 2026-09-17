@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   component: Accueil,
 });
 
-const IMG_MEDIA = "/images/neno-logo.jpg";
+const IMG_MEDIA = "/images/neno-black.png";
 const IMG_EDITION = "/images/itobe-editions-logo.png";
 const IMG_PRODUCTION = "/images/itobe-prod-black.png";
 
@@ -58,7 +58,7 @@ function Accueil() {
               <img
                 src={IMG_MEDIA}
                 alt="Logo NENO"
-                className="max-h-[85%] w-auto max-w-[90%] object-contain mix-blend-screen [filter:invert(1)_hue-rotate(180deg)] transition-transform duration-700 group-hover:scale-105"
+                className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-background/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
                 <Newspaper className="size-3.5" />
@@ -70,7 +70,7 @@ function Accueil() {
               <p className="mt-3 text-sm text-muted-foreground md:text-base">
                 Actualités, articles, interviews et chroniques — la rédaction Itobe.
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-accent">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-neno-pink">
                 Entrer dans le média
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>

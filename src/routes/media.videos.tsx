@@ -1,19 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ExternalLink, Play, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { YoutubeApi } from "@/lib/api-client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/media/videos")({
   head: () => ({
     meta: [
-      { title: "Vidéos — Itobe Média" },
+      { title: "Vidéos — Neno | Itobe Média" },
       {
         name: "description",
         content:
-          "Retrouvez les vidéos de la chaîne YouTube Itobe : entretiens, chroniques et conversations.",
+          "Playlists Neno : Storytime, analyses et origines de la littérature africaine et congolaise.",
       },
-      { property: "og:title", content: "Vidéos — Itobe Média" },
+      { property: "og:title", content: "Vidéos — Neno | Itobe Média" },
       { property: "og:url", content: "/media/videos" },
     ],
     links: [{ rel: "canonical", href: "/media/videos" }],
@@ -30,6 +30,17 @@ interface YoutubeVideo {
   author?: string;
   url?: string;
   embedUrl?: string;
+  playlistId?: string;
+  playlistSlug?: string;
+  playlistTitle?: string;
+}
+
+interface YoutubePlaylist {
+  id: string;
+  slug: string;
+  title: string;
+  url: string;
+  count: number;
 }
 
 function formatDate(iso?: string) {
@@ -47,7 +58,9 @@ function formatDate(iso?: string) {
 
 function MediaVideosPage() {
   const [videos, setVideos] = useState<YoutubeVideo[]>([]);
+  const [playlists, setPlaylists] = useState<YoutubePlaylist[]>([]);
   const [channelUrl, setChannelUrl] = useState<string | null>(null);
+  const [playlist, setPlaylist] = useState("toutes");
   const [loading, setLoading] = useState(true);
   const [erreur, setErreur] = useState<string | null>(null);
   const [active, setActive] = useState<YoutubeVideo | null>(null);
@@ -58,16 +71,17 @@ function MediaVideosPage() {
       setLoading(true);
       setErreur(null);
       try {
-        const res = await YoutubeApi.getVideos(24);
+        const res = await YoutubeApi.getVideos(50);
         if (annule) return;
         setVideos(res?.data ?? []);
+        setPlaylists(res?.playlists ?? []);
         setChannelUrl(res?.channelUrl ?? null);
       } catch (e: any) {
         if (!annule) {
           setVideos([]);
+          setPlaylists([]);
           setErreur(
-            e?.message ||
-              "Impossible de charger les vidéos YouTube. Vérifiez la configuration de la chaîne.",
+            e?.message || "Impossible de charger les playlists YouTube Neno pour le moment.",
           );
         }
       } finally {
@@ -88,31 +102,70 @@ function MediaVideosPage() {
     return () => window.removeEventListener("keydown", onKey);
   }, [active]);
 
+  const liste = useMemo(() => {
+    if (playlist === "toutes") return videos;
+    return videos.filter((v) => v.playlistSlug === playlist);
+  }, [videos, playlist]);
+
+  const playlistActive = playlists.find((p) => p.slug === playlist);
+  const playlistUrl =
+    playlist === "toutes" ? channelUrl : playlistActive?.url || channelUrl;
+
   return (
     <section className="media-videos-page py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-2">
-            <p className="kicker mb-0">Itobe Média</p>
+            <p className="kicker mb-0">Neno</p>
             <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">
               Vidéos
             </h1>
             <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-              Entretiens, chroniques et conversations issus de notre chaîne YouTube.
+              Storytime, analyses et origines de la littérature — les playlists de la chaîne Neno.
             </p>
           </div>
-          {channelUrl && (
+          {playlistUrl && (
             <a
-              href={channelUrl}
+              href={playlistUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[var(--brand-blue)] hover:underline"
+              className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
             >
-              Voir la chaîne
+              {playlist === "toutes" ? "Voir sur YouTube" : "Ouvrir la playlist"}
               <ExternalLink className="size-3.5" aria-hidden />
             </a>
           )}
         </header>
+
+        {playlists.length > 0 && (
+          <div className="media-blog-filters flex items-center gap-4 overflow-x-auto border-b border-border pb-2">
+            <button
+              type="button"
+              onClick={() => setPlaylist("toutes")}
+              className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm transition ${
+                playlist === "toutes"
+                  ? "border-accent text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Toutes
+            </button>
+            {playlists.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPlaylist(p.slug)}
+                className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm transition ${
+                  playlist === p.slug
+                    ? "border-accent text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {p.title}
+              </button>
+            ))}
+          </div>
+        )}
 
         {loading && (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -130,35 +183,29 @@ function MediaVideosPage() {
           <div className="rounded-xl border border-border bg-card p-8 text-center">
             <p className="font-display text-xl">Vidéos temporairement indisponibles</p>
             <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">{erreur}</p>
-            <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-              Côté technique : renseignez{" "}
-              <code className="rounded bg-secondary px-1.5 py-0.5">YOUTUBE_CHANNEL_ID</code> dans
-              le fichier <code className="rounded bg-secondary px-1.5 py-0.5">.env</code> du
-              backend, puis redémarrez l&apos;API.
-            </p>
             <Link
               to="/media"
-              className="mt-6 inline-flex rounded-sm bg-[var(--brand-blue)] px-4 py-2.5 text-sm font-medium text-white"
+              className="mt-6 inline-flex rounded-sm bg-accent px-4 py-2.5 text-sm font-medium text-accent-foreground"
             >
               Voir les articles
             </Link>
           </div>
         )}
 
-        {!loading && !erreur && videos.length === 0 && (
+        {!loading && !erreur && liste.length === 0 && (
           <div className="rounded-xl border border-dashed border-border bg-card p-10 text-center">
             <p className="font-medium">Aucune vidéo pour le moment</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Les prochaines publications YouTube apparaîtront ici automatiquement.
+              Les prochaines publications de cette playlist apparaîtront ici automatiquement.
             </p>
           </div>
         )}
 
-        {!loading && !erreur && videos.length > 0 && (
+        {!loading && !erreur && liste.length > 0 && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {videos.map((v) => (
+            {liste.map((v) => (
               <button
-                key={v.id}
+                key={`${v.playlistId ?? "yt"}-${v.id}`}
                 type="button"
                 onClick={() => setActive(v)}
                 className="media-videos-card group text-left"
@@ -174,7 +221,12 @@ function MediaVideosPage() {
                   </span>
                 </div>
                 <div className="mt-3 space-y-1 px-0.5">
-                  <h2 className="line-clamp-2 font-display text-lg font-medium leading-snug group-hover:text-[var(--brand-blue)] transition-colors">
+                  {v.playlistTitle && playlist === "toutes" ? (
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-accent">
+                      {v.playlistTitle}
+                    </p>
+                  ) : null}
+                  <h2 className="line-clamp-2 font-display text-lg font-medium leading-snug transition-colors group-hover:text-accent">
                     {v.titre}
                   </h2>
                   {v.publishedAt && (
@@ -195,14 +247,18 @@ function MediaVideosPage() {
           aria-label={active.titre}
           onClick={() => setActive(null)}
         >
-          <div
-            className="media-videos-modal__panel"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="media-videos-modal__panel" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-3 px-4 py-3">
-              <h3 className="min-w-0 flex-1 truncate font-display text-base font-medium sm:text-lg">
-                {active.titre}
-              </h3>
+              <div className="min-w-0 flex-1">
+                {active.playlistTitle ? (
+                  <p className="mb-1 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-accent">
+                    {active.playlistTitle}
+                  </p>
+                ) : null}
+                <h3 className="truncate font-display text-base font-medium sm:text-lg">
+                  {active.titre}
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setActive(null)}
@@ -221,7 +277,7 @@ function MediaVideosPage() {
               />
             </div>
             {active.description && (
-              <p className="px-4 py-3 text-sm leading-relaxed text-muted-foreground line-clamp-4">
+              <p className="line-clamp-4 px-4 py-3 text-sm leading-relaxed text-muted-foreground">
                 {active.description}
               </p>
             )}
@@ -231,7 +287,7 @@ function MediaVideosPage() {
                   href={active.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-[var(--brand-blue)] hover:underline"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
                 >
                   Ouvrir sur YouTube
                   <ExternalLink className="size-3.5" />

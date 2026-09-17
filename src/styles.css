@@ -63,6 +63,10 @@
   --color-brand-gold: var(--brand-gold);
   --color-brand-brown: var(--brand-brown);
   --color-brand-blue: var(--brand-blue);
+  --color-neno-pink: var(--neno-pink);
+  --color-neno-blush: var(--neno-blush);
+  --color-neno-purple: var(--neno-purple);
+  --color-neno-ink: var(--neno-ink);
   --color-footer: var(--footer);
   --color-footer-foreground: var(--footer-foreground);
   --color-footer-muted: var(--footer-muted);
@@ -81,6 +85,10 @@
   --brand-gold: #e9803b;
   --brand-brown: #383030;
   --brand-blue: #70a2e1;
+  --neno-pink: #d802b2;
+  --neno-blush: #ffd0f2;
+  --neno-purple: #4d2091;
+  --neno-ink: #311531;
   /* Palette alignée sur itobeeditions.com (Elementor kit) */
   --radius: 0.35rem;
   --edition-orange: var(--brand-orange);
@@ -142,6 +150,56 @@
   --hero-overlay: oklch(0.09 0.01 70 / 0.42);
   --project-overlay: oklch(0.08 0.01 70 / 0.84);
   --project-hero-overlay: linear-gradient(to top, oklch(0.07 0.01 70 / 0.88), oklch(0.07 0.01 70 / 0.12) 70%);
+}
+
+/* Portail Média — charte NENO */
+.theme-media {
+  --background: #fffafd;
+  --foreground: var(--neno-ink);
+  --card: #ffffff;
+  --card-foreground: var(--neno-ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--neno-ink);
+  --primary: var(--neno-pink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--neno-blush);
+  --secondary-foreground: var(--neno-ink);
+  --muted: #fceef8;
+  --muted-foreground: color-mix(in srgb, var(--neno-ink) 62%, transparent);
+  --accent: var(--neno-pink);
+  --accent-foreground: #ffffff;
+  --ochre: var(--neno-purple);
+  --ochre-foreground: #ffffff;
+  --terracotta: var(--neno-pink);
+  --border: color-mix(in srgb, var(--neno-purple) 14%, transparent);
+  --input: color-mix(in srgb, var(--neno-purple) 16%, transparent);
+  --ring: var(--neno-pink);
+  --ink: var(--neno-ink);
+  --paper: #fffafd;
+  --chart-1: var(--neno-pink);
+  --chart-2: var(--neno-purple);
+  --chart-3: var(--neno-blush);
+  --sidebar-primary: var(--neno-pink);
+  --sidebar-ring: var(--neno-pink);
+  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-display: "Manrope", system-ui, sans-serif;
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+.theme-media h1,
+.theme-media h2,
+.theme-media h3,
+.theme-media h4,
+.theme-media .font-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.theme-media .kicker {
+  color: var(--neno-pink);
 }
 
 /* Thème renforcé Maison d'édition (itobeeditions.com) */
@@ -641,7 +699,7 @@
 }
 
 .admin-portal--media .admin-portal-sidebar {
-  background: color-mix(in oklab, var(--brand-blue) 72%, black);
+  background: color-mix(in oklab, var(--neno-ink) 55%, var(--neno-purple));
 }
 
 .admin-portal--edition .admin-portal-sidebar {
@@ -653,13 +711,13 @@
 }
 
 .admin-portal--media .admin-portal-accent {
-  background: var(--brand-blue);
+  background: var(--neno-pink);
   color: white;
 }
 
 .admin-portal--media .admin-portal-badge {
-  background: color-mix(in oklab, var(--brand-blue) 22%, transparent);
-  color: color-mix(in oklab, var(--brand-blue) 55%, white);
+  background: color-mix(in oklab, var(--neno-pink) 22%, transparent);
+  color: color-mix(in oklab, var(--neno-pink) 45%, white);
 }
 
 .admin-portal--edition .admin-portal-accent {
@@ -673,8 +731,8 @@
 }
 
 .admin-portal--media .admin-portal-header {
-  border-color: color-mix(in oklab, var(--brand-blue) 20%, transparent);
-  background: color-mix(in oklab, var(--brand-blue) 8%, white);
+  border-color: color-mix(in oklab, var(--neno-pink) 22%, transparent);
+  background: color-mix(in oklab, var(--neno-blush) 55%, white);
 }
 
 .admin-portal--edition .admin-portal-header {
@@ -2547,7 +2605,7 @@ main:has(.media-about) + .site-footer {
   --ma-ink: #12151c;
   --ma-muted: color-mix(in oklab, #12151c 62%, transparent);
   --ma-line: color-mix(in oklab, #12151c 12%, transparent);
-  --ma-blue: var(--brand-blue);
+  --ma-blue: var(--neno-pink);
   --read-progress: 0;
   --word-span: 1.75;
   height: 280vh;
@@ -2819,7 +2877,7 @@ main:has(.media-contact) + .site-footer {
   padding: 0.85rem 1rem;
   border: 0;
   border-radius: 6px;
-  background: #737373;
+  background: var(--neno-pink);
   color: #fff;
   font-size: 0.92rem;
   font-weight: 500;
@@ -2829,7 +2887,7 @@ main:has(.media-contact) + .site-footer {
 }
 
 .media-contact__submit:hover:not(:disabled) {
-  background: #848484;
+  background: color-mix(in oklab, var(--neno-pink) 82%, white);
 }
 
 .media-contact__submit:disabled {
@@ -3119,7 +3177,7 @@ main:has(.media-contact) + .site-footer {
   right: 0;
   bottom: -0.45rem;
   height: 1px;
-  background: #fff;
+  background: var(--neno-pink);
 }
 
 .site-header__lang-btn {
@@ -3260,7 +3318,7 @@ main:has(.media-contact) + .site-footer {
 .site-footer__heading {
   font-family: var(--font-display, Georgia, serif);
   font-size: 1.125rem;
-  color: var(--brand-gold);
+  color: var(--accent);
 }
 
 .site-footer__link {
@@ -3285,13 +3343,13 @@ main:has(.media-contact) + .site-footer {
 }
 
 .site-footer__input:focus {
-  border-color: color-mix(in oklab, var(--brand-gold) 55%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 55%, transparent);
 }
 
 .site-footer__cta {
   border-radius: 0.25rem;
-  background: var(--brand-gold);
-  color: var(--brand-brown);
+  background: var(--accent);
+  color: var(--accent-foreground);
   transition: opacity 0.2s;
 }
 
@@ -3312,8 +3370,8 @@ main:has(.media-contact) + .site-footer {
 
 .site-footer__social:hover {
   color: #fff;
-  border-color: color-mix(in oklab, var(--brand-gold) 60%, transparent);
-  background: color-mix(in oklab, var(--brand-gold) 10%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 60%, transparent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
 }
 
 /* ------------------------------------------------------------------ */
@@ -4157,7 +4215,7 @@ main:has(.media-contact) + .site-footer {
 }
 
 .media-videos-card:hover .media-videos-card__play {
-  background: var(--brand-blue);
+  background: var(--accent);
   transform: scale(1.06);
 }
 
