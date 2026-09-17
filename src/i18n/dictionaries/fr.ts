@@ -196,6 +196,14 @@ const fr: Dictionary = {
     emptyCatalogue: "Aucun livre disponible pour le moment.",
     emptyNouveautes: "Aucune nouveauté à afficher pour le moment.",
     emptyParaitre: "Aucun titre à paraître pour le moment.",
+    promotions: "Promotions",
+    promotionsUpto: "Jusqu’à −{n} % ce mois-ci",
+    filterCategory: "Catégorie",
+    filterFormat: "Format",
+    filterSort: "Trier par",
+    sortRecent: "Plus récents",
+    sortPrice: "Prix croissant",
+    sortTitle: "Titre A–Z",
   },
 };
 

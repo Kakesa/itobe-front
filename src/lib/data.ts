@@ -470,7 +470,20 @@ export const getArticle = (slug: string) => articles.find((a) => a.slug === slug
 export const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
-export const prixAffiche = (l: Livre) => `${(l.promo ?? l.prix).toFixed(2)} $`;
+export const prixAffiche = (l: Livre) => `${tarifLivre(l).current.toFixed(2)} $`;
+
+export function tarifLivre(l: Livre) {
+  if (l.promo && l.promo > 0 && l.promo !== l.prix) {
+    const current = Math.min(l.promo, l.prix);
+    const previous = Math.max(l.promo, l.prix);
+    return {
+      current,
+      previous,
+      percent: previous > 0 ? Math.round((1 - current / previous) * 100) : 0,
+    };
+  }
+  return { current: l.prix, previous: undefined as number | undefined, percent: 0 };
+}
 
 // Bibliothèque de démonstration
 export const bibliotheque = {

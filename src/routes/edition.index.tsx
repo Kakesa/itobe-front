@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { BookCard } from "@/components/book-card";
+import { BookCover } from "@/components/book-cover";
 import { CatalogueLivresSkeleton } from "@/components/book-skeletons";
 import { EditionCoverHero } from "@/components/edition/cover-hero";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLivres } from "@/hooks/use-livres";
-import { categoriesLivres } from "@/lib/data";
+import { categoriesLivres, nomAuteur, tarifLivre, type Livre } from "@/lib/data";
 import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/edition/")({
@@ -29,8 +30,9 @@ export const Route = createFileRoute("/edition/")({
   component: Catalogue,
 });
 
-const selectFiltreClass =
-  "mt-2 w-full rounded-sm border border-border bg-background px-3 py-2.5 text-sm";
+function formatPrix(n: number, locale: string) {
+  return `${n.toFixed(2).replace(".", locale === "en" ? "." : ",")} $`;
+}
 
 function FiltresCatalogue({
   cat,
@@ -40,6 +42,7 @@ function FiltresCatalogue({
   onFormat,
   onTri,
   variant,
+  labels,
 }: {
   cat: string;
   format: string;
@@ -48,53 +51,56 @@ function FiltresCatalogue({
   onFormat: (v: string) => void;
   onTri: (v: string) => void;
   variant: "mobile" | "desktop";
+  labels: {
+    category: string;
+    format: string;
+    sort: string;
+    allCats: string;
+    allFormats: string;
+    sortRecent: string;
+    sortPrice: string;
+    sortTitle: string;
+  };
 }) {
+  const categories = [
+    { value: "Toutes", label: labels.allCats },
+    ...categoriesLivres.map((c) => ({ value: c, label: c })),
+  ];
+  const formats = [
+    { value: "Tous", label: labels.allFormats },
+    { value: "PDF", label: "PDF" },
+    { value: "Papier", label: labels.format === "Format" ? "Papier" : "Print" },
+  ];
+
   if (variant === "mobile") {
     return (
-      <div className="grid gap-4 rounded-lg border border-border bg-card p-4 lg:hidden">
-        <label className="block">
-          <span className="kicker">Catégorie</span>
-          <select
-            value={cat}
-            onChange={(e) => onCat(e.target.value)}
-            className={selectFiltreClass}
-            aria-label="Filtrer par catégorie"
-          >
-            {["Toutes", ...categoriesLivres].map((c) => (
-              <option key={c} value={c}>
-                {c}
+      <div className="edition-filters edition-filters--mobile lg:hidden">
+        <label className="edition-filters__field">
+          <span>{labels.category}</span>
+          <select value={cat} onChange={(e) => onCat(e.target.value)} aria-label={labels.category}>
+            {categories.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
               </option>
             ))}
           </select>
         </label>
-
-        <label className="block">
-          <span className="kicker">Format</span>
-          <select
-            value={format}
-            onChange={(e) => onFormat(e.target.value)}
-            className={selectFiltreClass}
-            aria-label="Filtrer par format"
-          >
-            {["Tous", "PDF", "Papier"].map((f) => (
-              <option key={f} value={f}>
-                {f}
+        <label className="edition-filters__field">
+          <span>{labels.format}</span>
+          <select value={format} onChange={(e) => onFormat(e.target.value)} aria-label={labels.format}>
+            {formats.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
               </option>
             ))}
           </select>
         </label>
-
-        <label className="block">
-          <span className="kicker">Trier par</span>
-          <select
-            value={tri}
-            onChange={(e) => onTri(e.target.value)}
-            className={selectFiltreClass}
-            aria-label="Trier le catalogue"
-          >
-            <option value="recent">Plus récents</option>
-            <option value="prix">Prix croissant</option>
-            <option value="titre">Titre A–Z</option>
+        <label className="edition-filters__field">
+          <span>{labels.sort}</span>
+          <select value={tri} onChange={(e) => onTri(e.target.value)} aria-label={labels.sort}>
+            <option value="recent">{labels.sortRecent}</option>
+            <option value="prix">{labels.sortPrice}</option>
+            <option value="titre">{labels.sortTitle}</option>
           </select>
         </label>
       </div>
@@ -102,57 +108,93 @@ function FiltresCatalogue({
   }
 
   return (
-    <aside className="hidden space-y-8 lg:block">
+    <aside className="edition-filters edition-filters--desktop hidden lg:block">
       <div>
-        <p className="kicker">Catégorie</p>
-        <div className="mt-3 space-y-1">
-          {["Toutes", ...categoriesLivres].map((c) => (
+        <p className="edition-filters__label">{labels.category}</p>
+        <div className="edition-filters__chips">
+          {categories.map((c) => (
             <button
-              key={c}
+              key={c.value}
               type="button"
-              onClick={() => onCat(c)}
-              className={`block w-full text-left text-sm ${
-                cat === c ? "font-medium text-accent" : "text-muted-foreground"
-              }`}
+              onClick={() => onCat(c.value)}
+              className={`edition-chip${cat === c.value ? " is-active" : ""}`}
             >
-              {c}
+              {c.label}
             </button>
           ))}
         </div>
       </div>
-
       <div>
-        <p className="kicker">Format</p>
-        <div className="mt-3 space-y-1">
-          {["Tous", "PDF", "Papier"].map((f) => (
+        <p className="edition-filters__label">{labels.format}</p>
+        <div className="edition-filters__chips">
+          {formats.map((f) => (
             <button
-              key={f}
+              key={f.value}
               type="button"
-              onClick={() => onFormat(f)}
-              className={`block w-full text-left text-sm ${
-                format === f ? "font-medium text-accent" : "text-muted-foreground"
-              }`}
+              onClick={() => onFormat(f.value)}
+              className={`edition-chip${format === f.value ? " is-active" : ""}`}
             >
-              {f}
+              {f.label}
             </button>
           ))}
         </div>
       </div>
-
       <div>
-        <p className="kicker">Trier par</p>
+        <p className="edition-filters__label">{labels.sort}</p>
         <select
           value={tri}
           onChange={(e) => onTri(e.target.value)}
-          className={selectFiltreClass}
-          aria-label="Trier le catalogue"
+          className="edition-filters__select"
+          aria-label={labels.sort}
         >
-          <option value="recent">Plus récents</option>
-          <option value="prix">Prix croissant</option>
-          <option value="titre">Titre A–Z</option>
+          <option value="recent">{labels.sortRecent}</option>
+          <option value="prix">{labels.sortPrice}</option>
+          <option value="titre">{labels.sortTitle}</option>
         </select>
       </div>
     </aside>
+  );
+}
+
+function PromoRail({ livres, locale, title, upto }: { livres: Livre[]; locale: string; title: string; upto: string }) {
+  const maxOff = livres.reduce((m, l) => Math.max(m, tarifLivre(l).percent), 0);
+  return (
+    <section className="edition-promo" aria-labelledby="edition-promo-title">
+      <header className="edition-promo__head">
+        <h3 id="edition-promo-title">{title}</h3>
+        {maxOff > 0 ? <p>{upto.replace("{n}", String(maxOff))}</p> : null}
+      </header>
+      <div className="edition-promo__grid">
+        {livres.map((livre) => {
+          const tarif = tarifLivre(livre);
+          return (
+            <Link
+              key={livre.slug}
+              to="/edition/$slug"
+              params={{ slug: livre.slug }}
+              className="edition-promo__card"
+            >
+              <div className="edition-promo__cover">
+                <BookCover livre={livre} realistic tilt="face" size="card" />
+              </div>
+              <div className="edition-promo__copy">
+                {tarif.percent > 0 ? (
+                  <span className="edition-promo__badge">−{tarif.percent} %</span>
+                ) : (
+                  <span className="edition-promo__badge">Promo</span>
+                )}
+                <p className="edition-promo__title">{livre.titre}</p>
+                <p className="edition-promo__author">{nomAuteur(livre.auteur)}</p>
+                <p className="edition-promo__price">
+                  <strong>{formatPrix(tarif.current, locale)}</strong>
+                  {tarif.previous ? <s>{formatPrix(tarif.previous, locale)}</s> : null}
+                </p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -180,6 +222,9 @@ function Catalogue() {
     if (desc) desc.setAttribute("content", h.metaDescription);
   }, [h.metaTitle, h.metaDescription, locale]);
 
+  const allCats = locale === "en" ? "All" : "Toutes";
+  const allFormats = locale === "en" ? "All" : "Tous";
+
   const liste = useMemo(() => {
     const maintenant = Date.now();
     let l = [...livres];
@@ -198,14 +243,17 @@ function Catalogue() {
 
     if (cat !== "Toutes") l = l.filter((b) => b.categorie === cat);
     if (format !== "Tous") l = l.filter((b) => b.formats.includes(format as "PDF"));
-    if (tri === "prix") l = [...l].sort((a, b) => (a.promo ?? a.prix) - (b.promo ?? b.prix));
+    if (tri === "prix") l = [...l].sort((a, b) => tarifLivre(a).current - tarifLivre(b).current);
     if (tri === "recent")
       l = [...l].sort((a, b) => b.publication.localeCompare(a.publication));
     if (tri === "titre") l = [...l].sort((a, b) => a.titre.localeCompare(b.titre));
     return l;
   }, [cat, format, tri, livres, onglet]);
 
-  const promos = livres.filter((l) => l.promo);
+  const promos = useMemo(
+    () => livres.filter((l) => tarifLivre(l).percent > 0),
+    [livres],
+  );
   const onglets: { id: OngletCatalogue; label: string }[] = [
     { id: "catalogue", label: h.tabCatalogue },
     { id: "nouveautes", label: h.tabNouveautes },
@@ -227,6 +275,17 @@ function Catalogue() {
       : onglet === "paraitre"
         ? h.emptyParaitre
         : h.emptyCatalogue;
+
+  const filterLabels = {
+    category: h.filterCategory,
+    format: h.filterFormat,
+    sort: h.filterSort,
+    allCats,
+    allFormats,
+    sortRecent: h.sortRecent,
+    sortPrice: h.sortPrice,
+    sortTitle: h.sortTitle,
+  };
 
   return (
     <div>
@@ -255,22 +314,13 @@ function Catalogue() {
             ))}
           </nav>
           <div className="mx-auto mt-4 max-w-xl text-muted-foreground md:mx-0">
-            {loading ? (
-              <Skeleton className="mx-auto h-4 w-72 max-w-full md:mx-0" />
-            ) : (
-              lead
-            )}
+            {loading ? <Skeleton className="mx-auto h-4 w-72 max-w-full md:mx-0" /> : lead}
           </div>
         </div>
 
-        {loading ? null : promos.length > 0 && (
-          <div className="mt-8 border border-accent/40 bg-accent/10 p-4 text-sm">
-            <span className="kicker">Promotions</span>{" "}
-            <span className="ml-2">
-              {promos.map((p) => p.titre).join(" · ")} — jusqu&apos;à -33 % ce mois-ci.
-            </span>
-          </div>
-        )}
+        {loading ? null : promos.length > 0 && onglet === "catalogue" ? (
+          <PromoRail livres={promos} locale={locale} title={h.promotions} upto={h.promotionsUpto} />
+        ) : null}
 
         <FiltresCatalogue
           variant="mobile"
@@ -280,9 +330,10 @@ function Catalogue() {
           onCat={setCat}
           onFormat={setFormat}
           onTri={setTri}
+          labels={filterLabels}
         />
 
-        <div className="mt-6 grid gap-10 lg:mt-10 lg:grid-cols-[220px_1fr]">
+        <div className="mt-6 grid gap-10 lg:mt-10 lg:grid-cols-[240px_1fr]">
           <FiltresCatalogue
             variant="desktop"
             cat={cat}
@@ -291,6 +342,7 @@ function Catalogue() {
             onCat={setCat}
             onFormat={setFormat}
             onTri={setTri}
+            labels={filterLabels}
           />
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">

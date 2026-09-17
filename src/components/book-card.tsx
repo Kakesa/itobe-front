@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { BookCover } from "@/components/book-cover";
+import { useI18n } from "@/i18n";
 import type { Livre } from "@/lib/data";
-import { nomAuteur, prixAffiche } from "@/lib/data";
+import { nomAuteur, tarifLivre } from "@/lib/data";
 
 type BookCardProps = {
   livre: Livre;
@@ -12,6 +13,10 @@ type BookCardProps = {
   to?: "/edition/$slug" | "/reader/$slug";
 };
 
+function formatPrix(n: number, locale: string) {
+  return `${n.toFixed(2).replace(".", locale === "en" ? "." : ",")} $`;
+}
+
 export function BookCard({
   livre,
   index = 0,
@@ -20,10 +25,12 @@ export function BookCard({
   prixEnFcfa = false,
   to = "/edition/$slug",
 }: BookCardProps) {
-  const montant = livre.promo ?? livre.prix;
+  const { locale } = useI18n();
+  const tarif = tarifLivre(livre);
   const prixLabel = prixEnFcfa
-    ? `${Math.round(montant * 2800).toLocaleString("fr-FR")} FCFA`
-    : prixAffiche(livre);
+    ? `${Math.round(tarif.current * 2800).toLocaleString("fr-FR")} FCFA`
+    : formatPrix(tarif.current, locale);
+
   return (
     <Link
       to={to}
@@ -33,9 +40,9 @@ export function BookCard({
     >
       <div className="book-cover-wrap relative">
         <BookCover livre={livre} realistic animated tilt="face" size="card" />
-        {livre.promo && (
-          <span className="absolute right-2 top-2 z-10 rounded-full bg-accent px-2 py-0.5 text-[0.65rem] font-medium text-accent-foreground animate-book-badge-pop">
-            Promo
+        {tarif.percent > 0 && (
+          <span className="absolute right-2 top-2 z-10 rounded-sm bg-edition-orange px-2 py-0.5 text-[0.65rem] font-semibold tracking-wide text-[#211c1c] animate-book-badge-pop">
+            −{tarif.percent} %
           </span>
         )}
       </div>
@@ -48,13 +55,11 @@ export function BookCard({
         </p>
       )}
       {showPrix && (
-        <p className={`mt-1 text-sm ${prixEnFcfa ? "font-semibold text-[var(--edition-orange)]" : ""}`}>
-          {prixLabel}
-          {livre.promo && !prixEnFcfa && (
-            <span className="ml-2 text-xs text-muted-foreground line-through">
-              {livre.prix.toFixed(2)} $
-            </span>
-          )}
+        <p className={`mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm ${prixEnFcfa ? "font-semibold text-edition-orange" : ""}`}>
+          <span className="font-semibold">{prixLabel}</span>
+          {tarif.previous && !prixEnFcfa ? (
+            <s className="text-xs text-muted-foreground">{formatPrix(tarif.previous, locale)}</s>
+          ) : null}
         </p>
       )}
     </Link>

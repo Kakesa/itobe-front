@@ -159,5 +159,13 @@ export type Dictionary = {
     emptyCatalogue: string;
     emptyNouveautes: string;
     emptyParaitre: string;
+    promotions: string;
+    promotionsUpto: string;
+    filterCategory: string;
+    filterFormat: string;
+    filterSort: string;
+    sortRecent: string;
+    sortPrice: string;
+    sortTitle: string;
   };
 };

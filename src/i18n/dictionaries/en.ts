@@ -195,6 +195,14 @@ const en: Dictionary = {
     emptyCatalogue: "No books available at the moment.",
     emptyNouveautes: "No new releases to show at the moment.",
     emptyParaitre: "No forthcoming titles at the moment.",
+    promotions: "Promotions",
+    promotionsUpto: "Up to −{n}% this month",
+    filterCategory: "Category",
+    filterFormat: "Format",
+    filterSort: "Sort by",
+    sortRecent: "Newest",
+    sortPrice: "Price: low to high",
+    sortTitle: "Title A–Z",
   },
 };
 
