@@ -15,12 +15,12 @@ export const Route = createFileRoute("/edition/")({
       {
         name: "description",
         content:
-          "Romans, essais, poésie et jeunesse. Découvrez le catalogue des éditions Itobe en PDF, EPUB et papier, avec aperçu gratuit avant achat.",
+          "Romans, essais, poésie et jeunesse. Découvrez le catalogue des éditions Itobe en PDF et papier, avec aperçu gratuit avant achat.",
       },
       { property: "og:title", content: "Maison d'édition — Itobe" },
       {
         property: "og:description",
-        content: "Romans, essais, poésie et jeunesse en PDF, EPUB et papier.",
+        content: "Romans, essais, poésie et jeunesse en PDF et papier.",
       },
       { property: "og:url", content: "/edition" },
     ],
@@ -76,7 +76,7 @@ function FiltresCatalogue({
             className={selectFiltreClass}
             aria-label="Filtrer par format"
           >
-            {["Tous", "PDF", "EPUB", "Papier"].map((f) => (
+            {["Tous", "PDF", "Papier"].map((f) => (
               <option key={f} value={f}>
                 {f}
               </option>
@@ -124,7 +124,7 @@ function FiltresCatalogue({
       <div>
         <p className="kicker">Format</p>
         <div className="mt-3 space-y-1">
-          {["Tous", "PDF", "EPUB", "Papier"].map((f) => (
+          {["Tous", "PDF", "Papier"].map((f) => (
             <button
               key={f}
               type="button"
@@ -219,8 +219,8 @@ function Catalogue() {
       : onglet === "paraitre"
         ? h.paraitreLead
         : locale === "fr"
-          ? `${n} ouvrage${n > 1 ? "s" : ""} disponible${n > 1 ? "s" : ""} en PDF, EPUB et papier. ${h.catalogueLead}`
-          : `${n} title${n > 1 ? "s" : ""} available in PDF, EPUB, and print. ${h.catalogueLead}`;
+          ? `${n} ouvrage${n > 1 ? "s" : ""} disponible${n > 1 ? "s" : ""} en PDF et papier. ${h.catalogueLead}`
+          : `${n} title${n > 1 ? "s" : ""} available in PDF and print. ${h.catalogueLead}`;
   const vide =
     onglet === "nouveautes"
       ? h.emptyNouveautes

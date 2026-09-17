@@ -173,8 +173,8 @@ const en: Dictionary = {
   editionHome: {
     metaTitle: "Publishing house — Itobe",
     metaDescription:
-      "Novels, essays, poetry, and children's books. Explore the Itobe catalogue in PDF, EPUB, and print, with a free preview before purchase.",
-    ogDescription: "Novels, essays, poetry, and children's books in PDF, EPUB, and print.",
+      "Novels, essays, poetry, and children's books. Explore the Itobe catalogue in PDF and print, with a free preview before purchase.",
+    ogDescription: "Novels, essays, poetry, and children's books in PDF and print.",
     title: "A world of reading, publishing, and discovery",
     lead: "Making Africa the heart of global storytelling — novels, essays, and children's books.",
     cta: "Explore the catalogue",
