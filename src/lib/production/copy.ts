@@ -42,7 +42,6 @@ const fr = {
     intro:
       "Itobe Productions est une société de production audiovisuelle basée en République démocratique du Congo, dédiée au développement d’histoires africaines pour le cinéma, la télévision et l’ensemble des formats audiovisuels.",
     crewAlt: "Une équipe filmant au coucher du soleil",
-    setAlt: "Caméra de cinéma installée sur un travelling, sur un plateau en extérieur",
     cta: "Apportez-nous l'histoire que vous ne pouvez pas taire.",
     talk: "Parlons-en",
   },
@@ -160,7 +159,6 @@ const en: typeof fr = {
     intro:
       "Itobe Productions is an audiovisual production company based in the Democratic Republic of the Congo, dedicated to developing African stories for film, television, and all forms of audiovisual storytelling.",
     crewAlt: "A film crew shooting at sunset",
-    setAlt: "Cinema camera set on a slider on an outdoor film set",
     cta: "Bring us the story you cannot leave untold.",
     talk: "Talk to us",
   },

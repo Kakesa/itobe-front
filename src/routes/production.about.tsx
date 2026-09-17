@@ -51,21 +51,6 @@ function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-background">
-        <Reveal>
-          <div className="relative aspect-[16/8] overflow-hidden md:aspect-[21/9]">
-            <img
-              src="/images/production/set-camera-slider.jpg"
-              alt={t.about.setAlt}
-              width={1600}
-              height={1067}
-              loading="lazy"
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </Reveal>
-      </section>
-
       <section className="mx-auto max-w-screen-2xl px-5 py-28 md:px-10 md:py-40 lg:px-14">
         <Reveal className="border-t border-border pt-12 text-center">
           <p className="font-display text-4xl md:text-6xl">{t.about.cta}</p>
