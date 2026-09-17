@@ -149,5 +149,15 @@ export type Dictionary = {
     publishedLabel: string;
     prevBook: string;
     nextBook: string;
+    tabCatalogue: string;
+    tabNouveautes: string;
+    tabParaitre: string;
+    catalogueLead: string;
+    nouveautesLead: string;
+    paraitreLead: string;
+    emptyFilters: string;
+    emptyCatalogue: string;
+    emptyNouveautes: string;
+    emptyParaitre: string;
   };
 };

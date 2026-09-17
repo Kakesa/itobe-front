@@ -184,6 +184,17 @@ const en: Dictionary = {
     publishedLabel: "Published",
     prevBook: "Previous book",
     nextBook: "Next book",
+    tabCatalogue: "Catalogue",
+    tabNouveautes: "New releases",
+    tabParaitre: "Coming soon",
+    catalogueLead: "Each book includes a free preview before purchase.",
+    nouveautesLead: "The house’s most recent publications.",
+    paraitreLead: "Announced titles, coming soon in print and digital.",
+    emptyFilters:
+      "No books match these filters. Try choosing “All” categories or “All” formats.",
+    emptyCatalogue: "No books available at the moment.",
+    emptyNouveautes: "No new releases to show at the moment.",
+    emptyParaitre: "No forthcoming titles at the moment.",
   },
 };
 

@@ -185,6 +185,17 @@ const fr: Dictionary = {
     publishedLabel: "Parution",
     prevBook: "Livre précédent",
     nextBook: "Livre suivant",
+    tabCatalogue: "Catalogue",
+    tabNouveautes: "Nouveautés",
+    tabParaitre: "À paraître",
+    catalogueLead: "Chaque livre propose un aperçu gratuit avant l'achat.",
+    nouveautesLead: "Les parutions les plus récentes de la maison.",
+    paraitreLead: "Les titres annoncés, bientôt en librairie et en numérique.",
+    emptyFilters:
+      "Aucun livre ne correspond aux filtres. Essayez de choisir « Toutes » les catégories ou « Tous » les formats.",
+    emptyCatalogue: "Aucun livre disponible pour le moment.",
+    emptyNouveautes: "Aucune nouveauté à afficher pour le moment.",
+    emptyParaitre: "Aucun titre à paraître pour le moment.",
   },
 };
 
