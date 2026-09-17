@@ -34,43 +34,41 @@ function formatPrix(n: number, locale: string) {
   return `${n.toFixed(2).replace(".", locale === "en" ? "." : ",")} $`;
 }
 
+function filtreOptions(labels: { category: string; format: string; allCats: string; allFormats: string }) {
+  return {
+    categories: [
+      { value: "Toutes", label: labels.allCats },
+      ...categoriesLivres.map((c) => ({ value: c, label: c })),
+    ],
+    formats: [
+      { value: "Tous", label: labels.allFormats },
+      { value: "PDF", label: "PDF" },
+      { value: "Papier", label: labels.format === "Format" ? "Papier" : "Print" },
+    ],
+  };
+}
+
 function FiltresCatalogue({
   cat,
   format,
-  tri,
   onCat,
   onFormat,
-  onTri,
   variant,
   labels,
 }: {
   cat: string;
   format: string;
-  tri: string;
   onCat: (v: string) => void;
   onFormat: (v: string) => void;
-  onTri: (v: string) => void;
   variant: "mobile" | "desktop";
   labels: {
     category: string;
     format: string;
-    sort: string;
     allCats: string;
     allFormats: string;
-    sortRecent: string;
-    sortPrice: string;
-    sortTitle: string;
   };
 }) {
-  const categories = [
-    { value: "Toutes", label: labels.allCats },
-    ...categoriesLivres.map((c) => ({ value: c, label: c })),
-  ];
-  const formats = [
-    { value: "Tous", label: labels.allFormats },
-    { value: "PDF", label: "PDF" },
-    { value: "Papier", label: labels.format === "Format" ? "Papier" : "Print" },
-  ];
+  const { categories, formats } = filtreOptions(labels);
 
   if (variant === "mobile") {
     return (
@@ -93,14 +91,6 @@ function FiltresCatalogue({
                 {f.label}
               </option>
             ))}
-          </select>
-        </label>
-        <label className="edition-filters__field">
-          <span>{labels.sort}</span>
-          <select value={tri} onChange={(e) => onTri(e.target.value)} aria-label={labels.sort}>
-            <option value="recent">{labels.sortRecent}</option>
-            <option value="prix">{labels.sortPrice}</option>
-            <option value="titre">{labels.sortTitle}</option>
           </select>
         </label>
       </div>
@@ -139,20 +129,28 @@ function FiltresCatalogue({
           ))}
         </div>
       </div>
-      <div>
-        <p className="edition-filters__label">{labels.sort}</p>
-        <select
-          value={tri}
-          onChange={(e) => onTri(e.target.value)}
-          className="edition-filters__select"
-          aria-label={labels.sort}
-        >
-          <option value="recent">{labels.sortRecent}</option>
-          <option value="prix">{labels.sortPrice}</option>
-          <option value="titre">{labels.sortTitle}</option>
-        </select>
-      </div>
     </aside>
+  );
+}
+
+function SortSelect({
+  tri,
+  onTri,
+  labels,
+}: {
+  tri: string;
+  onTri: (v: string) => void;
+  labels: { sort: string; sortRecent: string; sortPrice: string; sortTitle: string };
+}) {
+  return (
+    <label className="edition-sort">
+      <span>{labels.sort}</span>
+      <select value={tri} onChange={(e) => onTri(e.target.value)} aria-label={labels.sort}>
+        <option value="recent">{labels.sortRecent}</option>
+        <option value="prix">{labels.sortPrice}</option>
+        <option value="titre">{labels.sortTitle}</option>
+      </select>
+    </label>
   );
 }
 
@@ -161,10 +159,10 @@ function PromoRail({ livres, locale, title, upto }: { livres: Livre[]; locale: s
   return (
     <section className="edition-promo" aria-labelledby="edition-promo-title">
       <header className="edition-promo__head">
-        <h3 id="edition-promo-title">{title}</h3>
-        {maxOff > 0 ? <p>{upto.replace("{n}", String(maxOff))}</p> : null}
+        <p className="edition-promo__kicker">{title}</p>
+        <h3 id="edition-promo-title">{maxOff > 0 ? upto.replace("{n}", String(maxOff)) : title}</h3>
       </header>
-      <div className="edition-promo__grid">
+      <div className="edition-promo__rail">
         {livres.map((livre) => {
           const tarif = tarifLivre(livre);
           return (
@@ -174,22 +172,16 @@ function PromoRail({ livres, locale, title, upto }: { livres: Livre[]; locale: s
               params={{ slug: livre.slug }}
               className="edition-promo__card"
             >
-              <div className="edition-promo__cover">
-                <BookCover livre={livre} realistic tilt="face" size="card" />
+              <div className="edition-promo__cover book-cover-wrap">
+                {tarif.percent > 0 ? <span className="edition-promo__badge">−{tarif.percent} %</span> : null}
+                <BookCover livre={livre} realistic animated tilt="face" size="card" />
               </div>
-              <div className="edition-promo__copy">
-                {tarif.percent > 0 ? (
-                  <span className="edition-promo__badge">−{tarif.percent} %</span>
-                ) : (
-                  <span className="edition-promo__badge">Promo</span>
-                )}
-                <p className="edition-promo__title">{livre.titre}</p>
-                <p className="edition-promo__author">{nomAuteur(livre.auteur)}</p>
-                <p className="edition-promo__price">
-                  <strong>{formatPrix(tarif.current, locale)}</strong>
-                  {tarif.previous ? <s>{formatPrix(tarif.previous, locale)}</s> : null}
-                </p>
-              </div>
+              <p className="edition-promo__title">{livre.titre}</p>
+              <p className="edition-promo__author">{nomAuteur(livre.auteur)}</p>
+              <p className="edition-promo__price">
+                <strong>{formatPrix(tarif.current, locale)}</strong>
+                {tarif.previous ? <s>{formatPrix(tarif.previous, locale)}</s> : null}
+              </p>
             </Link>
           );
         })}
@@ -279,9 +271,11 @@ function Catalogue() {
   const filterLabels = {
     category: h.filterCategory,
     format: h.filterFormat,
-    sort: h.filterSort,
     allCats,
     allFormats,
+  };
+  const sortLabels = {
+    sort: h.filterSort,
     sortRecent: h.sortRecent,
     sortPrice: h.sortPrice,
     sortTitle: h.sortTitle,
@@ -326,36 +320,37 @@ function Catalogue() {
           variant="mobile"
           cat={cat}
           format={format}
-          tri={tri}
           onCat={setCat}
           onFormat={setFormat}
-          onTri={setTri}
           labels={filterLabels}
         />
 
-        <div className="mt-6 grid gap-10 lg:mt-10 lg:grid-cols-[240px_1fr]">
+        <div className="edition-shop">
           <FiltresCatalogue
             variant="desktop"
             cat={cat}
             format={format}
-            tri={tri}
             onCat={setCat}
             onFormat={setFormat}
-            onTri={setTri}
             labels={filterLabels}
           />
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
-            {loading && <CatalogueLivresSkeleton count={9} />}
-            {!loading && liste.length === 0 && livres.length > 0 && onglet === "catalogue" && (
-              <p className="col-span-full text-sm text-muted-foreground">{h.emptyFilters}</p>
-            )}
-            {!loading && liste.length === 0 && (livres.length === 0 || onglet !== "catalogue") && (
-              <p className="col-span-full text-sm text-muted-foreground">{vide}</p>
-            )}
-            {liste.map((l, i) => (
-              <BookCard key={l.slug} livre={l} index={i} showPrix />
-            ))}
+          <div>
+            <div className="edition-shop__toolbar">
+              <SortSelect tri={tri} onTri={setTri} labels={sortLabels} />
+            </div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 sm:gap-x-8">
+              {loading && <CatalogueLivresSkeleton count={9} />}
+              {!loading && liste.length === 0 && livres.length > 0 && onglet === "catalogue" && (
+                <p className="col-span-full text-sm text-muted-foreground">{h.emptyFilters}</p>
+              )}
+              {!loading && liste.length === 0 && (livres.length === 0 || onglet !== "catalogue") && (
+                <p className="col-span-full text-sm text-muted-foreground">{vide}</p>
+              )}
+              {liste.map((l, i) => (
+                <BookCard key={l.slug} livre={l} index={i} showPrix />
+              ))}
+            </div>
           </div>
         </div>
       </div>

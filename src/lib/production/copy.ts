@@ -28,13 +28,6 @@ const fr = {
     titleEm: "sans frontières.",
     lead: "Un cinéma audacieux et humain, enraciné en Afrique, conçu pour le monde.",
     heroAlt: "Silhouettes d'une équipe de tournage au crépuscule",
-    sectionLabel: "Tout commence ici",
-    sectionTitle: "Des histoires",
-    sectionTitleEm: "ensemble.",
-    sectionBody:
-      "De la première idée à l'ultime plan, nous construisons des récits honnêtes et ambitieux avec celles et ceux qui les vivent.",
-    explore: "Découvrir nos œuvres",
-    crewAlt: "Une caméra de cinéma guidée sur un chariot de travelling",
   },
   work: {
     kicker: "Prochainement",
@@ -153,13 +146,6 @@ const en: typeof fr = {
     titleEm: "without borders.",
     lead: "Bold, human cinema rooted in Africa and made for the world.",
     heroAlt: "Silhouettes of a film crew at dusk",
-    sectionLabel: "The work begins here",
-    sectionTitle: "Stories made",
-    sectionTitleEm: "together.",
-    sectionBody:
-      "From the first idea to the final frame, we build honest, ambitious stories with the people who live them.",
-    explore: "Explore our work",
-    crewAlt: "A cinema camera guided on a dolly",
   },
   work: {
     kicker: "Coming soon",

@@ -41,7 +41,7 @@ export function BookCard({
       <div className="book-cover-wrap relative">
         <BookCover livre={livre} realistic animated tilt="face" size="card" />
         {tarif.percent > 0 && (
-          <span className="absolute right-2 top-2 z-10 rounded-sm bg-edition-orange px-2 py-0.5 text-[0.65rem] font-semibold tracking-wide text-[#211c1c] animate-book-badge-pop">
+          <span className="absolute left-0 top-3 z-10 bg-edition-orange px-2 py-0.5 text-[0.68rem] font-semibold tracking-[0.08em] text-[#211c1c] animate-book-badge-pop">
             −{tarif.percent} %
           </span>
         )}
@@ -55,10 +55,14 @@ export function BookCard({
         </p>
       )}
       {showPrix && (
-        <p className={`mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-sm ${prixEnFcfa ? "font-semibold text-edition-orange" : ""}`}>
-          <span className="font-semibold">{prixLabel}</span>
+        <p
+          className={`mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5 ${
+            prixEnFcfa || tarif.previous ? "text-edition-orange" : ""
+          }`}
+        >
+          <span className="text-[0.95rem] font-semibold tracking-tight">{prixLabel}</span>
           {tarif.previous && !prixEnFcfa ? (
-            <s className="text-xs text-muted-foreground">{formatPrix(tarif.previous, locale)}</s>
+            <s className="text-[0.75rem] font-normal text-muted-foreground">{formatPrix(tarif.previous, locale)}</s>
           ) : null}
         </p>
       )}

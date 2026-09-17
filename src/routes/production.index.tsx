@@ -1,7 +1,6 @@
 /* eslint-disable prettier/prettier */
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowDown, ArrowRight } from "lucide-react";
-import { Reveal } from "@/components/production/motion-reveal";
+import { createFileRoute } from "@tanstack/react-router";
+import { ArrowDown } from "lucide-react";
 import { useProductionCopy } from "@/lib/production/copy";
 
 export const Route = createFileRoute("/production/")({
@@ -54,41 +53,6 @@ function ProductionHome() {
             <p className="mx-auto max-w-sm text-sm leading-6 text-hero-muted md:mx-0">{t.home.lead}</p>
             <ArrowDown className="hidden size-5 md:block" />
           </div>
-        </div>
-      </section>
-
-      <section className="bg-background px-5 py-20 md:px-10 md:py-28 lg:px-14">
-        <div className="mx-auto grid max-w-screen-2xl gap-10 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-16">
-          <Reveal>
-            <div className="relative aspect-4/3 overflow-hidden bg-muted">
-              <img
-                src="/images/production/set-camera-cart.jpg"
-                alt={t.home.crewAlt}
-                width={1600}
-                height={1067}
-                loading="lazy"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </Reveal>
-          <Reveal delay={0.15}>
-            <div className="max-w-md">
-              <p className="section-label">{t.home.sectionLabel}</p>
-              <h2 className="mt-6 font-display text-5xl leading-[0.95] md:text-7xl">
-                {t.home.sectionTitle}
-                <br />
-                <em>{t.home.sectionTitleEm}</em>
-              </h2>
-              <p className="mt-8 max-w-sm text-sm leading-7 text-muted-foreground">{t.home.sectionBody}</p>
-              <Link
-                to="/production/work"
-                className="mt-10 inline-flex items-center gap-3 border-b border-foreground pb-2 text-xs uppercase tracking-brand"
-              >
-                {t.home.explore}
-                <ArrowRight className="size-4" />
-              </Link>
-            </div>
-          </Reveal>
         </div>
       </section>
     </div>
