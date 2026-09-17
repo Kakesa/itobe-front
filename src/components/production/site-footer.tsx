@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ProductionLogo } from "@/components/production/logo";
 import { useProductionCopy } from "@/lib/production/copy";
 
 export function ProductionFooter() {
@@ -9,8 +10,8 @@ export function ProductionFooter() {
     <footer className="bg-footer text-footer-foreground">
       <div className="mx-auto max-w-screen-2xl px-5 py-16 md:px-10 md:py-24 lg:px-14">
         <div className="grid gap-16 border-b border-footer-border pb-16 md:grid-cols-2 md:items-end">
-          <Link to="/production" className="font-display text-6xl uppercase tracking-brand sm:text-8xl">
-            Itobe
+          <Link to="/production" className="inline-block w-fit" aria-label={t.nav.home}>
+            <ProductionLogo on="dark" className="prod-logo--footer" />
           </Link>
           <div className="md:justify-self-end">
             <p className="max-w-sm text-sm leading-7 text-footer-muted">

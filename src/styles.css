@@ -529,6 +529,45 @@
   font-style: italic;
 }
 
+.prod-logo {
+  display: block;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
+.prod-logo--dark {
+  mix-blend-mode: screen;
+}
+
+.prod-logo--light {
+  mix-blend-mode: multiply;
+}
+
+.prod-logo--header {
+  height: 4.35rem;
+  max-width: 9.75rem;
+}
+
+@media (min-width: 768px) {
+  .prod-logo--header {
+    height: 5.4rem;
+    max-width: 12rem;
+  }
+}
+
+.prod-logo--footer {
+  height: 8.75rem;
+  max-width: 19rem;
+}
+
+@media (min-width: 768px) {
+  .prod-logo--footer {
+    height: 12rem;
+    max-width: 26rem;
+  }
+}
+
 @keyframes prod-reveal {
   from {
     opacity: 0;

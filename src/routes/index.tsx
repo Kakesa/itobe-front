@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
 
 const IMG_MEDIA = "/images/neno-logo.jpg";
 const IMG_EDITION = "/images/itobe-editions-logo.png";
-const IMG_PRODUCTION = "/images/production/hero-crew-dusk.jpg";
+const IMG_PRODUCTION = "/images/itobe-prod-black.png";
 
 function Accueil() {
   return (
@@ -110,11 +110,11 @@ function Accueil() {
             to="/production"
             className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-[#f3efe6] shadow-soft transition-transform duration-300 hover:-translate-y-1"
           >
-            <div className="relative aspect-[16/11] overflow-hidden bg-[#1a1612]">
+            <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
                 src={IMG_PRODUCTION}
-                alt="Itobe Production"
-                className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                alt="Logo Itobe Productions"
+                className="max-h-[82%] w-auto max-w-[88%] object-contain mix-blend-screen transition-transform duration-700 group-hover:scale-105"
               />
               <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-none bg-[#f3efe6]/95 px-2.5 py-1 text-xs font-medium uppercase tracking-brand text-[#241f1a] backdrop-blur-sm">
                 <Clapperboard className="size-3.5" />

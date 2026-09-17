@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ProductionLanguageSwitcher } from "@/components/production/language-switcher";
+import { ProductionLogo } from "@/components/production/logo";
 import { useProductionCopy } from "@/lib/production/copy";
 
 export function ProductionHeader() {
@@ -69,10 +70,10 @@ export function ProductionHeader() {
           </div>
           <Link
             to="/production"
-            className="absolute left-1/2 z-10 -translate-x-1/2 font-display text-xl uppercase tracking-brand md:text-2xl"
+            className="absolute left-1/2 z-10 -translate-x-1/2"
             aria-label={t.nav.home}
           >
-            Itobe
+            <ProductionLogo on={solidHeader ? "light" : "dark"} className="prod-logo--header" />
           </Link>
           <div className="relative z-10 flex min-w-0 flex-1 items-center justify-end gap-5 md:gap-10">
             <nav className="hidden items-center md:flex" aria-label={t.nav.contact}>
