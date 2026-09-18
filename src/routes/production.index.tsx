@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowDown } from "lucide-react";
+import { Typewriter } from "@/components/production/motion-reveal";
 import { useProductionCopy } from "@/lib/production/copy";
 
 export const Route = createFileRoute("/production/")({
@@ -42,9 +43,10 @@ function ProductionHome() {
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="relative mx-auto flex h-full min-h-svh max-w-screen-2xl flex-col justify-end px-5 pb-10 pt-32 text-center md:px-10 md:pb-14 md:text-left lg:px-14">
           <div className="flex items-end justify-center gap-8 md:justify-between">
-            <h1 className="prod-reveal mx-auto max-w-xl font-display text-[clamp(1.45rem,2.8vw,2.15rem)] leading-snug md:mx-0">
-              {t.home.lead}
-            </h1>
+            <Typewriter
+              text={t.home.lead}
+              className="mx-auto max-w-xl min-h-[3.6em] font-display text-[clamp(1.45rem,2.8vw,2.15rem)] leading-snug md:mx-0"
+            />
             <ArrowDown className="hidden size-5 shrink-0 md:block" />
           </div>
         </div>

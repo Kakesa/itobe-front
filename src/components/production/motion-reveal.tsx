@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function Reveal({
@@ -36,5 +36,81 @@ export function MaskedLine({
         <Tag>{children}</Tag>
       </span>
     </span>
+  );
+}
+
+export function Typewriter({
+  text,
+  className = "",
+  as: Tag = "h1",
+}: {
+  text: string;
+  className?: string;
+  as?: "h1" | "p";
+}) {
+  const [shown, setShown] = useState("");
+  const [reduce, setReduce] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setReduce(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
+    if (reduce) {
+      setShown(text);
+      return;
+    }
+
+    let i = 0;
+    let deleting = false;
+    let timer: number | undefined;
+    const typeMs = 36;
+    const deleteMs = 14;
+    const deleteStep = 2;
+    const holdFullMs = 3500;
+    const holdEmptyMs = 500;
+
+    const tick = () => {
+      if (!deleting) {
+        i += 1;
+        setShown(text.slice(0, i));
+        if (i >= text.length) {
+          deleting = true;
+          timer = window.setTimeout(tick, holdFullMs);
+          return;
+        }
+        timer = window.setTimeout(tick, typeMs);
+        return;
+      }
+
+      i = Math.max(i - deleteStep, 0);
+      setShown(text.slice(0, i));
+      if (i <= 0) {
+        deleting = false;
+        timer = window.setTimeout(tick, holdEmptyMs);
+        return;
+      }
+      timer = window.setTimeout(tick, deleteMs);
+    };
+
+    setShown("");
+    timer = window.setTimeout(tick, 420);
+    return () => {
+      if (timer) window.clearTimeout(timer);
+    };
+  }, [text, reduce]);
+
+  return (
+    <Tag className={className}>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true">
+        {shown}
+        {reduce ? null : <span className="prod-type-caret" />}
+      </span>
+    </Tag>
   );
 }
