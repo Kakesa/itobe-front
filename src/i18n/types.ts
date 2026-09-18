@@ -51,6 +51,7 @@ export type Dictionary = {
     subscribeSuccess: string;
     subscribeError: string;
     copyright: string;
+    popupDismiss: string;
   };
   editionAbout: {
     metaTitle: string;

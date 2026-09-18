@@ -14,6 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "../components/site-header";
 import { SiteFooter } from "../components/site-footer";
+import { NewsletterPopup } from "../components/newsletter-popup";
 import { usePortailActif } from "../hooks/use-portail";
 import { cn } from "../lib/utils";
 import { Toaster } from "../components/ui/sonner";
@@ -198,6 +199,7 @@ function RootComponent() {
           )}
           {/* Système de notification centralisé */}
           <Toaster position="top-right" richColors closeButton />
+          <NewsletterPopup />
         </AdminDataProvider>
       </LocaleProvider>
     </QueryClientProvider>
