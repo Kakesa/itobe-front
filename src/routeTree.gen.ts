@@ -65,6 +65,7 @@ import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
 import { Route as EntrepriseIndexRouteImport } from './routes/entreprise.index'
 import { Route as EntrepriseAboutRouteImport } from './routes/entreprise.about'
 import { Route as EntrepriseContactRouteImport } from './routes/entreprise.contact'
+import { Route as EntrepriseFoundersRouteImport } from './routes/entreprise.founders'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as MediaAProposRouteImport } from './routes/media.a-propos'
@@ -393,6 +394,11 @@ const EntrepriseContactRoute = EntrepriseContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => EntrepriseRoute,
 } as any)
+const EntrepriseFoundersRoute = EntrepriseFoundersRouteImport.update({
+  id: '/founders',
+  path: '/founders',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
 const MediaIndexRoute = MediaIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -691,6 +697,7 @@ export interface FileRoutesByFullPath {
   '/edition/$slug': typeof EditionSlugRoute
   '/entreprise/about': typeof EntrepriseAboutRoute
   '/entreprise/contact': typeof EntrepriseContactRoute
+  '/entreprise/founders': typeof EntrepriseFoundersRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -788,6 +795,7 @@ export interface FileRoutesByTo {
   '/edition/$slug': typeof EditionSlugRoute
   '/entreprise/about': typeof EntrepriseAboutRoute
   '/entreprise/contact': typeof EntrepriseContactRoute
+  '/entreprise/founders': typeof EntrepriseFoundersRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -892,6 +900,7 @@ export interface FileRoutesById {
   '/edition/$slug': typeof EditionSlugRoute
   '/entreprise/about': typeof EntrepriseAboutRoute
   '/entreprise/contact': typeof EntrepriseContactRoute
+  '/entreprise/founders': typeof EntrepriseFoundersRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -999,6 +1008,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/entreprise/about'
     | '/entreprise/contact'
+    | '/entreprise/founders'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -1096,6 +1106,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/entreprise/about'
     | '/entreprise/contact'
+    | '/entreprise/founders'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -1199,6 +1210,7 @@ export interface FileRouteTypes {
     | '/edition/$slug'
     | '/entreprise/about'
     | '/entreprise/contact'
+    | '/entreprise/founders'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -1670,6 +1682,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/entreprise/contact'
       preLoaderRoute: typeof EntrepriseContactRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/founders': {
+      id: '/entreprise/founders'
+      path: '/founders'
+      fullPath: '/entreprise/founders'
+      preLoaderRoute: typeof EntrepriseFoundersRouteImport
       parentRoute: typeof EntrepriseRoute
     }
     '/media/': {
@@ -2197,12 +2216,14 @@ const EditionRouteWithChildren =
 interface EntrepriseRouteChildren {
   EntrepriseAboutRoute: typeof EntrepriseAboutRoute
   EntrepriseContactRoute: typeof EntrepriseContactRoute
+  EntrepriseFoundersRoute: typeof EntrepriseFoundersRoute
   EntrepriseIndexRoute: typeof EntrepriseIndexRoute
 }
 
 const EntrepriseRouteChildren: EntrepriseRouteChildren = {
   EntrepriseAboutRoute: EntrepriseAboutRoute,
   EntrepriseContactRoute: EntrepriseContactRoute,
+  EntrepriseFoundersRoute: EntrepriseFoundersRoute,
   EntrepriseIndexRoute: EntrepriseIndexRoute,
 }
 

@@ -22,24 +22,6 @@ export const Route = createFileRoute("/entreprise/about")({
   component: EntrepriseAbout,
 });
 
-const univers = [
-  {
-    to: "/media" as const,
-    nom: "Média",
-    texte: "Journalisme, récits et vidéo — le portail NENO.",
-  },
-  {
-    to: "/edition" as const,
-    nom: "Maison d'édition",
-    texte: "Des livres qui placent l'Afrique au cœur de la narration mondiale.",
-  },
-  {
-    to: "/production" as const,
-    nom: "Production",
-    texte: "Films, séries et documentaires enracinés sur le continent.",
-  },
-];
-
 function EntrepriseAbout() {
   return (
     <article className="mx-auto w-full max-w-3xl">
@@ -59,22 +41,16 @@ function EntrepriseAbout() {
         récits circulent d&apos;un format à l&apos;autre sans perdre leur ancrage.
       </p>
 
-      <ul className="mt-12 grid gap-4 sm:grid-cols-3">
-        {univers.map((u) => (
-          <li key={u.to}>
-            <Link
-              to={u.to}
-              className="block h-full rounded-sm border border-border bg-card p-5 transition-transform duration-300 hover:-translate-y-0.5"
-            >
-              <p className="font-display text-xl">{u.nom}</p>
-              <p className="mt-2 text-sm leading-6 text-muted-foreground">{u.texte}</p>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
       <p className="mt-12 text-sm text-muted-foreground">
-        Un projet de groupe, un partenariat ou une demande presse ?{" "}
+        Découvrir{" "}
+        <Link
+          to="/entreprise/founders"
+          className="font-medium text-foreground underline underline-offset-4"
+        >
+          les fondateurs
+        </Link>
+        {" "}
+        · un projet de groupe ?{" "}
         <Link
           to="/entreprise/contact"
           className="font-medium text-foreground underline underline-offset-4"

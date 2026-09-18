@@ -902,6 +902,81 @@
   background-size: 22px 22px;
 }
 
+.groupe-founders__manifest {
+  max-width: 40rem;
+  border-left: 2px solid var(--brand-gold);
+  padding-left: 1.35rem;
+  color: var(--foreground);
+}
+
+.groupe-founders__card {
+  display: grid;
+  gap: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .groupe-founders__card {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: 3.25rem;
+    align-items: stretch;
+  }
+
+  .groupe-founders__card--reverse {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  }
+
+  .groupe-founders__card--reverse .groupe-founders__portrait {
+    order: 2;
+  }
+}
+
+.groupe-founders__portrait {
+  position: relative;
+  min-height: 22rem;
+  overflow: hidden;
+  border-radius: 2px;
+  isolation: isolate;
+}
+
+.groupe-founders__portrait--ink {
+  background: #211c1c;
+  color: #fdfaf4;
+}
+
+.groupe-founders__portrait--warm {
+  background: #4a2f22;
+  color: #f7efe4;
+}
+
+.groupe-founders__portrait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in oklab, white 14%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 18px 18px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.groupe-founders__mark {
+  position: absolute;
+  right: -0.08em;
+  bottom: -0.28em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(8rem, 24vw, 13.5rem);
+  line-height: 0.75;
+  letter-spacing: -0.07em;
+  color: color-mix(in oklab, white 13%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
 @utility book-spine {
   box-shadow:
     inset 6px 0 12px -8px color-mix(in oklab, black 70%, transparent),
