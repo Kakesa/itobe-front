@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { MaskedLine, Reveal } from "@/components/production/motion-reveal";
+import { Reveal } from "@/components/production/motion-reveal";
 import { useProductionCopy } from "@/lib/production/copy";
 
 export const Route = createFileRoute("/production/about")({
@@ -37,17 +37,9 @@ function AboutPage() {
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="absolute inset-0 bg-footer/45" />
         <div className="relative mx-auto flex min-h-svh max-w-screen-2xl flex-col items-center justify-center px-5 py-32 text-center md:px-10 lg:px-14">
-          <p className="inline-flex items-center gap-2.5 text-xs uppercase tracking-brand text-hero-muted">
-            <span className="size-1.5 rounded-full bg-accent" aria-hidden="true" />
-            {t.about.kicker}
-          </p>
-          <h1 className="mt-8 max-w-4xl font-display text-[clamp(2.4rem,5.2vw,4.8rem)] leading-[0.98]">
-            <MaskedLine delay={0.28}>{t.about.title}</MaskedLine>
-            <MaskedLine delay={0.46} italic>
-              {t.about.titleEm}
-            </MaskedLine>
+          <h1 className="prod-reveal max-w-4xl font-display text-[clamp(1.65rem,3.4vw,2.75rem)] leading-[1.25] text-hero-foreground">
+            {t.about.intro}
           </h1>
-          <p className="prod-reveal mt-6 max-w-lg text-sm leading-7 text-hero-muted md:mt-8">{t.about.intro}</p>
         </div>
       </section>
 

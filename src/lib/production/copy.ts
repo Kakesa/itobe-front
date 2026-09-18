@@ -23,9 +23,6 @@ const fr = {
     backToPortals: "Retour aux portails",
   },
   home: {
-    kicker: "Production cinématographique indépendante · Kinshasa",
-    title: "Des histoires",
-    titleEm: "sans frontières.",
     lead: "Un cinéma audacieux et humain, enraciné en Afrique, conçu pour le monde.",
     heroAlt: "Silhouettes d'une équipe de tournage au crépuscule",
   },
@@ -36,9 +33,6 @@ const fr = {
     body: "Nous développons actuellement de nouveaux récits. Revenez bientôt pour découvrir les films et séries qui prennent forme chez Itobe Production.",
   },
   about: {
-    kicker: "Itobe Production · Est. Kinshasa",
-    title: "Les histoires nous portent",
-    titleEm: "plus loin.",
     intro:
       "Itobe Productions est une société de production audiovisuelle basée en République démocratique du Congo, dédiée au développement d’histoires africaines pour le cinéma, la télévision et l’ensemble des formats audiovisuels.",
     crewAlt: "Une équipe filmant au coucher du soleil",
@@ -140,9 +134,6 @@ const en: typeof fr = {
     backToPortals: "Back to portals",
   },
   home: {
-    kicker: "Independent film production · Kinshasa",
-    title: "Stories",
-    titleEm: "without borders.",
     lead: "Bold, human cinema rooted in Africa and made for the world.",
     heroAlt: "Silhouettes of a film crew at dusk",
   },
@@ -153,9 +144,6 @@ const en: typeof fr = {
     body: "We are currently developing new stories. Come back soon to discover the films and series taking shape at Itobe Production.",
   },
   about: {
-    kicker: "Itobe Production · Est. Kinshasa",
-    title: "Stories carry us",
-    titleEm: "further.",
     intro:
       "Itobe Productions is an audiovisual production company based in the Democratic Republic of the Congo, dedicated to developing African stories for film, television, and all forms of audiovisual storytelling.",
     crewAlt: "A film crew shooting at sunset",

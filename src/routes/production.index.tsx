@@ -37,21 +37,15 @@ function ProductionHome() {
           width={1920}
           height={1088}
           fetchPriority="high"
-          className="absolute inset-0 h-[108%] w-full object-cover"
+          className="prod-hero__image absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
         <div className="relative mx-auto flex h-full min-h-svh max-w-screen-2xl flex-col justify-end px-5 pb-10 pt-32 text-center md:px-10 md:pb-14 md:text-left lg:px-14">
-          <div className="prod-reveal">
-            <p className="mb-5 text-xs uppercase text-hero-muted">{t.home.kicker}</p>
-            <h1 className="mx-auto max-w-5xl font-display text-[clamp(4rem,11vw,10rem)] leading-[0.82] md:mx-0">
-              {t.home.title}
-              <br />
-              <em>{t.home.titleEm}</em>
+          <div className="flex items-end justify-center gap-8 md:justify-between">
+            <h1 className="prod-reveal mx-auto max-w-xl font-display text-[clamp(1.45rem,2.8vw,2.15rem)] leading-snug md:mx-0">
+              {t.home.lead}
             </h1>
-          </div>
-          <div className="mt-10 flex items-end justify-center gap-8 md:justify-between">
-            <p className="mx-auto max-w-sm text-sm leading-6 text-hero-muted md:mx-0">{t.home.lead}</p>
-            <ArrowDown className="hidden size-5 md:block" />
+            <ArrowDown className="hidden size-5 shrink-0 md:block" />
           </div>
         </div>
       </section>

@@ -92,7 +92,7 @@
   /* Palette alignée sur itobeeditions.com (Elementor kit) */
   --radius: 0.35rem;
   --edition-orange: var(--brand-orange);
-  --edition-cream: #fdfaf4;
+  --edition-cream: #ffffff;
   --edition-ink: #211c1c;
   --edition-brown: var(--brand-brown);
   --edition-gold: var(--brand-gold);
@@ -100,7 +100,7 @@
   --edition-teal: #79c4b5;
   --edition-blue: var(--brand-blue);
   --edition-muted: #b3b3b3;
-  --edition-surface: #f7f7f7;
+  --edition-surface: #ffffff;
 
   --paper: #fdfaf4;
   --ink: #211c1c;
@@ -638,6 +638,21 @@
   }
 }
 
+@keyframes prod-hero-kenburns {
+  from {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.2) translate3d(-2.4%, -1.6%, 0);
+  }
+}
+
+.prod-hero__image {
+  transform-origin: 55% 42%;
+  will-change: transform;
+  animation: prod-hero-kenburns 28s ease-in-out alternate infinite;
+}
+
 .theme-production .prod-reveal {
   animation: prod-reveal 0.85s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -648,7 +663,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .theme-production .prod-reveal,
-  .theme-production .prod-line {
+  .theme-production .prod-line,
+  .prod-hero__image {
     animation: none;
   }
 }
