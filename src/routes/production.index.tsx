@@ -41,11 +41,12 @@ function ProductionHome() {
           className="prod-hero__image absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-footer/80 to-transparent" />
         <div className="relative mx-auto flex h-full min-h-svh max-w-screen-2xl flex-col justify-end px-5 pb-10 pt-32 text-center md:px-10 md:pb-14 md:text-left lg:px-14">
           <div className="flex items-end justify-center gap-8 md:justify-between">
             <Typewriter
               text={t.home.lead}
-              className="mx-auto max-w-xl min-h-[3.6em] font-display text-[clamp(1.45rem,2.8vw,2.15rem)] leading-snug md:mx-0"
+              className="prod-typewriter mx-auto max-w-2xl min-h-[3.8em] font-display text-[clamp(1.75rem,4vw,2.65rem)] leading-[1.3] md:mx-0"
             />
             <ArrowDown className="hidden size-5 shrink-0 md:block" />
           </div>

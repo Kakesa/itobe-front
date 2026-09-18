@@ -115,27 +115,21 @@ export function SiteHeader() {
           {t.nav.auth.deconnexion}
         </button>
       </>
-    ) : (
+    ) : estMedia ? null : (
       <>
         <Link
           to="/connexion"
-          className={
-            estMedia
-              ? "site-header__text-link hidden sm:inline-flex"
-              : "site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
-          }
+          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
         >
           {t.nav.auth.connexion}
         </Link>
-        {!estMedia ? (
-          <Link
-            to="/connexion"
-            search={{ mode: "inscription" }}
-            className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
-          >
-            {t.nav.auth.inscription}
-          </Link>
-        ) : null}
+        <Link
+          to="/connexion"
+          search={{ mode: "inscription" }}
+          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+        >
+          {t.nav.auth.inscription}
+        </Link>
       </>
     )
   ) : null;
@@ -163,7 +157,7 @@ export function SiteHeader() {
           {t.nav.auth.deconnexion}
         </button>
       </>
-    ) : (
+    ) : estMedia ? null : (
       <>
         <Link
           to="/connexion"

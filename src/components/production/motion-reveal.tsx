@@ -68,11 +68,11 @@ export function Typewriter({
     let i = 0;
     let deleting = false;
     let timer: number | undefined;
-    const typeMs = 36;
-    const deleteMs = 14;
-    const deleteStep = 2;
-    const holdFullMs = 3500;
-    const holdEmptyMs = 500;
+    const typeMs = 78;
+    const deleteMs = 28;
+    const deleteStep = 1;
+    const holdFullMs = 3200;
+    const holdEmptyMs = 700;
 
     const tick = () => {
       if (!deleting) {
