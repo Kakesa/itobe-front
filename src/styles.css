@@ -4209,6 +4209,65 @@ main:has(.media-contact) + .site-footer {
   border: 1px solid var(--border);
 }
 
+/* Articles + Vidéos — fond noir Neno */
+html:has(.media-dark-page),
+body:has(.media-dark-page),
+.theme-media:has(.media-dark-page),
+main:has(.media-dark-page) {
+  background: #000;
+  color: #fff;
+}
+
+main:has(.media-dark-page) + .site-footer {
+  margin-top: 0;
+}
+
+.media-dark-page {
+  background: #000;
+  color: #fff;
+}
+
+.media-dark-page h1,
+.media-dark-page h2,
+.media-dark-page .font-display {
+  color: #fff;
+}
+
+.media-dark-page .text-muted-foreground {
+  color: rgb(255 255 255 / 0.58);
+}
+
+.media-dark-page .text-foreground {
+  color: #fff;
+}
+
+.media-dark-page .border-border {
+  border-color: rgb(255 255 255 / 0.16);
+}
+
+.media-dark-page input {
+  color: #fff;
+}
+
+.media-dark-page input::placeholder {
+  color: rgb(255 255 255 / 0.4);
+}
+
+.media-dark-page .article-feed-card,
+.media-dark-page .bg-card {
+  background: #111;
+  border-color: rgb(255 255 255 / 0.12);
+  color: #fff;
+}
+
+.media-dark-page .media-blog-filters button:hover {
+  color: #fff;
+}
+
+.media-videos-page .media-videos-card__thumb {
+  background: #161616;
+}
+
 /* Blog Média — filtres horizontaux */
 .media-blog-filters {
   scrollbar-width: none;

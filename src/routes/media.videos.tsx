@@ -112,7 +112,7 @@ function MediaVideosPage() {
     playlist === "toutes" ? channelUrl : playlistActive?.url || channelUrl;
 
   return (
-    <section className="media-videos-page py-10 sm:py-14 lg:py-16">
+    <section className="media-dark-page media-videos-page py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div className="space-y-2">

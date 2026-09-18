@@ -78,7 +78,7 @@ function MediaPage() {
   const filterOptions = ["Tous", ...categoriesMedia];
 
   return (
-    <section id="blog-section" className="media-blog-page py-10 sm:py-14 lg:py-16">
+    <section id="blog-section" className="media-dark-page media-blog-page py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
         <header className="space-y-2">
           <p className="kicker mb-0">Itobe Média</p>
