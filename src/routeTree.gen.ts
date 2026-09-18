@@ -17,6 +17,7 @@ import { Route as CommandesRouteImport } from './routes/commandes'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
+import { Route as EntrepriseRouteImport } from './routes/entreprise'
 import { Route as MediaRouteImport } from './routes/media'
 import { Route as MotDePasseOublieRouteImport } from './routes/mot-de-passe-oublie'
 import { Route as PanierRouteImport } from './routes/panier'
@@ -61,6 +62,9 @@ import { Route as AuteursIndexRouteImport } from './routes/auteurs.index'
 import { Route as AuteursSlugRouteImport } from './routes/auteurs.$slug'
 import { Route as EditionIndexRouteImport } from './routes/edition.index'
 import { Route as EditionSlugRouteImport } from './routes/edition.$slug'
+import { Route as EntrepriseIndexRouteImport } from './routes/entreprise.index'
+import { Route as EntrepriseAboutRouteImport } from './routes/entreprise.about'
+import { Route as EntrepriseContactRouteImport } from './routes/entreprise.contact'
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as MediaAProposRouteImport } from './routes/media.a-propos'
@@ -147,6 +151,11 @@ const ContactRoute = ContactRouteImport.update({
 const EditionRoute = EditionRouteImport.update({
   id: '/edition',
   path: '/edition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EntrepriseRoute = EntrepriseRouteImport.update({
+  id: '/entreprise',
+  path: '/entreprise',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MediaRoute = MediaRouteImport.update({
@@ -368,6 +377,21 @@ const EditionSlugRoute = EditionSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => EditionRoute,
+} as any)
+const EntrepriseIndexRoute = EntrepriseIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseAboutRoute = EntrepriseAboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => EntrepriseRoute,
+} as any)
+const EntrepriseContactRoute = EntrepriseContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => EntrepriseRoute,
 } as any)
 const MediaIndexRoute = MediaIndexRouteImport.update({
   id: '/',
@@ -623,6 +647,7 @@ export interface FileRoutesByFullPath {
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
+  '/entreprise': typeof EntrepriseRouteWithChildren
   '/media': typeof MediaRouteWithChildren
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
@@ -664,6 +689,8 @@ export interface FileRoutesByFullPath {
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
+  '/entreprise/about': typeof EntrepriseAboutRoute
+  '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -674,6 +701,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
+  '/entreprise/': typeof EntrepriseIndexRoute
   '/media/': typeof MediaIndexRoute
   '/production/': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
@@ -758,6 +786,8 @@ export interface FileRoutesByTo {
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
+  '/entreprise/about': typeof EntrepriseAboutRoute
+  '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -767,6 +797,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/auteurs': typeof AuteursIndexRoute
   '/edition': typeof EditionIndexRoute
+  '/entreprise': typeof EntrepriseIndexRoute
   '/media': typeof MediaIndexRoute
   '/production': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
@@ -817,6 +848,7 @@ export interface FileRoutesById {
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
+  '/entreprise': typeof EntrepriseRouteWithChildren
   '/media': typeof MediaRouteWithChildren
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
   '/panier': typeof PanierRoute
@@ -858,6 +890,8 @@ export interface FileRoutesById {
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/auteurs/$slug': typeof AuteursSlugRoute
   '/edition/$slug': typeof EditionSlugRoute
+  '/entreprise/about': typeof EntrepriseAboutRoute
+  '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
   '/media/videos': typeof MediaVideosRoute
@@ -868,6 +902,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/auteurs/': typeof AuteursIndexRoute
   '/edition/': typeof EditionIndexRoute
+  '/entreprise/': typeof EntrepriseIndexRoute
   '/media/': typeof MediaIndexRoute
   '/production/': typeof ProductionIndexRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
@@ -920,6 +955,7 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/contact'
     | '/edition'
+    | '/entreprise'
     | '/media'
     | '/mot-de-passe-oublie'
     | '/panier'
@@ -961,6 +997,8 @@ export interface FileRouteTypes {
     | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
+    | '/entreprise/about'
+    | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -971,6 +1009,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auteurs/'
     | '/edition/'
+    | '/entreprise/'
     | '/media/'
     | '/production/'
     | '/admin/edition/auteurs'
@@ -1055,6 +1094,8 @@ export interface FileRouteTypes {
     | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
+    | '/entreprise/about'
+    | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -1064,6 +1105,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auteurs'
     | '/edition'
+    | '/entreprise'
     | '/media'
     | '/production'
     | '/admin/edition/auteurs'
@@ -1113,6 +1155,7 @@ export interface FileRouteTypes {
     | '/connexion'
     | '/contact'
     | '/edition'
+    | '/entreprise'
     | '/media'
     | '/mot-de-passe-oublie'
     | '/panier'
@@ -1154,6 +1197,8 @@ export interface FileRouteTypes {
     | '/admin/utilisateurs'
     | '/auteurs/$slug'
     | '/edition/$slug'
+    | '/entreprise/about'
+    | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
     | '/media/videos'
@@ -1164,6 +1209,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/auteurs/'
     | '/edition/'
+    | '/entreprise/'
     | '/media/'
     | '/production/'
     | '/admin/edition/auteurs'
@@ -1215,6 +1261,7 @@ export interface RootRouteChildren {
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
+  EntrepriseRoute: typeof EntrepriseRouteWithChildren
   MediaRoute: typeof MediaRouteWithChildren
   MotDePasseOublieRoute: typeof MotDePasseOublieRoute
   PanierRoute: typeof PanierRoute
@@ -1287,6 +1334,13 @@ declare module '@tanstack/react-router' {
       path: '/edition'
       fullPath: '/edition'
       preLoaderRoute: typeof EditionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entreprise': {
+      id: '/entreprise'
+      path: '/entreprise'
+      fullPath: '/entreprise'
+      preLoaderRoute: typeof EntrepriseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/media': {
@@ -1596,6 +1650,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/edition/$slug'
       preLoaderRoute: typeof EditionSlugRouteImport
       parentRoute: typeof EditionRoute
+    }
+    '/entreprise/': {
+      id: '/entreprise/'
+      path: '/'
+      fullPath: '/entreprise/'
+      preLoaderRoute: typeof EntrepriseIndexRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/about': {
+      id: '/entreprise/about'
+      path: '/about'
+      fullPath: '/entreprise/about'
+      preLoaderRoute: typeof EntrepriseAboutRouteImport
+      parentRoute: typeof EntrepriseRoute
+    }
+    '/entreprise/contact': {
+      id: '/entreprise/contact'
+      path: '/contact'
+      fullPath: '/entreprise/contact'
+      preLoaderRoute: typeof EntrepriseContactRouteImport
+      parentRoute: typeof EntrepriseRoute
     }
     '/media/': {
       id: '/media/'
@@ -2119,6 +2194,22 @@ const EditionRouteChildren: EditionRouteChildren = {
 const EditionRouteWithChildren =
   EditionRoute._addFileChildren(EditionRouteChildren)
 
+interface EntrepriseRouteChildren {
+  EntrepriseAboutRoute: typeof EntrepriseAboutRoute
+  EntrepriseContactRoute: typeof EntrepriseContactRoute
+  EntrepriseIndexRoute: typeof EntrepriseIndexRoute
+}
+
+const EntrepriseRouteChildren: EntrepriseRouteChildren = {
+  EntrepriseAboutRoute: EntrepriseAboutRoute,
+  EntrepriseContactRoute: EntrepriseContactRoute,
+  EntrepriseIndexRoute: EntrepriseIndexRoute,
+}
+
+const EntrepriseRouteWithChildren = EntrepriseRoute._addFileChildren(
+  EntrepriseRouteChildren,
+)
+
 interface MediaRouteChildren {
   MediaSlugRoute: typeof MediaSlugRoute
   MediaAProposRoute: typeof MediaAProposRoute
@@ -2176,6 +2267,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,
+  EntrepriseRoute: EntrepriseRouteWithChildren,
   MediaRoute: MediaRouteWithChildren,
   MotDePasseOublieRoute: MotDePasseOublieRoute,
   PanierRoute: PanierRoute,

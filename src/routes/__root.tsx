@@ -142,19 +142,22 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const portail = usePortailActif();
+  const estGroupe = pathname === "/" || pathname.startsWith("/entreprise");
+
   const themeEdition =
-    portail === "edition" ||
-    pathname.startsWith("/edition") ||
-    pathname.startsWith("/bibliotheque") ||
-    pathname.startsWith("/reader");
+    !estGroupe &&
+    (portail === "edition" ||
+      pathname.startsWith("/edition") ||
+      pathname.startsWith("/bibliotheque") ||
+      pathname.startsWith("/reader"));
 
   const themeProduction = pathname.startsWith("/production");
 
   const themeMedia =
     !themeEdition &&
     !themeProduction &&
-    (portail === "media" || pathname.startsWith("/media") || pathname.startsWith("/admin/media")) &&
-    pathname !== "/";
+    !estGroupe &&
+    (portail === "media" || pathname.startsWith("/media") || pathname.startsWith("/admin/media"));
 
   useEffect(() => {
     document.documentElement.classList.toggle("theme-edition", themeEdition);
@@ -174,7 +177,7 @@ function RootComponent() {
 
   // Accueil / reader / admin / production = chrome dédié (pas le header public).
   const sansChrome =
-    pathname === "/" ||
+    estGroupe ||
     pathname.startsWith("/reader") ||
     pathname.startsWith("/admin") ||
     themeProduction;

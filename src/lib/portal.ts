@@ -15,6 +15,7 @@ export function ecrirePortail(portail: Portail) {
 
 /** Déduit le portail depuis l'URL, ou conserve le dernier portail visité. */
 export function portailDepuisChemin(pathname: string): Portail | null {
+  if (pathname === "/" || pathname.startsWith("/entreprise")) return null;
   if (pathname.startsWith("/media")) return "media";
   if (pathname.startsWith("/production")) return "production";
   if (

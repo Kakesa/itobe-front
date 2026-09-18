@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight, BookOpen, Clapperboard, Newspaper } from "lucide-react";
+import { GroupeNav } from "@/components/groupe-chrome";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -34,6 +35,8 @@ function Accueil() {
         aria-hidden
         className="pointer-events-none absolute inset-0 paper-grain opacity-60"
       />
+
+      <GroupeNav />
 
       <div className="relative z-10 w-full max-w-6xl">
         <header className="mb-10 flex flex-col items-center gap-0 text-center">
