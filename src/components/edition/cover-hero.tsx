@@ -147,6 +147,16 @@ export function EditionCoverHero({ livres, loading }: CoverHeroProps) {
   if (loading) {
     return (
       <section className="edition-cover-hero edition-cover-hero--loading" aria-hidden>
+        <div className="edition-cover-hero__washes">
+          <img
+            src="/images/edition/hero.jpg"
+            alt=""
+            width={1080}
+            height={1620}
+            className="edition-cover-hero__bg"
+          />
+        </div>
+        <div className="edition-cover-hero__veil" />
         <div className="edition-cover-hero__inner">
           <div className="edition-cover-hero__copy">
             <div className="h-4 w-24 animate-pulse bg-white/15" />
@@ -178,16 +188,13 @@ export function EditionCoverHero({ livres, loading }: CoverHeroProps) {
       onMouseLeave={() => setPaused(false)}
     >
       <div className="edition-cover-hero__washes" aria-hidden>
-        {prevLivre ? (
-          <div
-            className={`edition-cover-hero__wash ${layerClass("exit", dir)}`}
-            style={prevLivre.couleur ? { backgroundImage: prevLivre.couleur } : undefined}
-          />
-        ) : null}
-        <div
-          key={livre.slug}
-          className={`edition-cover-hero__wash ${layerClass("enter", dir)}`}
-          style={livre.couleur ? { backgroundImage: livre.couleur } : undefined}
+        <img
+          src="/images/edition/hero.jpg"
+          alt=""
+          width={1080}
+          height={1620}
+          fetchPriority="high"
+          className="edition-cover-hero__bg"
         />
       </div>
       <div className="edition-cover-hero__veil" aria-hidden />

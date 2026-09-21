@@ -4554,39 +4554,29 @@ main:has(.media-dark-page) + .site-footer {
 
 .edition-cover-hero__washes {
   position: absolute;
-  inset: -12%;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
-.edition-cover-hero__wash {
+.edition-cover-hero__bg {
   position: absolute;
-  inset: 0;
-  background-size: cover;
-  filter: blur(48px) saturate(1.15);
-  opacity: 0.45;
-  transform: scale(1.12);
-}
-
-.edition-cover-hero__wash.is-idle {
-  animation: cover-hero-ken 7.5s ease-out both;
-}
-
-.edition-cover-hero__wash.is-enter {
-  animation:
-    cover-hero-wash-in 0.95s ease both,
-    cover-hero-ken 7.5s ease-out both;
-}
-
-.edition-cover-hero__wash.is-exit {
-  animation: cover-hero-wash-out 0.85s ease both;
+  inset: -12%;
+  width: 124%;
+  height: 124%;
+  max-width: none;
+  object-fit: cover;
+  transform-origin: 55% 40%;
+  will-change: transform;
+  animation: edition-hero-kenburns 14s ease-in-out alternate infinite;
 }
 
 .edition-cover-hero__veil {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.45) 48%, rgb(0 0 0 / 0.28) 100%),
-    linear-gradient(180deg, rgb(0 0 0 / 0.12) 0%, rgb(0 0 0 / 0.55) 100%);
+    linear-gradient(90deg, rgb(0 0 0 / 0.58) 0%, rgb(0 0 0 / 0.28) 50%, rgb(0 0 0 / 0.14) 100%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.12) 0%, rgb(0 0 0 / 0.42) 100%);
 }
 
 .edition-cover-hero__inner {
@@ -4918,20 +4908,26 @@ main:has(.media-dark-page) + .site-footer {
   }
 }
 
-@keyframes cover-hero-ken {
-  from {
-    transform: scale(1.08);
+@keyframes edition-hero-kenburns {
+  0% {
+    transform: scale(1.05) translate3d(0, 0, 0);
   }
-  to {
-    transform: scale(1.18);
+  100% {
+    transform: scale(1.28) translate3d(-4.5%, 2.5%, 0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .edition-cover-hero__wash,
+  .edition-cover-hero__bg,
   .edition-cover-hero__copy-layer > *,
   .edition-cover-hero__book-motion {
     animation: none !important;
     transform: none;
+  }
+
+  .edition-cover-hero__bg {
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
 }

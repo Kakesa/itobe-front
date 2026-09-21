@@ -36,9 +36,7 @@ function WorkPage() {
           </p>
           <h2 className="mx-auto mt-7 max-w-4xl font-display text-4xl leading-[0.95] md:text-6xl">
             <MaskedLine delay={0.28}>{t.work.title}</MaskedLine>
-            <MaskedLine delay={0.46} italic>
-              {t.work.titleEm}
-            </MaskedLine>
+            <MaskedLine delay={0.46}>{t.work.titleEm}</MaskedLine>
           </h2>
           <p className="prod-reveal mx-auto mt-8 max-w-md text-sm leading-7 text-muted-foreground">
             {t.work.body}
