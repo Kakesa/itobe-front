@@ -7,13 +7,13 @@ export const Route = createFileRoute("/entreprise/about")({
       {
         name: "description",
         content:
-          "ITOBE Entreprises rassemble un média, une maison d'édition et un studio de production : trois univers, une même plateforme.",
+          "ITOBE Entreprises est un groupe d'entreprises dédié à la création, à la production, à l'édition et à la diffusion de contenus qui mettent en lumière les cultures, les histoires, les talents et les imaginaires africains.",
       },
       { property: "og:title", content: "About — ITOBE Entreprises" },
       {
         property: "og:description",
         content:
-          "Le groupe ITOBE : média, édition et production — raconter l'Afrique, depuis l'Afrique.",
+          "Un écosystème qui accompagne les idées et les créateurs, de leur développement jusqu'à leur rencontre avec le public.",
       },
       { property: "og:url", content: "/entreprise/about" },
     ],
@@ -28,17 +28,16 @@ function EntrepriseAbout() {
       <p className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground">
         About
       </p>
-      <h1 className="mt-3 font-display text-4xl leading-tight md:text-5xl">
-        Une plateforme, trois univers.
+      <h1 className="mt-3 font-display text-3xl leading-snug md:text-4xl md:leading-snug">
+        ITOBE Entreprises est un groupe d&apos;entreprises dédié à la création, à
+        la production, à l&apos;édition et à la diffusion de contenus qui
+        mettent en lumière les cultures, les histoires, les talents et les
+        imaginaires africains.
       </h1>
-      <p className="mt-6 text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-        ITOBE Entreprises réunit un média, une maison d&apos;édition et un studio
-        de production. Même ambition : raconter l&apos;Afrique, depuis
-        l&apos;Afrique, vers le monde — en articles, en livres et à l&apos;écran.
-      </p>
-      <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-        Chaque portail a sa voix. Le groupe les tient ensemble, pour que les
-        récits circulent d&apos;un format à l&apos;autre sans perdre leur ancrage.
+      <p className="mt-8 text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+        À travers nos différentes entités, nous construisons un écosystème qui
+        accompagne les idées et les créateurs, de leur développement jusqu&apos;à
+        leur rencontre avec le public.
       </p>
 
       <p className="mt-12 text-sm text-muted-foreground">

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useI18n, type Locale } from "@/i18n";
 
 const fr = {
@@ -10,7 +11,7 @@ const fr = {
     contactTitle: "Contact — Itobe Production",
   },
   nav: {
-    work: "Œuvres",
+    work: "Productions",
     about: "À propos",
     contact: "Contact",
     primary: "Navigation principale",
@@ -28,9 +29,8 @@ const fr = {
   },
   work: {
     kicker: "Prochainement",
-    title: "Nos productions",
-    titleEm: "sont en cours.",
-    body: "Nous développons actuellement de nouveaux récits. Revenez bientôt pour découvrir les films et séries qui prennent forme chez Itobe Production.",
+    title: "PROJETS EN",
+    titleEm: "DÉVELOPPEMENT",
   },
   about: {
     intro:
@@ -121,7 +121,7 @@ const en: typeof fr = {
     contactTitle: "Contact — Itobe Production",
   },
   nav: {
-    work: "Work",
+    work: "Productions",
     about: "About",
     contact: "Contact",
     primary: "Primary navigation",
@@ -139,9 +139,8 @@ const en: typeof fr = {
   },
   work: {
     kicker: "Coming soon",
-    title: "Our productions",
-    titleEm: "are in progress.",
-    body: "We are currently developing new stories. Come back soon to discover the films and series taking shape at Itobe Production.",
+    title: "PROJECTS IN",
+    titleEm: "DEVELOPMENT",
   },
   about: {
     intro:
