@@ -34,6 +34,7 @@ const fondateurs = [
       "Un récit africain n'a pas besoin d'être traduit pour exister. Il a besoin d'un lieu où il peut durer.",
     bio: "Christian Bigomukero a conçu ITOBE comme un écosystème : le reportage, le livre et l'écran dans une même maison. Il porte la ligne éditoriale du groupe — des enquêtes de NENO aux collections d'Itobe Éditions.",
     ton: "ink" as const,
+    photo: null as string | null,
   },
   {
     index: "02",
@@ -45,6 +46,7 @@ const fondateurs = [
       "Le cinéma, le livre et la presse ne sont pas des silos. Ce sont trois portes vers la même mémoire.",
     bio: "Christopher Bigo a impulsé ITOBE Entreprises comme plateforme de groupe : un cadre pour que le média, l'édition et la production se parlent. Il veille à la vision d'ensemble et aux projets qui traversent les trois univers.",
     ton: "warm" as const,
+    photo: "/images/entreprise/christopher-bigo.jpg",
   },
 ];
 
@@ -82,7 +84,20 @@ function EntrepriseFounders() {
               i % 2 === 1 ? "groupe-founders__card--reverse" : ""
             }`}
           >
-            <div className={`groupe-founders__portrait groupe-founders__portrait--${f.ton}`}>
+            <div
+              className={`groupe-founders__portrait groupe-founders__portrait--${f.ton}${
+                f.photo ? " groupe-founders__portrait--photo" : ""
+              }`}
+            >
+              {f.photo ? (
+                <img
+                  src={f.photo}
+                  alt={f.nom}
+                  width={900}
+                  height={1200}
+                  className="groupe-founders__photo"
+                />
+              ) : null}
               <span className="groupe-founders__mark" aria-hidden>
                 {f.initiales}
               </span>
