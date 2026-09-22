@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 const liens = [
   { to: "/entreprise/about", label: "About" },
-  { to: "/entreprise/founders", label: "Founders" },
   { to: "/entreprise/contact", label: "Contact" },
 ] as const;
 
