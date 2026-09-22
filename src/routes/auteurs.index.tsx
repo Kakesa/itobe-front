@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AuthorAvatar } from "@/components/author-avatar";
 import { useAuteurs } from "@/hooks/use-auteurs";
@@ -27,19 +28,7 @@ function AuteursPage() {
   const { auteurs } = useAuteurs();
   return (
     <div className="auteurs-page theme-edition">
-      <section className="apropos-page__hero auteurs-page__hero">
-        <img src="/images/a-propos/hero.jpg" alt="" className="apropos-page__hero-bg" fetchPriority="high" />
-        <div className="apropos-page__hero-overlay" aria-hidden />
-        <div className="apropos-page__hero-content mx-auto max-w-4xl px-4 py-20 text-center md:py-28">
-          <p className="apropos-page__hero-kicker">Communauté</p>
-          <h1 className="mt-4 font-display text-4xl leading-tight text-white md:text-5xl lg:text-6xl">
-            Auteurs & journalistes.
-            <br />
-            <span className="text-brand-gold">Les voix qui racontent l&apos;Afrique.</span>
-          </h1>
-        </div>
-      </section>
-
+      
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-14 sm:grid-cols-2 lg:grid-cols-3">
         {auteurs.map((a) => (
           <Link

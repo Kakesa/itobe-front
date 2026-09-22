@@ -215,13 +215,13 @@ export function EditionCoverHero({ livres, loading }: CoverHeroProps) {
           {prevLivre ? (
             <div className="edition-cover-hero__book is-exit" aria-hidden>
               <div className={`edition-cover-hero__book-motion ${layerClass("exit", dir)}`}>
-                <BookCover livre={prevLivre} realistic animated tilt="face" />
+                <BookCover livre={prevLivre} />
               </div>
             </div>
           ) : null}
           <div key={livre.slug} className="edition-cover-hero__book">
             <div className={`edition-cover-hero__book-motion ${layerClass("enter", dir)}`}>
-              <BookCover livre={livre} realistic animated tilt="face" />
+              <BookCover livre={livre} />
             </div>
           </div>
         </div>
