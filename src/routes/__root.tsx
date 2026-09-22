@@ -189,7 +189,7 @@ function RootComponent() {
   useEffect(() => {
     if (pathname.startsWith("/admin")) return;
     try {
-      void DashboardApi.trackVisitor(getVisitorId()).catch(() => undefined);
+      void DashboardApi.trackVisitor(getVisitorId(), pathname).catch(() => undefined);
     } catch {
       // Le suivi ne doit jamais empêcher le chargement du site.
     }

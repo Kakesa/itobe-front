@@ -261,7 +261,7 @@ export const DashboardService = {
     let visiteurs = 0;
     try {
       const stats = await DashboardApi.getVisitorStats();
-      visiteurs = Number(stats?.data?.visiteurs ?? 0);
+      visiteurs = Number(stats?.data?.uniqueVisitors ?? stats?.data?.visiteurs ?? 0);
     } catch {
       visiteurs = 0;
     }
