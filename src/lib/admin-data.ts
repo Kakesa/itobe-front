@@ -66,8 +66,6 @@ export const menuMediaAdmin: {
     items: [
       { to: "/admin/media/mon-profil", label: "Mon profil", roles: ["admin"] },
       { to: "/admin/media/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
-      { to: "/admin/media/parametres", label: "Plateforme", roles: ["admin"] },
-      { to: "/admin/media/roles", label: "Rôles & Permissions", roles: ["admin"] },
     ],
   },
 ];
