@@ -269,6 +269,8 @@ export const UsersApi = {
 
 export const DashboardApi = {
   getStats: () => api.get("/dashboard"),
+  getVisitorStats: () => api.get("/dashboard/visitors"),
+  trackVisitor: (visitorId: string) => api.post("/dashboard/visitors", { visitorId }),
 };
 
 export const ArticlesApi = {

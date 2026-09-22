@@ -18,6 +18,7 @@ export type VueEnsemble = {
     categories: number;
     commentaires: number;
     vues: number;
+    visiteurs: number;
     tempsLectureMoyen: string;
   };
   edition: {

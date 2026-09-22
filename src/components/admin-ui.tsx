@@ -19,10 +19,12 @@ export function AccesRestreint({ requis }: { requis: Role[] }) {
 export function BarreOutils({
   titre,
   action,
+  onAction,
   children,
 }: {
   titre: string;
   action: string;
+  onAction?: () => void;
   children?: ReactNode;
 }) {
   return (
@@ -31,6 +33,7 @@ export function BarreOutils({
       {children}
       <button
         type="button"
+        onClick={onAction}
         className="ml-auto rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
       >
         {action}

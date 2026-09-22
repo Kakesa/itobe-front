@@ -59,6 +59,7 @@ export const menuMediaAdmin: {
     items: [
       { to: "/admin/media/rapports", label: "Rapports", roles: ["admin"] },
       { to: "/admin/media/statistiques", label: "Statistiques", roles: ["admin"] },
+      { to: "/admin/media/visiteurs", label: "Visiteurs", roles: ["admin"] },
     ],
   },
   {

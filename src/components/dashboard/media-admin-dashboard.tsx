@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Newspaper,
   Timer,
+  Users,
 } from "lucide-react";
 import { adminDashboardQuery } from "@/lib/dashboard/queries";
 import type { PeriodeFiltre, VueEnsemble } from "@/lib/dashboard/types";
@@ -68,6 +69,12 @@ const MEDIA_KPIS = [
     iconClassName: "bg-indigo-500/15 text-indigo-700",
   },
   {
+    label: "Visiteurs",
+    key: "visiteurs" as const,
+    icon: Users,
+    iconClassName: "bg-teal-500/15 text-teal-700",
+  },
+  {
     label: "Temps lecture moyen",
     key: "tempsLectureMoyen" as const,
     icon: Timer,
@@ -76,7 +83,7 @@ const MEDIA_KPIS = [
 ] as const;
 
 function valeurKpiMedia(key: (typeof MEDIA_KPIS)[number]["key"], media: VueEnsemble["media"]) {
-  if (key === "vues") return fmt(media.vues);
+  if (key === "vues" || key === "visiteurs") return fmt(media[key]);
   return media[key];
 }
 

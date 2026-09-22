@@ -47,6 +47,7 @@ export const ADMIN_MENU_ICONS: Record<string, typeof LayoutDashboard> = {
   Newsletter: Mail,
   Rapports: FileText,
   Statistiques: BarChart3,
+  Visiteurs: Users,
   Paramètres: Settings,
   Plateforme: Settings,
   "Mon profil": UserCircle,

@@ -20,6 +20,17 @@ import { cn } from "../lib/utils";
 import { Toaster } from "../components/ui/sonner";
 import { AdminDataProvider } from "../lib/admin/store";
 import { LocaleProvider } from "../i18n";
+import { DashboardApi } from "../lib/api-client";
+
+const VISITOR_ID_KEY = "itobe.visitorId";
+
+function getVisitorId() {
+  const current = localStorage.getItem(VISITOR_ID_KEY);
+  if (current) return current;
+  const visitorId = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+  localStorage.setItem(VISITOR_ID_KEY, visitorId);
+  return visitorId;
+}
 
 function NotFoundComponent() {
   return (
@@ -174,6 +185,15 @@ function RootComponent() {
       document.documentElement.classList.remove("theme-media");
     };
   }, [themeEdition, themeProduction, themeMedia]);
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+    try {
+      void DashboardApi.trackVisitor(getVisitorId()).catch(() => undefined);
+    } catch {
+      // Le suivi ne doit jamais empêcher le chargement du site.
+    }
+  }, [pathname]);
 
   // Accueil / reader / admin / production = chrome dédié (pas le header public).
   const sansChrome =

@@ -15,7 +15,7 @@ import {
 } from "@/lib/data";
 import { commandes } from "@/lib/admin-data";
 import { lireSession } from "@/lib/auth";
-import { BibliothequeApi, CommandesApi, LivresApi, getToken } from "@/lib/api-client";
+import { BibliothequeApi, CommandesApi, DashboardApi, LivresApi, getToken } from "@/lib/api-client";
 import type {
   ActiviteItem,
   AlerteItem,
@@ -94,7 +94,11 @@ function enrichirArticles(): ArticleDashboard[] {
   }));
 }
 
-function construireVue(livresD: LivreDashboard[], articlesD: ArticleDashboard[]): VueEnsemble {
+function construireVue(
+  livresD: LivreDashboard[],
+  articlesD: ArticleDashboard[],
+  visiteurs = 0,
+): VueEnsemble {
   const payees = commandes.filter((c) => c.statut === "Payée");
   const echoues = commandes.filter((c) => c.statut === "Échouée");
   const revenusTotaux = payees.reduce((s, c) => s + c.montant, 0);
@@ -108,6 +112,7 @@ function construireVue(livresD: LivreDashboard[], articlesD: ArticleDashboard[])
       categories: categoriesMedia.length,
       commentaires: articlesD.reduce((s, a) => s + a.commentaires, 0),
       vues: articlesD.reduce((s, a) => s + a.vues, 0),
+      visiteurs,
       tempsLectureMoyen: "4 min 20 s",
     },
     edition: {
@@ -253,7 +258,14 @@ export const DashboardService = {
     await delay();
     const derniersLivres = enrichirLivres();
     const derniersArticles = enrichirArticles();
-    const vue = construireVue(derniersLivres, derniersArticles);
+    let visiteurs = 0;
+    try {
+      const stats = await DashboardApi.getVisitorStats();
+      visiteurs = Number(stats?.data?.visiteurs ?? 0);
+    } catch {
+      visiteurs = 0;
+    }
+    const vue = construireVue(derniersLivres, derniersArticles, visiteurs);
 
     const formats: Record<string, number> = {};
     livres.forEach((l) => l.formats.forEach((f) => { formats[f] = (formats[f] ?? 0) + 1; }));
