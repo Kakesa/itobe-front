@@ -86,6 +86,7 @@ import { Route as AdminEditionPaiementsRouteImport } from './routes/admin.editio
 import { Route as AdminEditionPromotionsRouteImport } from './routes/admin.edition.promotions'
 import { Route as AdminEditionRapportsRouteImport } from './routes/admin.edition.rapports'
 import { Route as AdminEditionStatistiquesRouteImport } from './routes/admin.edition.statistiques'
+import { Route as AdminEditionVisiteursRouteImport } from './routes/admin.edition.visiteurs'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
 import { Route as AdminMediaActualitesRouteImport } from './routes/admin.media.actualites'
 import { Route as AdminMediaArticlesRouteImport } from './routes/admin.media.articles'
@@ -500,6 +501,11 @@ const AdminEditionStatistiquesRoute =
     path: '/statistiques',
     getParentRoute: () => AdminEditionRoute,
   } as any)
+const AdminEditionVisiteursRoute = AdminEditionVisiteursRouteImport.update({
+  id: '/visiteurs',
+  path: '/visiteurs',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
 const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -721,6 +727,7 @@ export interface FileRoutesByFullPath {
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
   '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
@@ -818,6 +825,7 @@ export interface FileRoutesByTo {
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
   '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
@@ -924,6 +932,7 @@ export interface FileRoutesById {
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
   '/admin/media/calendrier': typeof AdminMediaCalendrierRoute
@@ -1032,6 +1041,7 @@ export interface FileRouteTypes {
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
     | '/admin/edition/statistiques'
+    | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
     | '/admin/media/calendrier'
@@ -1129,6 +1139,7 @@ export interface FileRouteTypes {
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
     | '/admin/edition/statistiques'
+    | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
     | '/admin/media/calendrier'
@@ -1234,6 +1245,7 @@ export interface FileRouteTypes {
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
     | '/admin/edition/statistiques'
+    | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
     | '/admin/media/calendrier'
@@ -1831,6 +1843,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEditionStatistiquesRouteImport
       parentRoute: typeof AdminEditionRoute
     }
+    '/admin/edition/visiteurs': {
+      id: '/admin/edition/visiteurs'
+      path: '/visiteurs'
+      fullPath: '/admin/edition/visiteurs'
+      preLoaderRoute: typeof AdminEditionVisiteursRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
     '/admin/media/': {
       id: '/admin/media/'
       path: '/'
@@ -2035,6 +2054,7 @@ interface AdminEditionRouteChildren {
   AdminEditionPromotionsRoute: typeof AdminEditionPromotionsRoute
   AdminEditionRapportsRoute: typeof AdminEditionRapportsRoute
   AdminEditionStatistiquesRoute: typeof AdminEditionStatistiquesRoute
+  AdminEditionVisiteursRoute: typeof AdminEditionVisiteursRoute
   AdminEditionIndexRoute: typeof AdminEditionIndexRoute
 }
 
@@ -2050,6 +2070,7 @@ const AdminEditionRouteChildren: AdminEditionRouteChildren = {
   AdminEditionPromotionsRoute: AdminEditionPromotionsRoute,
   AdminEditionRapportsRoute: AdminEditionRapportsRoute,
   AdminEditionStatistiquesRoute: AdminEditionStatistiquesRoute,
+  AdminEditionVisiteursRoute: AdminEditionVisiteursRoute,
   AdminEditionIndexRoute: AdminEditionIndexRoute,
 }
 

@@ -20,7 +20,7 @@ const chartConfig: ChartConfig = {
   uniqueVisitors: { label: "Visiteurs uniques", color: "var(--ochre)" },
 };
 
-function VisiteursAdminPage() {
+export function VisiteursAdminPage() {
   const { role } = useRole();
   const [period, setPeriod] = useState<Period>("7j");
   const { data, isLoading, refetch } = useQuery({

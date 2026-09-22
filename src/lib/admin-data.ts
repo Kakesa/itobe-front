@@ -103,6 +103,7 @@ export const menuEditionAdmin: {
     items: [
       { to: "/admin/edition/rapports", label: "Rapports", roles: ["admin", "editeur"] },
       { to: "/admin/edition/statistiques", label: "Statistiques", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/visiteurs", label: "Visiteurs", roles: ["admin"] },
     ],
   },
   {
