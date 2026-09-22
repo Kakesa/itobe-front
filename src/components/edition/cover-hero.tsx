@@ -1,12 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { stripHtml } from "@/components/admin/article-rich-editor";
-import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCover } from "@/components/book-cover";
 import { useI18n } from "@/i18n";
 import type { Livre } from "@/lib/data";
-import { getAuteur, nomAuteur } from "@/lib/data";
 
 type CoverHeroProps = {
   livres: Livre[];
@@ -15,52 +14,25 @@ type CoverHeroProps = {
 
 const ANIM_MS = 980;
 
-function formatParution(iso: string, locale: string) {
-  try {
-    return new Date(iso).toLocaleDateString(locale === "en" ? "en-GB" : "fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-}
-
 function prefersReducedMotion() {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function HeroCopy({
   livre,
-  locale,
   badge,
-  publishedLabel,
-  pagesLabel,
   cta,
 }: {
   livre: Livre;
-  locale: string;
   badge: string;
-  publishedLabel: string;
-  pagesLabel: string;
   cta: string;
 }) {
-  const auteur = getAuteur(livre.auteur);
   const lead = stripHtml(livre.resume ?? "");
   return (
     <>
       <p className="edition-cover-hero__badge">{badge}</p>
       <p className="edition-cover-hero__genre">{livre.categorie}</p>
       <h1 className="edition-cover-hero__title">{livre.titre}</h1>
-      <p className="edition-cover-hero__author">
-        <AuthorAvatar auteur={auteur} nom={nomAuteur(livre.auteur)} size="sm" />
-        {nomAuteur(livre.auteur)}
-      </p>
-      <p className="edition-cover-hero__meta">
-        {publishedLabel} : {formatParution(livre.publication, locale)}
-        {livre.pages ? ` · ${livre.pages} ${pagesLabel}` : ""}
-      </p>
       {lead ? (
         <p className="edition-cover-hero__lead">
           {lead.length > 180 ? `${lead.slice(0, 177).trim()}…` : lead}
@@ -79,7 +51,7 @@ function layerClass(kind: "enter" | "exit", dir: 1 | -1) {
 }
 
 export function EditionCoverHero({ livres, loading }: CoverHeroProps) {
-  const { locale, t } = useI18n();
+  const { t } = useI18n();
   const h = t.editionHome;
   const [index, setIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
@@ -174,10 +146,7 @@ export function EditionCoverHero({ livres, loading }: CoverHeroProps) {
   if (!livre) return null;
 
   const copyProps = {
-    locale,
     badge: h.heroBadge,
-    publishedLabel: h.publishedLabel,
-    pagesLabel: h.pagesLabel,
     cta: h.heroLearnMore,
   };
 
