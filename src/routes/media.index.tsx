@@ -1,166 +1,190 @@
 /* eslint-disable prettier/prettier */
-import { createFileRoute } from "@tanstack/react-router";
-import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Play } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArticleCover } from "@/components/article-cover";
 import { ArticlePostCard } from "@/components/media/article-post";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticles } from "@/hooks/use-articles";
+import { YoutubeApi } from "@/lib/api-client";
 import { categoriesMedia, getAuteur } from "@/lib/data";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/media/")({
   head: () => ({
     meta: [
-      { title: "Articles — Actualités et chroniques | Itobe" },
+      { title: "Accueil — Neno | Itobe Média" },
       {
         name: "description",
         content:
-          "Analyses, chroniques et entretiens autour du livre, de la culture et des industries créatives.",
+          "Actualités, articles, interviews et chroniques — le portail média Itobe. Découvrez la une, les dernières publications et les vidéos Neno.",
       },
-      { property: "og:title", content: "Articles — Itobe Média" },
+      { property: "og:title", content: "Accueil — Neno | Itobe Média" },
       {
         property: "og:description",
-        content: "Actualités, chroniques et interviews du portail média Itobe.",
+        content: "La rédaction Itobe : articles, interviews, chroniques et vidéos.",
       },
       { property: "og:url", content: "/media" },
     ],
     links: [{ rel: "canonical", href: "/media" }],
   }),
-  component: MediaPage,
+  component: MediaHomePage,
 });
 
-function FeedSkeleton() {
-  return (
-    <div className="animate-pulse overflow-hidden border border-border bg-card">
-      <div className="flex items-center gap-3 px-4 pb-2 pt-3">
-        <Skeleton className="size-10 shrink-0 rounded-full" />
-        <div className="flex-1 space-y-2">
-          <Skeleton className="h-3 w-28" />
-          <Skeleton className="h-2.5 w-40" />
-        </div>
-      </div>
-      <Skeleton className="aspect-video w-full" />
-      <Skeleton className="h-16 w-full" />
-    </div>
-  );
-}
+type YoutubeVideo = {
+  id: string;
+  titre: string;
+  thumbnail?: string;
+  playlistTitle?: string;
+};
 
-function MediaPage() {
+function MediaHomePage() {
+  const { t } = useI18n();
   const { articles, loading } = useArticles();
-  const [cat, setCat] = useState<string>("Tous");
-  const [query, setQuery] = useState("");
+  const [videos, setVideos] = useState<YoutubeVideo[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
 
-  const liste = useMemo(() => {
-    let items = cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat);
+  const aLaUne = useMemo(() => {
+    const featured = articles.filter((a) => a.populaire);
+    if (featured.length > 0) return featured.slice(0, 1)[0];
+    return articles[0] ?? null;
+  }, [articles]);
 
-    const q = query.trim().toLowerCase();
-    if (!q) return items;
+  const recents = useMemo(() => {
+    const exclude = aLaUne?.slug;
+    return articles.filter((a) => a.slug !== exclude).slice(0, 6);
+  }, [articles, aLaUne]);
 
-    return items.filter((a) => {
-      const auteurNom = getAuteur(a.auteur)?.nom ?? "";
-      return (
-        a.titre.toLowerCase().includes(q) ||
-        a.chapo.toLowerCase().includes(q) ||
-        a.categorie.toLowerCase().includes(q) ||
-        auteurNom.toLowerCase().includes(q) ||
-        a.tags.some((tag) => tag.toLowerCase().includes(q))
-      );
-    });
-  }, [articles, cat, query]);
-
-  const { une, publications } = useMemo(() => {
-    const featured = liste.filter((a) => a.populaire);
-    const featuredList = featured.length > 0 ? featured : liste.length > 0 ? [liste[0]] : [];
-    const slugs = new Set(featuredList.map((a) => a.slug));
-    const rest = liste.filter((a) => !slugs.has(a.slug));
-    return { une: featuredList, publications: rest };
-  }, [liste]);
-
-  const filterOptions = ["Tous", ...categoriesMedia];
+  useEffect(() => {
+    let annule = false;
+    (async () => {
+      setVideosLoading(true);
+      try {
+        const res = await YoutubeApi.getVideos(6);
+        if (!annule) setVideos(res?.data ?? []);
+      } catch {
+        if (!annule) setVideos([]);
+      } finally {
+        if (!annule) setVideosLoading(false);
+      }
+    })();
+    return () => {
+      annule = true;
+    };
+  }, []);
 
   return (
-    <section id="blog-section" className="media-dark-page media-blog-page py-10 sm:py-14 lg:py-16">
-      <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
-        <header className="space-y-2">
-          <p className="kicker mb-0">Itobe Média</p>
-          <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">Articles</h1>
-          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Analyses, chroniques et coulisses — le prolongement écrit des conversations Itobe.
+    <div className="media-dark-page media-home">
+      <section className="media-home__hero">
+        <div className="media-home__hero-inner">
+          <p className="media-home__brand">Neno</p>
+          <h1 className="media-home__title">
+            Actualités, articles, interviews et chroniques
+          </h1>
+          <p className="media-home__lead">
+            La rédaction Itobe explore la culture, la littérature et les idées
+            africaines — en texte et en vidéo.
           </p>
-        </header>
-
-        <div className="space-y-4">
-          <div className="relative max-w-xl">
-            <Search className="absolute left-0 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Rechercher par titre, catégorie, auteur, mot-clé…"
-              className="w-full border-b border-border bg-transparent py-2 pl-7 pr-4 text-sm transition focus:border-accent/50 focus:outline-none"
-            />
-          </div>
-
-          <div className="media-blog-filters flex items-center gap-4 overflow-x-auto border-b border-border pb-2">
-            {filterOptions.map((c) => {
-              const active = cat === c;
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => setCat(c)}
-                  className={`shrink-0 cursor-pointer whitespace-nowrap border-b-2 pb-2 text-sm transition ${
-                    active
-                      ? "border-accent text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {c}
-                </button>
-              );
-            })}
+          <div className="media-home__actions">
+            <Link to="/media/articles" className="media-home__btn media-home__btn--primary">
+              {t.nav.media.articles}
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+            <Link to="/media/videos" className="media-home__btn media-home__btn--ghost">
+              {t.nav.media.videos}
+            </Link>
           </div>
         </div>
+      </section>
 
-        {loading && (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-            <FeedSkeleton />
-            <FeedSkeleton />
-            <FeedSkeleton />
+      <div className="media-home__body mx-auto max-w-7xl space-y-16 px-4 py-14 sm:px-6 lg:space-y-20 lg:px-8 lg:py-20">
+        <section aria-labelledby="media-home-une">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <p className="kicker mb-1">À la une</p>
+              <h2 id="media-home-une" className="font-display text-2xl font-medium sm:text-3xl">
+                Le dossier du moment
+              </h2>
+            </div>
+            <Link
+              to="/media/articles"
+              className="hidden items-center gap-1.5 text-sm font-medium text-primary sm:inline-flex"
+            >
+              Tous les articles
+              <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
           </div>
-        )}
 
-        {!loading && liste.length === 0 && (
-          <div className="space-y-2 py-12 text-center">
-            <p className="font-display text-xl text-muted-foreground">Aucun article trouvé</p>
-            <p className="text-sm text-muted-foreground">
-              Essayez un autre mot-clé ou une autre catégorie.
-            </p>
-          </div>
-        )}
+          {loading && <Skeleton className="aspect-[21/9] w-full rounded-sm" />}
 
-        {!loading && une.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="font-display text-lg font-medium">À la une</h2>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              {une.map((a, i) => (
-                <div key={a.slug} className={i === 0 ? "md:col-span-2 lg:col-span-2" : ""}>
-                  <ArticlePostCard
-                    article={a}
-                    auteur={getAuteur(a.auteur)}
-                    featured={i === 0}
-                    index={i}
+          {!loading && aLaUne && (
+            <Link
+              to="/media/$slug"
+              params={{ slug: aLaUne.slug }}
+              className="media-home__feature group block overflow-hidden border border-border"
+            >
+              <div className="grid md:grid-cols-2">
+                <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[20rem]">
+                  <ArticleCover
+                    src={aLaUne.couverture || aLaUne.image}
+                    alt={aLaUne.titre}
+                    className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+                <div className="flex flex-col justify-center bg-card p-6 sm:p-8 lg:p-10">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                    {aLaUne.categorie}
+                  </p>
+                  <h3 className="mt-3 font-display text-2xl leading-snug sm:text-3xl">
+                    {aLaUne.titre}
+                  </h3>
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                    {aLaUne.chapo}
+                  </p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-primary">
+                    Lire l&apos;article
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          )}
 
-        {!loading && publications.length > 0 && (
-          <div className="space-y-4">
-            <h2 className="font-display text-lg font-medium">Publications</h2>
+          {!loading && !aLaUne && (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              Aucun article pour le moment.
+            </p>
+          )}
+        </section>
+
+        <section aria-labelledby="media-home-recents">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <p className="kicker mb-1">Publications</p>
+              <h2 id="media-home-recents" className="font-display text-2xl font-medium sm:text-3xl">
+                Derniers articles
+              </h2>
+            </div>
+            <Link
+              to="/media/articles"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary sm:hidden"
+            >
+              Voir tout
+              <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
+          </div>
+
+          {loading && (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+              <Skeleton className="aspect-[4/5] w-full" />
+              <Skeleton className="aspect-[4/5] w-full" />
+              <Skeleton className="aspect-[4/5] w-full" />
+            </div>
+          )}
+
+          {!loading && recents.length > 0 && (
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-              {publications.map((a, i) => (
+              {recents.map((a, i) => (
                 <ArticlePostCard
                   key={a.slug}
                   article={a}
@@ -169,44 +193,107 @@ function MediaPage() {
                 />
               ))}
             </div>
-          </div>
-        )}
+          )}
+        </section>
 
-        <section className="media-blog-newsletter mx-auto max-w-3xl border-t border-border pt-12 text-center">
-          <p className="kicker mb-4">Newsletter</p>
-          <h2 className="mb-3 font-display text-3xl font-medium leading-tight sm:text-4xl">
-            Recevez les nouveaux articles
-          </h2>
-          <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-            Culture, édition et coulisses d&apos;Itobe — directement dans votre boîte mail.
-          </p>
-          <form
-            className="mx-auto max-w-lg space-y-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              (e.currentTarget as HTMLFormElement).reset();
-            }}
-          >
-            <div className="flex flex-col gap-0 border-b border-border transition focus-within:border-accent/50 sm:flex-row">
-              <input
-                type="email"
-                required
-                placeholder="Votre adresse email"
-                className="min-w-0 flex-1 bg-transparent px-4 py-4 text-sm focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="flex shrink-0 cursor-pointer items-center justify-center gap-2 bg-primary px-6 py-4 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:opacity-90"
-              >
-                S&apos;abonner
-              </button>
+        <section aria-labelledby="media-home-cats">
+          <div className="mb-6">
+            <p className="kicker mb-1">Rubriques</p>
+            <h2 id="media-home-cats" className="font-display text-2xl font-medium sm:text-3xl">
+              Explorer par catégorie
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {categoriesMedia.map((c) => (
+              <Link key={c} to="/media/articles" className="media-home__chip">
+                {c}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section aria-labelledby="media-home-videos">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <p className="kicker mb-1">Neno</p>
+              <h2 id="media-home-videos" className="font-display text-2xl font-medium sm:text-3xl">
+                Vidéos récentes
+              </h2>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Pas de spam. Seulement du contenu utile. Désabonnement à tout moment.
+            <Link
+              to="/media/videos"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+            >
+              {t.nav.media.videos}
+              <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
+          </div>
+
+          {videosLoading && (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <Skeleton className="aspect-video w-full" />
+              <Skeleton className="aspect-video w-full" />
+              <Skeleton className="aspect-video w-full" />
+            </div>
+          )}
+
+          {!videosLoading && videos.length > 0 && (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {videos.slice(0, 3).map((v) => (
+                <Link
+                  key={v.id}
+                  to="/media/videos"
+                  className="media-home__video group overflow-hidden border border-border bg-card"
+                >
+                  <div className="relative aspect-video overflow-hidden bg-black">
+                    {v.thumbnail ? (
+                      <img
+                        src={v.thumbnail}
+                        alt=""
+                        className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : null}
+                    <span className="absolute inset-0 flex items-center justify-center bg-black/25">
+                      <span className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                        <Play className="size-5 fill-current" aria-hidden />
+                      </span>
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    {v.playlistTitle ? (
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                        {v.playlistTitle}
+                      </p>
+                    ) : null}
+                    <p className="mt-1 line-clamp-2 text-sm font-medium leading-snug">{v.titre}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {!videosLoading && videos.length === 0 && (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              Les vidéos seront bientôt disponibles.
             </p>
-          </form>
+          )}
+        </section>
+
+        <section className="media-home__about border-t border-border pt-12 text-center">
+          <p className="kicker mb-3">{t.nav.media.aPropos}</p>
+          <h2 className="mx-auto max-w-2xl font-display text-2xl font-medium leading-snug sm:text-3xl">
+            Un voyage à travers les histoires remarquables de l&apos;Afrique
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Conversations, reportages et découvertes pour rendre la culture africaine
+            plus accessible et captivante.
+          </p>
+          <Link to="/media/a-propos" className="media-home__btn media-home__btn--primary mt-8 inline-flex">
+            {t.nav.media.aPropos}
+            <ArrowRight className="size-4" aria-hidden />
+          </Link>
         </section>
       </div>
-    </section>
+    </div>
   );
 }

@@ -4932,6 +4932,134 @@ main:has(.media-dark-page) + .site-footer {
   color: #fff;
 }
 
+/* ——— Accueil Média ——— */
+.media-home__hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: min(72vh, 36rem);
+  padding: clamp(5.5rem, 12vw, 7rem) 1.25rem 3rem;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in oklab, var(--neno-purple) 45%, transparent), transparent 70%),
+    #000;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.media-home__hero-inner {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+}
+
+.media-home__brand {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--neno-pink) 75%, white);
+}
+
+.media-home__title {
+  margin: 0.85rem 0 0;
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.5vw, 3.35rem);
+  font-weight: 500;
+  line-height: 1.12;
+  color: #fff;
+}
+
+.media-home__lead {
+  margin: 1.1rem 0 0;
+  max-width: 36rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 0.68);
+}
+
+.media-home__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.media-home__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.8rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: filter 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.media-home__btn--primary {
+  background: var(--neno-pink);
+  color: #fff;
+}
+
+.media-home__btn--primary:hover {
+  filter: brightness(1.08);
+}
+
+.media-home__btn--ghost {
+  border: 1px solid rgb(255 255 255 / 0.28);
+  color: #fff;
+}
+
+.media-home__btn--ghost:hover {
+  border-color: rgb(255 255 255 / 0.55);
+  background: rgb(255 255 255 / 0.06);
+}
+
+.media-home__feature {
+  text-decoration: none;
+  color: inherit;
+}
+
+.media-home__chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.95rem;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.78);
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.media-home__chip:hover {
+  border-color: var(--neno-pink);
+  color: #fff;
+  background: color-mix(in oklab, var(--neno-pink) 12%, transparent);
+}
+
+.media-home__video {
+  text-decoration: none;
+  color: inherit;
+}
+
+.media-home__about .media-home__btn {
+  margin-top: 1.75rem;
+}
+
+@media (max-width: 639px) {
+  .media-home__hero {
+    min-height: auto;
+    padding-top: 5rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .media-home__title {
+    max-width: none;
+  }
+}
+
 .media-videos-page .media-videos-card__thumb {
   background: #161616;
 }

@@ -32,7 +32,8 @@ export function SiteHeader() {
   const liens = useMemo(() => {
     const base: Lien[] = estMedia
       ? [
-          { to: "/media", label: t.nav.media.articles, exact: true },
+          { to: "/media", label: t.nav.media.accueil, exact: true },
+          { to: "/media/articles", label: t.nav.media.articles },
           { to: "/media/videos", label: t.nav.media.videos },
           { to: "/media/a-propos", label: t.nav.media.aPropos },
           { to: "/contact", label: t.nav.media.contact },

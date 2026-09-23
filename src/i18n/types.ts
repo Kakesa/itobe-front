@@ -21,6 +21,7 @@ export type Dictionary = {
       tagline: string;
     };
     media: {
+      accueil: string;
       articles: string;
       videos: string;
       aPropos: string;

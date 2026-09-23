@@ -68,6 +68,7 @@ import { Route as EntrepriseContactRouteImport } from './routes/entreprise.conta
 import { Route as MediaIndexRouteImport } from './routes/media.index'
 import { Route as MediaSlugRouteImport } from './routes/media.$slug'
 import { Route as MediaAProposRouteImport } from './routes/media.a-propos'
+import { Route as MediaArticlesRouteImport } from './routes/media.articles'
 import { Route as MediaVideosRouteImport } from './routes/media.videos'
 import { Route as ProductionIndexRouteImport } from './routes/production.index'
 import { Route as ProductionAboutRouteImport } from './routes/production.about'
@@ -410,6 +411,11 @@ const MediaAProposRoute = MediaAProposRouteImport.update({
   path: '/a-propos',
   getParentRoute: () => MediaRoute,
 } as any)
+const MediaArticlesRoute = MediaArticlesRouteImport.update({
+  id: '/articles',
+  path: '/articles',
+  getParentRoute: () => MediaRoute,
+} as any)
 const MediaVideosRoute = MediaVideosRouteImport.update({
   id: '/videos',
   path: '/videos',
@@ -705,6 +711,7 @@ export interface FileRoutesByFullPath {
   '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
+  '/media/articles': typeof MediaArticlesRoute
   '/media/videos': typeof MediaVideosRoute
   '/production/about': typeof ProductionAboutRoute
   '/production/contact': typeof ProductionContactRoute
@@ -804,6 +811,7 @@ export interface FileRoutesByTo {
   '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
+  '/media/articles': typeof MediaArticlesRoute
   '/media/videos': typeof MediaVideosRoute
   '/production/about': typeof ProductionAboutRoute
   '/production/contact': typeof ProductionContactRoute
@@ -910,6 +918,7 @@ export interface FileRoutesById {
   '/entreprise/contact': typeof EntrepriseContactRoute
   '/media/$slug': typeof MediaSlugRoute
   '/media/a-propos': typeof MediaAProposRoute
+  '/media/articles': typeof MediaArticlesRoute
   '/media/videos': typeof MediaVideosRoute
   '/production/about': typeof ProductionAboutRoute
   '/production/contact': typeof ProductionContactRoute
@@ -1019,6 +1028,7 @@ export interface FileRouteTypes {
     | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
+    | '/media/articles'
     | '/media/videos'
     | '/production/about'
     | '/production/contact'
@@ -1118,6 +1128,7 @@ export interface FileRouteTypes {
     | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
+    | '/media/articles'
     | '/media/videos'
     | '/production/about'
     | '/production/contact'
@@ -1223,6 +1234,7 @@ export interface FileRouteTypes {
     | '/entreprise/contact'
     | '/media/$slug'
     | '/media/a-propos'
+    | '/media/articles'
     | '/media/videos'
     | '/production/about'
     | '/production/contact'
@@ -1715,6 +1727,13 @@ declare module '@tanstack/react-router' {
       path: '/a-propos'
       fullPath: '/media/a-propos'
       preLoaderRoute: typeof MediaAProposRouteImport
+      parentRoute: typeof MediaRoute
+    }
+    '/media/articles': {
+      id: '/media/articles'
+      path: '/articles'
+      fullPath: '/media/articles'
+      preLoaderRoute: typeof MediaArticlesRouteImport
       parentRoute: typeof MediaRoute
     }
     '/media/videos': {
@@ -2255,6 +2274,7 @@ const EntrepriseRouteWithChildren = EntrepriseRoute._addFileChildren(
 interface MediaRouteChildren {
   MediaSlugRoute: typeof MediaSlugRoute
   MediaAProposRoute: typeof MediaAProposRoute
+  MediaArticlesRoute: typeof MediaArticlesRoute
   MediaVideosRoute: typeof MediaVideosRoute
   MediaIndexRoute: typeof MediaIndexRoute
 }
@@ -2262,6 +2282,7 @@ interface MediaRouteChildren {
 const MediaRouteChildren: MediaRouteChildren = {
   MediaSlugRoute: MediaSlugRoute,
   MediaAProposRoute: MediaAProposRoute,
+  MediaArticlesRoute: MediaArticlesRoute,
   MediaVideosRoute: MediaVideosRoute,
   MediaIndexRoute: MediaIndexRoute,
 }

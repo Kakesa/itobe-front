@@ -17,6 +17,7 @@ const en: Dictionary = {
       tagline: "Publishing house",
     },
     media: {
+      accueil: "Home",
       articles: "Articles",
       videos: "Videos",
       aPropos: "About",

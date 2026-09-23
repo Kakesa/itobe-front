@@ -24,7 +24,8 @@ export function SiteFooter() {
 
   const liensMedia = useMemo(
     () => [
-      { label: t.nav.media.articles, to: "/media" as const },
+      { label: t.nav.media.accueil, to: "/media" as const },
+      { label: t.nav.media.articles, to: "/media/articles" as const },
       { label: t.nav.media.videos, to: "/media/videos" as const },
       { label: t.nav.media.aPropos, to: "/media/a-propos" as const },
       { label: t.nav.media.contact, to: "/contact" as const },
