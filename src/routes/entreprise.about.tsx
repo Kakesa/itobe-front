@@ -133,7 +133,8 @@ function EntrepriseAbout() {
     if (!track) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduced) {
+    const mobile = window.matchMedia("(max-width: 767px)").matches;
+    if (reduced || mobile) {
       track.style.setProperty("--read-progress", "1");
       track.classList.add("entreprise-about--ready");
       return;
@@ -155,12 +156,21 @@ function EntrepriseAbout() {
       if (!raf) raf = requestAnimationFrame(update);
     };
 
+    const onResize = () => {
+      if (window.matchMedia("(max-width: 767px)").matches) {
+        track.style.setProperty("--read-progress", "1");
+        track.classList.add("entreprise-about--ready");
+        return;
+      }
+      onScroll();
+    };
+
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
@@ -199,71 +209,74 @@ function EntrepriseAbout() {
 
       <article className="groupe-founders entreprise-about__founders px-4 pb-20 pt-16 md:px-8 md:pt-24">
         <div className="entreprise-about__founders-inner">
-        <section aria-labelledby="fondateurs-title">
-          <header className="max-w-3xl">
-            <p className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground">
-              Fondateurs
-            </p>
-            <h2
-              id="fondateurs-title"
-              className="mt-3 font-display text-4xl leading-[1.12] md:text-6xl"
-            >
-              Les voix à l&apos;origine.
-            </h2>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-              ITOBE Entreprises naît d&apos;une conviction simple : les récits africains méritent une
-              maison capable de les porter en articles, en livres et à l&apos;écran — sans les diluer.
-            </p>
-          </header>
-
-          <ol className="mt-16 space-y-16 md:mt-24 md:space-y-24">
-            {fondateurs.map((f, i) => (
-              <li
-                key={f.nom}
-                className={`groupe-founders__card groupe-founders__card--${f.ton} ${i % 2 === 1 ? "groupe-founders__card--reverse" : ""}`}
+          <section aria-labelledby="fondateurs-title">
+            <header className="max-w-3xl">
+              <p className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground">
+                Fondateurs
+              </p>
+              <h2
+                id="fondateurs-title"
+                className="mt-3 font-display text-4xl leading-[1.12] md:text-6xl"
               >
-                <div
-                  className={`groupe-founders__portrait groupe-founders__portrait--${f.ton}${f.photo ? " groupe-founders__portrait--photo" : ""}`}
+                Les voix à l&apos;origine.
+              </h2>
+              <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
+                ITOBE Entreprises naît d&apos;une conviction simple : les récits africains méritent
+                une maison capable de les porter en articles, en livres et à l&apos;écran — sans les
+                diluer.
+              </p>
+            </header>
+
+            <ol className="mt-12 space-y-14 md:mt-24 md:space-y-24">
+              {fondateurs.map((f, i) => (
+                <li
+                  key={f.nom}
+                  className={`groupe-founders__card groupe-founders__card--${f.ton} ${i % 2 === 1 ? "groupe-founders__card--reverse" : ""}`}
                 >
-                  {f.photo ? (
-                    <img
-                      src={f.photo}
-                      alt={f.nom}
-                      width={900}
-                      height={1200}
-                      className="groupe-founders__photo"
-                    />
-                  ) : null}
-                  <span className="groupe-founders__mark" aria-hidden>
-                    {f.initiales}
-                  </span>
-                  <div className="relative z-10 flex h-full flex-col justify-between p-6 md:p-8">
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-brand opacity-70">
-                      {f.index}
-                    </p>
-                    <div>
-                      <p className="font-display text-3xl leading-tight md:text-4xl">{f.nom}</p>
-                      <p className="mt-2 text-[0.72rem] font-semibold uppercase tracking-brand opacity-75">
-                        {f.lieu}
+                  <div
+                    className={`groupe-founders__portrait groupe-founders__portrait--${f.ton}${f.photo ? " groupe-founders__portrait--photo" : ""}`}
+                  >
+                    {f.photo ? (
+                      <img
+                        src={f.photo}
+                        alt={f.nom}
+                        width={900}
+                        height={1200}
+                        className="groupe-founders__photo"
+                      />
+                    ) : null}
+                    <span className="groupe-founders__mark" aria-hidden>
+                      {f.initiales}
+                    </span>
+                    <div className="relative z-10 flex h-full flex-col justify-between p-5 md:p-8">
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-brand opacity-70">
+                        {f.index}
                       </p>
+                      <div>
+                        <p className="font-display text-2xl leading-tight sm:text-3xl md:text-4xl">
+                          {f.nom}
+                        </p>
+                        <p className="mt-2 text-[0.72rem] font-semibold uppercase tracking-brand opacity-75">
+                          {f.lieu}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex flex-col justify-center py-2 md:py-4">
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-brand text-muted-foreground">
-                    {f.role}
-                  </p>
-                  <p className="mt-5 text-base leading-7 text-muted-foreground md:text-[1.05rem] md:leading-8">
-                    {f.bio}
-                  </p>
-                  <p className="mt-6 font-display text-xl leading-snug italic text-foreground md:text-2xl">
-                    « {f.citation} »
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
+                  <div className="flex flex-col justify-center py-1 md:py-4">
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-brand text-muted-foreground">
+                      {f.role}
+                    </p>
+                    <p className="mt-4 text-[0.98rem] leading-7 text-muted-foreground md:mt-5 md:text-[1.05rem] md:leading-8">
+                      {f.bio}
+                    </p>
+                    <p className="mt-5 font-display text-lg leading-snug italic text-foreground md:mt-6 md:text-2xl">
+                      « {f.citation} »
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
       </article>
     </>
