@@ -1,11 +1,23 @@
-import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
-import { GroupeShell } from "@/components/groupe-chrome";
+import { Link, Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
+import { GroupeNav, GroupeShell } from "@/components/groupe-chrome";
 
 export const Route = createFileRoute("/entreprise")({
   component: EntrepriseLayout,
 });
 
 function EntrepriseLayout() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAbout = pathname === "/entreprise/about";
+
+  if (isAbout) {
+    return (
+      <div className="entreprise-about-layout">
+        <GroupeNav tone="onDark" />
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
     <GroupeShell>
       <header className="mx-auto mb-12 flex max-w-3xl justify-center md:mb-16">
