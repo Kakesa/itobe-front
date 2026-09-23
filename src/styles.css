@@ -3107,56 +3107,56 @@ body:has(.entreprise-about) {
 
 @media (max-width: 767px) {
   .entreprise-about {
-    height: auto;
+    height: 320vh;
   }
 
   .entreprise-about__hero {
-    position: relative;
+    position: sticky;
     top: 0;
-    height: auto;
-    min-height: 100svh;
-    overflow: visible;
-    align-items: flex-start;
+    height: 100dvh;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
   }
 
   .entreprise-about__hero-inner {
-    padding: 4.75rem 1.15rem 3.25rem;
+    padding: 3.75rem 1.1rem 1.75rem;
     max-width: 100%;
+    justify-content: center;
   }
 
   .entreprise-about__brand {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     letter-spacing: 0.18em;
   }
 
   .entreprise-about__title {
-    margin-top: 0.75rem;
-    font-size: clamp(2.35rem, 13vw, 3.1rem);
+    margin-top: 0.55rem;
+    font-size: clamp(2.1rem, 11vw, 2.75rem);
     line-height: 1;
   }
 
   .entreprise-about__lead {
-    margin-top: 1.1rem;
-    font-size: 1.02rem;
-    line-height: 1.55;
+    margin-top: 0.85rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
     text-wrap: pretty;
   }
 
   .entreprise-about__lead + .entreprise-about__lead {
-    margin-top: 0.75rem;
+    margin-top: 0.55rem;
   }
 
-  .entreprise-about__word-mask {
-    display: none;
+  .entreprise-about__word {
+    margin-right: 0.22em;
   }
 
   .entreprise-about__cta {
-    margin-top: 1.5rem;
-    opacity: 1;
-    transform: none;
-    pointer-events: auto;
+    margin-top: 1.15rem;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.85rem;
     width: 100%;
-    max-width: 18rem;
+    max-width: 17rem;
     justify-content: center;
   }
 

@@ -133,8 +133,7 @@ function EntrepriseAbout() {
     if (!track) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const mobile = window.matchMedia("(max-width: 767px)").matches;
-    if (reduced || mobile) {
+    if (reduced) {
       track.style.setProperty("--read-progress", "1");
       track.classList.add("entreprise-about--ready");
       return;
@@ -156,21 +155,12 @@ function EntrepriseAbout() {
       if (!raf) raf = requestAnimationFrame(update);
     };
 
-    const onResize = () => {
-      if (window.matchMedia("(max-width: 767px)").matches) {
-        track.style.setProperty("--read-progress", "1");
-        track.classList.add("entreprise-about--ready");
-        return;
-      }
-      onScroll();
-    };
-
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
