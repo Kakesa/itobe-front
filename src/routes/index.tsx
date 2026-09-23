@@ -69,8 +69,8 @@ function Accueil() {
               </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
-              <h1 className="font-display text-3xl leading-tight md:text-4xl">Média</h1>
-              <p className="mt-3 text-sm text-muted-foreground md:text-base">
+              <h2 className="font-display text-3xl leading-tight md:text-4xl">Média</h2>
+              <p className="mt-3 text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
                 Actualités, articles, interviews et chroniques — la rédaction Itobe.
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-neno-pink">
@@ -96,11 +96,12 @@ function Accueil() {
               </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
-              <h1 className="font-display text-3xl leading-tight text-[#211c1c] md:text-4xl">
-                Maison d&apos;édition
-              </h1>
-              <p className="mt-3 text-sm text-[#383030]/80 md:text-base">
-                Faire de l&apos;Afrique le cœur de la narration mondiale.
+              <h2 className="font-display text-3xl leading-tight text-[#211c1c] md:text-4xl">
+                Édition
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-[#383030]/80 md:text-base md:leading-7">
+                Romans, essais et jeunesse — faire de l&apos;Afrique le cœur de la narration
+                mondiale.
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#ea5312]">
                 Entrer dans l&apos;édition
@@ -119,19 +120,19 @@ function Accueil() {
                 alt="Logo Itobe Productions"
                 className="max-h-[82%] w-auto max-w-[88%] object-contain mix-blend-screen transition-transform duration-700 group-hover:scale-105"
               />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-none bg-[#f3efe6]/95 px-2.5 py-1 text-xs font-medium uppercase tracking-brand text-[#241f1a] backdrop-blur-sm">
+              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-none bg-[#f3efe6]/95 px-2.5 py-1 text-xs font-medium text-[#241f1a] backdrop-blur-sm">
                 <Clapperboard className="size-3.5" />
                 Portail
               </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
-              <h1 className="font-display text-3xl leading-tight text-[#241f1a] md:text-4xl">
+              <h2 className="font-display text-3xl leading-tight text-[#241f1a] md:text-4xl">
                 Production
-              </h1>
-              <p className="mt-3 text-sm text-[#241f1a]/75 md:text-base">
+              </h2>
+              <p className="mt-3 text-sm leading-6 text-[#241f1a]/75 md:text-base md:leading-7">
                 Films, séries et documentaires — un cinéma enraciné en Afrique.
               </p>
-              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium uppercase tracking-brand text-[#8f7a55]">
+              <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#8f7a55]">
                 Entrer dans la production
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
