@@ -24,7 +24,7 @@ const fr = {
     backToPortals: "Retour aux portails",
   },
   home: {
-    lead: "Un cinéma audacieux et humain, enraciné en Afrique, conçu pour le monde.",
+    lead: "Société africaine de production cinématographique et télévisuelle basée à Kinshasa, RDC",
     heroAlt: "Silhouettes d'une équipe de tournage au crépuscule",
   },
   work: {
@@ -134,7 +134,7 @@ const en: typeof fr = {
     backToPortals: "Back to portals",
   },
   home: {
-    lead: "Bold, human cinema rooted in Africa and made for the world.",
+    lead: "An African film & television production company based in Kinshasa, DRC",
     heroAlt: "Silhouettes of a film crew at dusk",
   },
   work: {

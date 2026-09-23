@@ -7,11 +7,12 @@ export const Route = createFileRoute("/entreprise")({
 
 function EntrepriseLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isAbout = pathname === "/entreprise/about";
+  const isDarkPage =
+    pathname === "/entreprise/about" || pathname === "/entreprise/contact";
 
-  if (isAbout) {
+  if (isDarkPage) {
     return (
-      <div className="entreprise-about-layout">
+      <div className="entreprise-dark-layout">
         <GroupeNav tone="onDark" />
         <Outlet />
       </div>
