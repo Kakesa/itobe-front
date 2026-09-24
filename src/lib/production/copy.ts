@@ -24,7 +24,7 @@ const fr = {
     backToPortals: "Retour aux portails",
   },
   home: {
-    lead: "Société africaine de production cinématographique et télévisuelle basée à Kinshasa, RDC",
+    lead: "Société africaine de production\ncinématographique et télévisuelle basée à Kinshasa, RDC",
     heroAlt: "Silhouettes d'une équipe de tournage au crépuscule",
   },
   work: {
@@ -134,7 +134,7 @@ const en: typeof fr = {
     backToPortals: "Back to portals",
   },
   home: {
-    lead: "An African film & television production company based in Kinshasa, DRC",
+    lead: "An African film & television production company\nbased in Kinshasa, DRC",
     heroAlt: "Silhouettes of a film crew at dusk",
   },
   work: {

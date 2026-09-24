@@ -106,10 +106,14 @@ export function Typewriter({
 
   return (
     <Tag className={className}>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{text.replace(/\n/g, " ")}</span>
       <span aria-hidden="true">
-        {shown}
-        {reduce ? null : <span className="prod-type-caret" />}
+        {shown.split("\n").map((line, i, arr) => (
+          <span key={i} className="block md:whitespace-nowrap">
+            {line}
+            {i === arr.length - 1 && !reduce ? <span className="prod-type-caret" /> : null}
+          </span>
+        ))}
       </span>
     </Tag>
   );
