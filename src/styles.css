@@ -4928,6 +4928,10 @@ main:has(.media-dark-page) + .site-footer {
   color: #fff;
 }
 
+.media-dark-page .article-feed-card__chapo {
+  color: rgb(255 255 255 / 0.92);
+}
+
 .media-dark-page .media-blog-filters button:hover {
   color: #fff;
 }

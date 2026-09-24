@@ -91,93 +91,87 @@ export function SiteHeader() {
     </div>
   );
 
-  const liensAuthDesktop = pret ? (
-    connecte ? (
-      <>
-        <Link
-          to={espaceUrl}
-          className={
-            estMedia
-              ? "site-header__text-link hidden sm:inline-flex"
-              : "site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
-          }
-        >
-          {espaceLabel}
-        </Link>
-        <button
-          type="button"
-          onClick={seDeconnecter}
-          className={
-            estMedia
-              ? "site-header__text-link hidden sm:inline-flex"
-              : "site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
-          }
-        >
-          {t.nav.auth.deconnexion}
-        </button>
-      </>
-    ) : estMedia ? null : (
-      <>
-        <Link
-          to="/connexion"
-          className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
-        >
-          {t.nav.auth.connexion}
-        </Link>
-        <Link
-          to="/connexion"
-          search={{ mode: "inscription" }}
-          className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
-        >
-          {t.nav.auth.inscription}
-        </Link>
-      </>
-    )
-  ) : null;
+  const liensAuthDesktop =
+    pret && !estMedia ? (
+      connecte ? (
+        <>
+          <Link
+            to={espaceUrl}
+            className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          >
+            {espaceLabel}
+          </Link>
+          <button
+            type="button"
+            onClick={seDeconnecter}
+            className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          >
+            {t.nav.auth.deconnexion}
+          </button>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/connexion"
+            className="site-header__auth-button hidden rounded-sm border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary sm:inline-flex"
+          >
+            {t.nav.auth.connexion}
+          </Link>
+          <Link
+            to="/connexion"
+            search={{ mode: "inscription" }}
+            className="site-header__auth-button site-header__auth-button--primary hidden rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+          >
+            {t.nav.auth.inscription}
+          </Link>
+        </>
+      )
+    ) : null;
 
-  const liensAuthMobile = pret ? (
-    connecte ? (
-      <>
-        <Link
-          to={espaceUrl}
-          onClick={() => setOuvert(false)}
-          className="block py-2 text-sm font-medium text-primary"
-        >
-          {espaceLabel}
-        </Link>
-        {session && (
-          <p className="pb-1 text-xs text-muted-foreground">
-            {session.prenom} {session.nom} · {session.email}
-          </p>
-        )}
-        <button
-          type="button"
-          onClick={seDeconnecter}
-          className="block w-full py-2 text-left text-sm text-muted-foreground"
-        >
-          {t.nav.auth.deconnexion}
-        </button>
-      </>
-    ) : estMedia ? null : (
-      <>
-        <Link
-          to="/connexion"
-          onClick={() => setOuvert(false)}
-          className="block py-2 text-sm font-medium"
-        >
-          {t.nav.auth.connexion}
-        </Link>
-        <Link
-          to="/connexion"
-          search={{ mode: "inscription" }}
-          onClick={() => setOuvert(false)}
-          className="block py-2 text-sm text-muted-foreground"
-        >
-          {t.nav.auth.inscription}
-        </Link>
-      </>
-    )
-  ) : null;
+  const liensAuthMobile =
+    pret && !estMedia ? (
+      connecte ? (
+        <>
+          <Link
+            to={espaceUrl}
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm font-medium text-primary"
+          >
+            {espaceLabel}
+          </Link>
+          {session && (
+            <p className="pb-1 text-xs text-muted-foreground">
+              {session.prenom} {session.nom} · {session.email}
+            </p>
+          )}
+          <button
+            type="button"
+            onClick={seDeconnecter}
+            className="block w-full py-2 text-left text-sm text-muted-foreground"
+          >
+            {t.nav.auth.deconnexion}
+          </button>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/connexion"
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm font-medium"
+          >
+            {t.nav.auth.connexion}
+          </Link>
+          <Link
+            to="/connexion"
+            search={{ mode: "inscription" }}
+            onClick={() => setOuvert(false)}
+            className="block py-2 text-sm text-muted-foreground"
+          >
+            {t.nav.auth.inscription}
+          </Link>
+        </>
+      )
+    ) : null;
 
   return (
     <header

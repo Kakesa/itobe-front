@@ -79,7 +79,7 @@ export function ArticlePostCard({
           params={{ slug: article.slug }}
           className="block w-full px-4 pb-3 text-left"
         >
-          <p className="line-clamp-4 text-[15px] leading-relaxed text-foreground/85">
+          <p className="article-feed-card__chapo line-clamp-4 text-[15px] leading-relaxed">
             {article.chapo}
           </p>
         </Link>

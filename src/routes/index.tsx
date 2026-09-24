@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowUpRight, BookOpen, Clapperboard, Newspaper } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { GroupeNav } from "@/components/groupe-chrome";
 
 export const Route = createFileRoute("/")({
@@ -48,7 +48,7 @@ function Accueil() {
             height={144}
           />
           <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-base">
-            Trois univers · une plateforme
+            Ranconter l'afrique, Inspirer le monde
           </p>
         </header>
 
@@ -63,10 +63,6 @@ function Accueil() {
                 alt="Logo NENO"
                 className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-background/90 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
-                <Newspaper className="size-3.5" />
-                Portail
-              </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h2 className="font-display text-3xl leading-tight md:text-4xl">Média</h2>
@@ -90,10 +86,6 @@ function Accueil() {
                 alt="Logo Itobe Éditions"
                 className="max-h-[70%] w-auto max-w-[85%] object-contain transition-transform duration-700 group-hover:scale-105"
               />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-sm bg-[#fdfaf4]/95 px-2.5 py-1 text-xs font-medium text-[#383030] backdrop-blur-sm transition-transform duration-300 group-hover:scale-105">
-                <BookOpen className="size-3.5 text-[#ea5312] transition-transform duration-500 group-hover:-rotate-12" />
-                Portail
-              </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h2 className="font-display text-3xl leading-tight text-[#211c1c] md:text-4xl">
@@ -112,7 +104,7 @@ function Accueil() {
 
           <Link
             to="/production"
-            className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-[#f3efe6] shadow-soft transition-transform duration-300 hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
           >
             <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
@@ -120,10 +112,6 @@ function Accueil() {
                 alt="Logo Itobe Productions"
                 className="max-h-[82%] w-auto max-w-[88%] object-contain mix-blend-screen transition-transform duration-700 group-hover:scale-105"
               />
-              <span className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-none bg-[#f3efe6]/95 px-2.5 py-1 text-xs font-medium text-[#241f1a] backdrop-blur-sm">
-                <Clapperboard className="size-3.5" />
-                Portail
-              </span>
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h2 className="font-display text-3xl leading-tight text-[#241f1a] md:text-4xl">
