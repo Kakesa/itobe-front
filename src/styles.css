@@ -2382,6 +2382,7 @@
 
 .fiche-livre-v2__author-box {
   display: flex;
+  align-items: flex-start;
   gap: 1.25rem;
   margin-top: 2.5rem;
   padding: 1.5rem;
@@ -2390,18 +2391,23 @@
 }
 
 .fiche-livre-v2__author-avatar {
-  display: grid;
   flex-shrink: 0;
-  place-items: center;
   width: 4.5rem;
   height: 4.5rem;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center 20%;
+  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--edition-ink) 20%, transparent);
+}
+
+span.fiche-livre-v2__author-avatar {
+  display: grid;
+  place-items: center;
   font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--edition-orange);
   background: white;
-  border-radius: 999px;
-  box-shadow: 0 4px 12px -4px color-mix(in oklab, var(--edition-ink) 20%, transparent);
 }
 
 .fiche-livre-v2__author-box-title {
@@ -2493,18 +2499,20 @@
   display: grid;
   gap: 2rem;
   margin-top: 2rem;
-  align-items: start;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
   .auteur-fiche__hero {
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: auto 1fr;
     gap: 2.5rem;
+    align-items: center;
   }
 }
 
 .auteur-fiche__portrait {
   justify-self: center;
+  line-height: 0;
 }
 
 @media (min-width: 768px) {
@@ -2514,10 +2522,12 @@
 }
 
 .auteur-fiche__photo {
+  display: block;
   width: 11rem;
   height: 11rem;
   border-radius: 999px;
   object-fit: cover;
+  object-position: center 20%;
   box-shadow:
     0 0 0 4px color-mix(in oklab, var(--brand-gold) 45%, white),
     0 12px 32px -8px color-mix(in oklab, var(--brand-brown) 25%, transparent);

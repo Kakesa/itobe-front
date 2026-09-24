@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CrudModule } from "@/components/admin/crud-module";
+import { resolveMediaUrl } from "@/lib/media-url";
 
 export const Route = createFileRoute("/admin/edition/auteurs")({
   component: () => (
@@ -14,16 +15,18 @@ export const Route = createFileRoute("/admin/edition/auteurs")({
         {
           cle: "photo",
           label: "Photo",
-          rendu: (r) =>
-            r["photo"] ? (
+          rendu: (r) => {
+            const src = resolveMediaUrl(r["photo"]);
+            return src ? (
               <img
-                src={String(r["photo"])}
+                src={src}
                 alt=""
-                className="size-10 rounded-full object-cover"
+                className="size-10 rounded-full object-cover object-[center_20%] ring-2 ring-brand-gold/35"
               />
             ) : (
               "—"
-            ),
+            );
+          },
         },
         { cle: "nom", label: "Nom" },
         { cle: "role", label: "Rôle", classe: "text-muted-foreground" },
@@ -38,7 +41,13 @@ export const Route = createFileRoute("/admin/edition/auteurs")({
         { nom: "nom", label: "Nom", requis: true },
         { nom: "role", label: "Rôle", placeholder: "Romancière" },
         { nom: "ville", label: "Ville" },
-        { nom: "photo", label: "Photo", type: "image", placeholder: "https://…" },
+        {
+          nom: "photo",
+          label: "Photo",
+          type: "image",
+          apercu: "avatar",
+          placeholder: "https://…",
+        },
         { nom: "bio", label: "Biographie détaillée", type: "textarea" },
       ]}
     />

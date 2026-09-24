@@ -33,6 +33,8 @@ export type Champ = {
   requis?: boolean;
   placeholder?: string;
   defaut?: boolean | string | number;
+  /** Aperçu image : couverture livre (2/3) ou photo auteur (rond). */
+  apercu?: "cover" | "avatar";
 };
 
 const ADMIN_STORAGE_KEY = "itobe.admin.data.v5";
@@ -685,6 +687,7 @@ function FormulaireDialog({
                     id={id}
                     valeur={String(valeurs[c.nom] ?? "")}
                     placeholder={c.placeholder}
+                    apercu={c.apercu ?? (c.nom === "photo" ? "avatar" : "cover")}
                     onChange={(url) => setValeurs((v) => ({ ...v, [c.nom]: url }))}
                   />
                 ) : c.type === "file" ? (
@@ -749,16 +752,20 @@ function ChampImage({
   id,
   valeur,
   placeholder,
+  apercu = "cover",
   onChange,
 }: {
   id: string;
   valeur: string;
   placeholder?: string | undefined;
+  apercu?: "cover" | "avatar";
   onChange: (url: string) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const src = resolveMediaUrl(valeur) ?? valeur;
   const urlAffichee = valeur.startsWith("data:") ? "" : valeur;
+  const estAvatar = apercu === "avatar";
 
   return (
     <div className="space-y-2">
@@ -806,14 +813,28 @@ function ChampImage({
           {uploading ? "Envoi…" : "Téléverser"}
         </button>
       </div>
-      {valeur && (
-        <div className="relative w-28 overflow-hidden rounded-lg border border-border">
-          <img src={valeur} alt="Aperçu couverture" className="aspect-[2/3] w-full object-cover" />
+      {src && (
+        <div
+          className={
+            estAvatar
+              ? "relative size-28 overflow-hidden rounded-full border-2 border-brand-gold/40 shadow-sm"
+              : "relative w-28 overflow-hidden rounded-lg border border-border"
+          }
+        >
+          <img
+            src={src}
+            alt={estAvatar ? "Aperçu photo auteur" : "Aperçu couverture"}
+            className={
+              estAvatar
+                ? "size-full object-cover object-[center_20%]"
+                : "aspect-[2/3] w-full object-cover"
+            }
+          />
           <button
             type="button"
             onClick={() => onChange("")}
             className="absolute right-1 top-1 grid size-6 place-items-center rounded-full bg-ink/70 text-white"
-            aria-label="Retirer la couverture"
+            aria-label={estAvatar ? "Retirer la photo" : "Retirer la couverture"}
           >
             <X className="size-3" />
           </button>
