@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef, type CSSProperties } from "react";
