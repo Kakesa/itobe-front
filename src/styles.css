@@ -3431,9 +3431,9 @@ main:has(.media-contact) + .site-footer {
   font-family: var(--font-display);
   font-size: clamp(1.65rem, 3.2vw, 2.15rem);
   font-weight: 600;
-  font-style: italic;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-style: normal;
+  letter-spacing: -0.02em;
+  text-transform: none;
   text-align: center;
   color: #fff;
 }

@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ArticlePostCard } from "@/components/media/article-post";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticles } from "@/hooks/use-articles";
+import { useI18n } from "@/i18n";
 import { categoriesMedia, getAuteur } from "@/lib/data";
 
 export const Route = createFileRoute("/media/articles")({
@@ -45,6 +46,8 @@ function FeedSkeleton() {
 }
 
 function MediaPage() {
+  const { t } = useI18n();
+  const a = t.mediaArticles;
   const { articles, loading } = useArticles();
   const [cat, setCat] = useState<string>("Tous");
   const [query, setQuery] = useState("");
@@ -81,11 +84,9 @@ function MediaPage() {
     <section id="blog-section" className="media-dark-page media-blog-page py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:space-y-10 lg:px-8">
         <header className="space-y-2">
-          <p className="kicker mb-0">Itobe Média</p>
-          <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">Articles</h1>
-          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Analyses, chroniques et coulisses — le prolongement écrit des conversations Itobe.
-          </p>
+          <p className="kicker mb-0">{a.kicker}</p>
+          <h1 className="font-display text-3xl font-medium leading-tight sm:text-4xl">{a.title}</h1>
+          <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">{a.lead}</p>
         </header>
 
         <div className="space-y-4">
@@ -173,13 +174,11 @@ function MediaPage() {
         )}
 
         <section className="media-blog-newsletter mx-auto max-w-3xl border-t border-border pt-12 text-center">
-          <p className="kicker mb-4">Newsletter</p>
+          <p className="kicker mb-4">{a.newsletterKicker}</p>
           <h2 className="mb-3 font-display text-3xl font-medium leading-tight sm:text-4xl">
-            Recevez les nouveaux articles
+            {a.newsletterTitle}
           </h2>
-          <p className="mx-auto mb-8 max-w-lg text-muted-foreground">
-            Culture, édition et coulisses d&apos;Itobe — directement dans votre boîte mail.
-          </p>
+          <p className="mx-auto mb-8 max-w-lg text-muted-foreground">{a.newsletterText}</p>
           <form
             className="mx-auto max-w-lg space-y-4"
             onSubmit={(e) => {
@@ -191,19 +190,17 @@ function MediaPage() {
               <input
                 type="email"
                 required
-                placeholder="Votre adresse email"
+                placeholder={a.newsletterEmailPlaceholder}
                 className="min-w-0 flex-1 bg-transparent px-4 py-4 text-sm focus:outline-none"
               />
               <button
                 type="submit"
                 className="flex shrink-0 cursor-pointer items-center justify-center gap-2 bg-primary px-6 py-4 text-xs font-semibold uppercase tracking-wider text-primary-foreground transition hover:opacity-90"
               >
-                S&apos;abonner
+                {a.newsletterSubscribe}
               </button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Pas de spam. Seulement du contenu utile. Désabonnement à tout moment.
-            </p>
+            <p className="text-xs text-muted-foreground">{a.newsletterDisclaimer}</p>
           </form>
         </section>
       </div>

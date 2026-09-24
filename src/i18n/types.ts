@@ -138,6 +138,17 @@ export type Dictionary = {
     ctaWrite: string;
     ctaEdition: string;
   };
+  mediaArticles: {
+    kicker: string;
+    title: string;
+    lead: string;
+    newsletterKicker: string;
+    newsletterTitle: string;
+    newsletterText: string;
+    newsletterEmailPlaceholder: string;
+    newsletterSubscribe: string;
+    newsletterDisclaimer: string;
+  };
   editionHome: {
     metaTitle: string;
     metaDescription: string;

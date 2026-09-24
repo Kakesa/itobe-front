@@ -173,6 +173,17 @@ const fr: Dictionary = {
     ctaWrite: "Nous écrire",
     ctaEdition: "Maison d'édition",
   },
+  mediaArticles: {
+    kicker: "Itobe Média",
+    title: "Articles",
+    lead: "Analyses, chroniques et coulisses — le prolongement écrit des conversations Itobe.",
+    newsletterKicker: "Newsletter",
+    newsletterTitle: "Recevez les nouveaux articles",
+    newsletterText: "Culture, édition et coulisses d'Itobe — directement dans votre boîte mail.",
+    newsletterEmailPlaceholder: "Votre adresse email",
+    newsletterSubscribe: "S'abonner",
+    newsletterDisclaimer: "Pas de spam. Seulement du contenu utile. Désabonnement à tout moment.",
+  },
   editionHome: {
     metaTitle: "Maison d'édition — Itobe",
     metaDescription:

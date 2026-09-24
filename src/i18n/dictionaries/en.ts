@@ -172,6 +172,17 @@ const en: Dictionary = {
     ctaWrite: "Write to us",
     ctaEdition: "Publishing house",
   },
+  mediaArticles: {
+    kicker: "Itobe Media",
+    title: "Articles",
+    lead: "Analysis, columns, and behind the scenes — the written extension of Itobe conversations.",
+    newsletterKicker: "Newsletter",
+    newsletterTitle: "Get the latest articles",
+    newsletterText: "Culture, publishing, and behind the scenes at Itobe — straight to your inbox.",
+    newsletterEmailPlaceholder: "Your email address",
+    newsletterSubscribe: "Subscribe",
+    newsletterDisclaimer: "No spam. Only useful content. Unsubscribe anytime.",
+  },
   editionHome: {
     metaTitle: "Publishing house — Itobe",
     metaDescription:
