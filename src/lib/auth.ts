@@ -33,6 +33,13 @@ export const comptesDemo: CompteDemo[] = [
     prenom: "Nadia",
     role: "lecteur",
   },
+  {
+    email: "comptable@itobe.cd",
+    password: "comptable123",
+    nom: "Comptable",
+    prenom: "Itobe",
+    role: "comptable",
+  },
 ];
 
 export type SessionUtilisateur = {

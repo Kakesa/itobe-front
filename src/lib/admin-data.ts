@@ -113,7 +113,11 @@ export const menuEditionAdmin: {
   },
   {
     groupe: "Paramètres",
-    items: [{ to: "/admin/edition/mon-profil", label: "Mon profil", roles: ["admin", "editeur"] }],
+    items: [
+      { to: "/admin/edition/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
+      { to: "/admin/edition/roles", label: "Rôles & Permissions", roles: ["admin"] },
+      { to: "/admin/edition/mon-profil", label: "Mon profil", roles: ["admin", "editeur"] },
+    ],
   },
 ];
 

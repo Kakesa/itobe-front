@@ -28,7 +28,9 @@ export type Colonne = {
 export type Champ = {
   nom: string;
   label: string;
-  type?: "text" | "textarea" | "richtext" | "number" | "select" | "switch" | "date" | "image" | "file";
+  type?: "text" | "textarea" | "richtext" | "number" | "select" | "switch" | "date" | "image" | "file" | "password";
+  /** Affiché seulement à la création. */
+  creationSeulement?: boolean;
   options?: string[];
   requis?: boolean;
   placeholder?: string;
@@ -402,6 +404,44 @@ export function CrudModule({
         return;
       }
 
+      if (collection === "utilisateurs") {
+        const nomComplet = String(valeurs["nom"] ?? "").trim();
+        const morceaux = nomComplet.split(/\s+/).filter(Boolean);
+        const prenom = morceaux.length > 1 ? morceaux[0] : "";
+        const nom = morceaux.length > 1 ? morceaux.slice(1).join(" ") : nomComplet;
+        const payload: Record<string, unknown> = {
+          nom,
+          prenom,
+          email: String(valeurs["email"] ?? "").trim(),
+          role: String(valeurs["role"] ?? "lecteur"),
+          statut: String(valeurs["statut"] ?? "Actif"),
+        };
+        if (edition?.row) {
+          await UsersApi.update(String(edition.row.id), payload);
+        } else {
+          const password = String(valeurs["password"] ?? "");
+          if (password.length < 6) {
+            notify.erreur("Le mot de passe doit contenir au moins 6 caractères.");
+            return;
+          }
+          await UsersApi.create({ ...payload, password });
+        }
+        const users = await UsersApi.fetchAll();
+        definir(
+          users.map((user: Record<string, unknown>) => ({
+            id: String(user["_id"] ?? ""),
+            nom: `${String(user["prenom"] ?? "")} ${String(user["nom"] ?? "")}`.trim(),
+            email: String(user["email"] ?? ""),
+            role: String(user["role"] ?? "lecteur"),
+            statut: String(user["statut"] ?? "Actif"),
+            inscription: String(user["createdAt"] ?? "").slice(0, 10),
+          })),
+        );
+        notify.succes(edition?.row ? "Rôle et accès mis à jour." : "Utilisateur créé.");
+        setEdition(null);
+        return;
+      }
+
       if (collection === "auteurs") {
         const payload = preparerPayloadAuteur(valeurs);
         if (edition?.row) {
@@ -452,6 +492,9 @@ export function CrudModule({
       } else if (collection === "auteurs") {
         await AuteursApi.delete(aSupprimer.id);
         await rechargerAuteursAdmin();
+      } else if (collection === "utilisateurs") {
+        await UsersApi.delete(aSupprimer.id);
+        supprimer(aSupprimer.id);
       } else {
         supprimer(aSupprimer.id);
       }
@@ -560,7 +603,7 @@ export function CrudModule({
       {edition && (
         <FormulaireDialog
           titre={edition.row ? `Modifier ${singulier.toLowerCase()}` : `Nouveau ${singulier.toLowerCase()}`}
-          champs={champs}
+          champs={champs.filter((c) => !c.creationSeulement || !edition.row)}
           valeursInitiales={edition.row ?? {}}
           fichierLivreId={collection === "livres" ? edition.row?.id : undefined}
           onAnnuler={() => setEdition(null)}
@@ -700,7 +743,9 @@ function FormulaireDialog({
                 ) : (
                   <input
                     id={id}
-                    type={c.type === "number" ? "number" : c.type === "date" ? "date" : "text"}
+                    type={
+                      c.type === "number" ? "number" : c.type === "date" ? "date" : c.type === "password" ? "password" : "text"
+                    }
                     value={String(valeurs[c.nom] ?? "")}
                     placeholder={c.placeholder}
                     onChange={(e) =>

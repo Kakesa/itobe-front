@@ -97,7 +97,9 @@ import { Route as AdminEditionMonProfilRouteImport } from './routes/admin.editio
 import { Route as AdminEditionPaiementsRouteImport } from './routes/admin.edition.paiements'
 import { Route as AdminEditionPromotionsRouteImport } from './routes/admin.edition.promotions'
 import { Route as AdminEditionRapportsRouteImport } from './routes/admin.edition.rapports'
+import { Route as AdminEditionRolesRouteImport } from './routes/admin.edition.roles'
 import { Route as AdminEditionStatistiquesRouteImport } from './routes/admin.edition.statistiques'
+import { Route as AdminEditionUtilisateursRouteImport } from './routes/admin.edition.utilisateurs'
 import { Route as AdminEditionVisiteursRouteImport } from './routes/admin.edition.visiteurs'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin.media.index'
 import { Route as AdminMediaActualitesRouteImport } from './routes/admin.media.actualites'
@@ -574,10 +576,21 @@ const AdminEditionRapportsRoute = AdminEditionRapportsRouteImport.update({
   path: '/rapports',
   getParentRoute: () => AdminEditionRoute,
 } as any)
+const AdminEditionRolesRoute = AdminEditionRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
+  getParentRoute: () => AdminEditionRoute,
+} as any)
 const AdminEditionStatistiquesRoute =
   AdminEditionStatistiquesRouteImport.update({
     id: '/statistiques',
     path: '/statistiques',
+    getParentRoute: () => AdminEditionRoute,
+  } as any)
+const AdminEditionUtilisateursRoute =
+  AdminEditionUtilisateursRouteImport.update({
+    id: '/utilisateurs',
+    path: '/utilisateurs',
     getParentRoute: () => AdminEditionRoute,
   } as any)
 const AdminEditionVisiteursRoute = AdminEditionVisiteursRouteImport.update({
@@ -816,7 +829,9 @@ export interface FileRoutesByFullPath {
   '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/roles': typeof AdminEditionRolesRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/utilisateurs': typeof AdminEditionUtilisateursRoute
   '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
@@ -925,7 +940,9 @@ export interface FileRoutesByTo {
   '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/roles': typeof AdminEditionRolesRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/utilisateurs': typeof AdminEditionUtilisateursRoute
   '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
@@ -1044,7 +1061,9 @@ export interface FileRoutesById {
   '/admin/edition/paiements': typeof AdminEditionPaiementsRoute
   '/admin/edition/promotions': typeof AdminEditionPromotionsRoute
   '/admin/edition/rapports': typeof AdminEditionRapportsRoute
+  '/admin/edition/roles': typeof AdminEditionRolesRoute
   '/admin/edition/statistiques': typeof AdminEditionStatistiquesRoute
+  '/admin/edition/utilisateurs': typeof AdminEditionUtilisateursRoute
   '/admin/edition/visiteurs': typeof AdminEditionVisiteursRoute
   '/admin/media/actualites': typeof AdminMediaActualitesRoute
   '/admin/media/articles': typeof AdminMediaArticlesRoute
@@ -1165,7 +1184,9 @@ export interface FileRouteTypes {
     | '/admin/edition/paiements'
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
+    | '/admin/edition/roles'
     | '/admin/edition/statistiques'
+    | '/admin/edition/utilisateurs'
     | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
@@ -1274,7 +1295,9 @@ export interface FileRouteTypes {
     | '/admin/edition/paiements'
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
+    | '/admin/edition/roles'
     | '/admin/edition/statistiques'
+    | '/admin/edition/utilisateurs'
     | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
@@ -1392,7 +1415,9 @@ export interface FileRouteTypes {
     | '/admin/edition/paiements'
     | '/admin/edition/promotions'
     | '/admin/edition/rapports'
+    | '/admin/edition/roles'
     | '/admin/edition/statistiques'
+    | '/admin/edition/utilisateurs'
     | '/admin/edition/visiteurs'
     | '/admin/media/actualites'
     | '/admin/media/articles'
@@ -2069,11 +2094,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEditionRapportsRouteImport
       parentRoute: typeof AdminEditionRoute
     }
+    '/admin/edition/roles': {
+      id: '/admin/edition/roles'
+      path: '/roles'
+      fullPath: '/admin/edition/roles'
+      preLoaderRoute: typeof AdminEditionRolesRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
     '/admin/edition/statistiques': {
       id: '/admin/edition/statistiques'
       path: '/statistiques'
       fullPath: '/admin/edition/statistiques'
       preLoaderRoute: typeof AdminEditionStatistiquesRouteImport
+      parentRoute: typeof AdminEditionRoute
+    }
+    '/admin/edition/utilisateurs': {
+      id: '/admin/edition/utilisateurs'
+      path: '/utilisateurs'
+      fullPath: '/admin/edition/utilisateurs'
+      preLoaderRoute: typeof AdminEditionUtilisateursRouteImport
       parentRoute: typeof AdminEditionRoute
     }
     '/admin/edition/visiteurs': {
@@ -2315,7 +2354,9 @@ interface AdminEditionRouteChildren {
   AdminEditionPaiementsRoute: typeof AdminEditionPaiementsRoute
   AdminEditionPromotionsRoute: typeof AdminEditionPromotionsRoute
   AdminEditionRapportsRoute: typeof AdminEditionRapportsRoute
+  AdminEditionRolesRoute: typeof AdminEditionRolesRoute
   AdminEditionStatistiquesRoute: typeof AdminEditionStatistiquesRoute
+  AdminEditionUtilisateursRoute: typeof AdminEditionUtilisateursRoute
   AdminEditionVisiteursRoute: typeof AdminEditionVisiteursRoute
   AdminEditionIndexRoute: typeof AdminEditionIndexRoute
 }
@@ -2331,7 +2372,9 @@ const AdminEditionRouteChildren: AdminEditionRouteChildren = {
   AdminEditionPaiementsRoute: AdminEditionPaiementsRoute,
   AdminEditionPromotionsRoute: AdminEditionPromotionsRoute,
   AdminEditionRapportsRoute: AdminEditionRapportsRoute,
+  AdminEditionRolesRoute: AdminEditionRolesRoute,
   AdminEditionStatistiquesRoute: AdminEditionStatistiquesRoute,
+  AdminEditionUtilisateursRoute: AdminEditionUtilisateursRoute,
   AdminEditionVisiteursRoute: AdminEditionVisiteursRoute,
   AdminEditionIndexRoute: AdminEditionIndexRoute,
 }

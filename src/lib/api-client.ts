@@ -265,6 +265,9 @@ export const UsersApi = {
   getAll: (params?: { page?: number; limit?: number; role?: string; statut?: string; q?: string }) =>
     api.get("/users", params),
   fetchAll: () => fetchAllPages((page, limit) => UsersApi.getAll({ page, limit })),
+  create: (data: Record<string, unknown>) => api.post("/users", data),
+  update: (id: string, data: Record<string, unknown>) => api.put(`/users/${id}`, data),
+  delete: (id: string) => api.delete(`/users/${id}`),
 };
 
 export const DashboardApi = {
