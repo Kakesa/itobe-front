@@ -90,7 +90,7 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
       menu
         .map((g) => ({
           ...g,
-          items: g.items.filter((i) => i.roles.includes(role)),
+          items: g.items.filter((i) => portal === "edition" || i.roles.includes(role)),
         }))
         .filter((g) => g.items.length > 0),
     [menu, role],

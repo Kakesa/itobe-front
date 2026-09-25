@@ -29,7 +29,7 @@ function lireRoleDepuisStorage(): Role {
 }
 
 export function useRole() {
-  const [role, setRole] = useState<Role>("lecteur");
+  const [role, setRole] = useState<Role>(() => lireRoleDepuisStorage());
 
   useEffect(() => {
     setRole(lireRoleDepuisStorage());
