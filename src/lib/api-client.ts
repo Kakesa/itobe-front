@@ -278,6 +278,31 @@ export const UsersApi = {
   delete: (id: string) => api.delete(`/users/${id}`),
 };
 
+export const ComptabiliteApi = {
+  paiements: (params?: { page?: number; limit?: number; statut?: string }) =>
+    api.get("/comptabilite/paiements", params) as Promise<{
+      data: Array<{
+        _id: string;
+        reference: string;
+        moyen: string;
+        montant: number;
+        statut: string;
+        date: string;
+        commande?: { reference?: string; livreTitre?: string; clientNom?: string } | string;
+      }>;
+    }>,
+  synthese: () =>
+    api.get("/comptabilite/synthese") as Promise<{
+      data: {
+        livresVendus: number;
+        soldeCaisse: number;
+        enAttente: number;
+        commandesEnAttente: number;
+        rembourse: number;
+      };
+    }>,
+};
+
 export const DashboardApi = {
   getStats: () => api.get("/dashboard"),
   getVisitorStats: (period = "7j") => api.get("/dashboard/visitors", { period }),
