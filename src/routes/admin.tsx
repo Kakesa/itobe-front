@@ -1,6 +1,8 @@
-import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AdminPortalLayout } from "@/components/admin/admin-portal-layout";
 import { useADesAchats } from "@/hooks/use-a-des-achats";
+import { useRole } from "@/hooks/use-role";
 import { menuLecteurAdmin } from "@/lib/admin-data";
 import { ADMIN_MENU_ICONS } from "@/lib/admin-icons";
 
@@ -20,9 +22,21 @@ export const Route = createFileRoute("/admin")({
 
 function AdminLayout() {
   useADesAchats();
+  const { role } = useRole();
+  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  if (pathname.startsWith("/admin/media") || pathname.startsWith("/admin/edition")) {
+  useEffect(() => {
+    if (role === "comptable" && !pathname.startsWith("/admin/comptabilite")) {
+      void navigate({ to: "/admin/comptabilite", replace: true });
+    }
+  }, [role, pathname, navigate]);
+
+  if (
+    pathname.startsWith("/admin/media") ||
+    pathname.startsWith("/admin/edition") ||
+    pathname.startsWith("/admin/comptabilite")
+  ) {
     return <Outlet />;
   }
 

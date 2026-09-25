@@ -27,7 +27,9 @@ export function SiteHeader() {
       ? t.nav.auth.espaceAdmin
       : role === "editeur"
         ? t.nav.auth.espaceEditeur
-        : t.nav.auth.monEspace;
+        : role === "comptable"
+          ? t.nav.auth.espaceComptable
+          : t.nav.auth.monEspace;
   const home = estMedia ? "/media" : "/edition";
   const liens = useMemo(() => {
     const base: Lien[] = estMedia

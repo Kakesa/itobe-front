@@ -183,12 +183,6 @@ export function MediaAdminDashboard() {
         >
           Newsletter
         </Link>
-        <Link
-          to="/admin/edition"
-          className="rounded-sm border border-brand-orange/30 px-4 py-2.5 text-sm text-brand-orange hover:bg-brand-orange/5"
-        >
-          Espace Édition
-        </Link>
       </div>
     </div>
   );

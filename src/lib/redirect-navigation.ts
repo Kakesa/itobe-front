@@ -51,6 +51,7 @@ export function parseRedirectPath(redirect: string): NavigateOptions | null {
 export function destinationApresConnexion(role: Role): string {
   if (role === "admin") return "/admin/media";
   if (role === "editeur") return "/admin/edition";
+  if (role === "comptable") return "/admin/comptabilite";
   return "/edition";
 }
 
@@ -58,6 +59,7 @@ export function destinationApresConnexion(role: Role): string {
 export function destinationMonEspace(role: Role): string {
   if (role === "admin") return "/admin/media";
   if (role === "editeur") return "/admin/edition";
+  if (role === "comptable") return "/admin/comptabilite";
   return "/admin";
 }
 
@@ -65,12 +67,16 @@ export function destinationMonEspace(role: Role): string {
 export function labelMonEspace(role: Role): string {
   if (role === "admin") return "Espace admin";
   if (role === "editeur") return "Mon espace éditeur";
+  if (role === "comptable") return "Comptabilité";
   return "Mon espace";
 }
 
 /** Page Mon profil dans l'espace correspondant au rôle. */
-export function destinationMonProfil(role: Role): "/admin/media/mon-profil" | "/admin/edition/mon-profil" | "/admin/mon-profil" {
+export function destinationMonProfil(
+  role: Role,
+): "/admin/media/mon-profil" | "/admin/edition/mon-profil" | "/admin/comptabilite/mon-profil" | "/admin/mon-profil" {
   if (role === "admin") return "/admin/media/mon-profil";
   if (role === "editeur") return "/admin/edition/mon-profil";
+  if (role === "comptable") return "/admin/comptabilite/mon-profil";
   return "/admin/mon-profil";
 }

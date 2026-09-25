@@ -31,6 +31,7 @@ const fr: Dictionary = {
       monEspace: "Mon espace",
       espaceAdmin: "Espace admin",
       espaceEditeur: "Mon espace éditeur",
+      espaceComptable: "Comptabilité",
     },
     switchToEdition: "Maison d'édition",
     switchToMedia: "Portail Média",

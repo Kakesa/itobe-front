@@ -35,6 +35,7 @@ export type Dictionary = {
       monEspace: string;
       espaceAdmin: string;
       espaceEditeur: string;
+      espaceComptable: string;
     };
     switchToEdition: string;
     switchToMedia: string;

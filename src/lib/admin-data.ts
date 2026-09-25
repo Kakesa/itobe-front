@@ -1,6 +1,6 @@
 // Administration : rôles, navigation et données commerciales (front mock).
 
-export type Role = "admin" | "editeur" | "lecteur";
+export type Role = "admin" | "editeur" | "lecteur" | "comptable";
 
 export const roles: { id: Role; label: string; description: string }[] = [
   {
@@ -17,6 +17,11 @@ export const roles: { id: Role; label: string; description: string }[] = [
     id: "lecteur",
     label: "Lecteur",
     description: "Bibliothèque, lecture, favoris, historique et recommandations.",
+  },
+  {
+    id: "comptable",
+    label: "Comptable",
+    description: "Factures, encaissements, dépenses, caisse, banque et rapports financiers.",
   },
 ];
 
@@ -137,6 +142,27 @@ export const menuLecteurAdmin: {
   {
     groupe: "Compte",
     items: [{ to: "/admin/mon-profil", label: "Mon profil", roles: ["lecteur"] }],
+  },
+];
+
+/** Menu espace Comptabilité (admin + comptable). */
+export const menuComptabiliteAdmin: {
+  groupe: string;
+  items: { to: string; label: string; roles: Role[] }[];
+}[] = [
+  {
+    groupe: "Comptabilité",
+    items: [
+      { to: "/admin/comptabilite", label: "Tableau de bord", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/factures", label: "Factures", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/paiements", label: "Paiements", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/depenses", label: "Dépenses", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/caisse", label: "Caisse", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/banque", label: "Banque", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/clients", label: "Clients", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/fournisseurs", label: "Fournisseurs", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/rapports", label: "Rapports", roles: ["admin", "comptable"] },
+    ],
   },
 ];
 

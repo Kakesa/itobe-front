@@ -1,11 +1,11 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { BookOpen, ExternalLink, LayoutDashboard, Menu, Newspaper, X } from "lucide-react";
+import { BookOpen, ExternalLink, Landmark, LayoutDashboard, Menu, Newspaper, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import type { Role } from "@/lib/admin-data";
 import { useSession } from "@/hooks/use-session";
 import { useRole } from "@/hooks/use-role";
 
-export type AdminPortal = "media" | "edition" | "lecteur";
+export type AdminPortal = "media" | "edition" | "lecteur" | "comptabilite";
 
 type MenuItem = { to: string; label: string; roles: Role[] };
 type MenuGroup = { groupe: string; items: MenuItem[] };
@@ -21,7 +21,6 @@ const PORTAL_META: Record<
     badgeClass: string;
     publicLink: string;
     publicLabel: string;
-    otherPortal?: { to: string; label: string; portal: AdminPortal };
   }
 > = {
   media: {
@@ -33,7 +32,6 @@ const PORTAL_META: Record<
     badgeClass: "admin-portal-badge",
     publicLink: "/media",
     publicLabel: "Retour au site",
-    otherPortal: { to: "/admin/edition", label: "Espace Édition", portal: "edition" },
   },
   edition: {
     label: "Admin Édition",
@@ -44,7 +42,6 @@ const PORTAL_META: Record<
     badgeClass: "admin-portal-badge",
     publicLink: "/edition",
     publicLabel: "Retour au site",
-    otherPortal: { to: "/admin/media", label: "Espace Média", portal: "media" },
   },
   lecteur: {
     label: "Espace lecteur",
@@ -54,6 +51,16 @@ const PORTAL_META: Record<
     accentClass: "bg-accent text-accent-foreground",
     badgeClass: "bg-primary-foreground/15 text-primary-foreground/80",
     publicLink: "/edition",
+    publicLabel: "Retour au site",
+  },
+  comptabilite: {
+    label: "Comptabilité",
+    subtitle: "Factures · Trésorerie · Rapports",
+    icon: Landmark,
+    sidebarClass: "admin-portal-sidebar text-white",
+    accentClass: "admin-portal-accent",
+    badgeClass: "admin-portal-badge",
+    publicLink: "/",
     publicLabel: "Retour au site",
   },
 };
@@ -95,7 +102,7 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
   };
 
   const isActive = (to: string) => {
-    if (to.endsWith("/") || to.match(/\/admin\/(media|edition)$/)) {
+    if (to.endsWith("/") || to.match(/\/admin\/(media|edition|comptabilite)$/)) {
       return pathname === to || pathname === `${to}/`;
     }
     return pathname === to || pathname.startsWith(`${to}/`);
@@ -106,7 +113,9 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
       ? "/admin/media/mon-profil"
       : portal === "edition"
         ? "/admin/edition/mon-profil"
-        : "/admin/mon-profil";
+        : portal === "comptabilite"
+          ? "/admin/comptabilite/mon-profil"
+          : "/admin/mon-profil";
 
   const SidebarNav = (
     <nav className="flex flex-1 flex-col gap-5 overflow-y-auto px-3 py-4">
@@ -125,6 +134,11 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
                 <li key={item.to}>
                   <Link
                     to={item.to}
+                    activeOptions={
+                      /\/admin\/(media|edition|comptabilite)$/.test(item.to) || item.to === "/admin"
+                        ? { exact: true }
+                        : undefined
+                    }
                     onClick={() => setMobileOpen(false)}
                     className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
                       active
@@ -159,14 +173,6 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
           </span>
         </Link>
         <p className="mt-3 text-xs opacity-70">{meta.subtitle}</p>
-        {role === "admin" && meta.otherPortal && (
-          <Link
-            to={meta.otherPortal.to}
-            className={`mt-3 inline-flex rounded-sm px-2.5 py-1.5 text-[0.65rem] font-semibold uppercase tracking-wider ${meta.badgeClass}`}
-          >
-            → {meta.otherPortal.label}
-          </Link>
-        )}
       </div>
       {SidebarNav}
       <div className="space-y-2 border-t border-white/10 p-3">
@@ -229,14 +235,6 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
             </span>
           </div>
           <div className="ml-auto flex items-center gap-3">
-            {role === "admin" && meta.otherPortal && (
-              <Link
-                to={meta.otherPortal.to}
-                className="text-xs font-medium text-muted-foreground hover:text-foreground"
-              >
-                {meta.otherPortal.label} →
-              </Link>
-            )}
             <Link
               to={meta.publicLink}
               className="inline-flex items-center gap-1.5 rounded-sm border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"

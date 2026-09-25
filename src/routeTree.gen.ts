@@ -37,6 +37,7 @@ import { Route as AdminCalendrierRouteImport } from './routes/admin.calendrier'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminCommandesRouteImport } from './routes/admin.commandes'
 import { Route as AdminCommentairesRouteImport } from './routes/admin.commentaires'
+import { Route as AdminComptabiliteRouteImport } from './routes/admin.comptabilite'
 import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
 import { Route as AdminEditionRouteImport } from './routes/admin.edition'
 import { Route as AdminEditorialCalendarRouteImport } from './routes/admin.editorial-calendar'
@@ -75,6 +76,16 @@ import { Route as ProductionAboutRouteImport } from './routes/production.about'
 import { Route as ProductionContactRouteImport } from './routes/production.contact'
 import { Route as ProductionWorkRouteImport } from './routes/production.work'
 import { Route as ReaderSlugRouteImport } from './routes/reader.$slug'
+import { Route as AdminComptabiliteIndexRouteImport } from './routes/admin.comptabilite.index'
+import { Route as AdminComptabiliteBanqueRouteImport } from './routes/admin.comptabilite.banque'
+import { Route as AdminComptabiliteCaisseRouteImport } from './routes/admin.comptabilite.caisse'
+import { Route as AdminComptabiliteClientsRouteImport } from './routes/admin.comptabilite.clients'
+import { Route as AdminComptabiliteDepensesRouteImport } from './routes/admin.comptabilite.depenses'
+import { Route as AdminComptabiliteFacturesRouteImport } from './routes/admin.comptabilite.factures'
+import { Route as AdminComptabiliteFournisseursRouteImport } from './routes/admin.comptabilite.fournisseurs'
+import { Route as AdminComptabiliteMonProfilRouteImport } from './routes/admin.comptabilite.mon-profil'
+import { Route as AdminComptabilitePaiementsRouteImport } from './routes/admin.comptabilite.paiements'
+import { Route as AdminComptabiliteRapportsRouteImport } from './routes/admin.comptabilite.rapports'
 import { Route as AdminEditionIndexRouteImport } from './routes/admin.edition.index'
 import { Route as AdminEditionAuteursRouteImport } from './routes/admin.edition.auteurs'
 import { Route as AdminEditionCalendrierRouteImport } from './routes/admin.edition.calendrier'
@@ -254,6 +265,11 @@ const AdminCommandesRoute = AdminCommandesRouteImport.update({
 const AdminCommentairesRoute = AdminCommentairesRouteImport.update({
   id: '/commentaires',
   path: '/commentaires',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminComptabiliteRoute = AdminComptabiliteRouteImport.update({
+  id: '/comptabilite',
+  path: '/comptabilite',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCouponsRoute = AdminCouponsRouteImport.update({
@@ -446,6 +462,63 @@ const ReaderSlugRoute = ReaderSlugRouteImport.update({
   path: '/reader/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminComptabiliteIndexRoute = AdminComptabiliteIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminComptabiliteRoute,
+} as any)
+const AdminComptabiliteBanqueRoute = AdminComptabiliteBanqueRouteImport.update({
+  id: '/banque',
+  path: '/banque',
+  getParentRoute: () => AdminComptabiliteRoute,
+} as any)
+const AdminComptabiliteCaisseRoute = AdminComptabiliteCaisseRouteImport.update({
+  id: '/caisse',
+  path: '/caisse',
+  getParentRoute: () => AdminComptabiliteRoute,
+} as any)
+const AdminComptabiliteClientsRoute =
+  AdminComptabiliteClientsRouteImport.update({
+    id: '/clients',
+    path: '/clients',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabiliteDepensesRoute =
+  AdminComptabiliteDepensesRouteImport.update({
+    id: '/depenses',
+    path: '/depenses',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabiliteFacturesRoute =
+  AdminComptabiliteFacturesRouteImport.update({
+    id: '/factures',
+    path: '/factures',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabiliteFournisseursRoute =
+  AdminComptabiliteFournisseursRouteImport.update({
+    id: '/fournisseurs',
+    path: '/fournisseurs',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabiliteMonProfilRoute =
+  AdminComptabiliteMonProfilRouteImport.update({
+    id: '/mon-profil',
+    path: '/mon-profil',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabilitePaiementsRoute =
+  AdminComptabilitePaiementsRouteImport.update({
+    id: '/paiements',
+    path: '/paiements',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
+const AdminComptabiliteRapportsRoute =
+  AdminComptabiliteRapportsRouteImport.update({
+    id: '/rapports',
+    path: '/rapports',
+    getParentRoute: () => AdminComptabiliteRoute,
+  } as any)
 const AdminEditionIndexRoute = AdminEditionIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -684,6 +757,7 @@ export interface FileRoutesByFullPath {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
+  '/admin/comptabilite': typeof AdminComptabiliteRouteWithChildren
   '/admin/coupons': typeof AdminCouponsRoute
   '/admin/edition': typeof AdminEditionRouteWithChildren
   '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
@@ -723,6 +797,15 @@ export interface FileRoutesByFullPath {
   '/entreprise/': typeof EntrepriseIndexRoute
   '/media/': typeof MediaIndexRoute
   '/production/': typeof ProductionIndexRoute
+  '/admin/comptabilite/banque': typeof AdminComptabiliteBanqueRoute
+  '/admin/comptabilite/caisse': typeof AdminComptabiliteCaisseRoute
+  '/admin/comptabilite/clients': typeof AdminComptabiliteClientsRoute
+  '/admin/comptabilite/depenses': typeof AdminComptabiliteDepensesRoute
+  '/admin/comptabilite/factures': typeof AdminComptabiliteFacturesRoute
+  '/admin/comptabilite/fournisseurs': typeof AdminComptabiliteFournisseursRoute
+  '/admin/comptabilite/mon-profil': typeof AdminComptabiliteMonProfilRoute
+  '/admin/comptabilite/paiements': typeof AdminComptabilitePaiementsRoute
+  '/admin/comptabilite/rapports': typeof AdminComptabiliteRapportsRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -753,6 +836,7 @@ export interface FileRoutesByFullPath {
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
   '/production/work/$slug': typeof ProductionWorkSlugRoute
+  '/admin/comptabilite/': typeof AdminComptabiliteIndexRoute
   '/admin/edition/': typeof AdminEditionIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
@@ -822,6 +906,15 @@ export interface FileRoutesByTo {
   '/entreprise': typeof EntrepriseIndexRoute
   '/media': typeof MediaIndexRoute
   '/production': typeof ProductionIndexRoute
+  '/admin/comptabilite/banque': typeof AdminComptabiliteBanqueRoute
+  '/admin/comptabilite/caisse': typeof AdminComptabiliteCaisseRoute
+  '/admin/comptabilite/clients': typeof AdminComptabiliteClientsRoute
+  '/admin/comptabilite/depenses': typeof AdminComptabiliteDepensesRoute
+  '/admin/comptabilite/factures': typeof AdminComptabiliteFacturesRoute
+  '/admin/comptabilite/fournisseurs': typeof AdminComptabiliteFournisseursRoute
+  '/admin/comptabilite/mon-profil': typeof AdminComptabiliteMonProfilRoute
+  '/admin/comptabilite/paiements': typeof AdminComptabilitePaiementsRoute
+  '/admin/comptabilite/rapports': typeof AdminComptabiliteRapportsRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -851,6 +944,7 @@ export interface FileRoutesByTo {
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
   '/production/work/$slug': typeof ProductionWorkSlugRoute
+  '/admin/comptabilite': typeof AdminComptabiliteIndexRoute
   '/admin/edition': typeof AdminEditionIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/newsletter': typeof AdminNewsletterIndexRoute
@@ -891,6 +985,7 @@ export interface FileRoutesById {
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/commandes': typeof AdminCommandesRoute
   '/admin/commentaires': typeof AdminCommentairesRoute
+  '/admin/comptabilite': typeof AdminComptabiliteRouteWithChildren
   '/admin/coupons': typeof AdminCouponsRoute
   '/admin/edition': typeof AdminEditionRouteWithChildren
   '/admin/editorial-calendar': typeof AdminEditorialCalendarRoute
@@ -930,6 +1025,15 @@ export interface FileRoutesById {
   '/entreprise/': typeof EntrepriseIndexRoute
   '/media/': typeof MediaIndexRoute
   '/production/': typeof ProductionIndexRoute
+  '/admin/comptabilite/banque': typeof AdminComptabiliteBanqueRoute
+  '/admin/comptabilite/caisse': typeof AdminComptabiliteCaisseRoute
+  '/admin/comptabilite/clients': typeof AdminComptabiliteClientsRoute
+  '/admin/comptabilite/depenses': typeof AdminComptabiliteDepensesRoute
+  '/admin/comptabilite/factures': typeof AdminComptabiliteFacturesRoute
+  '/admin/comptabilite/fournisseurs': typeof AdminComptabiliteFournisseursRoute
+  '/admin/comptabilite/mon-profil': typeof AdminComptabiliteMonProfilRoute
+  '/admin/comptabilite/paiements': typeof AdminComptabilitePaiementsRoute
+  '/admin/comptabilite/rapports': typeof AdminComptabiliteRapportsRoute
   '/admin/edition/auteurs': typeof AdminEditionAuteursRoute
   '/admin/edition/calendrier': typeof AdminEditionCalendrierRoute
   '/admin/edition/categories': typeof AdminEditionCategoriesRoute
@@ -960,6 +1064,7 @@ export interface FileRoutesById {
   '/admin/newsletter/campagnes': typeof AdminNewsletterCampagnesRoute
   '/admin/newsletter/templates': typeof AdminNewsletterTemplatesRoute
   '/production/work/$slug': typeof ProductionWorkSlugRoute
+  '/admin/comptabilite/': typeof AdminComptabiliteIndexRoute
   '/admin/edition/': typeof AdminEditionIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/newsletter/': typeof AdminNewsletterIndexRoute
@@ -1001,6 +1106,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/commandes'
     | '/admin/commentaires'
+    | '/admin/comptabilite'
     | '/admin/coupons'
     | '/admin/edition'
     | '/admin/editorial-calendar'
@@ -1040,6 +1146,15 @@ export interface FileRouteTypes {
     | '/entreprise/'
     | '/media/'
     | '/production/'
+    | '/admin/comptabilite/banque'
+    | '/admin/comptabilite/caisse'
+    | '/admin/comptabilite/clients'
+    | '/admin/comptabilite/depenses'
+    | '/admin/comptabilite/factures'
+    | '/admin/comptabilite/fournisseurs'
+    | '/admin/comptabilite/mon-profil'
+    | '/admin/comptabilite/paiements'
+    | '/admin/comptabilite/rapports'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -1070,6 +1185,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
     | '/production/work/$slug'
+    | '/admin/comptabilite/'
     | '/admin/edition/'
     | '/admin/media/'
     | '/admin/newsletter/'
@@ -1139,6 +1255,15 @@ export interface FileRouteTypes {
     | '/entreprise'
     | '/media'
     | '/production'
+    | '/admin/comptabilite/banque'
+    | '/admin/comptabilite/caisse'
+    | '/admin/comptabilite/clients'
+    | '/admin/comptabilite/depenses'
+    | '/admin/comptabilite/factures'
+    | '/admin/comptabilite/fournisseurs'
+    | '/admin/comptabilite/mon-profil'
+    | '/admin/comptabilite/paiements'
+    | '/admin/comptabilite/rapports'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -1168,6 +1293,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
     | '/production/work/$slug'
+    | '/admin/comptabilite'
     | '/admin/edition'
     | '/admin/media'
     | '/admin/newsletter'
@@ -1207,6 +1333,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/commandes'
     | '/admin/commentaires'
+    | '/admin/comptabilite'
     | '/admin/coupons'
     | '/admin/edition'
     | '/admin/editorial-calendar'
@@ -1246,6 +1373,15 @@ export interface FileRouteTypes {
     | '/entreprise/'
     | '/media/'
     | '/production/'
+    | '/admin/comptabilite/banque'
+    | '/admin/comptabilite/caisse'
+    | '/admin/comptabilite/clients'
+    | '/admin/comptabilite/depenses'
+    | '/admin/comptabilite/factures'
+    | '/admin/comptabilite/fournisseurs'
+    | '/admin/comptabilite/mon-profil'
+    | '/admin/comptabilite/paiements'
+    | '/admin/comptabilite/rapports'
     | '/admin/edition/auteurs'
     | '/admin/edition/calendrier'
     | '/admin/edition/categories'
@@ -1276,6 +1412,7 @@ export interface FileRouteTypes {
     | '/admin/newsletter/campagnes'
     | '/admin/newsletter/templates'
     | '/production/work/$slug'
+    | '/admin/comptabilite/'
     | '/admin/edition/'
     | '/admin/media/'
     | '/admin/newsletter/'
@@ -1510,6 +1647,13 @@ declare module '@tanstack/react-router' {
       path: '/commentaires'
       fullPath: '/admin/commentaires'
       preLoaderRoute: typeof AdminCommentairesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/comptabilite': {
+      id: '/admin/comptabilite'
+      path: '/comptabilite'
+      fullPath: '/admin/comptabilite'
+      preLoaderRoute: typeof AdminComptabiliteRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/coupons': {
@@ -1777,6 +1921,76 @@ declare module '@tanstack/react-router' {
       fullPath: '/reader/$slug'
       preLoaderRoute: typeof ReaderSlugRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/comptabilite/': {
+      id: '/admin/comptabilite/'
+      path: '/'
+      fullPath: '/admin/comptabilite/'
+      preLoaderRoute: typeof AdminComptabiliteIndexRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/banque': {
+      id: '/admin/comptabilite/banque'
+      path: '/banque'
+      fullPath: '/admin/comptabilite/banque'
+      preLoaderRoute: typeof AdminComptabiliteBanqueRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/caisse': {
+      id: '/admin/comptabilite/caisse'
+      path: '/caisse'
+      fullPath: '/admin/comptabilite/caisse'
+      preLoaderRoute: typeof AdminComptabiliteCaisseRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/clients': {
+      id: '/admin/comptabilite/clients'
+      path: '/clients'
+      fullPath: '/admin/comptabilite/clients'
+      preLoaderRoute: typeof AdminComptabiliteClientsRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/depenses': {
+      id: '/admin/comptabilite/depenses'
+      path: '/depenses'
+      fullPath: '/admin/comptabilite/depenses'
+      preLoaderRoute: typeof AdminComptabiliteDepensesRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/factures': {
+      id: '/admin/comptabilite/factures'
+      path: '/factures'
+      fullPath: '/admin/comptabilite/factures'
+      preLoaderRoute: typeof AdminComptabiliteFacturesRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/fournisseurs': {
+      id: '/admin/comptabilite/fournisseurs'
+      path: '/fournisseurs'
+      fullPath: '/admin/comptabilite/fournisseurs'
+      preLoaderRoute: typeof AdminComptabiliteFournisseursRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/mon-profil': {
+      id: '/admin/comptabilite/mon-profil'
+      path: '/mon-profil'
+      fullPath: '/admin/comptabilite/mon-profil'
+      preLoaderRoute: typeof AdminComptabiliteMonProfilRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/paiements': {
+      id: '/admin/comptabilite/paiements'
+      path: '/paiements'
+      fullPath: '/admin/comptabilite/paiements'
+      preLoaderRoute: typeof AdminComptabilitePaiementsRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
+    }
+    '/admin/comptabilite/rapports': {
+      id: '/admin/comptabilite/rapports'
+      path: '/rapports'
+      fullPath: '/admin/comptabilite/rapports'
+      preLoaderRoute: typeof AdminComptabiliteRapportsRouteImport
+      parentRoute: typeof AdminComptabiliteRoute
     }
     '/admin/edition/': {
       id: '/admin/edition/'
@@ -2061,6 +2275,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminComptabiliteRouteChildren {
+  AdminComptabiliteBanqueRoute: typeof AdminComptabiliteBanqueRoute
+  AdminComptabiliteCaisseRoute: typeof AdminComptabiliteCaisseRoute
+  AdminComptabiliteClientsRoute: typeof AdminComptabiliteClientsRoute
+  AdminComptabiliteDepensesRoute: typeof AdminComptabiliteDepensesRoute
+  AdminComptabiliteFacturesRoute: typeof AdminComptabiliteFacturesRoute
+  AdminComptabiliteFournisseursRoute: typeof AdminComptabiliteFournisseursRoute
+  AdminComptabiliteMonProfilRoute: typeof AdminComptabiliteMonProfilRoute
+  AdminComptabilitePaiementsRoute: typeof AdminComptabilitePaiementsRoute
+  AdminComptabiliteRapportsRoute: typeof AdminComptabiliteRapportsRoute
+  AdminComptabiliteIndexRoute: typeof AdminComptabiliteIndexRoute
+}
+
+const AdminComptabiliteRouteChildren: AdminComptabiliteRouteChildren = {
+  AdminComptabiliteBanqueRoute: AdminComptabiliteBanqueRoute,
+  AdminComptabiliteCaisseRoute: AdminComptabiliteCaisseRoute,
+  AdminComptabiliteClientsRoute: AdminComptabiliteClientsRoute,
+  AdminComptabiliteDepensesRoute: AdminComptabiliteDepensesRoute,
+  AdminComptabiliteFacturesRoute: AdminComptabiliteFacturesRoute,
+  AdminComptabiliteFournisseursRoute: AdminComptabiliteFournisseursRoute,
+  AdminComptabiliteMonProfilRoute: AdminComptabiliteMonProfilRoute,
+  AdminComptabilitePaiementsRoute: AdminComptabilitePaiementsRoute,
+  AdminComptabiliteRapportsRoute: AdminComptabiliteRapportsRoute,
+  AdminComptabiliteIndexRoute: AdminComptabiliteIndexRoute,
+}
+
+const AdminComptabiliteRouteWithChildren =
+  AdminComptabiliteRoute._addFileChildren(AdminComptabiliteRouteChildren)
+
 interface AdminEditionRouteChildren {
   AdminEditionAuteursRoute: typeof AdminEditionAuteursRoute
   AdminEditionCalendrierRoute: typeof AdminEditionCalendrierRoute
@@ -2184,6 +2427,7 @@ interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCommandesRoute: typeof AdminCommandesRoute
   AdminCommentairesRoute: typeof AdminCommentairesRoute
+  AdminComptabiliteRoute: typeof AdminComptabiliteRouteWithChildren
   AdminCouponsRoute: typeof AdminCouponsRoute
   AdminEditionRoute: typeof AdminEditionRouteWithChildren
   AdminEditorialCalendarRoute: typeof AdminEditorialCalendarRoute
@@ -2216,6 +2460,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCommandesRoute: AdminCommandesRoute,
   AdminCommentairesRoute: AdminCommentairesRoute,
+  AdminComptabiliteRoute: AdminComptabiliteRouteWithChildren,
   AdminCouponsRoute: AdminCouponsRoute,
   AdminEditionRoute: AdminEditionRouteWithChildren,
   AdminEditorialCalendarRoute: AdminEditorialCalendarRoute,

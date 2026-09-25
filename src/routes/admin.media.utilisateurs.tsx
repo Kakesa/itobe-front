@@ -8,11 +8,11 @@ export const Route = createFileRoute("/admin/media/utilisateurs")({
     <CrudModule
       titre="Utilisateurs"
       singulier="Utilisateur"
-      description="Comptes lecteurs, éditeurs et administrateurs."
+      description="Comptes lecteurs, éditeurs, comptables et administrateurs."
       collection="utilisateurs"
       requis={["admin"]}
       clesRecherche={["nom", "email"]}
-      filtre={{ cle: "role", label: "Rôle", options: ["admin", "editeur", "lecteur"] }}
+      filtre={{ cle: "role", label: "Rôle", options: ["admin", "editeur", "lecteur", "comptable"] }}
       colonnes={[
         { cle: "nom", label: "Nom" },
         { cle: "email", label: "E-mail", classe: "text-muted-foreground" },
@@ -42,7 +42,7 @@ export const Route = createFileRoute("/admin/media/utilisateurs")({
       champs={[
         { nom: "nom", label: "Nom", requis: true },
         { nom: "email", label: "E-mail", requis: true },
-        { nom: "role", label: "Rôle", type: "select", options: ["admin", "editeur", "lecteur"] },
+        { nom: "role", label: "Rôle", type: "select", options: ["admin", "editeur", "lecteur", "comptable"] },
         { nom: "statut", label: "Statut", type: "select", options: ["Actif", "Suspendu"] },
         { nom: "inscription", label: "Inscription", type: "date" },
       ]}

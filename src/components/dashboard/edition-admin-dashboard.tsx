@@ -187,12 +187,6 @@ function EditionAdminFullDashboard() {
         >
           Commandes
         </Link>
-        <Link
-          to="/admin/media"
-          className="rounded-sm border border-brand-blue/30 px-4 py-2.5 text-sm text-brand-blue hover:bg-brand-blue/5"
-        >
-          Espace Média
-        </Link>
       </div>
     </div>
   );

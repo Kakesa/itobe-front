@@ -10,18 +10,21 @@ import {
   FolderOpen,
   Heart,
   Image,
+  Landmark,
   LayoutDashboard,
   Library,
   Mail,
   MessageSquare,
   Newspaper,
   Percent,
+  Receipt,
   Settings,
   Shield,
   ShoppingBag,
   Tag,
   UserCircle,
   Users,
+  Wallet,
 } from "lucide-react";
 
 export const ADMIN_MENU_ICONS: Record<string, typeof LayoutDashboard> = {
@@ -53,4 +56,11 @@ export const ADMIN_MENU_ICONS: Record<string, typeof LayoutDashboard> = {
   "Mon profil": UserCircle,
   "Rôles & Permissions": Shield,
   "Calendrier éditorial": FileText,
+  "Tableau de bord": LayoutDashboard,
+  Factures: FileText,
+  Dépenses: Receipt,
+  Caisse: Wallet,
+  Banque: Landmark,
+  Clients: Users,
+  Fournisseurs: Users,
 };

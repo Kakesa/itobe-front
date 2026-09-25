@@ -31,6 +31,7 @@ const en: Dictionary = {
       monEspace: "My space",
       espaceAdmin: "Admin space",
       espaceEditeur: "Editor space",
+      espaceComptable: "Accounting",
     },
     switchToEdition: "Publishing house",
     switchToMedia: "Media portal",

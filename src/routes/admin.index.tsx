@@ -16,6 +16,8 @@ function AdminIndex() {
       void navigate({ to: "/admin/media", replace: true });
     } else if (role === "editeur") {
       void navigate({ to: "/admin/edition", replace: true });
+    } else if (role === "comptable") {
+      void navigate({ to: "/admin/comptabilite", replace: true });
     }
   }, [role, navigate]);
 

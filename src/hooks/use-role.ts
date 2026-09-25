@@ -3,7 +3,7 @@ import type { Role } from "@/lib/admin-data";
 
 const CLE = "itobe.role";
 const CLE_SESSION = "itobe.session";
-const ROLES_VALIDES: Role[] = ["admin", "editeur", "lecteur"];
+const ROLES_VALIDES: Role[] = ["admin", "editeur", "lecteur", "comptable"];
 
 function normaliser(v: string | null): Role {
   if (v && ROLES_VALIDES.includes(v as Role)) return v as Role;
