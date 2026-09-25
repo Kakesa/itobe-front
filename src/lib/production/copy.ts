@@ -21,7 +21,7 @@ const fr = {
     openMenu: "Ouvrir le menu",
     closeMenu: "Fermer le menu",
     language: "Choisir la langue",
-    backToPortals: "Retour aux portails",
+    backToPortals: "Tous les projets",
   },
   home: {
     lead: "Société africaine de production\ncinématographique et télévisuelle basée à Kinshasa, RDC",
@@ -131,7 +131,7 @@ const en: typeof fr = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     language: "Choose language",
-    backToPortals: "Back to portals",
+    backToPortals: "All projects",
   },
   home: {
     lead: "An African film & television production company\nbased in Kinshasa, DRC",

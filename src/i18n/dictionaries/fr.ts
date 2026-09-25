@@ -38,7 +38,7 @@ const fr: Dictionary = {
   footer: {
     blurb:
       "La voix de l'Afrique contemporaine. Espace d'idées, de création littéraire et de diffusion du savoir panafricain pour le monde entier.",
-    backToPortals: "Retour aux portails",
+    backToPortals: "Tous les projets",
     headingMedia: "Média",
     headingEdition: "Édition",
     newsletterTitle: "Newsletter",

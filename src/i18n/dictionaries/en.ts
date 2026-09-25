@@ -38,7 +38,7 @@ const en: Dictionary = {
   footer: {
     blurb:
       "The voice of contemporary Africa. A space for ideas, literary creation, and the sharing of pan-African knowledge with the world.",
-    backToPortals: "Back to portals",
+    backToPortals: "All projects",
     headingMedia: "Media",
     headingEdition: "Publishing",
     newsletterTitle: "Newsletter",
