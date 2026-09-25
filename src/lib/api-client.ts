@@ -279,6 +279,18 @@ export const UsersApi = {
 };
 
 export const ComptabiliteApi = {
+  clients: () =>
+    api.get("/comptabilite/clients") as Promise<{
+      data: Array<{
+        id: string;
+        nom: string;
+        email: string;
+        livresVendus: number;
+        paye: number;
+        enAttente: number;
+        commandes: number;
+      }>;
+    }>,
   paiements: (params?: { page?: number; limit?: number; statut?: string }) =>
     api.get("/comptabilite/paiements", params) as Promise<{
       data: Array<{
