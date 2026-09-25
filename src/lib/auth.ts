@@ -89,6 +89,7 @@ export async function authentifierApi(email: string, password: string): Promise<
       return session;
     }
   } catch (error) {
+    clearTokens();
     console.warn("[Auth API] Échec de connexion API, essai du fallback local :", error);
   }
 

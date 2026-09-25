@@ -112,7 +112,7 @@ export function CrudModule({
     creation: boolean;
   }) => void;
 }) {
-  const { role } = useRole();
+  const { role, pret } = useRole();
   const { items, creer, modifier, supprimer, definir } = useCollection(collection);
   const [q, setQ] = useState("");
   const [valeurFiltre, setValeurFiltre] = useState("Tous");
@@ -281,7 +281,7 @@ export function CrudModule({
   }, [collection, definir]);
 
   useEffect(() => {
-    if (collection !== "utilisateurs") return;
+    if (collection !== "utilisateurs" || !pret || !requis.includes(role)) return;
 
     let annule = false;
     UsersApi.fetchAll()
@@ -301,8 +301,8 @@ export function CrudModule({
       .catch((err) => {
         if (!annule) {
           notify.erreur(
-            err instanceof ApiError && err.statusCode === 401
-              ? "Reconnectez-vous pour charger les utilisateurs."
+            err instanceof ApiError && (err.statusCode === 401 || err.statusCode === 403)
+              ? "Reconnectez-vous avec le compte administrateur pour charger les utilisateurs."
               : "Impossible de charger les utilisateurs.",
           );
         }
@@ -311,7 +311,7 @@ export function CrudModule({
     return () => {
       annule = true;
     };
-  }, [collection, definir]);
+  }, [collection, definir, pret, role, requis]);
 
   const liste = useMemo(() => {
     const texte = q.trim().toLowerCase();
@@ -326,6 +326,7 @@ export function CrudModule({
     });
   }, [items, q, valeurFiltre, filtre, clesRecherche]);
 
+  if (!pret) return null;
   if (!requis.includes(role)) return <AccesRestreint requis={requis} />;
 
   const libelle = (row: Item) =>

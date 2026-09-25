@@ -6,7 +6,9 @@ const CLE_SESSION = "itobe.session";
 const ROLES_VALIDES: Role[] = ["admin", "editeur", "lecteur", "comptable"];
 
 function normaliser(v: string | null): Role {
-  if (v && ROLES_VALIDES.includes(v as Role)) return v as Role;
+  const valeur = v?.trim().toLowerCase();
+  if (valeur === "administrateur" || valeur === "administrator") return "admin";
+  if (valeur && ROLES_VALIDES.includes(valeur as Role)) return valeur as Role;
   return "lecteur";
 }
 
@@ -29,10 +31,12 @@ function lireRoleDepuisStorage(): Role {
 }
 
 export function useRole() {
-  const [role, setRole] = useState<Role>(() => lireRoleDepuisStorage());
+  const [role, setRole] = useState<Role>("lecteur");
+  const [pret, setPret] = useState(false);
 
   useEffect(() => {
     setRole(lireRoleDepuisStorage());
+    setPret(true);
     const onChange = () => setRole(lireRoleDepuisStorage());
     window.addEventListener("itobe-role", onChange);
     window.addEventListener("itobe-session", onChange);
@@ -48,5 +52,5 @@ export function useRole() {
     window.dispatchEvent(new Event("itobe-role"));
   };
 
-  return { role, changerRole };
+  return { role, pret, changerRole };
 }

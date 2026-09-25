@@ -21,15 +21,17 @@ const chartConfig: ChartConfig = {
 };
 
 export function VisiteursAdminPage() {
-  const { role } = useRole();
+  const { role, pret } = useRole();
   const [period, setPeriod] = useState<Period>("7j");
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["dashboard", "visitors", period],
     queryFn: () => DashboardApi.getVisitorStats(period),
+    enabled: pret && (role === "admin" || role === "editeur"),
     staleTime: 60_000,
   });
 
-  if (role !== "admin") return <AccesRestreint requis={["admin"]} />;
+  if (!pret) return null;
+  if (role !== "admin" && role !== "editeur") return <AccesRestreint requis={["admin", "editeur"]} />;
 
   const stats = data?.data;
 

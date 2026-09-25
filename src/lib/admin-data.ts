@@ -97,10 +97,10 @@ export const menuEditionAdmin: {
   {
     groupe: "Commercial",
     items: [
-      { to: "/admin/edition/commandes", label: "Commandes", roles: ["admin"] },
-      { to: "/admin/edition/paiements", label: "Paiements", roles: ["admin"] },
-      { to: "/admin/edition/coupons", label: "Coupons", roles: ["admin"] },
-      { to: "/admin/edition/promotions", label: "Promotions", roles: ["admin"] },
+      { to: "/admin/edition/commandes", label: "Commandes", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/paiements", label: "Paiements", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/coupons", label: "Coupons", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/promotions", label: "Promotions", roles: ["admin", "editeur"] },
     ],
   },
   {
@@ -108,14 +108,14 @@ export const menuEditionAdmin: {
     items: [
       { to: "/admin/edition/rapports", label: "Rapports", roles: ["admin", "editeur"] },
       { to: "/admin/edition/statistiques", label: "Statistiques", roles: ["admin", "editeur"] },
-      { to: "/admin/edition/visiteurs", label: "Visiteurs", roles: ["admin"] },
+      { to: "/admin/edition/visiteurs", label: "Visiteurs", roles: ["admin", "editeur"] },
     ],
   },
   {
     groupe: "Paramètres",
     items: [
-      { to: "/admin/edition/utilisateurs", label: "Utilisateurs", roles: ["admin"] },
-      { to: "/admin/edition/roles", label: "Rôles & Permissions", roles: ["admin"] },
+      { to: "/admin/edition/utilisateurs", label: "Utilisateurs", roles: ["admin", "editeur"] },
+      { to: "/admin/edition/roles", label: "Rôles & Permissions", roles: ["admin", "editeur"] },
       { to: "/admin/edition/mon-profil", label: "Mon profil", roles: ["admin", "editeur"] },
     ],
   },

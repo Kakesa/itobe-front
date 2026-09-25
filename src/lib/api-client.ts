@@ -266,6 +266,13 @@ export const UsersApi = {
     api.get("/users", params),
   fetchAll: () => fetchAllPages((page, limit) => UsersApi.getAll({ page, limit })),
   getPermissions: () => api.get("/users/permissions"),
+  updatePermission: (data: {
+    espace: string;
+    module: string;
+    action: string;
+    role: string;
+    autorise: boolean;
+  }) => api.put("/users/permissions", data),
   create: (data: Record<string, unknown>) => api.post("/users", data),
   update: (id: string, data: Record<string, unknown>) => api.put(`/users/${id}`, data),
   delete: (id: string) => api.delete(`/users/${id}`),

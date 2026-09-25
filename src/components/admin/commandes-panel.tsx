@@ -56,7 +56,7 @@ function mapperCommandeAdmin(c: {
 }
 
 export function CommandesAdminPanel() {
-  const { role } = useRole();
+  const { role, pret } = useRole();
   const queryClient = useQueryClient();
   const [q, setQ] = useState("");
   const [statut, setStatut] = useState("Tous");
@@ -85,7 +85,7 @@ export function CommandesAdminPanel() {
         pagination,
       };
     },
-    enabled: apiDisponible && role === "admin",
+    enabled: apiDisponible && (role === "admin" || role === "editeur"),
   });
 
   const mutation = useMutation({
@@ -122,7 +122,8 @@ export function CommandesAdminPanel() {
     };
   }, [liste, pagination.total]);
 
-  if (role !== "admin") return <AccesRestreint requis={["admin"]} />;
+  if (!pret) return null;
+  if (role !== "admin" && role !== "editeur") return <AccesRestreint requis={["admin", "editeur"]} />;
 
   if (!apiDisponible) {
     return (

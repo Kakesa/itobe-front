@@ -9,7 +9,7 @@ export const Route = createFileRoute("/admin/edition/promotions")({
       singulier="Promotion"
       description="Campagnes catalogue et opérations saisonnières."
       collection="promotions"
-      requis={["admin"]}
+      requis={["admin", "editeur"]}
       clesRecherche={["nom", "cible"]}
       colonnes={[
         { cle: "nom", label: "Campagne" },
