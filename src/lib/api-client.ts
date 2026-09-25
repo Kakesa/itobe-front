@@ -279,6 +279,43 @@ export const UsersApi = {
 };
 
 export const ComptabiliteApi = {
+  telechargerRapport: async (params: { debut: string; fin: string; categorie: string }) => {
+    const search = new URLSearchParams(params);
+    const token = getToken();
+    const response = await fetch(`${API_BASE}/comptabilite/rapport.pdf?${search}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      throw new ApiError(data.message || "Le PDF n'a pas pu être téléchargé.", response.status);
+    }
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const lien = document.createElement("a");
+    lien.href = url;
+    lien.download = `rapport-${params.categorie}-${params.debut}-${params.fin}.pdf`;
+    lien.click();
+    URL.revokeObjectURL(url);
+  },
+  rapport: (params: { debut: string; fin: string; categorie: string }) =>
+    api.get("/comptabilite/rapport", params) as Promise<{
+      data: {
+        debut: string;
+        fin: string;
+        categorie: string;
+        lignes: Array<{
+          date: string;
+          reference: string;
+          libelle: string;
+          categorie: string;
+          montant: number;
+        }>;
+        totalVentes: number;
+        totalPaiements: number;
+        totalDepenses: number;
+        total: number;
+      };
+    }>,
   clients: () =>
     api.get("/comptabilite/clients") as Promise<{
       data: Array<{

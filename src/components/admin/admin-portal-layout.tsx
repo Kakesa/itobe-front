@@ -210,14 +210,14 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
   return (
     <div className={`admin-portal admin-portal--${portal} flex min-h-screen bg-muted/40`}>
       <aside
-        className={`sticky top-0 hidden h-svh w-[17.5rem] shrink-0 flex-col md:flex ${meta.sidebarClass}`}
+        className={`sticky top-0 hidden h-svh w-[17.5rem] shrink-0 flex-col print:hidden md:flex ${meta.sidebarClass}`}
       >
         {sidebarInner}
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header
-          className={`admin-portal-header sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b px-4 backdrop-blur md:px-8 ${
+          className={`admin-portal-header sticky top-0 z-30 flex h-14 items-center justify-between gap-3 border-b px-4 backdrop-blur print:hidden md:px-8 ${
             portal === "lecteur" ? "border-border bg-card/95" : ""
           }`}
         >
@@ -246,7 +246,7 @@ export function AdminPortalLayout({ portal, menu, iconMap = {}, children }: Prop
         </header>
 
         {mobileOpen && (
-          <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 z-50 print:hidden md:hidden">
             <button
               type="button"
               className="absolute inset-0 bg-ink/50"
