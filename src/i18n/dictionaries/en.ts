@@ -118,7 +118,7 @@ const en: Dictionary = {
     socials: "Social media",
     hoursTitle: "Hours",
     hours: "Monday – Friday, 8am – 5pm",
-    mediaTitle: "Contact us",
+    mediaTitle: "Contact-us",
     mediaNotice:
       "For any commercial inquiry, partnership, press, interview, podcast, event, speaking request, or other request about Neno, please use the form below.",
     mediaName: "Name",

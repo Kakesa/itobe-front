@@ -122,15 +122,24 @@ function RapportsComptabilite() {
       </div>
 
       {rapport ? (
-        <article className="rapport-feuille mt-8 rounded-xl border border-border bg-card p-6 print:mt-0 print:border-0 print:p-0">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">ITOBE · Comptabilité</p>
-              <h2 className="mt-1 font-display text-2xl">Rapport {libelleCategorie.toLowerCase()}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Du {rapport.debut} au {rapport.fin}
-              </p>
+        <article className="rapport-feuille mx-auto mt-8 max-w-4xl overflow-hidden rounded-xl border border-border bg-white text-[#211c1c] shadow-sm print:mt-0 print:max-w-none print:rounded-none print:border-0 print:shadow-none">
+          <header className="bg-[#0f3d3e] px-8 py-6 text-[#d7efe8]">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="font-display text-2xl tracking-wide text-white">ITOBE</p>
+                <p className="mt-1 text-[0.7rem] uppercase tracking-[0.16em]">Comptabilité</p>
+              </div>
+              <div className="text-right">
+                <p className="font-display text-xl text-white">Rapport financier</p>
+                <p className="mt-1 text-sm">{libelleCategorie}</p>
+              </div>
             </div>
+          </header>
+          <div className="h-1 bg-[#d7efe8]" />
+          <div className="flex flex-wrap items-start justify-between gap-4 px-8 pt-6">
+            <p className="text-sm text-muted-foreground">
+              Période du {rapport.debut} au {rapport.fin}
+            </p>
             <div className="flex gap-2 print:hidden">
               <button
                 type="button"
@@ -157,55 +166,59 @@ function RapportsComptabilite() {
             </div>
           </div>
 
-          <p className="mt-6 font-display text-3xl">{argent(rapport.total)}</p>
-          <p className="text-sm text-muted-foreground">
-            {rapport.categorie === "depense"
-              ? "Total des dépenses sur la période"
-              : rapport.categorie === "paiement"
-                ? "Total des paiements encaissés"
-                : "Total des ventes, moins les dépenses"}
-          </p>
+          <div className="mt-6 grid gap-3 px-8 sm:grid-cols-3">
+            <div className="rounded-lg bg-[#f7f6f4] px-4 py-3">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Ventes</p>
+              <p className="mt-1 font-display text-2xl">{argent(rapport.totalVentes)}</p>
+            </div>
+            <div className="rounded-lg bg-[#f7f6f4] px-4 py-3">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Dépenses</p>
+              <p className="mt-1 font-display text-2xl">{argent(rapport.totalDepenses)}</p>
+            </div>
+            <div className="rounded-lg bg-[#f7f6f4] px-4 py-3">
+              <p className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Total de la période</p>
+              <p className="mt-1 font-display text-2xl">{argent(rapport.total)}</p>
+            </div>
+          </div>
 
-          {rapport.categorie === "toutes" ? (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Ventes {argent(rapport.totalVentes)} · Dépenses {argent(rapport.totalDepenses)}
-            </p>
-          ) : null}
-
-          <div className="mt-6 overflow-x-auto">
+          <div className="mt-6 overflow-x-auto px-8 pb-8">
             <table className="w-full min-w-[36rem] text-left text-sm">
-              <thead className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
-                <tr>
-                  <th className="py-2 pr-3 font-medium">Date</th>
-                  <th className="py-2 pr-3 font-medium">Référence</th>
-                  <th className="py-2 pr-3 font-medium">Libellé</th>
-                  <th className="py-2 pr-3 font-medium">Catégorie</th>
-                  <th className="py-2 font-medium">Montant</th>
+              <thead>
+                <tr className="bg-[#0f3d3e] text-[0.7rem] uppercase tracking-wide text-[#d7efe8]">
+                  <th className="px-3 py-2 font-medium">Date</th>
+                  <th className="px-3 py-2 font-medium">Référence</th>
+                  <th className="px-3 py-2 font-medium">Libellé</th>
+                  <th className="px-3 py-2 font-medium">Catégorie</th>
+                  <th className="px-3 py-2 text-right font-medium">Montant</th>
                 </tr>
               </thead>
               <tbody>
                 {rapport.lignes.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-6 text-muted-foreground">
+                    <td colSpan={5} className="px-3 py-6 text-muted-foreground">
                       {rapport.categorie === "depense"
                         ? "Aucune dépense enregistrée sur cette période."
                         : "Aucun mouvement sur cette période."}
                     </td>
                   </tr>
                 ) : (
-                  rapport.lignes.map((ligne) => (
-                    <tr key={`${ligne.reference}-${ligne.date}`} className="border-b border-border last:border-0">
-                      <td className="py-2 pr-3">{ligne.date}</td>
-                      <td className="py-2 pr-3 text-muted-foreground">{ligne.reference}</td>
-                      <td className="py-2 pr-3">{ligne.libelle}</td>
-                      <td className="py-2 pr-3 capitalize">{ligne.categorie}</td>
-                      <td className="py-2">{argent(ligne.montant)}</td>
+                  rapport.lignes.map((ligne, index) => (
+                    <tr key={`${ligne.reference}-${ligne.date}`} className={index % 2 === 1 ? "bg-[#f7f6f4]" : ""}>
+                      <td className="px-3 py-2">{ligne.date}</td>
+                      <td className="px-3 py-2 text-muted-foreground">{ligne.reference}</td>
+                      <td className="px-3 py-2">{ligne.libelle}</td>
+                      <td className="px-3 py-2 capitalize text-muted-foreground">{ligne.categorie}</td>
+                      <td className="px-3 py-2 text-right">{argent(ligne.montant)}</td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
           </div>
+          <footer className="flex items-center justify-between border-t border-border px-8 py-4 text-xs text-muted-foreground">
+            <span>Document généré le {new Date().toLocaleDateString("fr-FR")}</span>
+            <span>Page 1</span>
+          </footer>
         </article>
       ) : null}
     </div>

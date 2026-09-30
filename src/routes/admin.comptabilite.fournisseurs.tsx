@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { SectionComptabilite } from "@/components/comptabilite/section-vide";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/comptabilite/fournisseurs")({
-  component: () => <SectionComptabilite section="fournisseurs" />,
+  beforeLoad: () => {
+    throw redirect({ to: "/admin/comptabilite" });
+  },
 });

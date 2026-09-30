@@ -43,7 +43,7 @@ const fondateurs = [
       "Un récit africain n'a pas besoin d'être traduit pour exister. Il a besoin d'un lieu où il peut durer.",
     bio: "Christian Bigomukero a conçu ITOBE comme un écosystème : le reportage, le livre et l'écran dans une même maison. Il porte la ligne éditoriale du groupe — des enquêtes de NENO aux collections d'Itobe Éditions.",
     ton: "ink" as const,
-    photo: null as string | null,
+    photo: "/images/entreprise/christian-bigomukero.png",
   },
   {
     index: "02",

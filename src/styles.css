@@ -801,6 +801,23 @@
   background: color-mix(in oklab, #d7efe8 40%, white);
 }
 
+@media print {
+  .rapport-feuille,
+  .rapport-feuille * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .admin-portal {
+    background: white !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}
+
 .admin-portal--edition .admin-portal-header {
   border-color: color-mix(in oklab, var(--brand-gold) 35%, transparent);
   background: color-mix(in oklab, var(--brand-gold) 18%, white);

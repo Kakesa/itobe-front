@@ -34,7 +34,7 @@ export function ChiffresArgent() {
         icon={BookOpen}
       />
       <KpiCard
-        label="Solde en caisse"
+        label="Solde de trésorerie"
         valeur={argent(chiffres.soldeCaisse)}
         hint={chiffres.rembourse > 0 ? `Remboursé : ${argent(chiffres.rembourse)}` : "Encaissements payés"}
         icon={Wallet}

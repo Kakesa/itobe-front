@@ -16,8 +16,8 @@ const SECTIONS = {
     texte: "Les dépenses, leur validation et leurs justificatifs seront suivis ici.",
   },
   caisse: {
-    titre: "Caisse",
-    texte: "Les caisses, leurs entrées, sorties et soldes seront consultés ici.",
+    titre: "Trésorerie",
+    texte: "Les comptes de trésorerie, leurs entrées, sorties et soldes seront consultés ici.",
   },
   banque: {
     titre: "Banque",
@@ -33,7 +33,7 @@ const SECTIONS = {
   },
   rapports: {
     titre: "Rapports",
-    texte: "Les rapports de recettes, dépenses, caisse et banque seront exportés depuis ici.",
+    texte: "Les rapports de recettes, dépenses, trésorerie et banque seront exportés depuis ici.",
   },
 } as const;
 

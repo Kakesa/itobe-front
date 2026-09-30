@@ -21,7 +21,7 @@ export const roles: { id: Role; label: string; description: string }[] = [
   {
     id: "comptable",
     label: "Comptable",
-    description: "Factures, encaissements, dépenses, caisse, banque et rapports financiers.",
+    description: "Encaissements, dépenses, trésorerie, banque et rapports financiers.",
   },
 ];
 
@@ -158,13 +158,11 @@ export const menuComptabiliteAdmin: {
     groupe: "Comptabilité",
     items: [
       { to: "/admin/comptabilite", label: "Tableau de bord", roles: ["admin", "comptable"] },
-      { to: "/admin/comptabilite/factures", label: "Factures", roles: ["admin", "comptable"] },
       { to: "/admin/comptabilite/paiements", label: "Paiements", roles: ["admin", "comptable"] },
       { to: "/admin/comptabilite/depenses", label: "Dépenses", roles: ["admin", "comptable"] },
-      { to: "/admin/comptabilite/caisse", label: "Caisse", roles: ["admin", "comptable"] },
+      { to: "/admin/comptabilite/caisse", label: "Trésorerie", roles: ["admin", "comptable"] },
       { to: "/admin/comptabilite/banque", label: "Banque", roles: ["admin", "comptable"] },
       { to: "/admin/comptabilite/clients", label: "Clients", roles: ["admin", "comptable"] },
-      { to: "/admin/comptabilite/fournisseurs", label: "Fournisseurs", roles: ["admin", "comptable"] },
       { to: "/admin/comptabilite/rapports", label: "Rapports", roles: ["admin", "comptable"] },
     ],
   },

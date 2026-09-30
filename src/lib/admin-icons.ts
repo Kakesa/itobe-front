@@ -59,7 +59,7 @@ export const ADMIN_MENU_ICONS: Record<string, typeof LayoutDashboard> = {
   "Tableau de bord": LayoutDashboard,
   Factures: FileText,
   Dépenses: Receipt,
-  Caisse: Wallet,
+  Trésorerie: Wallet,
   Banque: Landmark,
   Clients: Users,
   Fournisseurs: Users,
