@@ -49,7 +49,15 @@ function splitWords(text: string) {
   return text.split(/\s+/).filter(Boolean);
 }
 
-function SplitChars({ text, delay = 0 }: { text: string; delay?: number }) {
+function SplitChars({
+  text,
+  delay = 0,
+  charClass = "entreprise-about__char",
+}: {
+  text: string;
+  delay?: number;
+  charClass?: string;
+}) {
   return (
     <>
       {Array.from(text).map((ch, i) =>
@@ -60,7 +68,7 @@ function SplitChars({ text, delay = 0 }: { text: string; delay?: number }) {
         ) : (
           <span key={`${ch}-${i}`} className="entreprise-about__char-wrap" aria-hidden>
             <span
-              className="entreprise-about__char"
+              className={charClass}
               style={{ animationDelay: `${delay + i * 0.055}s` } as CSSProperties}
             >
               {ch}
@@ -119,6 +127,7 @@ function EntrepriseAbout() {
     { ...fondateursFixes[0], role: g.christianRole, bio: g.christianBio, citation: g.christianQuote },
     { ...fondateursFixes[1], role: g.christopherRole, bio: g.christopherBio, citation: g.christopherQuote },
   ];
+  const foundersRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -141,6 +150,57 @@ function EntrepriseAbout() {
       const progress = Math.min(1, Math.max(0, scrolled / range));
       track.style.setProperty("--read-progress", progress.toFixed(4));
       track.classList.toggle("entreprise-about--ready", progress >= 0.88);
+    };
+
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  useEffect(() => {
+    const root = foundersRef.current;
+    if (!root) return;
+
+    const heading = root.querySelector<HTMLElement>("[data-founders-heading]");
+    const cards = [...root.querySelectorAll<HTMLElement>("[data-founder]")];
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reduced) {
+      root.classList.add("is-in");
+      for (const card of cards) card.style.setProperty("--read-progress", "1");
+      return;
+    }
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      if (heading && heading.getBoundingClientRect().top < vh * 0.86) {
+        root.classList.add("is-in");
+      }
+      const atBottom = window.scrollY + vh >= document.documentElement.scrollHeight - 8;
+      for (const card of cards) {
+        const copy = card.querySelector<HTMLElement>(".groupe-founders__copy") ?? card;
+        const first = copy.firstElementChild instanceof HTMLElement ? copy.firstElementChild : copy;
+        const last = copy.lastElementChild instanceof HTMLElement ? copy.lastElementChild : copy;
+        const firstTop = first.getBoundingClientRect().top;
+        const lastRect = last.getBoundingClientRect();
+        const textHeight = Math.max(1, lastRect.bottom - firstTop);
+        const start = vh * 0.92;
+        const end = vh - textHeight;
+        let progress = (start - firstTop) / Math.max(1, start - end);
+        if (atBottom && lastRect.bottom > 0 && firstTop < vh) progress = 1;
+        card.style.setProperty("--read-progress", Math.min(1, Math.max(0, progress)).toFixed(4));
+      }
     };
 
     const onScroll = () => {
@@ -186,22 +246,31 @@ function EntrepriseAbout() {
         </section>
       </div>
 
-      <article className="groupe-founders entreprise-about__founders px-4 pb-20 pt-16 md:px-8 md:pt-24">
+      <article
+        ref={foundersRef}
+        className="groupe-founders entreprise-about__founders px-4 pb-20 pt-16 md:px-8 md:pt-24"
+      >
         <div className="entreprise-about__founders-inner">
           <section aria-labelledby="fondateurs-title">
-            <header className="max-w-3xl">
+            <header className="max-w-3xl" data-founders-heading>
               <h2
                 id="fondateurs-title"
-                className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground"
+                className="founders-kicker text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground"
+                aria-label={g.foundersKicker}
               >
-                {g.foundersKicker}
+                <SplitChars text={g.foundersKicker} charClass="founders-kicker__char" />
               </h2>
             </header>
 
             <ol className="mt-12 space-y-14 md:mt-24 md:space-y-24">
-              {fondateurs.map((f, i) => (
+              {fondateurs.map((f, i) => {
+                const blocs = [f.role, f.bio, `« ${f.citation} »`];
+                const counts = blocs.map((bloc) => splitWords(bloc).length);
+                const total = counts.reduce((sum, n) => sum + n, 0);
+                return (
                 <li
                   key={f.nom}
+                  data-founder
                   className={`groupe-founders__card groupe-founders__card--${f.ton} ${i % 2 === 1 ? "groupe-founders__card--reverse" : ""}`}
                 >
                   <div
@@ -233,19 +302,29 @@ function EntrepriseAbout() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col justify-center py-1 md:py-4">
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-brand text-muted-foreground">
-                      {f.role}
-                    </p>
-                    <p className="mt-4 text-[0.98rem] leading-7 text-muted-foreground md:mt-5 md:text-[1.05rem] md:leading-8">
-                      {f.bio}
-                    </p>
-                    <p className="mt-5 font-display text-lg leading-snug italic text-foreground md:mt-6 md:text-2xl">
-                      « {f.citation} »
-                    </p>
+                  <div className="groupe-founders__copy flex flex-col justify-center py-1 md:py-4">
+                    <SplitWords
+                      text={blocs[0]}
+                      className="text-[0.72rem] font-semibold uppercase tracking-brand text-muted-foreground"
+                      startIndex={0}
+                      total={total}
+                    />
+                    <SplitWords
+                      text={blocs[1]}
+                      className="mt-4 text-[0.98rem] leading-7 text-muted-foreground md:mt-5 md:text-[1.05rem] md:leading-8"
+                      startIndex={counts[0]}
+                      total={total}
+                    />
+                    <SplitWords
+                      text={blocs[2]}
+                      className="mt-5 font-display text-lg leading-snug italic text-foreground md:mt-6 md:text-2xl"
+                      startIndex={counts[0] + counts[1]}
+                      total={total}
+                    />
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ol>
           </section>
         </div>

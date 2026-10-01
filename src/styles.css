@@ -3155,6 +3155,29 @@ body:has(.entreprise-contact) {
   color: #fff;
 }
 
+.founders-kicker__char {
+  display: inline-block;
+  transform: translateY(110%);
+}
+
+.entreprise-about__founders.is-in .founders-kicker__char {
+  animation: entreprise-about-char-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.groupe-founders__card {
+  --read-progress: 0;
+  --word-span: 1.6;
+}
+
+.groupe-founders__card .groupe-founders__portrait {
+  opacity: clamp(0, calc(var(--read-progress) * 1.65), 1);
+  transform: translateY(calc((1 - clamp(0, calc(var(--read-progress) * 1.65), 1)) * 2.75rem));
+}
+
+.groupe-founders__card .groupe-founders__photo {
+  transform: scale(calc(1.08 - 0.08 * clamp(0, calc(var(--read-progress) * 1.35), 1)));
+}
+
 @media (max-width: 767px) {
   .entreprise-about {
     height: 320vh;
@@ -3431,6 +3454,17 @@ body:has(.entreprise-contact) {
     opacity: 1;
     transform: none;
     pointer-events: auto;
+  }
+
+  .founders-kicker__char {
+    transform: none;
+    animation: none;
+  }
+
+  .groupe-founders__card .groupe-founders__portrait,
+  .groupe-founders__card .groupe-founders__photo {
+    opacity: 1;
+    transform: none;
   }
 }
 
