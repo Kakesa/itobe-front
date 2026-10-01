@@ -12,6 +12,7 @@ import {
   rogneInitiale,
   deplacerRogne,
   rogneRedimensionnee,
+  ROGNE_PLEINE,
   AJUSTEMENT_INITIAL,
 } from "../src/components/admin/image-editor/cadre-page.ts";
 
@@ -66,5 +67,13 @@ describe("cadre d'une page de livre", () => {
     assert.ok(reduite.h < rogne.h);
     const ratio = (reduite.w * 2000) / (reduite.h * 1000);
     assert.ok(Math.abs(ratio - RATIO_PAGE_LIVRE) < 0.02);
+  });
+
+  it("laisse un motif entier pour que l'écrit s'adapte autour", () => {
+    assert.equal(estAjustementInitial({ ...AJUSTEMENT_INITIAL, rogne: ROGNE_PLEINE }, 900, 700, "decor"), true);
+    const reduit = rogneRedimensionnee(ROGNE_PLEINE, "se", -0.25, 0, 900, 700, 900 / 700);
+    const ratio = (reduit.w * 900) / (reduit.h * 700);
+    assert.ok(Math.abs(ratio - 900 / 700) < 0.02);
+    assert.ok(reduit.w < 1);
   });
 });

@@ -36,7 +36,7 @@ import {
   pastedTextToParagraphHtml,
 } from "@/lib/normalize-pasted-text";
 import { uploadMediaImage } from "@/lib/upload-media";
-import { emplacementImage, type EmplacementImage } from "@/components/admin/image-editor/cadre-page";
+import { emplacementImage, tailleImage, type EmplacementImage, type TailleImage } from "@/components/admin/image-editor/cadre-page";
 import { ImageEditor } from "@/components/admin/image-editor/ImageEditor";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
 import { DOMParser as ProseMirrorDOMParser, Fragment, Slice } from "@tiptap/pm/model";
@@ -51,6 +51,13 @@ const ImageAvecEmplacement = Image.extend({
         parseHTML: (element: HTMLElement) => element.getAttribute("data-align") || "pleine",
         renderHTML: (attributes: { align?: string }) => ({
           "data-align": attributes.align || "pleine",
+        }),
+      },
+      taille: {
+        default: "page",
+        parseHTML: (element: HTMLElement) => (element.getAttribute("data-taille") === "decor" ? "decor" : "page"),
+        renderHTML: (attributes: { taille?: string }) => ({
+          "data-taille": attributes.taille === "decor" ? "decor" : "page",
         }),
       },
     };
@@ -91,6 +98,7 @@ export function ChapterRichEditor({
     mode: "inserer" | "remplacer";
     pos?: number;
     emplacement: EmplacementImage;
+    taille: TailleImage;
   } | null>(null);
   const [motsCount, setMotsCount] = useState(0);
   const [footnoteDraft, setFootnoteDraft] = useState<{
@@ -270,12 +278,12 @@ export function ChapterRichEditor({
     });
   };
 
-  const appliquerEmplacement = (emplacement: EmplacementImage, pos?: number) => {
+  const appliquerPresentation = (emplacement: EmplacementImage, taille: TailleImage, pos?: number) => {
     if (!editor) return;
     const chaine = editor.chain().focus();
     if (typeof pos === "number") chaine.setNodeSelection(pos);
-    chaine.updateAttributes("image", { align: emplacement }).run();
-    notify.succes("Emplacement de l'image mis à jour");
+    chaine.updateAttributes("image", { align: emplacement, taille }).run();
+    notify.succes("Présentation de l'image mise à jour");
     fermerSessionImage();
   };
 
@@ -284,6 +292,7 @@ export function ChapterRichEditor({
     mode: "inserer" | "remplacer",
     pos?: number,
     emplacement: EmplacementImage = "pleine",
+    taille: TailleImage = "page",
   ) => {
     if (!editor || uploadingImage) return;
     setUploadingImage(true);
@@ -292,10 +301,10 @@ export function ChapterRichEditor({
       if (mode === "remplacer") {
         const chaine = editor.chain().focus();
         if (typeof pos === "number") chaine.setNodeSelection(pos);
-        chaine.updateAttributes("image", { src: url, alt: fichier.name, align: emplacement }).run();
+        chaine.updateAttributes("image", { src: url, alt: fichier.name, align: emplacement, taille }).run();
         notify.succes("Image de la page mise à jour");
       } else {
-        editor.chain().focus().setImage({ src: url, alt: fichier.name, align: emplacement }).run();
+        editor.chain().focus().setImage({ src: url, alt: fichier.name, align: emplacement, taille }).run();
         notify.succes(editeurImagePage ? "Image insérée dans la page" : "Image insérée dans le chapitre");
       }
       fermerSessionImage();
@@ -314,6 +323,7 @@ export function ChapterRichEditor({
         fichier: file,
         mode: "inserer",
         emplacement: "pleine",
+        taille: "page",
       });
       return;
     }
@@ -330,6 +340,7 @@ export function ChapterRichEditor({
       mode: "remplacer",
       pos: editor.state.selection.from,
       emplacement: emplacementImage(editor.getAttributes("image").align),
+      taille: tailleImage(editor.getAttributes("image").taille),
     });
   };
 
@@ -571,19 +582,34 @@ export function ChapterRichEditor({
             source={sessionImage.src}
             nom={sessionImage.fichier?.name || "page"}
             emplacementInitial={sessionImage.emplacement}
+            tailleInitiale={sessionImage.taille}
             onAnnuler={fermerSessionImage}
             onValider={(resultat) => {
+              const presentationChangee =
+                resultat.emplacement !== sessionImage.emplacement || resultat.taille !== sessionImage.taille;
               if (resultat.inchange) {
                 if (sessionImage.fichier) {
-                  void envoyerImage(sessionImage.fichier, sessionImage.mode, sessionImage.pos, resultat.emplacement);
-                } else if (resultat.emplacement !== sessionImage.emplacement) {
-                  appliquerEmplacement(resultat.emplacement, sessionImage.pos);
+                  void envoyerImage(
+                    sessionImage.fichier,
+                    sessionImage.mode,
+                    sessionImage.pos,
+                    resultat.emplacement,
+                    resultat.taille,
+                  );
+                } else if (presentationChangee) {
+                  appliquerPresentation(resultat.emplacement, resultat.taille, sessionImage.pos);
                 } else {
                   fermerSessionImage();
                 }
                 return;
               }
-              void envoyerImage(resultat.fichier, sessionImage.mode, sessionImage.pos, resultat.emplacement);
+              void envoyerImage(
+                resultat.fichier,
+                sessionImage.mode,
+                sessionImage.pos,
+                resultat.emplacement,
+                resultat.taille,
+              );
             }}
           />
         ) : null}

@@ -486,6 +486,7 @@ function ChapterEditorPanel({
   const [modalConflit, setModalConflit] = useState(false);
   const [afficherLegacy, setAfficherLegacy] = useState(false);
   const [importEnCours, setImportEnCours] = useState(false);
+  const [confirmerImport, setConfirmerImport] = useState(false);
 
   const {
     status,
@@ -531,10 +532,7 @@ function ChapterEditorPanel({
 
   const importerLegacyVersPage1 = async () => {
     if (!chapitre.contenu || importEnCours) return;
-    const ok = window.confirm(
-      "Cela remplacera le contenu actuel de la page 1 par l’ancien contenu du chapitre (avec ses références). Continuer ?",
-    );
-    if (!ok) return;
+    setConfirmerImport(false);
     setImportEnCours(true);
     try {
       const res = await PagesApi.getByChapitre(chapitre._id);
@@ -618,7 +616,7 @@ function ChapterEditorPanel({
           <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => void importerLegacyVersPage1()}
+              onClick={() => setConfirmerImport(true)}
               disabled={importEnCours}
               className="rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-800 disabled:opacity-60"
             >
@@ -725,6 +723,15 @@ function ChapterEditorPanel({
           />
         </div>
       )}
+
+      <ConfirmDialog
+        ouvert={confirmerImport}
+        titre="Remplacer la page 1 ?"
+        message="Le contenu actuel de la page 1 sera remplacé par l’ancien contenu du chapitre, avec ses références."
+        confirmer="Continuer"
+        onAnnuler={() => setConfirmerImport(false)}
+        onConfirmer={() => void importerLegacyVersPage1()}
+      />
 
       <ChapterConflictDialog
         ouvert={modalConflit || status === "conflict"}

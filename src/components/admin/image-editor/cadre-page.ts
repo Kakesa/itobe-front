@@ -35,6 +35,13 @@ export type AjustementImage = {
 /** Où l'image se place dans le texte de la page. */
 export type EmplacementImage = "gauche" | "centre" | "droite" | "pleine";
 
+/** `decor` : le motif garde sa forme et l'écrit s'adapte autour. `page` : illustration au format du folio. */
+export type TailleImage = "decor" | "page";
+
+export function tailleImage(valeur: unknown): TailleImage {
+  return valeur === "decor" ? "decor" : "page";
+}
+
 export function emplacementImage(valeur: unknown): EmplacementImage {
   if (valeur === "gauche" || valeur === "centre" || valeur === "droite" || valeur === "pleine") {
     return valeur;
@@ -77,13 +84,19 @@ export function rognesEgales(a: Rogne, b: Rogne) {
   return pres(a.x, b.x) && pres(a.y, b.y) && pres(a.w, b.w) && pres(a.h, b.h);
 }
 
-export function estAjustementInitial(a: AjustementImage, imgW: number, imgH: number) {
+export function estAjustementInitial(
+  a: AjustementImage,
+  imgW: number,
+  imgH: number,
+  taille: TailleImage = "page",
+) {
+  const rogneAttendue = taille === "decor" ? ROGNE_PLEINE : rogneInitiale(imgW, imgH, 0);
   return (
     a.rotation === 0 &&
     a.zoom === 1 &&
     a.offsetX === 0 &&
     a.offsetY === 0 &&
-    rognesEgales(a.rogne, rogneInitiale(imgW, imgH, 0))
+    rognesEgales(a.rogne, rogneAttendue)
   );
 }
 
@@ -102,7 +115,7 @@ export function deplacerRogne(rogne: Rogne, dx: number, dy: number): Rogne {
   return limiterRogne({ ...rogne, x: rogne.x + dx, y: rogne.y + dy });
 }
 
-/** Redimensionne en gardant le format du folio. dx/dy sont des fractions de l'image. */
+/** Redimensionne en gardant `ratio` (folio, ou proportions du motif). dx/dy sont des fractions de l'image. */
 export function rogneRedimensionnee(
   start: Rogne,
   coin: CoinRogne,
@@ -110,6 +123,7 @@ export function rogneRedimensionnee(
   dy: number,
   ow: number,
   oh: number,
+  ratio: number = RATIO_PAGE_LIVRE,
 ): Rogne {
   if (ow <= 0 || oh <= 0) return start;
   const versEst = coin === "ne" || coin === "se";
@@ -118,33 +132,34 @@ export function rogneRedimensionnee(
   const ancreY = versSud ? start.y : start.y + start.h;
   const deltaX = (versEst ? 1 : -1) * dx;
   const deltaY = (versSud ? 1 : -1) * dy;
-  const wDepuisH = (start.h + deltaY) * ((oh * RATIO_PAGE_LIVRE) / ow);
+  const ratioCadre = ratio > 0 ? ratio : RATIO_PAGE_LIVRE;
+  const wDepuisH = (start.h + deltaY) * ((oh * ratioCadre) / ow);
   let w = Math.abs(deltaX) >= Math.abs(wDepuisH - start.w) ? start.w + deltaX : wDepuisH;
   w = Math.max(0.12, w);
-  let h = (w * ow) / (oh * RATIO_PAGE_LIVRE);
+  let h = (w * ow) / (oh * ratioCadre);
   let x = versEst ? ancreX : ancreX - w;
   let y = versSud ? ancreY : ancreY - h;
 
   if (x < 0) {
     w += x;
     x = 0;
-    h = (w * ow) / (oh * RATIO_PAGE_LIVRE);
+    h = (w * ow) / (oh * ratioCadre);
     if (!versSud) y = ancreY - h;
   }
   if (y < 0) {
     h += y;
     y = 0;
-    w = (h * oh * RATIO_PAGE_LIVRE) / ow;
+    w = (h * oh * ratioCadre) / ow;
     if (!versEst) x = ancreX - w;
   }
   if (x + w > 1) {
     w = 1 - x;
-    h = (w * ow) / (oh * RATIO_PAGE_LIVRE);
+    h = (w * ow) / (oh * ratioCadre);
     if (!versSud) y = ancreY - h;
   }
   if (y + h > 1) {
     h = 1 - y;
-    w = (h * oh * RATIO_PAGE_LIVRE) / ow;
+    w = (h * oh * ratioCadre) / ow;
     if (!versEst) x = ancreX - w;
   }
   return limiterRogne({ x, y, w, h });

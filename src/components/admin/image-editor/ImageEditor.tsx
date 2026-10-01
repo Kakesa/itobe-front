@@ -16,17 +16,20 @@ import {
   emplacementImage,
   estAjustementInitial,
   rectangleRogne,
+  ROGNE_PLEINE,
   rogneInitiale,
   rogneRedimensionnee,
   tailleExportRogne,
+  tailleImage,
   type AjustementImage,
   type CoinRogne,
   type EmplacementImage,
+  type TailleImage,
 } from "./cadre-page";
 
 type ResultatImage =
-  | { inchange: true; emplacement: EmplacementImage }
-  | { inchange: false; fichier: File; emplacement: EmplacementImage };
+  | { inchange: true; emplacement: EmplacementImage; taille: TailleImage }
+  | { inchange: false; fichier: File; emplacement: EmplacementImage; taille: TailleImage };
 
 const EMPLACEMENTS: { id: EmplacementImage; label: string }[] = [
   { id: "gauche", label: "Gauche" },
@@ -41,6 +44,7 @@ interface ImageEditorProps {
   source: string;
   nom: string;
   emplacementInitial?: EmplacementImage;
+  tailleInitiale?: TailleImage;
   onAnnuler: () => void;
   onValider: (resultat: ResultatImage) => void;
 }
@@ -75,6 +79,7 @@ export function ImageEditor({
   source,
   nom,
   emplacementInitial = "pleine",
+  tailleInitiale = "page",
   onAnnuler,
   onValider,
 }: ImageEditorProps) {
@@ -91,6 +96,7 @@ export function ImageEditor({
   const [erreur, setErreur] = useState<string | null>(null);
   const [ajustement, setAjustement] = useState<AjustementImage>(AJUSTEMENT_INITIAL);
   const [emplacement, setEmplacement] = useState<EmplacementImage>(emplacementInitial);
+  const [taille, setTaille] = useState<TailleImage>(tailleInitiale);
   const [tailleCadre, setTailleCadre] = useState({ w: 0, h: 0 });
   const [exportEnCours, setExportEnCours] = useState(false);
 
@@ -98,15 +104,17 @@ export function ImageEditor({
     if (!ouvert) return;
     setAjustement(AJUSTEMENT_INITIAL);
     setEmplacement(emplacementImage(emplacementInitial));
+    setTaille(tailleImage(tailleInitiale));
     setErreur(null);
     setImage(null);
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
       imageRef.current = img;
+      const mode = tailleImage(tailleInitiale);
       setAjustement({
         ...AJUSTEMENT_INITIAL,
-        rogne: rogneInitiale(img.naturalWidth, img.naturalHeight, 0),
+        rogne: mode === "decor" ? ROGNE_PLEINE : rogneInitiale(img.naturalWidth, img.naturalHeight, 0),
       });
       setImage(img);
     };
@@ -116,7 +124,7 @@ export function ImageEditor({
       img.onload = null;
       img.onerror = null;
     };
-  }, [ouvert, source, emplacementInitial]);
+  }, [ouvert, source, emplacementInitial, tailleInitiale]);
 
   useEffect(() => {
     const cadre = cadreRef.current;
@@ -175,8 +183,8 @@ export function ImageEditor({
   const exporter = async () => {
     const img = imageRef.current;
     if (!img || tailleCadre.w < 2) return;
-    if (estAjustementInitial(ajustement, img.naturalWidth, img.naturalHeight)) {
-      onValider({ inchange: true, emplacement });
+    if (estAjustementInitial(ajustement, img.naturalWidth, img.naturalHeight, taille)) {
+      onValider({ inchange: true, emplacement, taille });
       return;
     }
 
@@ -217,7 +225,7 @@ export function ImageEditor({
       if (!blob) throw new Error("Export impossible");
       const base = nom.replace(/\.[^.]+$/, "") || "page";
       const fichier = new File([blob], `${base}.${png ? "png" : "jpg"}`, { type });
-      onValider({ inchange: false, fichier, emplacement });
+      onValider({ inchange: false, fichier, emplacement, taille });
     } catch {
       setExportEnCours(false);
       setErreur("Impossible de produire l'image. Si elle vient d'un autre site, réimportez le fichier.");
@@ -230,7 +238,7 @@ export function ImageEditor({
         <DialogHeader>
           <DialogTitle>Ajuster l'image</DialogTitle>
           <DialogDescription>
-            Faites glisser le cadre pour rogner, puis choisissez où l'image se place dans la page.
+            Ajoutez une illustration ou un motif. L'écrit de la page s'adapte à ce que vous placez.
           </DialogDescription>
         </DialogHeader>
 
@@ -266,7 +274,8 @@ export function ImageEditor({
               appliquer({ rogne: deplacerRogne(depart.rogne, dx, dy) });
               return;
             }
-            appliquer({ rogne: rogneRedimensionnee(depart.rogne, depart.coin, dx, dy, ow, oh) });
+            const ratio = taille === "decor" ? ow / oh : undefined;
+            appliquer({ rogne: rogneRedimensionnee(depart.rogne, depart.coin, dx, dy, ow, oh, ratio) });
           }}
           onPointerUp={() => {
             glisser.current = null;
@@ -328,8 +337,57 @@ export function ImageEditor({
           ) : null}
         </div>
         <p className="text-center text-xs text-muted-foreground">
-          La zone claire est conservée. Faites glisser le cadre ou ses coins pour rogner.
+          {taille === "decor"
+            ? "Le motif garde sa forme. L'écrit passe à côté, selon l'emplacement."
+            : "La zone claire est conservée. Faites glisser le cadre ou ses coins pour rogner."}
         </p>
+
+        <div className="space-y-2">
+          <p className="text-sm font-medium">Avec l'écrit</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              aria-pressed={taille === "decor"}
+              className={`min-h-11 rounded-lg border px-3 text-sm ${
+                taille === "decor"
+                  ? "border-primary bg-primary/10 font-medium text-foreground"
+                  : "border-border hover:bg-secondary"
+              }`}
+              onClick={() => {
+                const img = imageRef.current;
+                setTaille("decor");
+                if (!img) return;
+                appliquer({ rogne: ROGNE_PLEINE });
+              }}
+            >
+              Autour du motif
+            </button>
+            <button
+              type="button"
+              aria-pressed={taille === "page"}
+              className={`min-h-11 rounded-lg border px-3 text-sm ${
+                taille === "page"
+                  ? "border-primary bg-primary/10 font-medium text-foreground"
+                  : "border-border hover:bg-secondary"
+              }`}
+              onClick={() => {
+                const img = imageRef.current;
+                setTaille("page");
+                if (!img) return;
+                appliquer({
+                  rogne: rogneInitiale(img.naturalWidth, img.naturalHeight, ajustement.rotation),
+                });
+              }}
+            >
+              Grande illustration
+            </button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {taille === "decor"
+              ? "Pour un symbole, un séparateur ou un dessin. L'écrit se resserre autour, sans étirer le motif."
+              : "L'image est cadrée comme une page et prend plus de place dans l'écrit."}
+          </p>
+        </div>
 
         <div className="space-y-2">
           <p className="text-sm font-medium">Emplacement dans la page</p>
@@ -355,12 +413,20 @@ export function ImageEditor({
           </div>
           <p className="text-xs text-muted-foreground">
             {emplacement === "gauche"
-              ? "L'image se place à gauche, le texte continue à côté."
+              ? taille === "decor"
+                ? "Le motif reste à gauche. L'écrit continue juste à côté."
+                : "L'image se place à gauche, le texte continue à côté."
               : emplacement === "droite"
-                ? "L'image se place à droite, le texte continue à côté."
+                ? taille === "decor"
+                  ? "Le motif reste à droite. L'écrit continue juste à côté."
+                  : "L'image se place à droite, le texte continue à côté."
                 : emplacement === "centre"
-                  ? "L'image se place au centre de la page."
-                  : "L'image occupe toute la largeur de la page."}
+                  ? taille === "decor"
+                    ? "Le motif se pose au milieu. L'écrit reprend au-dessus et en dessous."
+                    : "L'image se place au centre de la page."
+                  : taille === "decor"
+                    ? "Le motif s'étale sur la largeur. L'écrit reprend en dessous."
+                    : "L'image occupe toute la largeur de la page."}
           </p>
         </div>
 
@@ -410,7 +476,11 @@ export function ImageEditor({
                 rotation,
                 offsetX: 0,
                 offsetY: 0,
-                rogne: img ? rogneInitiale(img.naturalWidth, img.naturalHeight, rotation) : ajustement.rogne,
+                rogne: img
+                  ? taille === "decor"
+                    ? ROGNE_PLEINE
+                    : rogneInitiale(img.naturalWidth, img.naturalHeight, rotation)
+                  : ajustement.rogne,
               });
             }}
           >
@@ -427,7 +497,11 @@ export function ImageEditor({
                 rotation,
                 offsetX: 0,
                 offsetY: 0,
-                rogne: img ? rogneInitiale(img.naturalWidth, img.naturalHeight, rotation) : ajustement.rogne,
+                rogne: img
+                  ? taille === "decor"
+                    ? ROGNE_PLEINE
+                    : rogneInitiale(img.naturalWidth, img.naturalHeight, rotation)
+                  : ajustement.rogne,
               });
             }}
           >
@@ -441,7 +515,11 @@ export function ImageEditor({
               const img = imageRef.current;
               setAjustement({
                 ...AJUSTEMENT_INITIAL,
-                rogne: img ? rogneInitiale(img.naturalWidth, img.naturalHeight, 0) : AJUSTEMENT_INITIAL.rogne,
+                rogne: img
+                  ? taille === "decor"
+                    ? ROGNE_PLEINE
+                    : rogneInitiale(img.naturalWidth, img.naturalHeight, 0)
+                  : AJUSTEMENT_INITIAL.rogne,
               });
             }}
           >

@@ -200,6 +200,17 @@ function renderTextWithMarks(text: string, marks?: TiptapMark[]): React.ReactNod
   return element;
 }
 
+/** Nom de fichier → légende lisible, qui peut se couper dans la page. */
+function legendeImage(alt: string) {
+  const brut = alt.trim();
+  if (!brut) return "";
+  const base = brut.split(/[/\\]/).pop() ?? brut;
+  const fichier = /\.[a-z0-9]{2,5}$/i.test(base);
+  if (!fichier && base.includes(" ")) return brut;
+  const sansExt = base.replace(/\.[a-z0-9]{2,5}$/i, "");
+  return sansExt.replace(/[_+]+/g, " ").replace(/-+/g, " ").replace(/\s+/g, " ").trim() || brut;
+}
+
 function renderNode(
   node: TiptapNode,
   index: number,
@@ -322,15 +333,18 @@ function renderNode(
 
     case "image": {
       const align = node.attrs?.align;
+      const decor = node.attrs?.taille === "decor";
+      const legende = legendeImage(String(node.attrs?.alt || ""));
       return (
         <figure
           key={index}
           data-align={align === "gauche" || align === "centre" || align === "droite" ? align : undefined}
+          data-taille={decor ? "decor" : undefined}
           className={book ? undefined : "my-6"}
         >
           <img
             src={node.attrs?.src}
-            alt={node.attrs?.alt || ""}
+            alt={legende}
             title={node.attrs?.title}
             className={
               book
@@ -338,7 +352,7 @@ function renderNode(
                 : "rounded-xl border border-border max-w-full h-auto mx-auto shadow-sm"
             }
           />
-          {node.attrs?.alt && <figcaption>{node.attrs.alt}</figcaption>}
+          {legende ? <figcaption>{legende}</figcaption> : null}
         </figure>
       );
     }

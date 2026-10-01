@@ -4405,6 +4405,62 @@ main:has(.media-contact) + .site-footer {
   height: auto;
 }
 
+.chapter-editor__content img[data-taille="decor"],
+.reader-book__page figure[data-taille="decor"],
+.chapter-reader-body figure[data-taille="decor"] {
+  border-radius: 0;
+  shape-outside: margin-box;
+}
+
+.chapter-editor__content img[data-align="gauche"][data-taille="decor"],
+.reader-book__page figure[data-align="gauche"][data-taille="decor"],
+.chapter-reader-body figure[data-align="gauche"][data-taille="decor"] {
+  float: left;
+  width: 6.25rem;
+  max-width: 36%;
+  margin: 0.1rem 0.85rem 0.35rem 0;
+}
+
+.chapter-editor__content img[data-align="droite"][data-taille="decor"],
+.reader-book__page figure[data-align="droite"][data-taille="decor"],
+.chapter-reader-body figure[data-align="droite"][data-taille="decor"] {
+  float: right;
+  width: 6.25rem;
+  max-width: 36%;
+  margin: 0.1rem 0 0.35rem 0.85rem;
+}
+
+.chapter-editor__content img[data-align="centre"][data-taille="decor"],
+.reader-book__page figure[data-align="centre"][data-taille="decor"],
+.chapter-reader-body figure[data-align="centre"][data-taille="decor"] {
+  display: block;
+  float: none;
+  width: 5.5rem;
+  max-width: 42%;
+  margin: 0.85rem auto;
+  shape-outside: none;
+}
+
+.chapter-editor__content img[data-align="pleine"][data-taille="decor"],
+.reader-book__page figure[data-taille="decor"]:not([data-align]),
+.chapter-reader-body figure[data-taille="decor"]:not([data-align]) {
+  display: block;
+  float: none;
+  width: 100%;
+  max-width: 100%;
+  margin: 0.85rem 0;
+  shape-outside: none;
+}
+
+.chapter-editor__content img[data-taille="decor"][data-align="gauche"] + p,
+.chapter-editor__content img[data-taille="decor"][data-align="droite"] + p,
+.reader-book__page > div > figure[data-taille="decor"][data-align="gauche"] + p,
+.reader-book__page > div > figure[data-taille="decor"][data-align="droite"] + p,
+.chapter-reader-body > div > figure[data-taille="decor"][data-align="gauche"] + p,
+.chapter-reader-body > div > figure[data-taille="decor"][data-align="droite"] + p {
+  text-indent: 0;
+}
+
 .chapter-editor__content .footnote-ref,
 .footnote-ref {
   display: inline-block;
@@ -4587,6 +4643,8 @@ main:has(.media-contact) + .site-footer {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
   padding: 0.25rem 1.35rem 1.5rem;
 }
 
@@ -4754,6 +4812,25 @@ main:has(.media-contact) + .site-footer {
 .reader-book__page img,
 .reader-book__page figure {
   max-width: 100%;
+  min-width: 0;
+}
+
+.reader-book__page figcaption,
+.chapter-reader-body figcaption {
+  display: block;
+  max-width: 100%;
+  margin: 0.4rem 0 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-align: center;
+  text-indent: 0;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
+  hyphens: auto;
 }
 
 .reader-book__page hr {
