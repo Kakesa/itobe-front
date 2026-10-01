@@ -3116,8 +3116,8 @@ body:has(.entreprise-contact) {
   align-items: center;
   gap: 0.5rem;
   padding: 0.85rem 1.35rem;
-  background: var(--ea-accent);
-  color: #fff;
+  background: #fff;
+  color: #111;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -3131,7 +3131,8 @@ body:has(.entreprise-contact) {
 }
 
 .entreprise-about__cta:hover {
-  filter: brightness(1.08);
+  background: #f4f4f4;
+  color: #111;
 }
 
 .entreprise-about__founders {

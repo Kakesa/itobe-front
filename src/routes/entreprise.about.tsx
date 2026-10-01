@@ -175,9 +175,6 @@ function EntrepriseAbout() {
       >
         <section className="entreprise-about__hero">
           <div className="entreprise-about__hero-inner">
-            <p className="entreprise-about__brand" aria-label="ITOBE">
-              <SplitChars text="ITOBE" />
-            </p>
             <h1 className="entreprise-about__title" aria-label={HERO_TITLE}>
               <SplitChars text={HERO_TITLE} delay={0.12} />
             </h1>
