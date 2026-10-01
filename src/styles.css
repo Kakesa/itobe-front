@@ -4358,7 +4358,51 @@ main:has(.media-contact) + .site-footer {
 .chapter-editor__content img {
   margin: 1.25rem 0;
   max-width: 100%;
+  height: auto;
   border-radius: 0.5rem;
+}
+
+.chapter-editor__content::after,
+.reader-book__page::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.chapter-editor__content img[data-align="gauche"],
+.reader-book__page figure[data-align="gauche"],
+.chapter-reader-body figure[data-align="gauche"] {
+  float: left;
+  width: 46%;
+  max-width: 46%;
+  margin: 0.2rem 1rem 0.65rem 0;
+}
+
+.chapter-editor__content img[data-align="droite"],
+.reader-book__page figure[data-align="droite"],
+.chapter-reader-body figure[data-align="droite"] {
+  float: right;
+  width: 46%;
+  max-width: 46%;
+  margin: 0.2rem 0 0.65rem 1rem;
+}
+
+.chapter-editor__content img[data-align="centre"],
+.reader-book__page figure[data-align="centre"],
+.chapter-reader-body figure[data-align="centre"] {
+  display: block;
+  float: none;
+  width: min(100%, 18rem);
+  max-width: 72%;
+  margin: 1rem auto;
+}
+
+.reader-book__page figure[data-align] img,
+.chapter-reader-body figure[data-align] img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
 .chapter-editor__content .footnote-ref,

@@ -320,9 +320,14 @@ function renderNode(
     case "horizontalRule":
       return <hr key={index} className={book ? undefined : "my-8 border-border"} />;
 
-    case "image":
+    case "image": {
+      const align = node.attrs?.align;
       return (
-        <figure key={index} className={book ? undefined : "my-6"}>
+        <figure
+          key={index}
+          data-align={align === "gauche" || align === "centre" || align === "droite" ? align : undefined}
+          className={book ? undefined : "my-6"}
+        >
           <img
             src={node.attrs?.src}
             alt={node.attrs?.alt || ""}
@@ -336,6 +341,7 @@ function renderNode(
           {node.attrs?.alt && <figcaption>{node.attrs.alt}</figcaption>}
         </figure>
       );
+    }
 
     default:
       return <div key={index}>{children}</div>;

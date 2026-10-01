@@ -36,10 +36,26 @@ import {
   pastedTextToParagraphHtml,
 } from "@/lib/normalize-pasted-text";
 import { uploadMediaImage } from "@/lib/upload-media";
+import { emplacementImage, type EmplacementImage } from "@/components/admin/image-editor/cadre-page";
 import { ImageEditor } from "@/components/admin/image-editor/ImageEditor";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
 import { DOMParser as ProseMirrorDOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import { FootnoteRef, nextFootnoteMarker } from "@/components/editor/footnote-ref";
+
+const ImageAvecEmplacement = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      align: {
+        default: "pleine",
+        parseHTML: (element: HTMLElement) => element.getAttribute("data-align") || "pleine",
+        renderHTML: (attributes: { align?: string }) => ({
+          "data-align": attributes.align || "pleine",
+        }),
+      },
+    };
+  },
+});
 
 interface ChapterRichEditorProps {
   initialContent: any;
@@ -74,6 +90,7 @@ export function ChapterRichEditor({
     fichier: File | null;
     mode: "inserer" | "remplacer";
     pos?: number;
+    emplacement: EmplacementImage;
   } | null>(null);
   const [motsCount, setMotsCount] = useState(0);
   const [footnoteDraft, setFootnoteDraft] = useState<{
@@ -94,7 +111,7 @@ export function ChapterRichEditor({
         openOnClick: false,
         HTMLAttributes: { class: "chapter-editor__link", rel: "noopener noreferrer" },
       }),
-      Image.configure({ HTMLAttributes: { class: "chapter-editor__image" } }),
+      ImageAvecEmplacement.configure({ HTMLAttributes: { class: "chapter-editor__image" } }),
       Placeholder.configure({ placeholder }),
       FootnoteRef,
     ],
@@ -253,7 +270,21 @@ export function ChapterRichEditor({
     });
   };
 
-  const envoyerImage = async (fichier: File, mode: "inserer" | "remplacer", pos?: number) => {
+  const appliquerEmplacement = (emplacement: EmplacementImage, pos?: number) => {
+    if (!editor) return;
+    const chaine = editor.chain().focus();
+    if (typeof pos === "number") chaine.setNodeSelection(pos);
+    chaine.updateAttributes("image", { align: emplacement }).run();
+    notify.succes("Emplacement de l'image mis à jour");
+    fermerSessionImage();
+  };
+
+  const envoyerImage = async (
+    fichier: File,
+    mode: "inserer" | "remplacer",
+    pos?: number,
+    emplacement: EmplacementImage = "pleine",
+  ) => {
     if (!editor || uploadingImage) return;
     setUploadingImage(true);
     try {
@@ -261,10 +292,10 @@ export function ChapterRichEditor({
       if (mode === "remplacer") {
         const chaine = editor.chain().focus();
         if (typeof pos === "number") chaine.setNodeSelection(pos);
-        chaine.updateAttributes("image", { src: url, alt: fichier.name }).run();
+        chaine.updateAttributes("image", { src: url, alt: fichier.name, align: emplacement }).run();
         notify.succes("Image de la page mise à jour");
       } else {
-        editor.chain().focus().setImage({ src: url, alt: fichier.name }).run();
+        editor.chain().focus().setImage({ src: url, alt: fichier.name, align: emplacement }).run();
         notify.succes(editeurImagePage ? "Image insérée dans la page" : "Image insérée dans le chapitre");
       }
       fermerSessionImage();
@@ -282,6 +313,7 @@ export function ChapterRichEditor({
         src: URL.createObjectURL(file),
         fichier: file,
         mode: "inserer",
+        emplacement: "pleine",
       });
       return;
     }
@@ -292,7 +324,13 @@ export function ChapterRichEditor({
     if (!editor) return;
     const src = String(editor.getAttributes("image").src ?? "");
     if (!src) return;
-    setSessionImage({ src, fichier: null, mode: "remplacer", pos: editor.state.selection.from });
+    setSessionImage({
+      src,
+      fichier: null,
+      mode: "remplacer",
+      pos: editor.state.selection.from,
+      emplacement: emplacementImage(editor.getAttributes("image").align),
+    });
   };
 
   const btn = (active: boolean) =>
@@ -532,14 +570,20 @@ export function ChapterRichEditor({
             ouvert
             source={sessionImage.src}
             nom={sessionImage.fichier?.name || "page"}
+            emplacementInitial={sessionImage.emplacement}
             onAnnuler={fermerSessionImage}
             onValider={(resultat) => {
               if (resultat.inchange) {
-                if (sessionImage.fichier) void envoyerImage(sessionImage.fichier, sessionImage.mode, sessionImage.pos);
-                else fermerSessionImage();
+                if (sessionImage.fichier) {
+                  void envoyerImage(sessionImage.fichier, sessionImage.mode, sessionImage.pos, resultat.emplacement);
+                } else if (resultat.emplacement !== sessionImage.emplacement) {
+                  appliquerEmplacement(resultat.emplacement, sessionImage.pos);
+                } else {
+                  fermerSessionImage();
+                }
                 return;
               }
-              void envoyerImage(resultat.fichier, sessionImage.mode, sessionImage.pos);
+              void envoyerImage(resultat.fichier, sessionImage.mode, sessionImage.pos, resultat.emplacement);
             }}
           />
         ) : null}
