@@ -36,6 +36,18 @@ const en: Dictionary = {
     switchToEdition: "Publishing house",
     switchToMedia: "Media portal",
   },
+  portails: {
+    slogan: "Ranconter l'afrique, Inspirer le monde",
+    mediaTitle: "Media",
+    mediaText: "News, articles, interviews and columns — the Itobe newsroom.",
+    mediaCta: "Enter the media",
+    editionTitle: "Publishing",
+    editionText: "Novels, essays and children's books — making Africa the heart of world storytelling.",
+    editionCta: "Enter publishing",
+    productionTitle: "Production",
+    productionText: "Films, series and documentaries — a cinema rooted in Africa.",
+    productionCta: "Enter production",
+  },
   footer: {
     blurb:
       "Ranconter l'afrique, Inspirer le monde",

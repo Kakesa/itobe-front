@@ -40,6 +40,18 @@ export type Dictionary = {
     switchToEdition: string;
     switchToMedia: string;
   };
+  portails: {
+    slogan: string;
+    mediaTitle: string;
+    mediaText: string;
+    mediaCta: string;
+    editionTitle: string;
+    editionText: string;
+    editionCta: string;
+    productionTitle: string;
+    productionText: string;
+    productionCta: string;
+  };
   footer: {
     blurb: string;
     backToPortals: string;

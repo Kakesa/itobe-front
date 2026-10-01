@@ -2,6 +2,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { GroupeNav } from "@/components/groupe-chrome";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -29,6 +30,8 @@ const IMG_EDITION = "/images/itobe-editions-logo.png";
 const IMG_PRODUCTION = "/images/itobe-prod-black.png";
 
 function Accueil() {
+  const { t } = useI18n();
+  const p = t.portails;
   return (
     <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-white px-4 py-14">
       <GroupeNav />
@@ -43,7 +46,7 @@ function Accueil() {
             height={144}
           />
           <p className="mt-3 text-sm text-muted-foreground md:mt-4 md:text-base">
-            Ranconter l'afrique, Inspirer le monde
+            {p.slogan}
           </p>
         </header>
 
@@ -60,12 +63,12 @@ function Accueil() {
               />
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
-              <h2 className="font-display text-3xl leading-tight md:text-4xl">Média</h2>
+              <h2 className="font-display text-3xl leading-tight md:text-4xl">{p.mediaTitle}</h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground md:text-base md:leading-7">
-                Actualités, articles, interviews et chroniques — la rédaction Itobe.
+                {p.mediaText}
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-neno-pink">
-                Entrer dans le média
+                {p.mediaCta}
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
             </div>
@@ -84,14 +87,13 @@ function Accueil() {
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h2 className="font-display text-3xl leading-tight text-[#211c1c] md:text-4xl">
-                Édition
+                {p.editionTitle}
               </h2>
               <p className="mt-3 text-sm leading-6 text-[#383030]/80 md:text-base md:leading-7">
-                Romans, essais et jeunesse — faire de l&apos;Afrique le cœur de la narration
-                mondiale.
+                {p.editionText}
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#ea5312]">
-                Entrer dans l&apos;édition
+                {p.editionCta}
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
             </div>
@@ -110,13 +112,13 @@ function Accueil() {
             </div>
             <div className="flex flex-1 flex-col p-6 md:p-7">
               <h2 className="font-display text-3xl leading-tight text-[#241f1a] md:text-4xl">
-                Production
+                {p.productionTitle}
               </h2>
               <p className="mt-3 text-sm leading-6 text-[#241f1a]/75 md:text-base md:leading-7">
-                Films, séries et documentaires — un cinéma enraciné en Afrique.
+                {p.productionText}
               </p>
               <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium tracking-wide text-[#8f7a55]">
-                Entrer dans la production
+                {p.productionCta}
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </span>
             </div>
