@@ -37,7 +37,7 @@ const en: Dictionary = {
     switchToMedia: "Media portal",
   },
   portails: {
-    slogan: "Ranconter l'afrique, Inspirer le monde",
+    slogan: "« Ranconter l'afrique, Inspirer le monde »",
     mediaTitle: "Media",
     mediaText: "News, articles, interviews and columns — the Itobe newsroom.",
     mediaCta: "Enter the media",
@@ -85,7 +85,7 @@ const en: Dictionary = {
   },
   footer: {
     blurb:
-      "Ranconter l'afrique, Inspirer le monde",
+      "« Ranconter l'afrique, Inspirer le monde »",
     backToPortals: "All projects",
     headingMedia: "Media",
     headingEdition: "Publishing",
