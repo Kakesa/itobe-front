@@ -50,7 +50,7 @@ function Accueil() {
         <main className="grid gap-5 md:grid-cols-3 md:gap-6">
           <Link
             to="/media"
-            className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_16px_32px_-14px_rgba(33,28,28,0.35)]"
           >
             <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
@@ -73,7 +73,7 @@ function Accueil() {
 
           <Link
             to="/edition"
-            className="group flex flex-col overflow-hidden rounded-sm border border-[#383030]/15 bg-[#fdfaf4] shadow-soft transition-all duration-500 hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-16px_rgba(234,83,18,0.25)]"
+            className="group flex flex-col overflow-hidden rounded-sm border border-[#383030]/15 bg-[#fdfaf4] shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_16px_32px_-14px_rgba(33,28,28,0.35)]"
           >
             <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
@@ -99,7 +99,7 @@ function Accueil() {
 
           <Link
             to="/production"
-            className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-card shadow-soft transition-transform duration-300 hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-none border border-[#c9c2b5]/60 bg-card shadow-soft transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-[0_16px_32px_-14px_rgba(33,28,28,0.35)]"
           >
             <div className="relative flex aspect-[16/11] items-center justify-center overflow-hidden bg-black">
               <img
