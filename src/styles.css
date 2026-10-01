@@ -971,7 +971,7 @@
 
 .groupe-founders__portrait {
   position: relative;
-  min-height: 22rem;
+  min-height: 30rem;
   overflow: hidden;
   border-radius: 2px;
   isolation: isolate;
@@ -3225,7 +3225,7 @@ body:has(.entreprise-contact) {
   }
 
   .entreprise-about__founders .groupe-founders__portrait {
-    min-height: 18rem;
+    min-height: 24rem;
   }
 
   .entreprise-about__founders .groupe-founders__mark {
