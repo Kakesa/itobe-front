@@ -190,18 +190,12 @@ function EntrepriseAbout() {
         <div className="entreprise-about__founders-inner">
           <section aria-labelledby="fondateurs-title">
             <header className="max-w-3xl">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground">
-                {g.foundersKicker}
-              </p>
               <h2
                 id="fondateurs-title"
-                className="mt-3 font-display text-4xl leading-[1.12] md:text-6xl"
+                className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground"
               >
-                {g.foundersTitle}
+                {g.foundersKicker}
               </h2>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-                {g.foundersLead}
-              </p>
             </header>
 
             <ol className="mt-12 space-y-14 md:mt-24 md:space-y-24">

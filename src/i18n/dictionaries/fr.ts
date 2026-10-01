@@ -58,9 +58,6 @@ const fr: Dictionary = {
     aboutP3: "Raconter l'Afrique, depuis l'Afrique, vers le monde.",
     aboutCta: "Contactez-nous",
     foundersKicker: "Fondateurs",
-    foundersTitle: "Les voix à l'origine.",
-    foundersLead:
-      "ITOBE Entreprises naît d'une conviction simple : les récits africains méritent une maison capable de les porter en articles, en livres et à l'écran — sans les diluer.",
     christianRole: "Fondateur · Média & édition",
     christianQuote:
       "Un récit africain n'a pas besoin d'être traduit pour exister. Il a besoin d'un lieu où il peut durer.",

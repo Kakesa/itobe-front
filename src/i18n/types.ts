@@ -60,8 +60,6 @@ export type Dictionary = {
     aboutP3: string;
     aboutCta: string;
     foundersKicker: string;
-    foundersTitle: string;
-    foundersLead: string;
     christianRole: string;
     christianQuote: string;
     christianBio: string;

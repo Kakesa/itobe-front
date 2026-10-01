@@ -58,9 +58,6 @@ const en: Dictionary = {
     aboutP3: "Telling Africa, from Africa, to the world.",
     aboutCta: "Contact us",
     foundersKicker: "Founders",
-    foundersTitle: "The voices at the origin.",
-    foundersLead:
-      "ITOBE Entreprises was born from a simple conviction: African stories deserve a house able to carry them in articles, in books and on screen — without diluting them.",
     christianRole: "Founder · Media & publishing",
     christianQuote:
       "An African story does not need to be translated in order to exist. It needs a place where it can last.",
