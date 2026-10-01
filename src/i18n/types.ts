@@ -150,6 +150,17 @@ export type Dictionary = {
     mediaMessage: string;
     mediaSend: string;
     mediaError: string;
+    faqMetaTitle: string;
+    faqMetaDescription: string;
+    faqTitle: string;
+    faqIntro: string;
+    faqNotFound: string;
+    faqQ1: string;
+    faqA1: string;
+    faqQ2: string;
+    faqA2: string;
+    faqQ3: string;
+    faqA3: string;
   };
   mediaAbout: {
     metaTitle: string;

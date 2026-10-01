@@ -175,6 +175,22 @@ const fr: Dictionary = {
     mediaMessage: "Message",
     mediaSend: "Envoyer",
     mediaError: "L'envoi a échoué. Réessayez dans un instant.",
+    faqMetaTitle: "Questions fréquentes et contact — Itobe Éditions",
+    faqMetaDescription:
+      "Soumission de manuscrits, genres acceptés et contact des Éditions Itobe.",
+    faqTitle: "Questions fréquentes et contact",
+    faqIntro:
+      "Vous trouverez dans cette rubrique les questions les plus fréquentes, ainsi qu'un formulaire de contact.",
+    faqNotFound: "Vous n'avez pas trouvé votre réponse ?",
+    faqQ1: "Comment soumettre un manuscrit aux Éditions Itobe ?",
+    faqA1:
+      "Il n'est actuellement pas possible de soumettre de manuscrit, les soumissions étant suspendues pour se consacrer aux projets déjà retenus. De nouvelles fenêtres de réception s'ouvriront dès que nos prochaines disponibilités le permettront.",
+    faqQ2: "Les soumissions de manuscrits sont-elles actuellement ouvertes ?",
+    faqA2:
+      "Non. Pour l'année 2027, notre programme éditorial étant déjà complet, notre comité de lecture ne reçoit actuellement plus de nouveaux manuscrits.",
+    faqQ3: "Quels genres littéraires acceptez-vous ?",
+    faqA3:
+      "Itobe Éditions s'intéresse à la fois à la fiction (romans courts, nouvelles, littérature générale et récits de l'imaginaire) et à la non-fiction (essais, réflexions contemporaines, entrepreneuriat et récits de vie). Les critères précis de soumission ainsi que la liste détaillée des genres acceptés seront communiqués lors de la réouverture de notre comité de lecture.",
   },
   mediaAbout: {
     metaTitle: "À propos — Neno",

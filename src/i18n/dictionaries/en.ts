@@ -173,6 +173,21 @@ const en: Dictionary = {
     mediaMessage: "Message",
     mediaSend: "Send",
     mediaError: "Sending failed. Please try again in a moment.",
+    faqMetaTitle: "Frequently asked questions and contact — Itobe Éditions",
+    faqMetaDescription:
+      "Manuscript submissions, accepted genres, and how to contact Itobe Éditions.",
+    faqTitle: "Frequently asked questions and contact",
+    faqIntro: "This page gathers the most frequent questions, and a contact form.",
+    faqNotFound: "Didn't find your answer?",
+    faqQ1: "How do I submit a manuscript to Itobe Éditions?",
+    faqA1:
+      "It is not currently possible to submit a manuscript. Submissions are suspended so we can focus on projects already selected. New submission windows will open as soon as our next availability allows.",
+    faqQ2: "Are manuscript submissions currently open?",
+    faqA2:
+      "No. For 2027, our editorial programme is already complete, so our reading committee is not accepting new manuscripts at this time.",
+    faqQ3: "Which literary genres do you accept?",
+    faqA3:
+      "Itobe Éditions is interested in both fiction (short novels, short stories, general literature and imaginative narratives) and non-fiction (essays, contemporary reflections, entrepreneurship and life stories). The precise submission criteria and the detailed list of accepted genres will be announced when our reading committee reopens.",
   },
   mediaAbout: {
     metaTitle: "About — Neno",

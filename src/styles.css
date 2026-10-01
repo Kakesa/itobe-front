@@ -3627,6 +3627,58 @@ main:has(.media-contact) + .site-footer {
   border-color: var(--accent);
 }
 
+.edition-faq {
+  margin-top: 2.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--brand-brown) 16%, transparent);
+}
+
+.edition-faq__item {
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-brown) 16%, transparent);
+}
+
+.edition-faq__question {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-edition);
+  font-size: 1.12rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+
+.edition-faq__question:hover {
+  color: var(--brand-brown);
+}
+
+.edition-faq__chevron {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.edition-faq__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.edition-faq__answer {
+  margin: 0;
+  max-width: 40rem;
+  padding: 0 2rem 1.25rem 0;
+  color: color-mix(in srgb, var(--brand-brown) 78%, transparent);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
 .auteurs-page__hero .apropos-page__hero-bg {
   object-position: center 58%;
 }

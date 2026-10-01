@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
+import { ChevronDown, Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { usePortailActif } from "@/hooks/use-portail";
 import { ContactApi } from "@/lib/api-client";
@@ -141,12 +141,19 @@ function EditionContact() {
   const { locale, t } = useI18n();
   const c = t.contact;
   const [envoye, setEnvoye] = useState(false);
+  const [ouvert, setOuvert] = useState<number | null>(0);
 
   useEffect(() => {
-    document.title = c.metaTitle;
+    document.title = c.faqMetaTitle;
     const desc = document.querySelector('meta[name="description"]');
-    if (desc) desc.setAttribute("content", c.metaDescription);
-  }, [c.metaTitle, c.metaDescription, locale]);
+    if (desc) desc.setAttribute("content", c.faqMetaDescription);
+  }, [c.faqMetaTitle, c.faqMetaDescription, locale]);
+
+  const questions = [
+    { q: c.faqQ1, a: c.faqA1 },
+    { q: c.faqQ2, a: c.faqA2 },
+    { q: c.faqQ3, a: c.faqA3 },
+  ];
 
   const sujets = [
     { key: "redaction", label: c.sujets.redaction },
@@ -157,13 +164,35 @@ function EditionContact() {
 
   return (
     <div className="contact-page theme-edition">
-      <div className="mx-auto max-w-5xl px-4 pt-12 md:pt-16">
-        <p className="kicker mb-0">{c.kicker}</p>
-        <h1 className="mt-3 font-display text-4xl leading-tight md:text-5xl">{c.title}</h1>
-        <p className="mt-3 max-w-xl text-muted-foreground">{c.intro}</p>
+      <div className="mx-auto max-w-3xl px-4 pt-12 md:pt-16">
+        <h1 className="font-display text-4xl leading-tight md:text-5xl">{c.faqTitle}</h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{c.faqIntro}</p>
+        <div className="edition-faq">
+          {questions.map((item, i) => {
+            const estOuvert = ouvert === i;
+            return (
+              <div key={item.q} className="edition-faq__item">
+                <button
+                  type="button"
+                  className="edition-faq__question"
+                  aria-expanded={estOuvert}
+                  onClick={() => setOuvert(estOuvert ? null : i)}
+                >
+                  <span>{item.q}</span>
+                  <ChevronDown className={`edition-faq__chevron${estOuvert ? " is-open" : ""}`} aria-hidden />
+                </button>
+                {estOuvert ? <p className="edition-faq__answer">{item.a}</p> : null}
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      <div className="mx-auto grid max-w-5xl gap-12 px-4 py-12 md:grid-cols-[1fr_280px] md:py-14">
+      <div className="mx-auto max-w-5xl px-4 pt-14 md:pt-20">
+        <h2 className="font-display text-3xl leading-tight md:text-4xl">{c.faqNotFound}</h2>
+      </div>
+
+      <div className="mx-auto grid max-w-5xl gap-12 px-4 py-8 md:grid-cols-[1fr_280px] md:py-10">
         <form
           className="space-y-4"
           onSubmit={(e) => {
