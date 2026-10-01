@@ -367,6 +367,7 @@ function PageRichEditorLoaded({
         onSaveNow={() => void saveNow()}
         onOpenConflictModal={() => setModalConflit(true)}
         placeholder="Rédigez le contenu de cette page… Texte, images, citations…"
+        editeurImagePage
       />
 
       <ChapterConflictDialog

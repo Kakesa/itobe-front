@@ -36,6 +36,7 @@ import {
   pastedTextToParagraphHtml,
 } from "@/lib/normalize-pasted-text";
 import { uploadMediaImage } from "@/lib/upload-media";
+import { ImageEditor } from "@/components/admin/image-editor/ImageEditor";
 import type { AutosaveStatus } from "@/hooks/use-chapter-autosave";
 import { DOMParser as ProseMirrorDOMParser, Fragment, Slice } from "@tiptap/pm/model";
 import { FootnoteRef, nextFootnoteMarker } from "@/components/editor/footnote-ref";
@@ -50,6 +51,8 @@ interface ChapterRichEditorProps {
   onOpenConflictModal?: () => void;
   placeholder?: string;
   readOnly?: boolean;
+  /** Ouvre l'éditeur d'image avant l'upload (pages de livre uniquement). */
+  editeurImagePage?: boolean;
 }
 
 export function ChapterRichEditor({
@@ -62,9 +65,16 @@ export function ChapterRichEditor({
   onOpenConflictModal,
   placeholder = "Commencez à rédiger votre chapitre ici…",
   readOnly = false,
+  editeurImagePage = false,
 }: ChapterRichEditorProps) {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [sessionImage, setSessionImage] = useState<{
+    src: string;
+    fichier: File | null;
+    mode: "inserer" | "remplacer";
+    pos?: number;
+  } | null>(null);
   const [motsCount, setMotsCount] = useState(0);
   const [footnoteDraft, setFootnoteDraft] = useState<{
     marker: string;
@@ -236,18 +246,53 @@ export function ChapterRichEditor({
     setFootnoteDraft(null);
   };
 
-  const insertImage = async (file: File) => {
-    if (uploadingImage) return;
+  const fermerSessionImage = () => {
+    setSessionImage((session) => {
+      if (session?.fichier) URL.revokeObjectURL(session.src);
+      return null;
+    });
+  };
+
+  const envoyerImage = async (fichier: File, mode: "inserer" | "remplacer", pos?: number) => {
+    if (!editor || uploadingImage) return;
     setUploadingImage(true);
     try {
-      const url = await uploadMediaImage(file);
-      editor.chain().focus().setImage({ src: url, alt: file.name }).run();
-      notify.succes("Image insérée dans le chapitre");
+      const url = await uploadMediaImage(fichier);
+      if (mode === "remplacer") {
+        const chaine = editor.chain().focus();
+        if (typeof pos === "number") chaine.setNodeSelection(pos);
+        chaine.updateAttributes("image", { src: url, alt: fichier.name }).run();
+        notify.succes("Image de la page mise à jour");
+      } else {
+        editor.chain().focus().setImage({ src: url, alt: fichier.name }).run();
+        notify.succes(editeurImagePage ? "Image insérée dans la page" : "Image insérée dans le chapitre");
+      }
+      fermerSessionImage();
     } catch (error) {
-      notify.erreur(error instanceof Error ? error.message : "Impossible d'insérer l'image");
+      notify.erreur(error instanceof Error ? error.message : "Impossible d'enregistrer l'image");
     } finally {
       setUploadingImage(false);
     }
+  };
+
+  const insertImage = async (file: File) => {
+    if (uploadingImage) return;
+    if (editeurImagePage) {
+      setSessionImage({
+        src: URL.createObjectURL(file),
+        fichier: file,
+        mode: "inserer",
+      });
+      return;
+    }
+    await envoyerImage(file, "inserer");
+  };
+
+  const ouvrirAjustement = () => {
+    if (!editor) return;
+    const src = String(editor.getAttributes("image").src ?? "");
+    if (!src) return;
+    setSessionImage({ src, fichier: null, mode: "remplacer", pos: editor.state.selection.from });
   };
 
   const btn = (active: boolean) =>
@@ -452,7 +497,8 @@ export function ChapterRichEditor({
           type="button"
           className={btn(false)}
           onClick={() => imageInputRef.current?.click()}
-          title="Insérer une image"
+          title={editeurImagePage ? "Ajouter une image à la page" : "Insérer une image"}
+          disabled={uploadingImage}
         >
           {uploadingImage ? (
             <Loader2 className="size-4 animate-spin" />
@@ -460,6 +506,16 @@ export function ChapterRichEditor({
             <ImagePlus className="size-4" />
           )}
         </button>
+        {editeurImagePage && editor.isActive("image") ? (
+          <button
+            type="button"
+            className={btn(true)}
+            onClick={ouvrirAjustement}
+            title="Ajuster l'image de la page"
+          >
+            <span className="px-1 text-[0.65rem] font-semibold">Ajuster</span>
+          </button>
+        ) : null}
         <input
           ref={imageInputRef}
           type="file"
@@ -471,6 +527,22 @@ export function ChapterRichEditor({
             e.target.value = "";
           }}
         />
+        {sessionImage ? (
+          <ImageEditor
+            ouvert
+            source={sessionImage.src}
+            nom={sessionImage.fichier?.name || "page"}
+            onAnnuler={fermerSessionImage}
+            onValider={(resultat) => {
+              if (resultat.inchange) {
+                if (sessionImage.fichier) void envoyerImage(sessionImage.fichier, sessionImage.mode, sessionImage.pos);
+                else fermerSessionImage();
+                return;
+              }
+              void envoyerImage(resultat.fichier, sessionImage.mode, sessionImage.pos);
+            }}
+          />
+        ) : null}
 
         <div className="ml-auto flex items-center gap-1">
           <button
