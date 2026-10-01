@@ -30,12 +30,7 @@ const IMG_PRODUCTION = "/images/itobe-prod-black.png";
 
 function Accueil() {
   return (
-    <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-background px-4 py-14">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 paper-grain opacity-60"
-      />
-
+    <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-white px-4 py-14">
       <GroupeNav />
 
       <div className="relative z-10 w-full max-w-6xl">
