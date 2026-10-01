@@ -1,18 +1,19 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import type { ReactNode } from "react";
+import { useI18n } from "@/i18n";
 import { cn } from "@/lib/utils";
 
-const liens = [
-  { to: "/entreprise/about", label: "About" },
-  { to: "/entreprise/contact", label: "Contact" },
-] as const;
-
 export function GroupeNav({ tone = "default" }: { tone?: "default" | "onDark" }) {
+  const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const onDark = tone === "onDark";
   const retourPortails =
     pathname === "/entreprise/about" || pathname === "/entreprise/contact";
+  const liens = [
+    { to: "/entreprise/about" as const, label: t.nav.media.aPropos },
+    { to: "/entreprise/contact" as const, label: t.nav.media.contact },
+  ];
   const styleLien = cn(
     "text-[0.78rem] font-semibold uppercase tracking-brand transition-colors",
     onDark ? "text-white/55 hover:text-white" : "text-muted-foreground hover:text-foreground",
