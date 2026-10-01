@@ -166,7 +166,8 @@ const fr: Dictionary = {
     success: "Merci, votre message a bien été enregistré.",
     socials: "Réseaux sociaux",
     hoursTitle: "Horaires",
-    hours: "Lundi – vendredi, 8h – 17h",
+    hours: "Du lundi au vendredi, de 9h00 à 17h00.",
+    hoursReply: "Nous nous efforçons de répondre à tous les messages sous 48 à 72 heures ouvrées.",
     mediaTitle: "Contactez-nous",
     mediaNotice:
       "Pour toute demande commerciale, partenariat, presse, interview, podcast, événement, intervention ou autre demande concernant Neno, utilisez le formulaire ci-dessous.",

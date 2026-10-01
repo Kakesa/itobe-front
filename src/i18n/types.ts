@@ -143,6 +143,7 @@ export type Dictionary = {
     socials: string;
     hoursTitle: string;
     hours: string;
+    hoursReply: string;
     mediaTitle: string;
     mediaNotice: string;
     mediaName: string;

@@ -164,7 +164,8 @@ const en: Dictionary = {
     success: "Thank you, your message has been received.",
     socials: "Social media",
     hoursTitle: "Hours",
-    hours: "Monday – Friday, 8am – 5pm",
+    hours: "Monday to Friday, from 9:00 a.m. to 5:00 p.m.",
+    hoursReply: "We aim to reply to every message within 48 to 72 business hours.",
     mediaTitle: "Contact-us",
     mediaNotice:
       "For any commercial inquiry, partnership, press, interview, podcast, event, speaking request, or other request about Neno, please use the form below.",

@@ -273,6 +273,7 @@ function EditionContact() {
           <div className="rounded-sm border border-border bg-card p-4">
             <p className="font-display">{c.hoursTitle}</p>
             <p className="mt-2 text-muted-foreground">{c.hours}</p>
+            <p className="mt-2 text-muted-foreground">{c.hoursReply}</p>
           </div>
         </aside>
       </div>
