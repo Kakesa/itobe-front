@@ -52,6 +52,37 @@ export type Dictionary = {
     productionText: string;
     productionCta: string;
   };
+  groupe: {
+    back: string;
+    aboutTitle: string;
+    aboutP1: string;
+    aboutP2: string;
+    aboutP3: string;
+    aboutCta: string;
+    foundersKicker: string;
+    foundersTitle: string;
+    foundersLead: string;
+    christianRole: string;
+    christianQuote: string;
+    christianBio: string;
+    christopherRole: string;
+    christopherQuote: string;
+    christopherBio: string;
+    contactTitle: string;
+    contactLead: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    partenariat: string;
+    presse: string;
+    projet: string;
+    autre: string;
+    sending: string;
+    send: string;
+    sent: string;
+    sendError: string;
+  };
   footer: {
     blurb: string;
     backToPortals: string;

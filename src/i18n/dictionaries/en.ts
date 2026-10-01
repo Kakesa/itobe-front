@@ -48,6 +48,44 @@ const en: Dictionary = {
     productionText: "Films, series and documentaries — a cinema rooted in Africa.",
     productionCta: "Enter production",
   },
+  groupe: {
+    back: "Back",
+    aboutTitle: "About",
+    aboutP1:
+      "ITOBE Entreprises is a group of companies dedicated to creating, producing, publishing and sharing content that brings African cultures, stories, talents and imaginations to light.",
+    aboutP2:
+      "Through our different entities, we build an ecosystem that supports ideas and creators, from their development until they meet the public.",
+    aboutP3: "Telling Africa, from Africa, to the world.",
+    aboutCta: "Contact us",
+    foundersKicker: "Founders",
+    foundersTitle: "The voices at the origin.",
+    foundersLead:
+      "ITOBE Entreprises was born from a simple conviction: African stories deserve a house able to carry them in articles, in books and on screen — without diluting them.",
+    christianRole: "Founder · Media & publishing",
+    christianQuote:
+      "An African story does not need to be translated in order to exist. It needs a place where it can last.",
+    christianBio:
+      "Christian Bigomukero designed ITOBE as an ecosystem: reporting, the book and the screen in one house. He carries the group's editorial line — from NENO investigations to the Itobe Éditions collections.",
+    christopherRole: "Founder · Vision & production",
+    christopherQuote: "Cinema, books and the press are not silos. They are three doors into the same memory.",
+    christopherBio:
+      "Christopher Bigo launched ITOBE Entreprises as a group platform: a frame so that media, publishing and production can speak to each other. He watches over the overall vision and the projects that cross the three worlds.",
+    contactTitle: "Write to the group",
+    contactLead:
+      "Partnerships, press, hiring or a cross-cutting project: this form is for ITOBE Entreprises, not the portals.",
+    name: "Name",
+    email: "Email",
+    subject: "Subject",
+    message: "Your message",
+    partenariat: "Partnership",
+    presse: "Press",
+    projet: "Group project",
+    autre: "Other",
+    sending: "Sending…",
+    send: "Send",
+    sent: "Message sent. We will reply soon.",
+    sendError: "Sending failed. Try again or write to us at contact@itobe.cd.",
+  },
   footer: {
     blurb:
       "Ranconter l'afrique, Inspirer le monde",

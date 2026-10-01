@@ -2,6 +2,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/entreprise/about")({
   head: () => ({
@@ -25,23 +26,12 @@ export const Route = createFileRoute("/entreprise/about")({
   component: EntrepriseAbout,
 });
 
-const HERO_TITLE = "About";
-const PARAGRAPHS = [
-  "ITOBE Entreprises est un groupe d'entreprises dédié à la création, à la production, à l'édition et à la diffusion de contenus qui mettent en lumière les cultures, les histoires, les talents et les imaginaires africains.",
-  "À travers nos différentes entités, nous construisons un écosystème qui accompagne les idées et les créateurs, de leur développement jusqu'à leur rencontre avec le public.",
-  "Raconter l'Afrique, depuis l'Afrique, vers le monde.",
-] as const;
-
-const fondateurs = [
+const fondateursFixes = [
   {
     index: "01",
     initiales: "CB",
     nom: "Christian Bigomukero",
-    role: "Fondateur · Média & édition",
     lieu: "Kinshasa",
-    citation:
-      "Un récit africain n'a pas besoin d'être traduit pour exister. Il a besoin d'un lieu où il peut durer.",
-    bio: "Christian Bigomukero a conçu ITOBE comme un écosystème : le reportage, le livre et l'écran dans une même maison. Il porte la ligne éditoriale du groupe — des enquêtes de NENO aux collections d'Itobe Éditions.",
     ton: "ink" as const,
     photo: "/images/entreprise/christian-bigomukero.png",
   },
@@ -49,11 +39,7 @@ const fondateurs = [
     index: "02",
     initiales: "CB",
     nom: "Christopher Bigo",
-    role: "Fondateur · Vision & production",
     lieu: "Kinshasa",
-    citation:
-      "Le cinéma, le livre et la presse ne sont pas des silos. Ce sont trois portes vers la même mémoire.",
-    bio: "Christopher Bigo a impulsé ITOBE Entreprises comme plateforme de groupe : un cadre pour que le média, l'édition et la production se parlent. Il veille à la vision d'ensemble et aux projets qui traversent les trois univers.",
     ton: "warm" as const,
     photo: "/images/entreprise/christopher-bigo.jpg",
   },
@@ -120,14 +106,19 @@ function SplitWords({
 }
 
 function EntrepriseAbout() {
+  const { t } = useI18n();
+  const g = t.groupe;
   const trackRef = useRef<HTMLDivElement>(null);
-
-  const paragraphs = useMemo(() => [...PARAGRAPHS], []);
+  const paragraphs = useMemo(() => [g.aboutP1, g.aboutP2, g.aboutP3], [g.aboutP1, g.aboutP2, g.aboutP3]);
   const wordCounts = useMemo(
     () => paragraphs.map((p) => splitWords(p).length),
     [paragraphs],
   );
   const totalWords = wordCounts.reduce((sum, n) => sum + n, 0);
+  const fondateurs = [
+    { ...fondateursFixes[0], role: g.christianRole, bio: g.christianBio, citation: g.christianQuote },
+    { ...fondateursFixes[1], role: g.christopherRole, bio: g.christopherBio, citation: g.christopherQuote },
+  ];
 
   useEffect(() => {
     const track = trackRef.current;
@@ -175,8 +166,8 @@ function EntrepriseAbout() {
       >
         <section className="entreprise-about__hero">
           <div className="entreprise-about__hero-inner">
-            <h1 className="entreprise-about__title" aria-label={HERO_TITLE}>
-              <SplitChars text={HERO_TITLE} delay={0.12} />
+            <h1 className="entreprise-about__title" aria-label={g.aboutTitle}>
+              <SplitChars text={g.aboutTitle} delay={0.12} />
             </h1>
             {paragraphs.map((text, i) => (
               <SplitWords
@@ -188,7 +179,7 @@ function EntrepriseAbout() {
               />
             ))}
             <Link to="/entreprise/contact" className="entreprise-about__cta">
-              Contactez-nous
+              {g.aboutCta}
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
@@ -200,18 +191,16 @@ function EntrepriseAbout() {
           <section aria-labelledby="fondateurs-title">
             <header className="max-w-3xl">
               <p className="text-[0.78rem] font-semibold uppercase tracking-brand text-muted-foreground">
-                Fondateurs
+                {g.foundersKicker}
               </p>
               <h2
                 id="fondateurs-title"
                 className="mt-3 font-display text-4xl leading-[1.12] md:text-6xl"
               >
-                Les voix à l&apos;origine.
+                {g.foundersTitle}
               </h2>
               <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground md:text-lg md:leading-8">
-                ITOBE Entreprises naît d&apos;une conviction simple : les récits africains méritent
-                une maison capable de les porter en articles, en livres et à l&apos;écran — sans les
-                diluer.
+                {g.foundersLead}
               </p>
             </header>
 

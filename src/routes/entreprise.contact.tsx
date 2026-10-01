@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { useState } from "react";
 import { ContactApi } from "@/lib/api-client";
+import { useI18n } from "@/i18n";
 
 export const Route = createFileRoute("/entreprise/contact")({
   head: () => ({
@@ -24,17 +25,20 @@ export const Route = createFileRoute("/entreprise/contact")({
   component: EntrepriseContact,
 });
 
-const sujets = [
-  { value: "partenariat", label: "Partenariat" },
-  { value: "presse", label: "Presse" },
-  { value: "projet", label: "Projet de groupe" },
-  { value: "autre", label: "Autre" },
-] as const;
+const SUJETS = ["partenariat", "presse", "projet", "autre"] as const;
 
 function EntrepriseContact() {
+  const { t } = useI18n();
+  const g = t.groupe;
+  const sujets = [
+    { value: "partenariat" as const, label: g.partenariat },
+    { value: "presse" as const, label: g.presse },
+    { value: "projet" as const, label: g.projet },
+    { value: "autre" as const, label: g.autre },
+  ];
   const [nom, setNom] = useState("");
   const [email, setEmail] = useState("");
-  const [sujet, setSujet] = useState<(typeof sujets)[number]["value"]>("partenariat");
+  const [sujet, setSujet] = useState<(typeof SUJETS)[number]>("partenariat");
   const [message, setMessage] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [statut, setStatut] = useState<{ ok: boolean; texte: string } | null>(null);
@@ -51,7 +55,7 @@ function EntrepriseContact() {
         subject: `ITOBE Entreprises — ${sujetLabel}`,
         message: message.trim(),
       });
-      setStatut({ ok: true, texte: "Message envoyé. Nous vous répondrons bientôt." });
+      setStatut({ ok: true, texte: g.sent });
       setNom("");
       setEmail("");
       setSujet("partenariat");
@@ -59,7 +63,7 @@ function EntrepriseContact() {
     } catch {
       setStatut({
         ok: false,
-        texte: "L'envoi a échoué. Réessayez ou écrivez-nous à contact@itobe.cd.",
+        texte: g.sendError,
       });
     } finally {
       setEnvoi(false);
@@ -71,11 +75,8 @@ function EntrepriseContact() {
       <div className="entreprise-contact__grid">
         <div>
           <p className="entreprise-contact__eyebrow">Contact</p>
-          <h1 className="entreprise-contact__title">Écrire au groupe</h1>
-          <p className="entreprise-contact__lead">
-            Partenariats, presse, recrutement ou projet transversal : ce formulaire
-            s&apos;adresse à ITOBE Entreprises, pas aux portails.
-          </p>
+          <h1 className="entreprise-contact__title">{g.contactTitle}</h1>
+          <p className="entreprise-contact__lead">{g.contactLead}</p>
 
           <form className="entreprise-contact__form" onSubmit={envoyer}>
             <div className="entreprise-contact__row">
@@ -85,8 +86,8 @@ function EntrepriseContact() {
                 autoComplete="name"
                 value={nom}
                 onChange={(e) => setNom(e.target.value)}
-                placeholder="Nom"
-                aria-label="Nom"
+                placeholder={g.name}
+                aria-label={g.name}
                 className="entreprise-contact__field"
               />
               <input
@@ -96,17 +97,17 @@ function EntrepriseContact() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-                aria-label="Email"
+                placeholder={g.email}
+                aria-label={g.email}
                 className="entreprise-contact__field"
               />
             </div>
             <select
               value={sujet}
               onChange={(e) =>
-                setSujet(e.target.value as (typeof sujets)[number]["value"])
+                setSujet(e.target.value as (typeof SUJETS)[number])
               }
-              aria-label="Sujet"
+              aria-label={g.subject}
               className="entreprise-contact__field"
             >
               {sujets.map((s) => (
@@ -121,12 +122,12 @@ function EntrepriseContact() {
               rows={6}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Votre message"
-              aria-label="Message"
+              placeholder={g.message}
+              aria-label={g.message}
               className="entreprise-contact__field entreprise-contact__message"
             />
             <button type="submit" disabled={envoi} className="entreprise-contact__submit">
-              {envoi ? "Envoi…" : "Envoyer"}
+              {envoi ? g.sending : g.send}
             </button>
             {statut && (
               <p

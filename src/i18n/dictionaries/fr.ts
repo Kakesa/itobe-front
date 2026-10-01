@@ -48,6 +48,45 @@ const fr: Dictionary = {
     productionText: "Films, séries et documentaires — un cinéma enraciné en Afrique.",
     productionCta: "Entrer dans la production",
   },
+  groupe: {
+    back: "Retour",
+    aboutTitle: "About",
+    aboutP1:
+      "ITOBE Entreprises est un groupe d'entreprises dédié à la création, à la production, à l'édition et à la diffusion de contenus qui mettent en lumière les cultures, les histoires, les talents et les imaginaires africains.",
+    aboutP2:
+      "À travers nos différentes entités, nous construisons un écosystème qui accompagne les idées et les créateurs, de leur développement jusqu'à leur rencontre avec le public.",
+    aboutP3: "Raconter l'Afrique, depuis l'Afrique, vers le monde.",
+    aboutCta: "Contactez-nous",
+    foundersKicker: "Fondateurs",
+    foundersTitle: "Les voix à l'origine.",
+    foundersLead:
+      "ITOBE Entreprises naît d'une conviction simple : les récits africains méritent une maison capable de les porter en articles, en livres et à l'écran — sans les diluer.",
+    christianRole: "Fondateur · Média & édition",
+    christianQuote:
+      "Un récit africain n'a pas besoin d'être traduit pour exister. Il a besoin d'un lieu où il peut durer.",
+    christianBio:
+      "Christian Bigomukero a conçu ITOBE comme un écosystème : le reportage, le livre et l'écran dans une même maison. Il porte la ligne éditoriale du groupe — des enquêtes de NENO aux collections d'Itobe Éditions.",
+    christopherRole: "Fondateur · Vision & production",
+    christopherQuote:
+      "Le cinéma, le livre et la presse ne sont pas des silos. Ce sont trois portes vers la même mémoire.",
+    christopherBio:
+      "Christopher Bigo a impulsé ITOBE Entreprises comme plateforme de groupe : un cadre pour que le média, l'édition et la production se parlent. Il veille à la vision d'ensemble et aux projets qui traversent les trois univers.",
+    contactTitle: "Écrire au groupe",
+    contactLead:
+      "Partenariats, presse, recrutement ou projet transversal : ce formulaire s'adresse à ITOBE Entreprises, pas aux portails.",
+    name: "Nom",
+    email: "Email",
+    subject: "Sujet",
+    message: "Votre message",
+    partenariat: "Partenariat",
+    presse: "Presse",
+    projet: "Projet de groupe",
+    autre: "Autre",
+    sending: "Envoi…",
+    send: "Envoyer",
+    sent: "Message envoyé. Nous vous répondrons bientôt.",
+    sendError: "L'envoi a échoué. Réessayez ou écrivez-nous à contact@itobe.cd.",
+  },
   footer: {
     blurb:
       "Ranconter l'afrique, Inspirer le monde",

@@ -37,7 +37,7 @@ export function GroupeNav({ tone = "default" }: { tone?: "default" | "onDark" })
       {retourPortails ? (
         <Link to="/" className={cn(styleLien, "inline-flex items-center gap-1.5")}>
           <ArrowLeft className="size-3.5" aria-hidden />
-          Retour
+          {t.groupe.back}
         </Link>
       ) : null}
       <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 md:gap-x-6">
