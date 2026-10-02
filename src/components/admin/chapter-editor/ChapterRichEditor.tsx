@@ -301,10 +301,10 @@ export function ChapterRichEditor({
       if (mode === "remplacer") {
         const chaine = editor.chain().focus();
         if (typeof pos === "number") chaine.setNodeSelection(pos);
-        chaine.updateAttributes("image", { src: url, alt: fichier.name, align: emplacement, taille }).run();
+        chaine.updateAttributes("image", { src: url, alt: "", align: emplacement, taille }).run();
         notify.succes("Image de la page mise à jour");
       } else {
-        editor.chain().focus().setImage({ src: url, alt: fichier.name, align: emplacement, taille }).run();
+        editor.chain().focus().setImage({ src: url, alt: "", align: emplacement, taille }).run();
         notify.succes(editeurImagePage ? "Image insérée dans la page" : "Image insérée dans le chapitre");
       }
       fermerSessionImage();

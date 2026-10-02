@@ -200,15 +200,15 @@ function renderTextWithMarks(text: string, marks?: TiptapMark[]): React.ReactNod
   return element;
 }
 
-/** Nom de fichier → légende lisible, qui peut se couper dans la page. */
-function legendeImage(alt: string) {
-  const brut = alt.trim();
-  if (!brut) return "";
-  const base = brut.split(/[/\\]/).pop() ?? brut;
-  const fichier = /\.[a-z0-9]{2,5}$/i.test(base);
-  if (!fichier && base.includes(" ")) return brut;
-  const sansExt = base.replace(/\.[a-z0-9]{2,5}$/i, "");
-  return sansExt.replace(/[_+]+/g, " ").replace(/-+/g, " ").replace(/\s+/g, " ").trim() || brut;
+/** Nom technique d'import (file_0000…, photo.jpg) : ne pas l'afficher dans la page. */
+function estNomFichier(valeur: string) {
+  const brut = valeur.trim();
+  if (!brut) return true;
+  const base = (brut.split(/[/\\]/).pop() ?? brut).replace(/\.[a-z0-9]{2,5}$/i, "");
+  if (/^file[\s_-]/i.test(base)) return true;
+  if (/[0-9a-f]{16,}/i.test(base.replace(/[\s_-]/g, ""))) return true;
+  if (!brut.includes(" ") && /[._-]/.test(brut)) return true;
+  return /\.[a-z0-9]{2,5}$/i.test(brut.trim());
 }
 
 function renderNode(
@@ -334,7 +334,8 @@ function renderNode(
     case "image": {
       const align = node.attrs?.align;
       const decor = node.attrs?.taille === "decor";
-      const legende = legendeImage(String(node.attrs?.alt || ""));
+      const altBrut = String(node.attrs?.alt || "");
+      const alt = estNomFichier(altBrut) ? "" : altBrut;
       return (
         <figure
           key={index}
@@ -344,15 +345,13 @@ function renderNode(
         >
           <img
             src={node.attrs?.src}
-            alt={legende}
-            title={node.attrs?.title}
+            alt={alt}
             className={
               book
                 ? undefined
                 : "rounded-xl border border-border max-w-full h-auto mx-auto shadow-sm"
             }
           />
-          {legende ? <figcaption>{legende}</figcaption> : null}
         </figure>
       );
     }
