@@ -402,9 +402,35 @@ export const AuteursApi = {
 
 export const CategoriesApi = {
   getAll: (type?: "media" | "livre") => api.get("/categories", type ? { type } : undefined),
-  create: (data: { nom: string; type: "media" | "livre"; description?: string }) =>
+  create: (data: { nom: string; type: "media" | "livre"; visibilite?: string; description?: string }) =>
     api.post("/categories", data),
+  update: (id: string, data: { nom?: string; type?: "media" | "livre"; visibilite?: string }) =>
+    api.put(`/categories/${id}`, data),
+  delete: (id: string) => api.delete(`/categories/${id}`),
 };
+
+export type CategorieApi = {
+  id: string;
+  nom: string;
+  visibilite: string;
+  type: string;
+};
+
+export function lireCategories(payload: unknown): CategorieApi[] {
+  const source = payload && typeof payload === "object" ? (payload as { data?: unknown }).data ?? payload : payload;
+  const brut = Array.isArray(source) ? source : [];
+  return brut
+    .map((item) => {
+      const row = item as { _id?: string; id?: string; nom?: string; visibilite?: string; type?: string };
+      return {
+        id: String(row._id ?? row.id ?? ""),
+        nom: String(row.nom ?? "").trim(),
+        visibilite: String(row.visibilite ?? "Publique"),
+        type: String(row.type ?? ""),
+      };
+    })
+    .filter((item) => item.id && item.nom);
+}
 
 export const MediasApi = {
   getAll: (params?: { page?: number; limit?: number; type?: string; q?: string }) =>

@@ -6,7 +6,7 @@ import { ArticlePostCard } from "@/components/media/article-post";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticles } from "@/hooks/use-articles";
 import { useI18n } from "@/i18n";
-import { CategoriesApi } from "@/lib/api-client";
+import { CategoriesApi, lireCategories } from "@/lib/api-client";
 import { getAuteur } from "@/lib/data";
 
 export const Route = createFileRoute("/media/articles")({
@@ -58,14 +58,9 @@ function MediaPage() {
     let actif = true;
     CategoriesApi.getAll("media")
       .then((reponse) => {
-        const brut = Array.isArray(reponse?.data) ? reponse.data : [];
-        const noms = brut
-          .filter((item: { type?: string; visibilite?: string; nom?: string }) => {
-            if (item?.type && item.type !== "media") return false;
-            return item?.visibilite !== "Privée";
-          })
-          .map((item: { nom?: string }) => String(item?.nom ?? "").trim())
-          .filter(Boolean);
+        const noms = lireCategories(reponse)
+          .filter((item) => item.type !== "livre" && item.visibilite !== "Privée")
+          .map((item) => item.nom);
         if (actif) setCategories([...new Set(noms)]);
       })
       .catch(() => {

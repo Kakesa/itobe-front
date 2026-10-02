@@ -20,6 +20,7 @@ function AdminCategoriesMedia() {
     <CrudModule
       titre="Catégories Média"
       singulier="Catégorie Média"
+      description="Ces catégories alimentent les filtres du portail Média. Seules les catégories publiques y apparaissent."
       collection="categoriesMedia"
       requis={["admin"]}
       clesRecherche={["nom"]}

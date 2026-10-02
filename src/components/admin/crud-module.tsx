@@ -5,7 +5,7 @@ import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { RowActionsMenu, type RowAction } from "@/components/admin/row-actions-menu";
 import { useRole } from "@/hooks/use-role";
 import type { Role } from "@/lib/admin-data";
-import { ArticlesApi, AuteursApi, LivresApi, UsersApi, ApiError } from "@/lib/api-client";
+import { ArticlesApi, AuteursApi, CategoriesApi, LivresApi, UsersApi, ApiError, lireCategories } from "@/lib/api-client";
 import { hydratePublicData } from "@/lib/data";
 import { resolveMediaUrl } from "@/lib/media-url";
 import { useCollection, type NomCollection } from "@/lib/admin/store";
@@ -202,6 +202,45 @@ export function CrudModule({
       photo: photo ?? "",
     };
   };
+
+  const rechargerCategoriesMedia = async () => {
+    const brut = await CategoriesApi.getAll("media");
+    definir(
+      lireCategories(brut).map((item) => ({
+        id: item.id,
+        nom: item.nom,
+        visibilite: item.visibilite,
+      })),
+    );
+  };
+
+  useEffect(() => {
+    if (collection !== "categoriesMedia") return;
+    let annule = false;
+    CategoriesApi.getAll("media")
+      .then((brut) => {
+        if (annule) return;
+        definir(
+          lireCategories(brut).map((item) => ({
+            id: item.id,
+            nom: item.nom,
+            visibilite: item.visibilite,
+          })),
+        );
+      })
+      .catch((err) => {
+        if (!annule) {
+          notify.erreur(
+            err instanceof ApiError && (err.statusCode === 401 || err.statusCode === 403)
+              ? "Reconnectez-vous pour charger les catégories."
+              : "Impossible de charger les catégories du média.",
+          );
+        }
+      });
+    return () => {
+      annule = true;
+    };
+  }, [collection, definir]);
 
   useEffect(() => {
     if (collection !== "livres") return;
@@ -443,6 +482,28 @@ export function CrudModule({
         return;
       }
 
+      if (collection === "categoriesMedia") {
+        const payload = {
+          nom: String(valeurs["nom"] ?? "").trim(),
+          type: "media" as const,
+          visibilite: String(valeurs["visibilite"] ?? "Publique") || "Publique",
+        };
+        if (!payload.nom) {
+          notify.erreur("Indiquez le nom de la catégorie.");
+          return;
+        }
+        if (edition?.row) {
+          await CategoriesApi.update(String(edition.row.id), payload);
+        } else {
+          await CategoriesApi.create(payload);
+        }
+        await rechargerCategoriesMedia();
+        if (edition?.row) notify.modifie(singulier, payload.nom);
+        else notify.cree(singulier, payload.nom);
+        setEdition(null);
+        return;
+      }
+
       if (collection === "auteurs") {
         const payload = preparerPayloadAuteur(valeurs);
         if (edition?.row) {
@@ -490,6 +551,9 @@ export function CrudModule({
       if (collection === "livres") {
         await LivresApi.delete(aSupprimer.id);
         await rechargerLivresAdmin();
+      } else if (collection === "categoriesMedia") {
+        await CategoriesApi.delete(aSupprimer.id);
+        await rechargerCategoriesMedia();
       } else if (collection === "auteurs") {
         await AuteursApi.delete(aSupprimer.id);
         await rechargerAuteursAdmin();

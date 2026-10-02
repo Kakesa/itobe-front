@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImagePlus, Loader2, Plus, X } from "lucide-react";
-import { auteurs, categoriesMedia, nomAuteur } from "@/lib/data";
+import { CategoriesApi, lireCategories } from "@/lib/api-client";
+import { auteurs, nomAuteur } from "@/lib/data";
 import { notify } from "@/lib/notify";
 import { uploadMediaImage } from "@/lib/upload-media";
 import { ArticleRichEditor, plainTextToHtml } from "@/components/admin/article-rich-editor";
@@ -71,6 +72,24 @@ export function ArticleEditorForm({
   const [uploadGalerie, setUploadGalerie] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const galerieRef = useRef<HTMLInputElement>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    let actif = true;
+    CategoriesApi.getAll("media")
+      .then((reponse) => {
+        const noms = lireCategories(reponse)
+          .filter((item) => item.type !== "livre")
+          .map((item) => item.nom);
+        if (actif) setCategories([...new Set(noms)]);
+      })
+      .catch(() => {
+        if (actif) setCategories([]);
+      });
+    return () => {
+      actif = false;
+    };
+  }, []);
 
   const set = <K extends keyof ArticleFormValues>(cle: K, val: ArticleFormValues[K]) =>
     setV((s) => ({ ...s, [cle]: val }));
@@ -200,7 +219,7 @@ export function ArticleEditorForm({
               onChange={(e) => set("categorie", e.target.value)}
               className={champ}
             >
-              {categoriesMedia.map((c) => (
+              {[...new Set([v.categorie, ...categories].filter(Boolean))].map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </select>

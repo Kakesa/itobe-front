@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { AccesRestreint } from "@/components/admin-ui";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
@@ -12,11 +12,11 @@ import {
   refChampApi,
   type ArticleFormValues,
 } from "@/components/admin/article-editor-form";
-import { categoriesMedia, formatDate, hydratePublicData, nomAuteur } from "@/lib/data";
+import { formatDate, hydratePublicData, nomAuteur } from "@/lib/data";
 import { etatsModeration, transitions, type EtatModeration } from "@/lib/admin-data";
 import { useRole } from "@/hooks/use-role";
 import { useCollection } from "@/lib/admin/store";
-import { ArticlesApi } from "@/lib/api-client";
+import { ArticlesApi, CategoriesApi, lireCategories } from "@/lib/api-client";
 import type { Item } from "@/lib/admin/seeds";
 import { notify } from "@/lib/notify";
 import { useNotifierAbonnes } from "@/hooks/use-notifier-abonnes";
@@ -44,6 +44,24 @@ function AdminArticles() {
   const { role } = useRole();
   const { items, creer, modifier, supprimer } = useCollection("articles");
   const { notifierSiPublication } = useNotifierAbonnes();
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    let actif = true;
+    CategoriesApi.getAll("media")
+      .then((reponse) => {
+        const noms = lireCategories(reponse)
+          .filter((item) => item.type !== "livre")
+          .map((item) => item.nom);
+        if (actif) setCategories([...new Set(noms)]);
+      })
+      .catch(() => {
+        if (actif) setCategories([]);
+      });
+    return () => {
+      actif = false;
+    };
+  }, []);
   const [mode, setMode] = useState<"liste" | "creer" | "editer">("liste");
   const [edition, setEdition] = useState<Item | null>(null);
   const [aSupprimer, setASupprimer] = useState<Item | null>(null);
@@ -159,7 +177,7 @@ function AdminArticles() {
           onChange={(e) => setFiltre(e.target.value)}
           className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm"
         >
-          {["Toutes", ...categoriesMedia].map((c) => (
+          {["Toutes", ...categories].map((c) => (
             <option key={c}>{c}</option>
           ))}
         </select>
