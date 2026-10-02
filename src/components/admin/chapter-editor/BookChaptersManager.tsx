@@ -485,8 +485,6 @@ function ChapterEditorPanel({
   const [gratuit, setGratuit] = useState(chapitre.gratuit);
   const [modalConflit, setModalConflit] = useState(false);
   const [afficherLegacy, setAfficherLegacy] = useState(false);
-  const [importEnCours, setImportEnCours] = useState(false);
-  const [confirmerImport, setConfirmerImport] = useState(false);
 
   const {
     status,
@@ -528,33 +526,6 @@ function ChapterEditorPanel({
 
   const handleContenuChange = (nouveauJson: any) => {
     notifyChange(titre, nouveauJson, statut, gratuit);
-  };
-
-  const importerLegacyVersPage1 = async () => {
-    if (!chapitre.contenu || importEnCours) return;
-    setConfirmerImport(false);
-    setImportEnCours(true);
-    try {
-      const res = await PagesApi.getByChapitre(chapitre._id);
-      const pages: PageItem[] = res?.data ?? res ?? [];
-      const page1 = [...pages].sort((a, b) => a.ordre - b.ordre)[0];
-      if (!page1?._id) {
-        notify.erreur("Aucune page trouvée. Créez d'abord une page.");
-        return;
-      }
-      await PagesApi.update(page1._id, {
-        contenu: chapitre.contenu,
-        revision: page1.revision ?? 1,
-      });
-      notify.succes(
-        "Contenu (avec références) importé dans la page 1. Ouvrez les pages pour vérifier, puis le lecteur.",
-      );
-      onGererPages();
-    } catch (error: any) {
-      notify.erreur(error?.message || "Impossible d'importer vers la page 1");
-    } finally {
-      setImportEnCours(false);
-    }
   };
 
   return (
@@ -604,34 +575,6 @@ function ChapterEditorPanel({
           {nbPagesEditoriales > 0 ? "Éditer les pages" : "Créer les pages"}
         </button>
       </div>
-
-      {nbPagesEditoriales > 0 && (
-        <div className="rounded-xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-amber-950 dark:text-amber-100">
-          <p className="font-semibold">Les références doivent être ajoutées dans les pages</p>
-          <p className="mt-1 text-xs leading-relaxed opacity-90">
-            Le lecteur n’affiche pas l’ancien « contenu chapitre ». Si vous avez mis des notes
-            (¹, *, †…) ici en bas, importez-les vers la page 1, ou rouvrez{" "}
-            <strong>Éditer les pages</strong> et réinsérez-les avec le bouton exposant.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <button
-              type="button"
-              onClick={() => setConfirmerImport(true)}
-              disabled={importEnCours}
-              className="rounded-lg bg-amber-700 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-800 disabled:opacity-60"
-            >
-              {importEnCours ? "Import…" : "Importer ce contenu → page 1"}
-            </button>
-            <button
-              type="button"
-              onClick={onGererPages}
-              className="rounded-lg border border-amber-700/40 px-3 py-1.5 text-xs font-medium hover:bg-amber-500/15"
-            >
-              Ouvrir les pages
-            </button>
-          </div>
-        </div>
-      )}
 
       <div className="rounded-xl border border-border bg-card p-4 flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0 flex-1 space-y-2">
@@ -723,15 +666,6 @@ function ChapterEditorPanel({
           />
         </div>
       )}
-
-      <ConfirmDialog
-        ouvert={confirmerImport}
-        titre="Remplacer la page 1 ?"
-        message="Le contenu actuel de la page 1 sera remplacé par l’ancien contenu du chapitre, avec ses références."
-        confirmer="Continuer"
-        onAnnuler={() => setConfirmerImport(false)}
-        onConfirmer={() => void importerLegacyVersPage1()}
-      />
 
       <ChapterConflictDialog
         ouvert={modalConflit || status === "conflict"}
