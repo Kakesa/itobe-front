@@ -1,12 +1,13 @@
 /* eslint-disable prettier/prettier */
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArticlePostCard } from "@/components/media/article-post";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useArticles } from "@/hooks/use-articles";
 import { useI18n } from "@/i18n";
-import { categoriesMedia, getAuteur } from "@/lib/data";
+import { CategoriesApi } from "@/lib/api-client";
+import { getAuteur } from "@/lib/data";
 
 export const Route = createFileRoute("/media/articles")({
   head: () => ({
@@ -51,6 +52,35 @@ function MediaPage() {
   const { articles, loading } = useArticles();
   const [cat, setCat] = useState<string>("Tous");
   const [query, setQuery] = useState("");
+  const [categories, setCategories] = useState<string[]>([]);
+
+  useEffect(() => {
+    let actif = true;
+    CategoriesApi.getAll("media")
+      .then((reponse) => {
+        const brut = Array.isArray(reponse?.data) ? reponse.data : [];
+        const noms = brut
+          .filter((item: { type?: string; visibilite?: string; nom?: string }) => {
+            if (item?.type && item.type !== "media") return false;
+            return item?.visibilite !== "Privée";
+          })
+          .map((item: { nom?: string }) => String(item?.nom ?? "").trim())
+          .filter(Boolean);
+        if (actif) setCategories([...new Set(noms)]);
+      })
+      .catch(() => {
+        if (actif) setCategories([]);
+      });
+    return () => {
+      actif = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (cat !== "Tous" && categories.length > 0 && !categories.includes(cat)) {
+      setCat("Tous");
+    }
+  }, [cat, categories]);
 
   const liste = useMemo(() => {
     let items = cat === "Tous" ? articles : articles.filter((a) => a.categorie === cat);
@@ -78,7 +108,7 @@ function MediaPage() {
     return { une: featuredList, publications: rest };
   }, [liste]);
 
-  const filterOptions = ["Tous", ...categoriesMedia];
+  const filterOptions = ["Tous", ...categories];
 
   return (
     <section id="blog-section" className="media-dark-page media-blog-page py-10 sm:py-14 lg:py-16">
