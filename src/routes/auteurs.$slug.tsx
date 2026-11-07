@@ -1,12 +1,10 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AuteurProfilePage } from "@/components/auteur/auteur-profile-page";
-import { articles, getAuteur, livres } from "@/lib/data";
+import { getAuteur, livres } from "@/lib/data";
 import {
   fetchPublicAuteurBySlug,
   normalizePublicAuteur,
-  normalizePublicArticle,
   normalizePublicLivre,
-  type PublicArticle,
   type PublicAuteur,
   type PublicLivre,
 } from "@/lib/public-data";
@@ -19,7 +17,6 @@ export const Route = createFileRoute("/auteurs/$slug")({
       return {
         auteur: api.auteur,
         livres: api.livres,
-        articles: api.articles,
       };
     }
 
@@ -31,9 +28,6 @@ export const Route = createFileRoute("/auteurs/$slug")({
       livres: livres
         .filter((l) => l.auteur === params.slug)
         .map((l) => normalizePublicLivre(l)),
-      articles: articles
-        .filter((a) => a.auteur === params.slug)
-        .map((a) => normalizePublicArticle(a)),
     };
   },
   head: ({ params, loaderData }) => {
@@ -62,8 +56,7 @@ function AuteurRoutePage() {
   const data = Route.useLoaderData() as {
     auteur: PublicAuteur;
     livres: PublicLivre[];
-    articles: PublicArticle[];
   };
 
-  return <AuteurProfilePage auteur={data.auteur} livres={data.livres} articles={data.articles} />;
+  return <AuteurProfilePage auteur={data.auteur} livres={data.livres} />;
 }

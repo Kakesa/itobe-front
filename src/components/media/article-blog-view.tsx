@@ -97,17 +97,7 @@ export function ArticleBlogView({ article, auteur, prev, next }: ArticleBlogView
         <span className="inline-flex max-w-xl items-center gap-3">
           <AuthorAvatar auteur={auteur} nom={nomAuteur} />
           <span>
-            {auteur ? (
-              <Link
-                to="/auteurs/$slug"
-                params={{ slug: auteur.slug }}
-                className="block font-medium text-foreground hover:text-accent"
-              >
-                {nomAuteur}
-              </Link>
-            ) : (
-              <span className="block font-medium text-foreground">{nomAuteur}</span>
-            )}
+            <span className="block font-medium text-foreground">{nomAuteur}</span>
             <span className="mt-0.5 block text-xs leading-snug">{roleAuteur}</span>
           </span>
         </span>

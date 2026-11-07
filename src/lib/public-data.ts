@@ -254,13 +254,11 @@ export async function fetchPublicAuteurBySlug(slug: string) {
     const payload = response?.data ?? response;
     const auteurRaw = payload?.auteur ?? null;
     const livresRaw = payload?.livres ?? [];
-    const articlesRaw = payload?.articles ?? [];
     return {
       auteur: auteurRaw ? normalizePublicAuteur(auteurRaw) : null,
       livres: asArray<any>(livresRaw).map(normalizePublicLivre),
-      articles: asArray<any>(articlesRaw).map(normalizePublicArticle),
     };
   } catch {
-    return { auteur: null, livres: [], articles: [] };
+    return { auteur: null, livres: [] };
   }
 }

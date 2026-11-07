@@ -3,8 +3,7 @@ import { MapPin } from "lucide-react";
 import { AuthorAvatar } from "@/components/author-avatar";
 import { BookCard } from "@/components/book-card";
 import type { Livre } from "@/lib/data";
-import { formatDate } from "@/lib/data";
-import type { PublicArticle, PublicAuteur, PublicLivre } from "@/lib/public-data";
+import type { PublicAuteur, PublicLivre } from "@/lib/public-data";
 
 function paragraphesBio(bio: string) {
   return bio
@@ -16,10 +15,9 @@ function paragraphesBio(bio: string) {
 type Props = {
   auteur: PublicAuteur;
   livres: PublicLivre[];
-  articles: PublicArticle[];
 };
 
-export function AuteurProfilePage({ auteur, livres, articles }: Props) {
+export function AuteurProfilePage({ auteur, livres }: Props) {
   const bioParts = paragraphesBio(auteur.bio);
 
   return (
@@ -87,25 +85,6 @@ export function AuteurProfilePage({ auteur, livres, articles }: Props) {
                 <BookCard key={l.slug} livre={l as Livre} index={i} showAuteur={false} />
               ))}
             </div>
-          </section>
-        )}
-
-        {articles.length > 0 && (
-          <section className="auteur-fiche__articles">
-            <h2 className="auteur-fiche__section-title">Articles & chroniques</h2>
-            <ul className="auteur-fiche__article-list">
-              {articles.map((a) => (
-                <li key={a.slug} className="auteur-fiche__article-item">
-                  <Link to="/media/$slug" params={{ slug: a.slug }} className="auteur-fiche__article-title">
-                    {a.titre}
-                  </Link>
-                  {a.chapo && <p className="auteur-fiche__article-chapo">{a.chapo}</p>}
-                  <p className="auteur-fiche__article-meta">
-                    {a.categorie} · {formatDate(a.date)} · {a.lecture}
-                  </p>
-                </li>
-              ))}
-            </ul>
           </section>
         )}
 
