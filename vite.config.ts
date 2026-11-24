@@ -7,6 +7,10 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  // Hors Lovable, le build doit produire un serveur Node qui reste à l'écoute.
+  // Le défaut de la config Lovable est cloudflare-module : `node .output/server/index.mjs`
+  // charge seulement un handler puis se termine avec le code 0.
+  nitro: { preset: "node-server" },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
