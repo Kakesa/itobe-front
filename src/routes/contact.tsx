@@ -66,11 +66,13 @@ function MediaContact() {
     setStatut(null);
     setEnvoi(true);
     try {
+      const piege = new FormData(e.currentTarget).get("company_website");
       await ContactApi.send({
         name: nom.trim(),
         email: email.trim(),
         subject: "Contact Neno",
         message: message.trim(),
+        company_website: typeof piege === "string" ? piege : "",
       });
       setStatut({ ok: true, texte: c.success });
       setNom("");
@@ -89,6 +91,7 @@ function MediaContact() {
         <h1 className="media-contact__title">{c.mediaTitle}</h1>
         <p className="media-contact__notice">{c.mediaNotice}</p>
         <form className="media-contact__form" onSubmit={envoyer}>
+          <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
           <input
             required
             name="name"

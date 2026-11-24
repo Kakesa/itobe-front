@@ -14,6 +14,7 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BibliothequeRouteImport } from './routes/bibliotheque'
 import { Route as CommandesRouteImport } from './routes/commandes'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EditionRouteImport } from './routes/edition'
@@ -152,6 +153,11 @@ const BibliothequeRoute = BibliothequeRouteImport.update({
 const CommandesRoute = CommandesRouteImport.update({
   id: '/commandes',
   path: '/commandes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConnexionRoute = ConnexionRouteImport.update({
@@ -748,6 +754,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
   '/commandes': typeof CommandesRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
@@ -868,6 +875,7 @@ export interface FileRoutesByTo {
   '/a-propos': typeof AProposRoute
   '/bibliotheque': typeof BibliothequeRoute
   '/commandes': typeof CommandesRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/mot-de-passe-oublie': typeof MotDePasseOublieRoute
@@ -980,6 +988,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/bibliotheque': typeof BibliothequeRoute
   '/commandes': typeof CommandesRoute
+  '/confidentialite': typeof ConfidentialiteRoute
   '/connexion': typeof ConnexionRoute
   '/contact': typeof ContactRoute
   '/edition': typeof EditionRouteWithChildren
@@ -1103,6 +1112,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/bibliotheque'
     | '/commandes'
+    | '/confidentialite'
     | '/connexion'
     | '/contact'
     | '/edition'
@@ -1223,6 +1233,7 @@ export interface FileRouteTypes {
     | '/a-propos'
     | '/bibliotheque'
     | '/commandes'
+    | '/confidentialite'
     | '/connexion'
     | '/contact'
     | '/mot-de-passe-oublie'
@@ -1334,6 +1345,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/bibliotheque'
     | '/commandes'
+    | '/confidentialite'
     | '/connexion'
     | '/contact'
     | '/edition'
@@ -1456,6 +1468,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BibliothequeRoute: typeof BibliothequeRoute
   CommandesRoute: typeof CommandesRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
   ConnexionRoute: typeof ConnexionRoute
   ContactRoute: typeof ContactRoute
   EditionRoute: typeof EditionRouteWithChildren
@@ -1511,6 +1524,13 @@ declare module '@tanstack/react-router' {
       path: '/commandes'
       fullPath: '/commandes'
       preLoaderRoute: typeof CommandesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/connexion': {
@@ -2615,6 +2635,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BibliothequeRoute: BibliothequeRoute,
   CommandesRoute: CommandesRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
   ConnexionRoute: ConnexionRoute,
   ContactRoute: ContactRoute,
   EditionRoute: EditionRouteWithChildren,

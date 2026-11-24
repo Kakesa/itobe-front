@@ -97,6 +97,7 @@ const en: Dictionary = {
     subscribeSuccess: "You're subscribed. Thank you!",
     subscribeError: "Unable to subscribe right now.",
     copyright: "© 2026 ITOBE Entreprise. All rights reserved. Designed with pride and care.",
+    privacy: "Privacy policy",
     popupDismiss: "Maybe later",
   },
   editionAbout: {

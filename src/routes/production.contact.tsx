@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/production/motion-reveal";
 import { studio } from "@/lib/production/studio-data";
 import { useProductionCopy } from "@/lib/production/copy";
+import { ContactApi } from "@/lib/api-client";
 
 export const Route = createFileRoute("/production/contact")({
   head: () => ({
@@ -27,10 +28,38 @@ export const Route = createFileRoute("/production/contact")({
 function ContactPage() {
   const t = useProductionCopy();
   const [sent, setSent] = useState(false);
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const [erreur, setErreur] = useState("");
+  const [envoi, setEnvoi] = useState(false);
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSent(true);
-    event.currentTarget.reset();
+    const form = event.currentTarget;
+    const donnees = new FormData(form);
+    const name = String(donnees.get("name") ?? "").trim();
+    const email = String(donnees.get("email") ?? "").trim();
+    const subject = String(donnees.get("subject") ?? "").trim();
+    const message = String(donnees.get("message") ?? "").trim();
+    const company = String(donnees.get("company") ?? "").trim();
+    if (name.length < 2 || subject.length < 2 || message.length < 10 || !email.includes("@")) {
+      setErreur("Vérifiez les champs obligatoires.");
+      return;
+    }
+    setErreur("");
+    setEnvoi(true);
+    try {
+      await ContactApi.send({
+        name,
+        email,
+        subject: company ? `${subject} — ${company}` : subject,
+        message,
+        company_website: String(donnees.get("company_website") ?? ""),
+      });
+      setSent(true);
+      form.reset();
+    } catch {
+      setErreur("L'envoi a échoué. Réessayez.");
+    } finally {
+      setEnvoi(false);
+    }
   }
   return (
     <div className="page-shell">
@@ -76,6 +105,7 @@ function ContactPage() {
         </Reveal>
         <Reveal>
           <form onSubmit={handleSubmit} className="grid gap-x-6 gap-y-8 md:grid-cols-2">
+            <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
             <Field label={t.contact.name} name="name" required />
             <Field label={t.contact.email} name="email" type="email" required />
             <Field label={t.contact.company} name="company" />
@@ -90,10 +120,11 @@ function ContactPage() {
                   <Check className="size-4" /> {t.contact.thanks}
                 </p>
               ) : (
-                <Button type="submit" variant="cinematic" size="lg">
-                  {t.contact.send}
+                <Button type="submit" variant="cinematic" size="lg" disabled={envoi}>
+                  {envoi ? "…" : t.contact.send}
                 </Button>
               )}
+              {erreur ? <p className="mt-3 text-sm text-destructive" role="status">{erreur}</p> : null}
               <p className="mt-5 max-w-lg text-xs leading-5 text-muted-foreground">{t.contact.note}</p>
             </div>
           </form>

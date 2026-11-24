@@ -1,14 +1,18 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /connexion
+Disallow: /tableau-de-bord
+Disallow: /profil
+Disallow: /panier
+Disallow: /commandes
+Disallow: /bibliotheque
+Disallow: /achat
+Disallow: /reader
+Disallow: /synchronisation
+
 User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /

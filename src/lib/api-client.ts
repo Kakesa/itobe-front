@@ -440,7 +440,7 @@ export const MediasApi = {
 };
 
 export const ContactApi = {
-  send: (data: { name: string; email: string; subject: string; message: string }) =>
+  send: (data: { name: string; email: string; subject: string; message: string; company_website?: string }) =>
     api.post("/contact", data),
 };
 
@@ -449,7 +449,8 @@ export const RechercheApi = {
 };
 
 export const NewsletterApi = {
-  subscribe: (email: string) => api.post("/newsletter/subscribe", { email }),
+  subscribe: (email: string, company_website = "") =>
+    api.post("/newsletter/subscribe", { email, company_website }),
 };
 
 export const YoutubeApi = {

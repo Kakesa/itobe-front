@@ -41,14 +41,26 @@ function NotFoundComponent() {
         <p className="mt-2 text-sm text-muted-foreground">
           Cette page n'existe pas ou a été déplacée.
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
           >
             Retour à l'accueil
           </Link>
+          <button
+            type="button"
+            onClick={() => window.history.back()}
+            className="inline-flex items-center justify-center rounded-sm border border-input px-4 py-2 text-sm font-medium"
+          >
+            Page précédente
+          </button>
         </div>
+        <nav className="mt-6 flex flex-wrap justify-center gap-4 text-sm" aria-label="Rubriques">
+          <Link to="/edition" className="underline-offset-2 hover:underline">Édition</Link>
+          <Link to="/media" className="underline-offset-2 hover:underline">Média</Link>
+          <Link to="/contact" className="underline-offset-2 hover:underline">Contact</Link>
+        </nav>
       </div>
     </div>
   );
@@ -103,8 +115,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Itobe Entreprise" },
       { property: "og:site_name", content: "Itobe" },
+      { property: "og:title", content: "Itobe — Média & maison d'édition numérique" },
+      { property: "og:description", content: "Itobe réunit un média en ligne et une maison d'édition numérique : articles, livres et bibliothèque." },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/images/a-propos/hero.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Itobe — Média & maison d'édition numérique" },
+      { name: "twitter:description", content: "Articles, livres et bibliothèque — Itobe Entreprise." },
+      { name: "twitter:image", content: "/images/a-propos/hero.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

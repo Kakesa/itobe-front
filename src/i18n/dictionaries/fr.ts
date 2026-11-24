@@ -99,6 +99,7 @@ const fr: Dictionary = {
     subscribeSuccess: "Inscription enregistrée. Merci !",
     subscribeError: "Impossible de s'inscrire pour le moment.",
     copyright: "© 2026 ITOBE Entreprise. Tous droits réservés. Conçu avec fierté et exigence.",
+    privacy: "Politique de confidentialité",
     popupDismiss: "Plus tard",
   },
   editionAbout: {

@@ -94,6 +94,7 @@ export type Dictionary = {
     subscribeSuccess: string;
     subscribeError: string;
     copyright: string;
+    privacy: string;
     popupDismiss: string;
   };
   editionAbout: {

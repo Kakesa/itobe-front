@@ -49,11 +49,13 @@ function EntrepriseContact() {
     setEnvoi(true);
     const sujetLabel = sujets.find((s) => s.value === sujet)?.label ?? sujet;
     try {
+      const piege = new FormData(e.currentTarget).get("company_website");
       await ContactApi.send({
         name: nom.trim(),
         email: email.trim(),
         subject: `ITOBE Entreprises — ${sujetLabel}`,
         message: message.trim(),
+        company_website: typeof piege === "string" ? piege : "",
       });
       setStatut({ ok: true, texte: g.sent });
       setNom("");
@@ -79,6 +81,7 @@ function EntrepriseContact() {
           <p className="entreprise-contact__lead">{g.contactLead}</p>
 
           <form className="entreprise-contact__form" onSubmit={envoyer}>
+            <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
             <div className="entreprise-contact__row">
               <input
                 required

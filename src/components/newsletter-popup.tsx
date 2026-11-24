@@ -77,14 +77,15 @@ export function NewsletterPopup() {
     setOuvert(false);
   };
 
-  const envoyer = async (e: React.FormEvent) => {
+  const envoyer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const valeur = email.trim();
     if (!valeur) return;
+    const piege = String(new FormData(e.currentTarget).get("company_website") ?? "");
     setLoading(true);
     setMsg(null);
     try {
-      await NewsletterApi.subscribe(valeur);
+      await NewsletterApi.subscribe(valeur, piege);
       setMsg({ ok: true, texte: t.footer.subscribeSuccess });
       setEmail("");
       marquer("subscribed");
@@ -113,6 +114,7 @@ export function NewsletterPopup() {
           {t.footer.newsletterText}
         </h2>
         <form onSubmit={envoyer} className="mt-6 space-y-3">
+          <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
           <label className="sr-only" htmlFor="newsletter-popup-email">
             {t.footer.emailAria}
           </label>

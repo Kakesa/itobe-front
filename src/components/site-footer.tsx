@@ -42,15 +42,16 @@ export function SiteFooter() {
     [t],
   );
 
-  const inscrireNewsletter = async (e: React.FormEvent) => {
+  const inscrireNewsletter = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setNewsletterMsg(null);
     const valeur = email.trim();
     if (!valeur) return;
+    const piege = String(new FormData(e.currentTarget).get("company_website") ?? "");
 
     setNewsletterLoading(true);
     try {
-      await NewsletterApi.subscribe(valeur);
+      await NewsletterApi.subscribe(valeur, piege);
       setNewsletterMsg({ ok: true, texte: t.footer.subscribeSuccess });
       setEmail("");
     } catch (err: unknown) {
@@ -112,6 +113,7 @@ export function SiteFooter() {
             <p className="font-display text-lg text-white">{t.footer.newsletterTitle}</p>
             <p className="mt-3 text-sm leading-relaxed text-white/70">{t.footer.newsletterText}</p>
             <form onSubmit={inscrireNewsletter} className="mt-5 flex flex-col gap-2 sm:flex-row">
+              <input type="text" name="company_website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
               <input
                 type="email"
                 required
@@ -143,7 +145,12 @@ export function SiteFooter() {
 
       <div className="site-footer__bar border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-6 text-xs text-white/45 sm:flex-row">
-          <p className="text-center sm:text-left">{t.footer.copyright}</p>
+          <p className="text-center sm:text-left">
+            {t.footer.copyright}
+            <Link to="/confidentialite" className="ml-3 underline-offset-2 hover:underline">
+              {t.footer.privacy}
+            </Link>
+          </p>
           <div className="flex items-center gap-3">
             {[
               { label: "TikTok", href: "https://www.tiktok.com", Icon: IconeTikTok },
