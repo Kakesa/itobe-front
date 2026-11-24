@@ -87,6 +87,8 @@ const loremParas = (sujet: string) => [
   `Reste la question du modèle économique. Entre mobile money, abonnements et aperçus gratuits calibrés, les plateformes cherchent le juste équilibre entre accès et rémunération des créateurs.`,
 ];
 
+// Copie autonome de src/lib/catalog-static.ts. Les seeds admin ne peuvent pas
+// importer ce module : le bundle SSR crée un cycle avec le routeur.
 const articlesSeed: Article[] = [
   {
     slug: "edition-numerique-nouvelle-generation",

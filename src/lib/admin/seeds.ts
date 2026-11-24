@@ -1,12 +1,12 @@
 // Jeux de données initiaux pour les modules du back-office (front mock).
-import { articles, categoriesLivres, categoriesMedia } from "@/lib/data";
-import { commandes } from "@/lib/admin-data";
+import { articlesSeed, categoriesLivres, categoriesMedia } from "@/lib/catalog-static";
+import { commandes } from "@/lib/commandes-static";
 
 export type Item = Record<string, unknown> & { id: string };
 
 const etatCycle = ["Brouillon", "En revue", "Rejeté", "En revue"] as const;
 
-export const seedArticles: Item[] = articles.map((a, i) => ({
+export const seedArticles: Item[] = articlesSeed.map((a, i) => ({
   id: a.slug,
   titre: a.titre,
   categorie: a.categorie,
